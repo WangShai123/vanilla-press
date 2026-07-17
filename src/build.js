@@ -204,7 +204,23 @@ function renderNav(pages, currentRel) {
     .join("\n");
 }
 
-function renderHtml({ title, body, pages, rel, components, config }) {
+function resolveHtmlLang(rel, config = {}, languages = {}) {
+  const fallback =
+    String(config.i18n?.defaultLocale || languages.locale || "zh-CN").trim() || "zh-CN";
+  if (!isI18nEnabled(config)) return fallback;
+
+  const locales = Array.isArray(languages.locales) ? languages.locales : [];
+  if (!locales.length) return fallback;
+
+  const firstSegment = normalizePath(rel).split("/")[0]?.toLowerCase();
+  const matched = locales.find(
+    (locale) => normalizePath(locale?.path).toLowerCase() === firstSegment,
+  );
+
+  return String(matched?.code || fallback).trim() || fallback;
+}
+
+function renderHtml({ title, body, pages, rel, components, config, languages }) {
   const cssHref = relativeAsset(rel, "styles.css");
   const runtimeHref = relativeAsset(rel, "runtime.js");
   const configHref = relativeAsset(rel, "config.js");
@@ -214,9 +230,10 @@ function renderHtml({ title, body, pages, rel, components, config }) {
   const nav = renderNav(pages, rel);
   const themeEnabled = isThemeEnabled(config);
   const i18nEnabled = isI18nEnabled(config);
+  const htmlLang = resolveHtmlLang(rel, config, languages);
 
   return `<!doctype html>
-<html lang="zh-CN">
+<html lang="${htmlLang}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -370,8 +387,10 @@ async function writeDefaultLocaleEntrypoint(outputDir, config = {}, languages = 
   if (!hasTarget) return;
 
   const rootIndexFile = path.join(outputDir, "index.html");
+  const rootLang =
+    String(locale?.code || config.i18n?.defaultLocale || languages.locale || "en").trim() || "en";
   const html = `<!doctype html>
-<html lang="en">
+<html lang="${rootLang}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -508,6 +527,7 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
       rel: source.rel,
       components,
       config,
+      languages,
     });
     const outputFile = path.join(outputDir, source.rel);
 

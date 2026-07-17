@@ -190,7 +190,7 @@ a {
   padding: 9px 10px;
   border-radius: var(--radius-md);
   color: var(--doc-muted);
-  font-size: 14px;
+  font-size: var(--font-size-md);
   line-height: 1.35;
   text-decoration: none;
 }
@@ -330,6 +330,16 @@ html.doc-is-mobile .doc-main .j-content {
 html.doc-is-desktop .doc-mobile-header,
 html.doc-is-desktop .doc-mobile-secondary {
   display: none !important;
+}
+
+html.doc-is-mobile .j-mobile-menu .menu .menu-item,
+html.doc-is-mobile .doc-nav-link {
+  font-size: 1.25rem;
+}
+
+html.doc-is-mobile .j-toc .toc-link {
+  font-size: 1.25rem;
+  padding-block: .75rem;
 }
 
 @media (max-width: 760px) {
