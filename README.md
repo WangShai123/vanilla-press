@@ -10,6 +10,14 @@ It uses a split architecture:
 - Build-time rendering for markdown parsing and page generation.
 - Runtime enhancement for interactive UI components.
 
+## Installation
+
+```bash
+git clone https://github.com/WangShai123/vanilla-press.git
+cd vanilla-press
+npm install
+```
+
 ## v1.0.0 Components
 
 Version `1.0.0` includes the following built-in components:

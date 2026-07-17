@@ -10,6 +10,14 @@
 - 编译期负责 Markdown 解析与页面生成。
 - 运行期负责组件交互与页面增强。
 
+## 安装
+
+```bash
+git clone https://github.com/WangShai123/vanilla-press.git
+cd vanilla-press
+npm install
+```
+
 ## v1.0.0 已实现组件
 
 `1.0.0` 版本内置组件：
