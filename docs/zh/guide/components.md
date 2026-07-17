@@ -104,13 +104,13 @@ export function toHtml(file) {
 :::tabs
 @tab 示例
 
-:::offcanvas [打开抽屉] left
+:::offcanvas [打开面板] left
 
 ### Offcanvas
 
-在 `Offcanvas` 组件中，内容会被包裹在一个抽屉容器中，点击按钮可以打开或关闭抽屉。
+在 `Offcanvas` 组件中，内容会被包裹在一个面板容器中，点击按钮可以打开或关闭面板。
 
-抽屉容器内支持 `Markdown` 语法。
+面板容器内支持 `Markdown` 语法。
 
 ```javascript
 // javascript
@@ -126,13 +126,13 @@ export function toHtml(file) {
 @tab 语法
 
 ````markdown
-:::offcanvas [打开抽屉] left
+:::offcanvas [打开面板] left
 
 ### Offcanvas
 
-在 `Offcanvas` 组件中，内容会被包裹在一个抽屉容器中，点击按钮可以打开或关闭抽屉。
+在 `Offcanvas` 组件中，内容会被包裹在一个面板容器中，点击按钮可以打开或关闭面板。
 
-抽屉容器内支持 `Markdown` 语法。
+面板容器内支持 `Markdown` 语法。
 
 ```javascript
 // javascript
@@ -151,6 +151,6 @@ export function toHtml(file) {
 #### 参数说明
 
 - `title` 按钮文本，写法 `:::offcanvas [按钮文本]`，默认值 `打开面板`
-- `direction` 抽屉方向，写法 `:::offcanvas [按钮文本] direction`，支持 `left`、`right`、`top`、`bottom`，默认值 `right`
+- `direction` 面板方向，写法 `:::offcanvas [按钮文本] direction`，支持 `left`、`right`、`top`、`bottom`，默认值 `right`
 
 组件设计规范与开发 API 见 [组件开发 API](./api.html)。

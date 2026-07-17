@@ -115,7 +115,6 @@ Each `init<Name>` must:
 2. Register `install<Name>` in Markdown creator.
 3. Register runtime initializer and dependencies in runtime registry.
 4. Add docs page content: demo, syntax, and parameter notes.
-5. If needed, add navigation entries in `docs/sidebar.js`, `docs/menu.js`, and `docs/languages.js`.
 
 ## Nesting Recommendations
 

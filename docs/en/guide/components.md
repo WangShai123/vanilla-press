@@ -104,13 +104,13 @@ Each page injects its own `initDocPage({ components: [...] })` script.
 :::tabs
 @tab Demo
 
-:::offcanvas [Open Drawer] left
+:::offcanvas [Open Panel] left
 
 ### Offcanvas
 
-In the `Offcanvas` component, content is wrapped into a drawer panel. Click the trigger button to open or close it.
+In the `Offcanvas` component, content is wrapped into a panel. Click the trigger button to open or close it.
 
-Markdown syntax is supported inside the drawer content.
+Markdown syntax is supported inside the panel content.
 
 ```javascript
 // javascript
@@ -126,13 +126,13 @@ export function toHtml(file) {
 @tab Syntax
 
 ````markdown
-:::offcanvas [Open Drawer] left
+:::offcanvas [Open Panel] left
 
 ### Offcanvas
 
-In the `Offcanvas` component, content is wrapped into a drawer panel. Click the trigger button to open or close it.
+In the `Offcanvas` component, content is wrapped into a panel. Click the trigger button to open or close it.
 
-Markdown syntax is supported inside the drawer content.
+Markdown syntax is supported inside the panel content.
 
 ```javascript
 // javascript
@@ -151,6 +151,6 @@ export function toHtml(file) {
 #### Parameters
 
 - `title`: trigger text, syntax `:::offcanvas [Button Text]`, default is `Open Panel`
-- `direction`: drawer direction, syntax `:::offcanvas [Button Text] direction`, supports `left`, `right`, `top`, `bottom`, default is `right`
+- `direction`: panel direction, syntax `:::offcanvas [Button Text] direction`, supports `left`, `right`, `top`, `bottom`, default is `right`
 
 For design rules and development API, see [Component Development API](./api.html).

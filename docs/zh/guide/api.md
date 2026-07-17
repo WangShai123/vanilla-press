@@ -109,13 +109,12 @@ export function initXxx(root = document) {
 - 仅处理 `root` 范围内节点：避免跨区域副作用。
 - 缺少必要子节点时安全返回：不抛异常、不污染状态。
 
-## 新增组件流程（Checklist）
+## 新增组件流程
 
 1. 在 `src/components/` 新建组件模块，完成 `install<Name>` 与 `init<Name>`。
 2. 在 Markdown 创建器中安装 `install<Name>`。
 3. 在运行时注册表中注册组件及依赖关系。
 4. 在文档中新增组件页面内容：示例、语法、参数说明。
-5. 如果需要导航入口，同步更新 `docs/sidebar.js`、`docs/menu.js` 与 `docs/languages.js`。
 
 ## 常见嵌套场景建议
 
