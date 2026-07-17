@@ -16,6 +16,11 @@ const DOMPurify = createDOMPurify(window);
 
 const DEFAULT_CONFIG_JS = `export const docConfig = {
   siteName: "Docs",
+  i18n: {
+    enabled: true,
+    defaultLocale: "zh-CN",
+    redirectToDefault: true
+  },
   theme: {
     enabled: true,
     offcanvas: {
@@ -32,9 +37,9 @@ const DEFAULT_MENU_JS = `export const menuItems = [
   { label: "menu.home", href: "index.html" },
   {
     label: "menu.guide",
-    href: "guide/components.html",
     children: [
-      { label: "menu.components", href: "guide/components.html" }
+      { label: "menu.components", href: "guide/components.html" },
+      { label: "menu.api", href: "guide/api.html" }
     ]
   }
 ];
@@ -44,7 +49,7 @@ const DEFAULT_LANGUAGES_JS = `export const languages = {
   locale: "zh-CN",
   fallbackLocale: "en",
   locales: [
-    { code: "zh-CN", label: "简体中文", path: "" },
+    { code: "zh-CN", label: "简体中文", path: "zh" },
     { code: "en", label: "English", path: "en" }
   ],
   messages: {
@@ -52,11 +57,13 @@ const DEFAULT_LANGUAGES_JS = `export const languages = {
       menu: {
         home: "首页",
         guide: "指南",
-        components: "组件示例"
+        components: "组件",
+        api: "API"
       },
       sidebar: {
-        home: "文档站首页",
-        components: "组件示例"
+        home: "首页",
+        components: "组件",
+        api: "API"
       },
       footer: {
         text: "Built with markdown-it and vanilla-jui."
@@ -69,11 +76,13 @@ const DEFAULT_LANGUAGES_JS = `export const languages = {
       menu: {
         home: "Home",
         guide: "Guide",
-        components: "Components"
+        components: "Components",
+        api: "API"
       },
       sidebar: {
         home: "Home",
-        components: "Components"
+        components: "Components",
+        api: "API"
       },
       footer: {
         text: "Built with markdown-it and vanilla-jui."
@@ -88,7 +97,8 @@ const DEFAULT_LANGUAGES_JS = `export const languages = {
 
 const DEFAULT_SIDEBAR_JS = `export const sidebarItems = [
   { label: "sidebar.home", href: "index.html" },
-  { label: "sidebar.components", href: "guide/components.html" }
+  { label: "sidebar.components", href: "guide/components.html" },
+  { label: "sidebar.api", href: "guide/api.html" }
 ];
 `;
 
@@ -98,6 +108,10 @@ const THEME_BOOT_SCRIPT =
 function isThemeEnabled(config = {}) {
   if (config.theme === false) return false;
   return config.theme?.enabled !== false;
+}
+
+function isI18nEnabled(config = {}) {
+  return config.i18n?.enabled !== false;
 }
 
 function resolveDir(value, fallback) {
@@ -198,6 +212,7 @@ function renderHtml({ title, body, pages, rel, components, config }) {
   const sidebarHref = relativeAsset(rel, "sidebar.js");
   const nav = renderNav(pages, rel);
   const themeEnabled = isThemeEnabled(config);
+  const i18nEnabled = isI18nEnabled(config);
 
   return `<!doctype html>
 <html lang="zh-CN">
@@ -251,9 +266,9 @@ function renderHtml({ title, body, pages, rel, components, config }) {
   <script type="module">
     import { initDocPage } from '${runtimeHref}';
     import { docConfig } from '${configHref}';
-    import { languages } from '${languagesHref}';
     import { menuItems } from '${menuHref}';
     import { sidebarItems } from '${sidebarHref}';
+    const languages = ${i18nEnabled ? `((await import('${languagesHref}')).languages || {})` : `{}`};
     initDocPage({
       components: ${JSON.stringify(components)},
       config: docConfig,
@@ -310,6 +325,75 @@ async function loadDocConfig(inputDir) {
   return mod.docConfig || {};
 }
 
+async function loadLanguages(inputDir) {
+  const file = path.join(inputDir, "languages.js");
+  if (!(await pathExists(file))) return {};
+
+  const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
+  return mod.languages || {};
+}
+
+function normalizePath(value) {
+  return String(value || "")
+    .replace(/^\/+/, "")
+    .replace(/\/+$/g, "");
+}
+
+function resolveDefaultLocale(config = {}, languages = {}) {
+  const locales = Array.isArray(languages.locales) ? languages.locales : [];
+  if (!locales.length) return null;
+
+  const preferred = String(config.i18n?.defaultLocale || languages.locale || "")
+    .trim()
+    .toLowerCase();
+  return (
+    locales.find(
+      (locale) =>
+        String(locale.code || "")
+          .trim()
+          .toLowerCase() === preferred,
+    ) || locales[0]
+  );
+}
+
+async function writeDefaultLocaleEntrypoint(outputDir, config = {}, languages = {}, pages = []) {
+  if (!isI18nEnabled(config)) return;
+  if (config.i18n?.redirectToDefault === false) return;
+
+  const locale = resolveDefaultLocale(config, languages);
+  const prefix = normalizePath(locale?.path);
+  if (!prefix) return;
+
+  const target = `${prefix}/index.html`;
+  const hasTarget = pages.some((page) => page.rel === target);
+  if (!hasTarget) return;
+
+  const rootIndexFile = path.join(outputDir, "index.html");
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redirecting...</title>
+  <meta http-equiv="refresh" content="0; url=./${target}">
+</head>
+<body>
+  <script>
+    (function () {
+      var target = './${target}';
+      var suffix = window.location.search + window.location.hash;
+      window.location.replace(target + suffix);
+    })();
+  </script>
+  <p>Redirecting to <a href="./${target}">./${target}</a> ...</p>
+</body>
+</html>
+`;
+
+  await fs.writeFile(rootIndexFile, html, "utf8");
+  console.log(`built ${toPosix(path.relative(projectRoot, rootIndexFile))}`);
+}
+
 async function buildCss(outputDir) {
   const juiCssUrl = await import.meta.resolve("vanilla-jui/style.css");
   const juiCss = await fs.readFile(fileURLToPath(juiCssUrl), "utf8");
@@ -356,6 +440,7 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
   await fs.mkdir(outputDir, { recursive: true });
   await copyRuntimeConfig(inputDir, outputDir);
   const config = await loadDocConfig(inputDir);
+  const languages = isI18nEnabled(config) ? await loadLanguages(inputDir) : {};
 
   const files = (
     await glob("**/*.md", {
@@ -401,6 +486,8 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
     await fs.writeFile(outputFile, html, "utf8");
     console.log(`built ${toPosix(path.relative(projectRoot, outputFile))}`);
   }
+
+  await writeDefaultLocaleEntrypoint(outputDir, config, languages, sources);
 
   console.log(`done: ${sources.length} page(s), ${toPosix(path.relative(projectRoot, outputDir))}`);
 }
