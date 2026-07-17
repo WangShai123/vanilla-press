@@ -1,6 +1,6 @@
 {
   "name": "vanilla-press",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "A lightweight vanilla JavaScript static document generator.",
   "keywords": [
@@ -13,8 +13,16 @@
     "static",
     "vanilla"
   ],
+  "homepage": "https://github.com/WangShai123/vanilla-press",
+  "bugs": {
+    "url": "https://github.com/WangShai123/vanilla-press/issues"
+  },
   "license": "ISC",
   "author": "Wang Shai <hiwangshai@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WangShai123/vanilla-press.git"
+  },
   "type": "module",
   "publishConfig": {
     "access": "public"
