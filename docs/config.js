@@ -1,5 +1,5 @@
 export const docConfig = {
-  siteName: "Docs",
+  siteName: "Vanilla-Press",
   i18n: {
     enabled: true,
     defaultLocale: "zh-CN",
