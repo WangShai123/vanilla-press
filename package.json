@@ -1,22 +1,35 @@
 {
-  "name": "jui",
+  "name": "vanilla-press",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/main.ts",
+  "private": false,
+  "description": "A lightweight vanilla JavaScript static document generator.",
+  "keywords": [
+    "docs",
+    "document",
+    "generator",
+    "html",
+    "markdown-it",
+    "md",
+    "static",
+    "vanilla"
+  ],
+  "license": "ISC",
+  "author": "Wang Shai <hiwangshai@gmail.com>",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "node src/build.js",
-    "dev": "nodemon src/build.js"
+    "dev": "nodemon --watch src --watch docs --ext js,md,css --ignore dist --ignore output src/build.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "dependencies": {
     "dompurify": "^3.4.12",
     "glob": "^13.0.6",
     "jsdom": "^29.1.1",
     "markdown-it": "^14.3.0",
-    "vanilla-jui": "^1.3.4"
+    "vanilla-jui": "^1.3.4",
+    "vanilla-signal-i18n": "^1.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
@@ -34,5 +47,15 @@
       "version": "12.0.1",
       "onFail": "download"
     }
+  },
+  "file": [
+    ".vite-hooks",
+    "docs",
+    "src",
+    "vite.config.ts"
+  ],
+  "registry": {
+    "type": "git",
+    "url": "git+https://github.com/WangShai123/vanilla-press.git"
   }
 }

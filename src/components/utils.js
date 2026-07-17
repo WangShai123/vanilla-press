@@ -8,7 +8,7 @@ export function readContainer(state, startLine, endLine, marker = ':::') {
   const lines = [];
 
   while (nextLine < endLine) {
-    const start = state.bMarks[nextLine] + state.tShift[nextLine];
+    const start = state.bMarks[nextLine];
     const end = state.eMarks[nextLine];
     const text = state.src.slice(start, end);
 

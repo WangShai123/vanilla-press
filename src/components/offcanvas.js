@@ -43,7 +43,9 @@ export function installOffcanvas(md) {
       <div class="doc-component doc-offcanvas" data-doc-component="offcanvas" data-direction="${escapeAttr(direction)}">
         <button type="button" class="j-button is-outline" data-doc-offcanvas-trigger>${escapeAttr(title)}</button>
         <div hidden data-doc-offcanvas-content>
-          ${md.render(token.content, env)}
+          <div class="doc-offcanvas-content j-content is-sm">
+            ${md.render(token.content, env)}
+          </div>
         </div>
       </div>`;
   };
@@ -59,11 +61,15 @@ export function initOffcanvas(root = document) {
       const content = container.querySelector('[data-doc-offcanvas-content]');
       if (!trigger || !content) return;
 
+      const contentBody = content.firstElementChild;
+      if (!contentBody) return;
+
       const panel = createOffcanvas({
         direction: container.dataset.direction || 'right',
-        content: content.innerHTML,
+        content: contentBody,
       });
 
+      content.remove();
       trigger.addEventListener('click', () => panel.show());
       container.dataset.docReady = 'true';
     });

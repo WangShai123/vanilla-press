@@ -19,8 +19,8 @@ function highlightPlainJavaScript(value) {
   return value.replace(
     /\b(const|let|var|function|return|import|from|export|if|else|for|while|class|new|await|async|true|false|null|undefined)\b|\b(\d+(?:\.\d+)?)\b/g,
     (match, keyword, number) => {
-      if (keyword) return `<span class="token keyword">${escapeHtml(keyword)}</span>`;
-      if (number) return `<span class="token number">${escapeHtml(number)}</span>`;
+      if (keyword) return `<span class="hljs-keyword">${escapeHtml(keyword)}</span>`;
+      if (number) return `<span class="hljs-number">${escapeHtml(number)}</span>`;
       return escapeHtml(match);
     }
   );
@@ -37,7 +37,7 @@ function highlightJavaScript(code) {
     if (char === '/' && next === '/') {
       const end = code.indexOf('\n', index);
       const stop = end === -1 ? code.length : end;
-      html += `<span class="token comment">${escapeHtml(code.slice(index, stop))}</span>`;
+      html += `<span class="hljs-comment">${escapeHtml(code.slice(index, stop))}</span>`;
       index = stop;
       continue;
     }
@@ -56,7 +56,7 @@ function highlightJavaScript(code) {
         }
         stop += 1;
       }
-      html += `<span class="token string">${escapeHtml(code.slice(index, stop))}</span>`;
+      html += `<span class="hljs-string">${escapeHtml(code.slice(index, stop))}</span>`;
       index = stop;
       continue;
     }
@@ -88,9 +88,9 @@ function highlightMarkup(code) {
     (_match, open, tag, attrs, close) => {
       const highlightedAttrs = attrs.replace(
         /([\w:-]+)(=)(&quot;.*?&quot;|'.*?')/g,
-        '<span class="token attr">$1</span>$2<span class="token string">$3</span>'
+        '<span class="hljs-attr">$1</span>$2<span class="hljs-string">$3</span>'
       );
-      return `${open}<span class="token tag">${tag}</span>${highlightedAttrs}${close}`;
+      return `${open}<span class="hljs-name">${tag}</span>${highlightedAttrs}${close}`;
     }
   );
 }
@@ -109,5 +109,5 @@ export function highlight(code, lang) {
         ? highlightMarkup(code)
         : escapeHtml(code);
 
-  return `<pre class="j-code-block hljs language-${language}"><code class="language-${language}">${highlighted}</code></pre>`;
+  return `<pre class="j-code-editor hljs language-${language}"><code class="language-${language}">${highlighted}</code></pre>`;
 }
