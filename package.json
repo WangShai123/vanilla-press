@@ -1,6 +1,6 @@
 {
   "name": "vanilla-press",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": false,
   "description": "A lightweight vanilla JavaScript static document generator.",
   "keywords": [

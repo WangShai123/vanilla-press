@@ -16,6 +16,10 @@ cd vanilla-press
 npm install
 ```
 
+## Demo
+
+[Online Demo](http://wangshai123.github.io/vanilla-press)
+
 ## Usage
 
 - `docs`: source directory for Markdown pages and site config.

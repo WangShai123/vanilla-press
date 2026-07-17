@@ -5,6 +5,7 @@ A lightweight static documentation generator built with `markdown-it` and `vanil
 ## Overview
 
 `vanilla-press` converts Markdown files under `docs/` into deployable static HTML pages in `dist/`.
+
 It uses a split architecture:
 
 - Build-time rendering for markdown parsing and page generation.
@@ -17,6 +18,10 @@ git clone https://github.com/WangShai123/vanilla-press.git
 cd vanilla-press
 npm install
 ```
+
+## Demo
+
+[Online Demo](http://wangshai123.github.io/vanilla-press)
 
 ## v1.0.0 Components
 

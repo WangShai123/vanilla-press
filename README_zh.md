@@ -5,6 +5,7 @@
 ## 项目简介
 
 `vanilla-press` 会将 `docs/` 目录下的 Markdown 文档构建为可部署的静态 HTML，并输出到 `dist/`。
+
 整体采用“编译期 + 运行期”分层设计：
 
 - 编译期负责 Markdown 解析与页面生成。
@@ -17,6 +18,10 @@ git clone https://github.com/WangShai123/vanilla-press.git
 cd vanilla-press
 npm install
 ```
+
+## 预览
+
+[在线预览](http://wangshai123.github.io/vanilla-press)
 
 ## v1.0.0 已实现组件
 

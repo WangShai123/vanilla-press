@@ -16,6 +16,10 @@ cd vanilla-press
 npm install
 ```
 
+## 预览
+
+[在线预览](http://wangshai123.github.io/vanilla-press)
+
 ## 使用
 
 - `docs`：文档输入目录，包含 Markdown 页面与站点配置。
