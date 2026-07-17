@@ -1,4 +1,5 @@
 import createDOMPurify from "dompurify";
+import { transform as esbuildTransform } from "esbuild";
 import fs from "fs/promises";
 import { glob } from "glob";
 import { JSDOM } from "jsdom";
@@ -429,6 +430,34 @@ async function buildRuntime(outputDir) {
   });
 }
 
+async function minifyJsAssets(outputDir) {
+  const files = (
+    await glob("**/*.js", {
+      cwd: outputDir,
+      nodir: true,
+      windowsPathsNoEscape: true,
+    })
+  ).sort();
+
+  await Promise.all(
+    files.map(async (file) => {
+      const fullPath = path.join(outputDir, file);
+      const code = await fs.readFile(fullPath, "utf8");
+      const result = await esbuildTransform(code, {
+        format: "esm",
+        legalComments: "none",
+        loader: "js",
+        minify: true,
+        target: "es2020",
+      });
+
+      await fs.writeFile(fullPath, result.code.trim(), "utf8");
+    }),
+  );
+
+  console.log(`minified js: ${files.length} file(s)`);
+}
+
 export async function build({ inputDir = defaultInputDir, outputDir = defaultOutputDir } = {}) {
   if (path.resolve(inputDir) === path.resolve(outputDir)) {
     throw new Error("inputDir and outputDir must be different directories.");
@@ -488,6 +517,7 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
   }
 
   await writeDefaultLocaleEntrypoint(outputDir, config, languages, sources);
+  await minifyJsAssets(outputDir);
 
   console.log(`done: ${sources.length} page(s), ${toPosix(path.relative(projectRoot, outputDir))}`);
 }

@@ -1,6 +1,6 @@
 {
   "name": "vanilla-press",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "description": "A lightweight vanilla JavaScript static document generator.",
   "keywords": [
@@ -40,6 +40,7 @@
     "vanilla-signal-i18n": "^1.1.0"
   },
   "devDependencies": {
+    "esbuild": "^0.28.1",
     "nodemon": "^3.1.14",
     "typescript": "~6.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@latest",
