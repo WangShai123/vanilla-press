@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>组件示例</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="doc-shell">
+    <aside class="doc-sidebar">
+      <a class="doc-brand" href="../index.html">Docs</a>
+      <nav class="doc-nav" aria-label="文档导航">
+        <a class="doc-nav-link is-active" href="./components.html">组件示例</a>
+<a class="doc-nav-link" href="../index.html">文档站首页</a>
+      </nav>
+    </aside>
+    <main class="doc-main">
+      <article class="j-content is-sm">
+        <h1>组件示例</h1>
+<p>这一页用于验证嵌套目录输出、页面相对资源路径，以及 tabs、accordion、offcanvas 三类组件的按页初始化。</p>
+<h2>Tabs 标记语法</h2>
+<div class="doc-component doc-tabs" data-doc-component="tabs">
+          <div data-doc-tab="" data-title="JavaScript">
+            <pre class="j-code-block hljs language-javascript"><code class="language-javascript"><span class="token keyword">const</span> pages = [<span class="token string">'index.md'</span>, <span class="token string">'guide/components.md'</span>];
+
+<span class="token keyword">export</span> <span class="token keyword">function</span> toHtml(file) {
+<span class="token keyword">return</span> file.replace(/\.md$/, <span class="token string">'.html'</span>);
+}
+</code></pre>
+
+          </div>
+          <div data-doc-tab="" data-title="HTML">
+            <pre class="j-code-block hljs language-html"><code class="language-html">&lt;<span class="token tag">article</span> <span class="token attr">class</span>=<span class="token string">"j-content is-sm"</span>&gt;
+&lt;<span class="token tag">h1</span>&gt;组件示例&lt;/<span class="token tag">h1</span>&gt;
+&lt;<span class="token tag">p</span>&gt;主体内容使用 vanilla-jui 排版类。&lt;/<span class="token tag">p</span>&gt;
+&lt;/<span class="token tag">article</span>&gt;
+</code></pre>
+
+          </div></div><h2>多项 Accordion</h2>
+<div class="doc-component doc-accordion" data-doc-component="accordion" data-multiple="true" data-collapsible="true">
+          <div data-doc-accordion-item="" data-title="支持目录结构">
+            <p><code>input/guide/components.md</code> 会输出为 <code>output/guide/components.html</code>，资源链接会自动计算相对路径。</p>
+
+          </div>
+          <div data-doc-accordion-item="" data-title="支持代码高亮">
+            <p>代码块会保留 <code>language-*</code> class，并写入基础 token 高亮样式。</p>
+
+          </div>
+          <div data-doc-accordion-item="" data-title="支持页面级组件初始化">
+            <p>每个 HTML 会写入自己的 <code>initDocPage({ components: [...] })</code> 脚本。</p>
+
+          </div></div><h2>左侧 Offcanvas</h2>
+
+      <div class="doc-component doc-offcanvas" data-doc-component="offcanvas" data-direction="left">
+        <button type="button" class="j-button is-outline" data-doc-offcanvas-trigger="">查看构建说明</button>
+        <div hidden="" data-doc-offcanvas-content="">
+          <h3>构建说明</h3>
+<p>目前实现的是第一版整体流程，后续可以继续添加新的 Markdown 容器组件。</p>
+<pre class="j-code-block hljs language-javascript"><code class="language-javascript">initDocPage({
+components: [<span class="token string">'tabs'</span>, <span class="token string">'accordion'</span>, <span class="token string">'offcanvas'</span>],
+});
+</code></pre>
+
+        </div>
+      </div>
+      </article>
+    </main>
+  </div>
+  <script type="module">
+    import { initDocPage } from '../assets/doc-runtime.js';
+    initDocPage({ components: ["accordion","offcanvas","tabs"] });
+  </script>
+</body>
+</html>

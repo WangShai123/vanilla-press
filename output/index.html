@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>文档站首页</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="doc-shell">
+    <aside class="doc-sidebar">
+      <a class="doc-brand" href="./index.html">Docs</a>
+      <nav class="doc-nav" aria-label="文档导航">
+        <a class="doc-nav-link" href="./guide/components.html">组件示例</a>
+<a class="doc-nav-link is-active" href="./index.html">文档站首页</a>
+      </nav>
+    </aside>
+    <main class="doc-main">
+      <article class="j-content is-sm">
+        <h1>文档站首页</h1>
+<p>这是基于 <code>markdown-it</code> 的静态文档流程示例。构建命令会读取 <code>input/**/*.md</code>，按目录结构输出到 <code>output/**/*.html</code>，并生成一份共享 CSS 与一份共享 JS。</p>
+<h2>Tabs</h2>
+<div class="doc-component doc-tabs" data-doc-component="tabs">
+          <div data-doc-tab="" data-title="快速开始">
+            <p>执行构建命令：</p>
+<pre class="j-code-block hljs language-bash"><code class="language-bash">npm run build
+</code></pre>
+<p>构建后可以直接打开 <code>output/index.html</code> 查看页面。</p>
+
+          </div>
+          <div data-doc-tab="" data-title="配置说明">
+            <p>默认输入目录是 <code>input</code>，默认输出目录是 <code>output</code>。也可以直接传参：</p>
+<pre class="j-code-block hljs language-bash"><code class="language-bash">node src/build.js input output
+</code></pre>
+
+          </div></div><h2>Accordion</h2>
+<div class="doc-component doc-accordion" data-doc-component="accordion" data-collapsible="true">
+          <div data-doc-accordion-item="" data-title="Markdown 解析">
+            <p>组件语法先被解析为静态占位 DOM，最终页面加载后再由 <code>vanilla-jui</code> 实例化。</p>
+
+          </div>
+          <div data-doc-accordion-item="" data-title="资源输出">
+            <p>CSS 合并为 <code>styles.css</code>，运行时代码打包为 <code>assets/doc-runtime.js</code>。</p>
+
+          </div></div><h2>Offcanvas</h2>
+
+      <div class="doc-component doc-offcanvas" data-doc-component="offcanvas" data-direction="right">
+        <button type="button" class="j-button is-outline" data-doc-offcanvas-trigger="">打开侧栏示例</button>
+        <div hidden="" data-doc-offcanvas-content="">
+          <h3>侧栏内容</h3>
+<p>这里是由 Markdown 写出的 offcanvas 内容，页面运行时会调用 <code>createOffcanvas()</code> 创建实例。</p>
+<pre class="j-code-block hljs language-javascript"><code class="language-javascript"><span class="token keyword">import</span> { createOffcanvas } <span class="token keyword">from</span> <span class="token string">'vanilla-jui'</span>;
+
+<span class="token keyword">const</span> panel = createOffcanvas({
+direction: <span class="token string">'right'</span>,
+content: <span class="token string">'&lt;p&gt;更多内容&lt;/p&gt;'</span>,
+});
+
+panel.show();
+</code></pre>
+
+        </div>
+      </div>
+      </article>
+    </main>
+  </div>
+  <script type="module">
+    import { initDocPage } from './assets/doc-runtime.js';
+    initDocPage({ components: ["accordion","offcanvas","tabs"] });
+  </script>
+</body>
+</html>

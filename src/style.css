@@ -1,0 +1,184 @@
+:root {
+  --doc-sidebar-width: 248px;
+  --doc-bg: #f7f8fb;
+  --doc-panel: #ffffff;
+  --doc-ink: #20242c;
+  --doc-muted: #626b7a;
+  --doc-line: #dde3ee;
+  --doc-accent: #2563eb;
+  --doc-code-bg: #101624;
+  --doc-code-ink: #d8e1f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--doc-ink);
+  background: var(--doc-bg);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.doc-shell {
+  display: grid;
+  grid-template-columns: var(--doc-sidebar-width) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.doc-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 24px 18px;
+  overflow: auto;
+  border-right: 1px solid var(--doc-line);
+  background: var(--doc-panel);
+}
+
+.doc-brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  margin-bottom: 18px;
+  color: var(--doc-ink);
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.doc-nav {
+  display: grid;
+  gap: 4px;
+}
+
+.doc-nav-link {
+  display: block;
+  padding: 9px 10px;
+  border-radius: 6px;
+  color: var(--doc-muted);
+  font-size: 14px;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.doc-nav-link:hover,
+.doc-nav-link.is-active {
+  color: var(--doc-accent);
+  background: #edf4ff;
+}
+
+.doc-main {
+  width: 100%;
+  padding: 42px clamp(24px, 5vw, 72px);
+}
+
+.doc-main .j-content.is-sm {
+  width: min(100%, 860px);
+  margin: 0 auto;
+  padding: 36px;
+  border: 1px solid var(--doc-line);
+  border-radius: 8px;
+  background: var(--doc-panel);
+}
+
+.doc-component {
+  margin: 24px 0;
+}
+
+.doc-component .j-button {
+  min-height: 36px;
+}
+
+/* .j-tabs .tab-panel:has(pre.hljs) {
+  padding: 0;
+} */
+
+.j-tabs .tab-panel .panel-item pre.hljs {
+  margin: 0;
+  border-radius: 0;
+}
+
+.doc-main .j-tabs,
+.doc-main .j-accordion {
+  border: 1px solid var(--doc-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.doc-main .j-tabs .panel-item,
+.doc-main .j-accordion .panel-content {
+  background: var(--doc-panel);
+}
+
+.j-code-block {
+  display: block;
+  margin: 18px 0;
+  padding: 16px;
+  overflow: auto;
+  border-radius: 8px;
+  color: var(--doc-code-ink);
+  background: var(--doc-code-bg);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.j-code-block code {
+  color: inherit;
+  background: transparent;
+  font-family:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, ui-monospace,
+    monospace;
+}
+
+.token.keyword {
+  color: #82aaff;
+}
+
+.token.string {
+  color: #c3e88d;
+}
+
+.token.number {
+  color: #f78c6c;
+}
+
+.token.comment {
+  color: #7f8ca8;
+}
+
+.token.tag {
+  color: #ffcb6b;
+}
+
+.token.attr {
+  color: #89ddff;
+}
+
+.j-offcanvas .offcanvas-content {
+  padding: 22px;
+}
+
+@media (max-width: 760px) {
+  .doc-shell {
+    display: block;
+  }
+
+  .doc-sidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--doc-line);
+  }
+
+  .doc-main {
+    padding: 18px;
+  }
+
+  .doc-main .j-content.is-sm {
+    padding: 22px 18px;
+  }
+}
