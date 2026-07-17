@@ -53,3 +53,13 @@ Current language folders:
 When i18n is enabled, runtime applies locale-aware navigation and locale switching behavior.
 
 If `redirectToDefault` is enabled, root access is redirected to the configured default locale entry.
+
+## More Docs
+
+- [Overview](docs/en/index.md)
+- [Components](docs/en/components.md)
+- [API](docs/en/api.md)
+
+## Language
+
+- [README中文](README_zh.md)

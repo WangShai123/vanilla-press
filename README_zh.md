@@ -53,3 +53,13 @@ npm run dev
 当 i18n 启用后，运行时会启用语言切换、按语言路径生成导航链接。
 
 若启用 `redirectToDefault`，访问站点根入口时会自动跳转到默认语言首页。
+
+## 更多文档
+
+- [简介](docs/zh/index.md)
+- [组件](docs/zh/components.md)
+- [API](docs/zh/api.md)
+
+## 语言
+
+- [README](README.md)
