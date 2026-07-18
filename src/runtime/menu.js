@@ -3,6 +3,11 @@ import { Menu, createOffcanvas, createToc, icon } from "vanilla-jui";
 import { joinLocalePath } from "./i18n.js";
 import { localize } from "./i18n.js";
 import { normalizeRel, relativeAsset } from "./path.js";
+import { t as s } from "vanilla-signal-i18n";
+const l = {
+  zh: { Back: "返回" },
+};
+const t = (key) => s(key, l);
 
 function rawItemPath(item = {}) {
   return item.path ?? item.href ?? item.url ?? "";
@@ -31,9 +36,10 @@ function resolveItemHref(item, page, locale) {
 
 function menuItemIsActive(item, page, locale) {
   const itemPath = normalizePagePath(rawItemPath(item));
-  const href = itemPath && !isExternalPath(itemPath)
-    ? normalizeRel(locale ? joinLocalePath(locale, itemPath) : itemPath)
-    : "";
+  const href =
+    itemPath && !isExternalPath(itemPath)
+      ? normalizeRel(locale ? joinLocalePath(locale, itemPath) : itemPath)
+      : "";
   const rel = normalizeRel(page.rel || "");
   if (href && href === rel) return true;
   return (
@@ -149,6 +155,7 @@ export function initMobileHeader(menuItems = [], page = {}, i18n, locale = null)
     onShow: () => {
       destroyMenu();
       menu = new Menu({
+        backText: t("Back"),
         type: "mobile",
         items: toMenuItems(menuItems, page, i18n, locale),
       }).build();
@@ -157,10 +164,6 @@ export function initMobileHeader(menuItems = [], page = {}, i18n, locale = null)
     onHidden: destroyMenu,
   });
 
-  panel.addEventListener("click", (event) => {
-    const link = event.target.closest("a[href]");
-    if (link) void drawer.hide();
-  });
   menuButton.addEventListener("click", () => drawer.show());
   header.dataset.docReady = "true";
 }
@@ -247,7 +250,13 @@ function tocHeadings(config = {}) {
   return typeof toc?.headings === "string" && toc.headings.trim() ? toc.headings : "h2, h3";
 }
 
-export function initMobileSecondary(sidebarItems = [], page = {}, i18n, locale = null, config = {}) {
+export function initMobileSecondary(
+  sidebarItems = [],
+  page = {},
+  i18n,
+  locale = null,
+  config = {},
+) {
   const secondary = document.querySelector("[data-doc-mobile-secondary]");
   const sidebarButton = document.querySelector("[data-doc-mobile-sidebar]");
   const tocButton = document.querySelector("[data-doc-mobile-toc]");
@@ -273,10 +282,6 @@ export function initMobileSecondary(sidebarItems = [], page = {}, i18n, locale =
       content: sidebarPanel,
     });
 
-    sidebarPanel.addEventListener("click", (event) => {
-      const link = event.target.closest("a[href]");
-      if (link) void sidebarDrawer.hide();
-    });
     sidebarButton.addEventListener("click", () => sidebarDrawer.show());
   }
 
