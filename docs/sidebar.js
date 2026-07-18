@@ -1,7 +1,7 @@
 export const sidebarItems = [
   { label: "sidebar.home", path: "index" },
   { label: "sidebar.components", path: "guide/components" },
-  { label: "sidebar.api", path: "guide/api" },
+  { label: "API", path: "guide/api" },
   {
     label: "sidebar.config",
     collapse: true,
@@ -12,6 +12,12 @@ export const sidebarItems = [
       { label: "sidebar.menu", path: "guide/menu" },
       { label: "sidebar.sidebar", path: "guide/sidebar" },
       { label: "sidebar.toc", path: "guide/toc" },
+      { label: "SEO", path: "guide/seo" },
+      { label: "search.button", path: "guide/search" },
+      { label: "sidebar.tree", path: "guide/tree" },
+      { label: "sidebar.prevNext", path: "guide/prev-next" },
+      { label: "sidebar.sitemap", path: "guide/sitemap" },
+      { label: "theme.button", path: "guide/theme" },
     ],
   },
 ];

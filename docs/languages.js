@@ -16,7 +16,6 @@ export const languages = {
       sidebar: {
         home: "首页",
         components: "组件",
-        api: "API",
         config: "配置",
         runtime: "运行时",
         highlight: "代码高亮",
@@ -24,6 +23,9 @@ export const languages = {
         menu: "菜单",
         sidebar: "侧边栏",
         toc: "目录",
+        tree: "目录树",
+        prevNext: "分页导航",
+        sitemap: "站点地图",
       },
       mobile: {
         navigation: "导航",
@@ -57,7 +59,6 @@ export const languages = {
       sidebar: {
         home: "Home",
         components: "Components",
-        api: "API",
         config: "Config",
         runtime: "Runtime",
         highlight: "Highlight",
@@ -65,6 +66,9 @@ export const languages = {
         menu: "Menu",
         sidebar: "Sidebar",
         toc: "Contents",
+        tree: "Tree",
+        prevNext: "Prev/Next",
+        sitemap: "Sitemap",
       },
       mobile: {
         navigation: "Navigation",
