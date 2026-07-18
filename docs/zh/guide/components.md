@@ -152,5 +152,3 @@ export function toHtml(file) {
 
 - `title` 按钮文本，写法 `:::offcanvas [按钮文本]`，默认值 `打开面板`
 - `direction` 面板方向，写法 `:::offcanvas [按钮文本] direction`，支持 `left`、`right`、`top`、`bottom`，默认值 `right`
-
-组件设计规范与开发 API 见 [组件开发 API](./api.html)。

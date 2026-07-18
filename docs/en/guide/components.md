@@ -152,5 +152,3 @@ export function toHtml(file) {
 
 - `title`: trigger text, syntax `:::offcanvas [Button Text]`, default is `Open Panel`
 - `direction`: panel direction, syntax `:::offcanvas [Button Text] direction`, supports `left`, `right`, `top`, `bottom`, default is `right`
-
-For design rules and development API, see [Component Development API](./api.html).

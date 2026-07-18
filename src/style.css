@@ -26,9 +26,7 @@ body {
     sans-serif;
 }
 
-a {
-  color: inherit;
-}
+
 
 .doc-header {
   position: sticky;
@@ -84,6 +82,11 @@ a {
 
 .doc-menu.j-menu .menu .menu-item .sub-menu {
   background: var(--doc-panel);
+}
+
+.j-menu .menu .menu-item .sub-menu .menu-item.current-menu-item a,
+.j-menu .menu .menu-item .sub-menu .menu-item:hover a {
+  outline: 0;
 }
 
 .doc-header-actions {
