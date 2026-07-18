@@ -1,3 +1,9 @@
+---
+title: Home
+keywords: vanilla-press, markdown-it, static docs
+description: Vanilla-Press is a lightweight static documentation generator built with markdown-it and vanilla-jui.
+---
+
 # Introduction
 
 `vanilla-press` is a static documentation tool built on top of `markdown-it`.
@@ -16,16 +22,9 @@ cd vanilla-press
 npm install
 ```
 
-## Demo
-
-[Online Demo](http://wangshai123.github.io/vanilla-press)
-
-## Usage
-
-- `docs`: source directory for Markdown pages and site config.
-- `dist`: build output directory for deployment.
-
 ## Build
+
+The build command reads `docs/**/*.md`, outputs pages to `dist/**/*.html` following the same directory structure, and emits one shared CSS file plus one shared JS runtime.
 
 :::tabs
 @tab Manual Build
@@ -44,10 +43,54 @@ npm run dev
 
 :::
 
-The build command reads `docs/**/*.md`, outputs pages to `dist/**/*.html`, and emits one shared CSS bundle and one shared JS runtime.
+## Preview
+
+[Online Preview](http://wangshai123.github.io/vanilla-press)
 
 ## Styling
 
-`vanilla-press` ships only base styles, and you can override them as needed.
+`vanilla-press` only ships base styles. Override `style.css` in your project as needed.
 
-The default layout strategy separates `desktop` and `mobile` experiences. The runtime picks a matching layout and initializes related components automatically.
+The runtime separates `desktop` and `mobile` strategies. `VanillaPress` detects the device type and loads the matching runtime behavior and rendering styles.
+
+## Project Structure
+
+- `dist`: output directory that can be deployed directly to any static hosting service.
+- `docs`: input directory containing Markdown pages and site configuration.
+- `src`: source directory containing the runtime, renderer, components, and utilities.
+
+:::tree
+vanilla-press/
+├── dist/
+├── docs/
+├── src/
+│ ├── components/
+│ ├── config/
+│ ├── core/
+│ ├── render/
+│ ├── runtime/
+│ ├── utilities/
+│ ├── build.js
+│ ├── runtime.js
+│ └── style.css
+├── package.json
+└── README.md
+:::
+
+## Built-in Runtime Features
+
+- Menu
+- Code highlighting
+- Pagination
+- Internationalization
+- Table of contents
+- SEO
+- Search
+- Theme
+
+## Built-in Components
+
+- accordion
+- offcanvas
+- tabs
+- tree

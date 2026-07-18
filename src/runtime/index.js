@@ -3,8 +3,12 @@ import "./icons.js";
 import { initAccordion } from "../components/accordion.js";
 import { initOffcanvas } from "../components/offcanvas.js";
 import { initTabs } from "../components/tabs.js";
+import { initTree } from "../components/tree.js";
 import { initDocChrome } from "./chrome.js";
 import { initMobileSecondary } from "./menu.js";
+import { initPrevNext } from "./prev-next.js";
+import { initSearch } from "./search.js";
+import { initSeo } from "./seo.js";
 import { initToc } from "./toc.js";
 
 const componentRegistry = {
@@ -19,6 +23,10 @@ const componentRegistry = {
   offcanvas: {
     init: initOffcanvas,
     dependsOn: ["tabs"],
+  },
+  tree: {
+    init: initTree,
+    dependsOn: [],
   },
 };
 
@@ -97,7 +105,7 @@ function nodeContainsComponents(node) {
   return Boolean(node.querySelector("[data-doc-component]"));
 }
 
-function initComponents(root, names, maxPasses = 5) {
+function initComponents(root, names, config = {}, maxPasses = 5) {
   const ordered = resolveExecutionOrder(names);
 
   for (let pass = 0; pass < maxPasses; pass += 1) {
@@ -110,7 +118,7 @@ function initComponents(root, names, maxPasses = 5) {
       const before = countPending(root, name);
       if (!before) continue;
 
-      init(root);
+      init(root, config);
 
       const after = countPending(root, name);
       if (after < before) progressed = true;
@@ -120,7 +128,7 @@ function initComponents(root, names, maxPasses = 5) {
   }
 }
 
-function watchDynamicComponents(names) {
+function watchDynamicComponents(names, config = {}) {
   if (typeof MutationObserver === "undefined") return;
   if (!document.body) return;
 
@@ -128,7 +136,7 @@ function watchDynamicComponents(names) {
   const rerun = () => {
     scheduled = false;
     if (!hasPending(document, names)) return;
-    initComponents(document, names);
+    initComponents(document, names, config);
   };
 
   const observer = new MutationObserver((records) => {
@@ -142,6 +150,23 @@ function watchDynamicComponents(names) {
   });
 
   observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function isSearchEnabled(config = {}) {
+  return config.search !== false;
+}
+
+function isSidebarEnabled(config = {}) {
+  return config.sidebar !== false;
+}
+
+function isTocEnabled(config = {}) {
+  if (config.toc === false) return false;
+  return config.toc?.enabled !== false;
+}
+
+function isPrevNextEnabled(config = {}) {
+  return config.prevNext === true || config.prevNext?.enabled === true;
 }
 
 export function initDocPage(options = {}) {
@@ -159,12 +184,22 @@ export function initDocPage(options = {}) {
 
   if (chrome?.redirected) return;
 
-  initComponents(document, components);
-  watchDynamicComponents(components);
+  initSeo(options.config, options.page);
+  if (isSearchEnabled(options.config)) {
+    initSearch(options.config, options.search, options.page, chrome.i18n, chrome.locale);
+  }
+  initComponents(document, components, options.config);
+  watchDynamicComponents(components, options.config);
 
   if (mobile) {
-    initMobileSecondary(options.sidebar, options.page, chrome.i18n, chrome.locale);
-  } else {
-    initToc();
+    if (isSidebarEnabled(options.config) || isTocEnabled(options.config)) {
+      initMobileSecondary(options.sidebar, options.page, chrome.i18n, chrome.locale, options.config);
+    }
+  } else if (isTocEnabled(options.config)) {
+    initToc(options.config);
+  }
+
+  if (isPrevNextEnabled(options.config)) {
+    initPrevNext(options.config, options.sidebar, options.page, chrome.i18n, chrome.locale);
   }
 }

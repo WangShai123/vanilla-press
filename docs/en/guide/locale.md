@@ -1,8 +1,39 @@
+# Internationalization
+
+Enable multilingual documentation so users can browse the site in different languages.
+
+## Runtime
+
+In `docs/config.js`, configure whether internationalization is enabled.
+
+```javascript
+export const docConfig = {
+  i18n: {
+    enabled: true, // Whether to enable i18n
+    defaultLocale: "zh-CN", // Default language
+    redirectToDefault: true, // Whether to redirect to the default locale
+  },
+};
+```
+
+## Configuration
+
+In `docs/languages.js`, configure the site's i18n languages as needed.
+
+- `locale`: default language
+- `fallbackLocale`: fallback language
+- `locales`: array of language options
+  - `code`: locale code
+  - `label`: language name
+  - `path`: locale route directory
+- `messages`: locale message object containing translated UI strings for each language
+
+```javascript
 export const languages = {
   locale: "zh-CN",
   fallbackLocale: "en",
   locales: [
-    { code: "zh-CN", label: "简体中文", path: "zh" },
+    { code: "zh-CN", label: "Simplified Chinese", path: "zh" },
     { code: "en", label: "English", path: "en" },
   ],
   messages: {
@@ -17,13 +48,8 @@ export const languages = {
         home: "首页",
         components: "组件",
         api: "API",
-        config: "配置",
         runtime: "运行时",
-        highlight: "代码高亮",
         locale: "国际化",
-        menu: "菜单",
-        sidebar: "侧边栏",
-        toc: "目录",
       },
       mobile: {
         navigation: "导航",
@@ -35,10 +61,6 @@ export const languages = {
         placeholder: "输入关键词...",
         empty: "没有找到匹配内容",
         hint: "输入关键词搜索标题和正文",
-      },
-      prevNext: {
-        previous: "上一页",
-        next: "下一页",
       },
       footer: {
         text: "Built with markdown-it and vanilla-jui.",
@@ -58,13 +80,8 @@ export const languages = {
         home: "Home",
         components: "Components",
         api: "API",
-        config: "Config",
         runtime: "Runtime",
-        highlight: "Highlight",
         locale: "Locale",
-        menu: "Menu",
-        sidebar: "Sidebar",
-        toc: "Contents",
       },
       mobile: {
         navigation: "Navigation",
@@ -77,10 +94,6 @@ export const languages = {
         empty: "No results found",
         hint: "Search titles and page content",
       },
-      prevNext: {
-        previous: "Previous",
-        next: "Next",
-      },
       footer: {
         text: "Built with markdown-it and vanilla-jui.",
       },
@@ -90,3 +103,4 @@ export const languages = {
     },
   },
 };
+```

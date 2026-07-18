@@ -1,10 +1,10 @@
 export const menuItems = [
-  { label: "menu.home", href: "index.html" },
+  { label: "menu.home", path: "index" },
   {
     label: "menu.guide",
     children: [
-      { label: "menu.components", href: "guide/components.html" },
-      { label: "menu.api", href: "guide/api.html" },
+      { label: "menu.components", path: "guide/components" },
+      { label: "menu.api", path: "guide/api" },
     ],
   },
 ];

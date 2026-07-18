@@ -1,5 +1,5 @@
 import { createOffcanvas } from 'vanilla-jui';
-import { escapeAttr, markComponent, parseBracketTitle, readContainer } from './utils.js';
+import { escapeAttr, markComponent, parseBracketTitle, readContainer } from '../utilities/markdown.js';
 
 const DIRECTIONS = new Set(['left', 'right', 'top', 'bottom']);
 

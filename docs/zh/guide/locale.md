@@ -1,3 +1,34 @@
+# 国际化
+
+让文档站点支持多语言功能，方便不同语言的用户访问。
+
+## 运行时
+
+在 `docs/config.js` 中，按需配置是否启用国际化功能。
+
+```javascript
+export const docConfig = {
+  i18n: {
+    enabled: true, // 是否启用国际化功能
+    defaultLocale: "zh-CN", // 默认语言
+    redirectToDefault: true, // 是否重定向到默认语言
+  },
+};
+```
+
+## 配置
+
+在 `docs/languages.js` 中，按需配置站点的国际化语言。
+
+- `locale`: 默认语言
+- `fallbackLocale`: 备用语言
+- `locales`: 语言选项数组
+  - `code`: 语言别名
+  - `label`: 语言名称
+  - `path`: 语言路由目录
+- `messages`: 国际化语言包对象，包含不同语言的翻译内容
+
+```javascript
 export const languages = {
   locale: "zh-CN",
   fallbackLocale: "en",
@@ -17,13 +48,8 @@ export const languages = {
         home: "首页",
         components: "组件",
         api: "API",
-        config: "配置",
         runtime: "运行时",
-        highlight: "代码高亮",
         locale: "国际化",
-        menu: "菜单",
-        sidebar: "侧边栏",
-        toc: "目录",
       },
       mobile: {
         navigation: "导航",
@@ -35,10 +61,6 @@ export const languages = {
         placeholder: "输入关键词...",
         empty: "没有找到匹配内容",
         hint: "输入关键词搜索标题和正文",
-      },
-      prevNext: {
-        previous: "上一页",
-        next: "下一页",
       },
       footer: {
         text: "Built with markdown-it and vanilla-jui.",
@@ -58,13 +80,8 @@ export const languages = {
         home: "Home",
         components: "Components",
         api: "API",
-        config: "Config",
         runtime: "Runtime",
-        highlight: "Highlight",
         locale: "Locale",
-        menu: "Menu",
-        sidebar: "Sidebar",
-        toc: "Contents",
       },
       mobile: {
         navigation: "Navigation",
@@ -77,10 +94,6 @@ export const languages = {
         empty: "No results found",
         hint: "Search titles and page content",
       },
-      prevNext: {
-        previous: "Previous",
-        next: "Next",
-      },
       footer: {
         text: "Built with markdown-it and vanilla-jui.",
       },
@@ -90,3 +103,4 @@ export const languages = {
     },
   },
 };
+```

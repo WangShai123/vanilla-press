@@ -5,7 +5,7 @@ import {
   parseFlag,
   readContainer,
   splitMarkedBlocks,
-} from './utils.js';
+} from '../utilities/markdown.js';
 
 function parseAccordion(content) {
   return splitMarkedBlocks(content, /^@item\s+(.+)$/i, '面板');

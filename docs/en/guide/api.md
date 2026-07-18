@@ -33,7 +33,7 @@ Runtime observes DOM insertions and reruns initialization when new `data-doc-com
 ## Design Rules
 
 - Every component container starts with `:::component-name` and must end with a standalone `:::` line.
-- When nesting components inside `:::tabs`, child components must stay fully inside an `@tab` panel.
+- When nesting components inside `:::tabs`, each child component must be fully contained within an `@tab` panel and cannot be placed after the closing marker of `tabs`.
 - Parameter parsing uses a unified rule: bracket text for titles, whitespace tokens for boolean/enum options.
 - Component renderer output must include `data-doc-component`, and initializer must mark `data-doc-ready="true"` after setup.
 - For any new component, provide all three parts: Markdown parser/renderer, runtime initializer, and docs with demo + syntax + parameter notes.
@@ -65,7 +65,7 @@ export function initXxx(root = document) {
 
 ### 2. Markdown parsing utilities
 
-Reusable helpers in `src/components/utils.js`:
+Reusable helpers in `src/utilities/markdown.js`:
 
 - `readContainer(state, startLine, endLine)`: parse `:::` containers with nested blocks and fenced code support.
 - `parseBracketTitle(info)`: parse bracket title text, e.g. `[Open Drawer]`.
@@ -97,9 +97,9 @@ Example:
 - Expand dependencies from registry.
 - Execute initialization in topological order.
 - Repeat passes until convergence.
-- Observe dynamic insertions and re-run incrementally.
+- Observe dynamically inserted nodes and initialize them incrementally.
 
-Component authors only need to keep `init<Name>` idempotent and root-scoped.
+Component authors only need to ensure `init<Name>` is idempotent and scoped to the provided root.
 
 ### 5. Idempotence and safety boundaries
 
@@ -107,7 +107,7 @@ Each `init<Name>` must:
 
 - Support repeated invocation safely.
 - Operate only within the provided `root` scope.
-- Exit safely if required child nodes are missing.
+- Return safely when required child nodes are missing, without throwing or mutating unrelated state.
 
 ## New Component Checklist
 

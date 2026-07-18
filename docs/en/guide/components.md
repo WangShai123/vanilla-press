@@ -2,19 +2,6 @@
 
 `vanilla-press` components are a set of Markdown container components built on top of `vanilla-jui` for document layout and interactions.
 
-## Highlight
-
-Code highlighting powered by `highlight.js`, with support for multiple languages.
-
-```javascript
-// javascript
-const pages = ["index.md", "guide/components.md"];
-
-export function toHtml(file) {
-  return file.replace(/\.md$/, ".html");
-}
-```
-
 ## Tabs
 
 :::tabs
@@ -96,8 +83,8 @@ Each page injects its own `initDocPage({ components: [...] })` script.
 
 #### Parameters
 
-- `multiple`: allow multiple panels to be expanded at the same time; default is false
-- `collapsible`: allow all panels to be collapsed; default is false
+- `multiple`: whether multiple panels can stay expanded at the same time; false when omitted
+- `collapsible`: whether all panels can be collapsed; false when omitted
 
 ## Offcanvas
 
@@ -108,7 +95,7 @@ Each page injects its own `initDocPage({ components: [...] })` script.
 
 ### Offcanvas
 
-In the `Offcanvas` component, content is wrapped into a panel. Click the trigger button to open or close it.
+In the `Offcanvas` component, content is wrapped inside a panel container. Click the trigger button to open or close the panel.
 
 Markdown syntax is supported inside the panel content.
 
@@ -150,5 +137,72 @@ export function toHtml(file) {
 
 #### Parameters
 
-- `title`: trigger text, syntax `:::offcanvas [Button Text]`, default is `Open Panel`
-- `direction`: panel direction, syntax `:::offcanvas [Button Text] direction`, supports `left`, `right`, `top`, `bottom`, default is `right`
+- `title`: button text, written as `:::offcanvas [Button Text]`; default is `Open Panel`
+- `direction`: panel direction, written as `:::offcanvas [Button Text] direction`; supports `left`, `right`, `top`, and `bottom`, with `right` as the default
+
+## Tree
+
+:::tabs
+@tab Demo
+
+:::tree
+my-project/
+├── src/
+│ ├── components/ [collapsed]
+│ │ ├── Header.vue
+│ │ └── Footer.vue
+│ ├── App.vue
+│ └── main.js
+├── public/
+│ └── index.html
+├── package.json
+└── README.md
+:::
+
+@tab Syntax
+
+```markdown
+:::tree
+my-project/
+├── src/
+│ ├── components/ [collapsed]
+│ │ ├── Header.vue
+│ │ └── Footer.vue
+│ ├── App.vue
+│ └── main.js
+├── public/
+│ └── index.html
+├── package.json
+└── README.md
+:::
+```
+
+:::
+
+#### Config
+
+```javascript
+export const docConfig = {
+  tree: {
+    enabled: true,
+    fileIcon: true,
+  },
+};
+```
+
+- `tree` is disabled by default. Set it to `true` or `{ enabled: true }` to enable it.
+- `tree.fileIcon` defaults to true. It only applies extension icons to file nodes, and falls back to the `file` icon when no matching icon is registered.
+- Add `[collapsed]` after a folder name to make that folder collapsed by default, for example `components/ [collapsed]`.
+
+#### Extend Icons
+
+Use `addIcons()` in `src/runtime/icons.js` to extend file icons.
+
+```javascript
+import { addIcons } from "vanilla-jui";
+addIcons({
+  "align-left": '<path d="M3 4H21V6H3V4ZM3 19H17V21H3V19ZM3 14H21V16H3V14ZM3 9H17V11H3V9Z"></path>',
+  "align-right":
+    '<path d="M3 4H21V6H3V4ZM7 19H21V21H7V19ZM3 14H21V16H3V14ZM7 9H21V11H7V9Z"></path>',
+});
+```

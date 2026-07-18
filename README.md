@@ -2,6 +2,8 @@
 
 A lightweight static documentation generator built with `markdown-it` and `vanilla-jui`.
 
+- [README 中文](README_zh.md)
+
 ## Overview
 
 `vanilla-press` converts Markdown files under `docs/` into deployable static HTML pages in `dist/`.
@@ -19,60 +21,11 @@ cd vanilla-press
 npm install
 ```
 
-## Demo
-
-[Online Demo](http://wangshai123.github.io/vanilla-press)
-
-## v1.0.0 Components
-
-Version `1.0.0` includes the following built-in components:
-
-- `highlight`
-- `tabs`
-- `accordion`
-- `offcanvas`
-
-## Key Design Features
-
-- Component initialization by dependency graph (topological order).
-- Multi-pass runtime initialization to support nested components.
-- Dynamic DOM re-initialization for component trees created after first render.
-- Configurable i18n switch, default locale, and default-locale URL redirect.
-
-## Project Structure
-
-- `docs/`: source docs and site configuration (`config.js`, `menu.js`, `sidebar.js`, `languages.js`).
-- `src/`: build pipeline and runtime/component implementation.
-- `dist/`: generated static site output.
-
 ## Build & Development
-
-```bash
-npm install
-npm run build
-npm run dev
-```
 
 - `npm run build`: one-time build.
 - `npm run dev`: watch mode with automatic rebuild.
 
-## Multilingual Docs
+## Demo
 
-Current language folders:
-
-- `docs/zh/`: Chinese docs.
-- `docs/en/`: English docs.
-
-When i18n is enabled, runtime applies locale-aware navigation and locale switching behavior.
-
-If `redirectToDefault` is enabled, root access is redirected to the configured default locale entry.
-
-## More Docs
-
-- [Overview](docs/en/index.md)
-- [Components](docs/en/components.md)
-- [API](docs/en/api.md)
-
-## Language
-
-- [README中文](README_zh.md)
+[Demo Online](http://wangshai123.github.io/vanilla-press)

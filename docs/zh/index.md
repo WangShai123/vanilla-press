@@ -1,3 +1,9 @@
+---
+title: 首页
+keywords: vanilla-press, markdown-it, 静态文档
+description: Vanilla-Press 是基于 markdown-it 和 vanilla-jui 的轻量静态文档生成器。
+---
+
 # 简介
 
 `vanilla-press` 是基于 `markdown-it` 构建的静态文档工程。
@@ -16,16 +22,9 @@ cd vanilla-press
 npm install
 ```
 
-## 预览
-
-[在线预览](http://wangshai123.github.io/vanilla-press)
-
-## 使用
-
-- `docs`：文档输入目录，包含 Markdown 页面与站点配置。
-- `dist`：文档输出目录，可直接部署到静态托管服务。
-
 ## 构建
+
+构建命令会读取 `docs/**/*.md`，按目录结构输出到 `dist/**/*.html`，并生成一份共享 CSS 与 JS 运行时。
 
 :::tabs
 @tab 手动构建
@@ -44,10 +43,54 @@ npm run dev
 
 :::
 
-构建命令会读取 `docs/**/*.md`，按目录结构输出到 `dist/**/*.html`，并生成一份共享 CSS 与一份共享 JS。
+## 预览
+
+[在线预览](http://wangshai123.github.io/vanilla-press)
 
 ## 样式
 
-`vanilla-press` 仅提供基础样式，支持在项目中按需覆写。
+`vanilla-press` 仅提供基础样式，请在项目中按需覆写 `style.css`。
 
-默认采用 `desktop` 与 `mobile` 双布局策略，访问端会自动切换对应排版并初始化相关交互组件。
+采用 `desktop` 与 `mobile` 隔离策略，`VanillaPress` 会根据用户设备类型，加载对应运行时和渲染样式。
+
+## 项目架构
+
+- `dist`：文档输出目录，可直接部署到静态托管服务。
+- `docs`：文档输入目录，包含 Markdown 页面与站点配置。
+- `src`：源码目录，包含运行时、渲染器、组件、工具函数等。
+
+:::tree
+vanilla-press/
+├── dist/
+├── docs/
+├── src/
+│ ├── components/
+│ ├── config/
+│ ├── core/
+│ ├── render/
+│ ├── runtime/
+│ ├── utilities/
+│ ├── build.js
+│ ├── runtime.js
+│ └── style.css
+├── package.json
+└── README.md
+:::
+
+## 内置运行时
+
+- 菜单
+- 代码高亮
+- 分页
+- 国际化
+- 目录
+- SEO
+- 搜索
+- 主题
+
+## 内置组件
+
+- accordion
+- offcanvas
+- tabs
+- tree

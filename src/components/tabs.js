@@ -5,7 +5,7 @@ import {
   readContainer,
   splitByHeadings,
   splitMarkedBlocks,
-} from './utils.js';
+} from '../utilities/markdown.js';
 
 function parseTabs(content, info) {
   const titles = String(info || '')

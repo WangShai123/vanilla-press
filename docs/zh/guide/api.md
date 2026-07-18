@@ -65,7 +65,7 @@ export function initXxx(root = document) {
 
 ### 2. Markdown 解析层 API
 
-可复用工具函数（`src/components/utils.js`）：
+可复用工具函数（`src/utilities/markdown.js`）：
 
 - `readContainer(state, startLine, endLine)`：读取 `:::` 容器内容，支持嵌套容器与代码围栏。
 - `parseBracketTitle(info)`：解析方括号标题，如 `[打开抽屉]`。

@@ -4,6 +4,14 @@ import { initLocale, isI18nEnabled, maybeRedirectToDefaultLocale } from "./local
 import { initHeaderMenu, initMobileHeader, initSidebar } from "./menu.js";
 import { initTheme } from "./theme.js";
 
+function isMenuEnabled(config = {}) {
+  return config.menu !== false;
+}
+
+function isSidebarEnabled(config = {}) {
+  return config.sidebar !== false;
+}
+
 export function initDocChrome(
   config = {},
   menu = [],
@@ -29,7 +37,7 @@ export function initDocChrome(
   if (mobileHeader) mobileHeader.hidden = !mobile;
 
   document.querySelectorAll("[data-doc-brand]").forEach((brand) => {
-    brand.textContent = config.siteName || "Docs";
+    brand.textContent = config.siteName || "VanillaPress";
   });
 
   const footer = document.querySelector("[data-doc-footer]");
@@ -46,13 +54,13 @@ export function initDocChrome(
     asideCustom.innerHTML = config.aside.html;
   }
 
-  if (mobile) {
+  if (mobile && isMenuEnabled(config)) {
     initMobileHeader(menu, page, i18n, locale);
-  } else {
-    initHeaderMenu(menu, page, i18n, locale);
-    initSidebar(sidebar, page, i18n, locale);
+  } else if (!mobile) {
+    if (isMenuEnabled(config)) initHeaderMenu(menu, page, i18n, locale);
+    if (isSidebarEnabled(config)) initSidebar(sidebar, page, i18n, locale);
   }
-  initLocale(languages, page, i18n, config);
+  if (i18nEnabled) initLocale(languages, page, i18n, config);
   initTheme(config, i18n);
 
   return { i18n, locale, redirected: false };

@@ -4,20 +4,36 @@ import { joinLocalePath } from "./i18n.js";
 import { localize } from "./i18n.js";
 import { normalizeRel, relativeAsset } from "./path.js";
 
-function isExternalHref(href = "") {
-  return /^(?:[a-z][a-z\d+.-]*:)?\/\//i.test(href) || href.startsWith("#");
+function rawItemPath(item = {}) {
+  return item.path ?? item.href ?? item.url ?? "";
+}
+
+function isExternalPath(value = "") {
+  return /^(?:[a-z][a-z\d+.-]*:)?\/\//i.test(value) || value.startsWith("#");
+}
+
+function normalizePagePath(value = "") {
+  const path = String(value || "").trim();
+  if (!path || isExternalPath(path)) return path;
+  const clean = path.replace(/^\/+/, "");
+  if (clean.endsWith("/")) return `${clean}index.html`;
+  if (/\.[a-z0-9]+$/i.test(clean)) return clean;
+  return `${clean}.html`;
 }
 
 function resolveItemHref(item, page, locale) {
-  const href = item.href || item.url || "";
-  if (!href || isExternalHref(href)) return href || "#";
+  const itemPath = rawItemPath(item);
+  const href = normalizePagePath(itemPath);
+  if (!href || isExternalPath(href)) return href;
   const localizedHref = locale ? joinLocalePath(locale, href) : href;
   return relativeAsset(page.rel, localizedHref);
 }
 
 function menuItemIsActive(item, page, locale) {
-  const rawHref = item.href || item.url || "";
-  const href = rawHref ? normalizeRel(locale ? joinLocalePath(locale, rawHref) : rawHref) : "";
+  const itemPath = normalizePagePath(rawItemPath(item));
+  const href = itemPath && !isExternalPath(itemPath)
+    ? normalizeRel(locale ? joinLocalePath(locale, itemPath) : itemPath)
+    : "";
   const rel = normalizeRel(page.rel || "");
   if (href && href === rel) return true;
   return (
@@ -34,6 +50,11 @@ function slugifyMenu(value) {
       .replace(/[^\p{Letter}\p{Number}]+/gu, "-")
       .replace(/^-+|-+$/g, "") || "item"
   );
+}
+
+function translate(key, fallback, i18n) {
+  const text = localize(key, i18n);
+  return text && text !== key ? text : fallback;
 }
 
 function toMenuItems(items = [], page = {}, i18n, locale) {
@@ -67,7 +88,8 @@ function renderMenuItem(item, page, i18n, locale) {
 
   const link = document.createElement("a");
   link.className = "menu-link";
-  link.href = resolveItemHref(item, page, locale);
+  const href = resolveItemHref(item, page, locale);
+  if (href) link.href = href;
   if (item.target) link.target = item.target;
 
   const text = document.createElement("span");
@@ -137,7 +159,7 @@ export function initMobileHeader(menuItems = [], page = {}, i18n, locale = null)
 
   panel.addEventListener("click", (event) => {
     const link = event.target.closest("a[href]");
-    if (link && link.getAttribute("href") !== "#") void drawer.hide();
+    if (link) void drawer.hide();
   });
   menuButton.addEventListener("click", () => drawer.show());
   header.dataset.docReady = "true";
@@ -145,28 +167,49 @@ export function initMobileHeader(menuItems = [], page = {}, i18n, locale = null)
 
 function renderSidebarItem(item, page, i18n, locale) {
   const children = Array.isArray(item.children) ? item.children : [];
-  const wrapper = document.createElement(children.length ? "div" : "a");
+  const wrapper = document.createElement("div");
   const active = menuItemIsActive(item, page, locale);
+  const collapsed = children.length && item.collapse === true && !active;
 
   wrapper.className = children.length
-    ? `doc-nav-group${active ? " is-active" : ""}`
-    : `doc-nav-link${active ? " is-active" : ""}`;
+    ? `doc-nav-item has-children${active ? " is-active" : ""}${collapsed ? " is-collapsed" : ""}`
+    : `doc-nav-item${active ? " is-active" : ""}`;
 
-  if (!children.length) {
-    wrapper.href = resolveItemHref(item, page, locale);
-    wrapper.textContent = localize(item.i18n || item.label || item.title, i18n);
-    return wrapper;
-  }
-
-  const title = document.createElement("div");
-  title.className = "doc-nav-group-title";
+  const title = document.createElement("a");
+  title.className = `doc-nav-title${active ? " is-active" : ""}`;
+  const href = resolveItemHref(item, page, locale);
+  if (href) title.href = href;
   title.textContent = localize(item.i18n || item.label || item.title, i18n);
   wrapper.append(title);
 
+  if (!children.length) return wrapper;
+
+  const toggle = document.createElement("button");
+  toggle.className = "doc-nav-toggle";
+  toggle.type = "button";
+  toggle.setAttribute("aria-label", title.textContent);
+  toggle.setAttribute("aria-expanded", String(!collapsed));
+  toggle.append(icon("arrow-down", { className: "el-icon" }));
+  wrapper.append(toggle);
+
   const list = document.createElement("div");
-  list.className = "doc-nav-group-items";
+  list.className = "doc-nav-children";
+  list.hidden = collapsed;
   children.forEach((child) => list.append(renderSidebarItem(child, page, i18n, locale)));
   wrapper.append(list);
+
+  toggle.addEventListener("click", () => {
+    const next = !wrapper.classList.contains("is-collapsed");
+    wrapper.classList.toggle("is-collapsed", next);
+    list.hidden = next;
+    toggle.setAttribute("aria-expanded", String(!next));
+  });
+
+  if (!href) {
+    title.addEventListener("click", () => {
+      toggle.click();
+    });
+  }
   return wrapper;
 }
 
@@ -190,59 +233,84 @@ export function initSidebar(sidebarItems = [], page = {}, i18n, locale = null) {
   nav.dataset.docReady = "true";
 }
 
-export function initMobileSecondary(sidebarItems = [], page = {}, i18n, locale = null) {
+function isSidebarEnabled(config = {}) {
+  return config.sidebar !== false;
+}
+
+function isTocEnabled(config = {}) {
+  if (config.toc === false) return false;
+  return config.toc?.enabled !== false;
+}
+
+function tocHeadings(config = {}) {
+  const toc = config.toc;
+  return typeof toc?.headings === "string" && toc.headings.trim() ? toc.headings : "h2, h3";
+}
+
+export function initMobileSecondary(sidebarItems = [], page = {}, i18n, locale = null, config = {}) {
   const secondary = document.querySelector("[data-doc-mobile-secondary]");
   const sidebarButton = document.querySelector("[data-doc-mobile-sidebar]");
   const tocButton = document.querySelector("[data-doc-mobile-toc]");
-  if (!secondary || !sidebarButton || !tocButton || secondary.dataset.docReady === "true") {
+  if (!secondary || secondary.dataset.docReady === "true") {
     return;
   }
 
   secondary.hidden = false;
-  sidebarButton.textContent = "";
-  sidebarButton.append(icon("align-left", { className: "el-icon el-prefix" }));
-  sidebarButton.append(document.createTextNode("导航"));
-  tocButton.textContent = "";
-  tocButton.append(document.createTextNode("目录"));
-  tocButton.append(icon("align-right", { className: "el-icon el-suffix" }));
+  const sidebarLabel = translate("mobile.navigation", "导航", i18n);
+  const tocLabel = translate("mobile.toc", "目录", i18n);
 
-  const sidebarPanel = document.createElement("div");
-  sidebarPanel.className = "doc-mobile-sidebar-panel";
-  sidebarPanel.append(renderSidebar(sidebarItems, page, i18n, locale));
-  const sidebarDrawer = createOffcanvas({
-    direction: "left",
-    content: sidebarPanel,
-  });
+  if (sidebarButton && isSidebarEnabled(config)) {
+    sidebarButton.textContent = "";
+    sidebarButton.setAttribute("aria-label", sidebarLabel);
+    sidebarButton.append(icon("align-left", { className: "el-icon el-prefix" }));
+    sidebarButton.append(document.createTextNode(sidebarLabel));
 
-  sidebarPanel.addEventListener("click", (event) => {
-    const link = event.target.closest("a[href]");
-    if (link && link.getAttribute("href") !== "#") void sidebarDrawer.hide();
-  });
-  sidebarButton.addEventListener("click", () => sidebarDrawer.show());
+    const sidebarPanel = document.createElement("div");
+    sidebarPanel.className = "doc-mobile-sidebar-panel";
+    sidebarPanel.append(renderSidebar(sidebarItems, page, i18n, locale));
+    const sidebarDrawer = createOffcanvas({
+      direction: "left",
+      content: sidebarPanel,
+    });
 
-  const tocPanel = document.createElement("div");
-  tocPanel.className = "doc-mobile-toc-panel";
-  const article = document.querySelector(".j-content");
-  if (article?.querySelector("h2, h3")) {
-    createToc({
-      container: tocPanel,
-      target: article,
-      headings: "h2, h3",
-      offset: 80,
-    }).build();
-  } else {
-    tocButton.hidden = true;
+    sidebarPanel.addEventListener("click", (event) => {
+      const link = event.target.closest("a[href]");
+      if (link) void sidebarDrawer.hide();
+    });
+    sidebarButton.addEventListener("click", () => sidebarDrawer.show());
   }
 
-  const tocDrawer = createOffcanvas({
-    direction: "right",
-    content: tocPanel,
-  });
-  tocPanel.addEventListener("click", (event) => {
-    const link = event.target.closest('a[href^="#"]');
-    if (link) void tocDrawer.hide();
-  });
-  tocButton.addEventListener("click", () => tocDrawer.show());
+  if (tocButton && isTocEnabled(config)) {
+    tocButton.textContent = "";
+    tocButton.setAttribute("aria-label", tocLabel);
+    tocButton.append(document.createTextNode(tocLabel));
+    tocButton.append(icon("align-right", { className: "el-icon el-suffix" }));
+
+    const tocPanel = document.createElement("div");
+    tocPanel.className = "doc-mobile-toc-panel";
+    const article = document.querySelector(".j-content");
+    const headings = tocHeadings(config);
+    if (article?.querySelector(headings)) {
+      createToc({
+        container: tocPanel,
+        target: article,
+        headings,
+        offset: 80,
+      }).build();
+    } else {
+      tocButton.hidden = true;
+    }
+
+    const tocDrawer = createOffcanvas({
+      direction: "right",
+      content: tocPanel,
+    });
+    tocPanel.addEventListener("click", (event) => {
+      const link = event.target.closest('a[href^="#"]');
+      if (link) void tocDrawer.hide();
+    });
+    tocButton.addEventListener("click", () => tocDrawer.show());
+  }
 
   secondary.dataset.docReady = "true";
 }
