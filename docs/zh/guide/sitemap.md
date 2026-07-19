@@ -8,7 +8,9 @@
 
 ```javascript
 export const docConfig = {
-  sitemap: true,
+  runtime: {
+    sitemap: true,
+  },
 };
 ```
 

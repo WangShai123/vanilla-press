@@ -8,7 +8,9 @@
 
 ```javascript
 export const docConfig = {
-  sidebar: true,
+  runtime: {
+    sidebar: true,
+  },
 };
 ```
 

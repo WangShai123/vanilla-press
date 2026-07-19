@@ -183,15 +183,17 @@ my-project/
 
 ```javascript
 export const docConfig = {
-  tree: {
-    enabled: true,
-    fileIcon: true,
+  components: {
+    tree: {
+      enabled: true,
+      fileIcon: true,
+    },
   },
 };
 ```
 
-- `tree` is disabled by default. Set it to `true` or `{ enabled: true }` to enable it.
-- `tree.fileIcon` defaults to true. It only applies extension icons to file nodes, and falls back to the `file` icon when no matching icon is registered.
+- `components.tree` is disabled by default. Set it to `true` or `{ enabled: true }` to enable it.
+- `components.tree.fileIcon` defaults to true. It only applies extension icons to file nodes, and falls back to the `file` icon when no matching icon is registered.
 - Add `[collapsed]` after a folder name to make that folder collapsed by default, for example `components/ [collapsed]`.
 
 #### Extend Icons

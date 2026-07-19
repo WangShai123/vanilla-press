@@ -1,10 +1,7 @@
 import { createModal, icon } from "vanilla-jui";
 import { localize } from "./i18n.js";
 import { normalizeRel, relativeAsset } from "./path.js";
-
-function isSearchEnabled(config = {}) {
-  return config.search !== false;
-}
+import { isSearchEnabled } from "../utilities/features.js";
 
 function translate(key, fallback, i18n) {
   const text = localize(key, i18n);

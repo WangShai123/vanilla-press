@@ -1,14 +1,9 @@
-function isSeoEnabled(config = {}) {
-  return config.seo !== false;
-}
-
-function siteName(config = {}) {
-  return String(config.siteName || "Docs").trim() || "Docs";
-}
+import { normalizeSiteName } from "../utilities/page.js";
+import { isSeoEnabled } from "../utilities/features.js";
 
 function pageTitle(config = {}, page = {}) {
   const title = String(page.seo?.title || page.title || "").trim();
-  return title ? `${title} - ${siteName(config)}` : siteName(config);
+  return title ? `${title} - ${normalizeSiteName(config)}` : normalizeSiteName(config);
 }
 
 function syncMeta(name, content) {

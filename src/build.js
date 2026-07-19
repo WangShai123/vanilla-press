@@ -20,6 +20,7 @@ import {
   isSearchEnabled,
   isSeoEnabled,
   isSidebarEnabled,
+  runtimeOption,
 } from "./utilities/features.js";
 import { parseFrontmatter, pickSeoFrontmatter } from "./utilities/frontmatter.js";
 import { cleanHtml, htmlText } from "./utilities/html.js";
@@ -110,7 +111,8 @@ function resolveDefaultLocale(config = {}, languages = {}) {
   const locales = Array.isArray(languages.locales) ? languages.locales : [];
   if (!locales.length) return null;
 
-  const preferred = String(config.i18n?.defaultLocale || languages.locale || "")
+  const i18n = runtimeOption(config, "i18n");
+  const preferred = String(i18n?.defaultLocale || languages.locale || "")
     .trim()
     .toLowerCase();
   return (
@@ -125,7 +127,8 @@ function resolveDefaultLocale(config = {}, languages = {}) {
 
 async function writeDefaultLocaleEntrypoint(outputDir, config = {}, languages = {}, pages = []) {
   if (!isI18nEnabled(config)) return;
-  if (config.i18n?.redirectToDefault === false) return;
+  const i18n = runtimeOption(config, "i18n");
+  if (i18n?.redirectToDefault === false) return;
 
   const locale = resolveDefaultLocale(config, languages);
   const prefix = normalizePath(locale?.path);
@@ -137,7 +140,7 @@ async function writeDefaultLocaleEntrypoint(outputDir, config = {}, languages = 
 
   const rootIndexFile = path.join(outputDir, "index.html");
   const rootLang =
-    String(locale?.code || config.i18n?.defaultLocale || languages.locale || "en").trim() || "en";
+    String(locale?.code || i18n?.defaultLocale || languages.locale || "en").trim() || "en";
   const html = renderDefaultLocaleEntrypoint(target, rootLang);
 
   await fs.writeFile(rootIndexFile, html, "utf8");

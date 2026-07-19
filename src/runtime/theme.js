@@ -1,13 +1,9 @@
 import { createEffect } from "vanilla-signal";
 import { Theme, createOffcanvas, icon } from "vanilla-jui";
-
-export function isThemeEnabled(config = {}) {
-  if (config.theme === false) return false;
-  return config.theme?.enabled !== false;
-}
+import { isThemeEnabled, runtimeOption } from "../utilities/features.js";
 
 export function initTheme(config = {}, i18n) {
-  const themeConfig = config.theme || {};
+  const themeConfig = runtimeOption(config, "theme") || {};
   const buttons = Array.from(document.querySelectorAll("[data-doc-theme]")).filter(
     (button) => button.dataset.docReady !== "true",
   );

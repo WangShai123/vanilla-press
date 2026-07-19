@@ -8,7 +8,9 @@
 
 ```javascript
 export const docConfig = {
-  menu: true,
+  runtime: {
+    menu: true,
+  },
 };
 ```
 

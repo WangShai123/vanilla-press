@@ -42,9 +42,6 @@ export const languages = {
         previous: "上一页",
         next: "下一页",
       },
-      footer: {
-        text: "Built with markdown-it and vanilla-jui.",
-      },
       theme: {
         button: "主题",
       },
@@ -84,9 +81,6 @@ export const languages = {
       prevNext: {
         previous: "Previous",
         next: "Next",
-      },
-      footer: {
-        text: "Built with markdown-it and vanilla-jui.",
       },
       theme: {
         button: "Theme",

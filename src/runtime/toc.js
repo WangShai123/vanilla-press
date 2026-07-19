@@ -1,16 +1,12 @@
 import { createToc } from "vanilla-jui";
-
-function tocHeadings(config = {}) {
-  const toc = config.toc;
-  return typeof toc?.headings === "string" && toc.headings.trim() ? toc.headings : "h2, h3";
-}
+import { tocOptions } from "../utilities/features.js";
 
 export function initToc(config = {}) {
   const toc = document.querySelector("[data-doc-toc]");
   const article = document.querySelector(".j-content");
   if (!toc || !article || toc.dataset.docReady === "true") return;
 
-  const headings = tocHeadings(config);
+  const { headings } = tocOptions(config);
   if (!article.querySelector(headings)) {
     toc.hidden = true;
     return;

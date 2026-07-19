@@ -4,6 +4,7 @@ import { joinLocalePath } from "./i18n.js";
 import { localize } from "./i18n.js";
 import { normalizeRel, relativeAsset } from "./path.js";
 import { t as s } from "vanilla-signal-i18n";
+import { isSidebarEnabled, isTocEnabled, tocOptions } from "../utilities/features.js";
 const l = {
   zh: { Back: "返回" },
 };
@@ -188,7 +189,7 @@ function renderSidebarItem(item, page, i18n, locale) {
   if (!children.length) return wrapper;
 
   const toggle = document.createElement("button");
-  toggle.className = "doc-nav-toggle";
+  toggle.className = "doc-nav-toggle j-button is-ghost is-icon";
   toggle.type = "button";
   toggle.setAttribute("aria-label", title.textContent);
   toggle.setAttribute("aria-expanded", String(!collapsed));
@@ -236,20 +237,6 @@ export function initSidebar(sidebarItems = [], page = {}, i18n, locale = null) {
   nav.dataset.docReady = "true";
 }
 
-function isSidebarEnabled(config = {}) {
-  return config.sidebar !== false;
-}
-
-function isTocEnabled(config = {}) {
-  if (config.toc === false) return false;
-  return config.toc?.enabled !== false;
-}
-
-function tocHeadings(config = {}) {
-  const toc = config.toc;
-  return typeof toc?.headings === "string" && toc.headings.trim() ? toc.headings : "h2, h3";
-}
-
 export function initMobileSecondary(
   sidebarItems = [],
   page = {},
@@ -294,7 +281,7 @@ export function initMobileSecondary(
     const tocPanel = document.createElement("div");
     tocPanel.className = "doc-mobile-toc-panel";
     const article = document.querySelector(".j-content");
-    const headings = tocHeadings(config);
+    const { headings } = tocOptions(config);
     if (article?.querySelector(headings)) {
       createToc({
         container: tocPanel,

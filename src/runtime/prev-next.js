@@ -1,10 +1,7 @@
 import { icon } from "vanilla-jui";
 import { joinLocalePath, localize, pageWithoutLocale } from "./i18n.js";
 import { normalizeRel, relativeAsset } from "./path.js";
-
-function isPrevNextEnabled(config = {}) {
-  return config.prevNext === true || config.prevNext?.enabled === true;
-}
+import { isPrevNextEnabled } from "../utilities/features.js";
 
 function rawItemPath(item = {}) {
   return item.path ?? item.href ?? item.url ?? "";
@@ -57,20 +54,18 @@ function createLink(item, page, locale, direction, i18n) {
 
   const label = document.createElement("span");
   label.className = "doc-prev-next-label";
+
   label.textContent =
     direction === "prev"
       ? translate("prevNext.previous", "Previous", i18n)
       : translate("prevNext.next", "Next", i18n);
+  label.append(icon(direction === "prev" ? "arrow-left" : "arrow-right", { className: "el-icon" }));
 
   const title = document.createElement("strong");
   title.className = "doc-prev-next-title";
   title.textContent = item.title;
 
-  link.append(
-    icon(direction === "prev" ? "arrow-left" : "arrow-right", { className: "el-icon" }),
-    label,
-    title,
-  );
+  link.append(label, title);
 
   return link;
 }

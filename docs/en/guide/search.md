@@ -8,6 +8,8 @@ In `docs/config.js`, configure whether search is enabled.
 
 ```javascript
 export const docConfig = {
-  search: true,
+  runtime: {
+    search: true,
+  },
 };
 ```

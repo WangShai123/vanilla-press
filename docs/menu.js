@@ -4,7 +4,7 @@ export const menuItems = [
     label: "menu.guide",
     children: [
       { label: "menu.components", path: "guide/components" },
-      { label: "menu.api", path: "guide/api" },
+      { label: "API", path: "guide/api" },
     ],
   },
 ];

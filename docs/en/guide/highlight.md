@@ -8,8 +8,9 @@ In `docs/config.js`, configure whether code highlighting is enabled.
 
 ```javascript
 export const docConfig = {
-  // Whether to enable code highlighting
-  highlight: true,
+  runtime: {
+    highlight: true,
+  },
 };
 ```
 

@@ -8,6 +8,8 @@
 
 ```javascript
 export const docConfig = {
-  search: true,
+  runtime: {
+    search: true,
+  },
 };
 ```

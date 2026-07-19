@@ -8,8 +8,9 @@
 
 ```javascript
 export const docConfig = {
-  // 是否启用代码高亮
-  highlight: true,
+  runtime: {
+    highlight: true,
+  },
 };
 ```
 

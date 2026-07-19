@@ -8,7 +8,9 @@ In `docs/config.js`, configure whether the main menu is enabled.
 
 ```javascript
 export const docConfig = {
-  menu: true,
+  runtime: {
+    menu: true,
+  },
 };
 ```
 

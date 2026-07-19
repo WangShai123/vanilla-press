@@ -8,6 +8,8 @@
 
 ```javascript
 export const docConfig = {
-  prevNext: true,
+  runtime: {
+    prevNext: true,
+  },
 };
 ```

@@ -8,7 +8,9 @@ In `docs/config.js`, configure whether the sidebar is enabled.
 
 ```javascript
 export const docConfig = {
-  sidebar: true,
+  runtime: {
+    sidebar: true,
+  },
 };
 ```
 

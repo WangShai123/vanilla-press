@@ -1,10 +1,7 @@
 import { createEffect } from "vanilla-signal";
 import { currentLocale, joinLocalePath, pageWithoutLocale } from "./i18n.js";
 import { localeCode, relativeAsset } from "./path.js";
-
-export function isI18nEnabled(config = {}) {
-  return config.i18n?.enabled !== false;
-}
+import { isI18nEnabled, runtimeOption } from "../utilities/features.js";
 
 function hasLocalePrefix(rel, locales) {
   return locales.some((locale) => {
@@ -19,14 +16,14 @@ function defaultLocale(languages = {}, config = {}) {
   const locales = Array.isArray(languages.locales) ? languages.locales : [];
   if (!locales.length) return null;
 
-  const preferred = config.i18n?.defaultLocale || languages.locale;
+  const preferred = runtimeOption(config, "i18n")?.defaultLocale || languages.locale;
   const preferredCode = localeCode(preferred);
   return locales.find((locale) => localeCode(locale.code) === preferredCode) || locales[0];
 }
 
 export function maybeRedirectToDefaultLocale(config = {}, languages = {}, page = {}) {
   if (!isI18nEnabled(config)) return false;
-  if (config.i18n?.redirectToDefault === false) return false;
+  if (runtimeOption(config, "i18n")?.redirectToDefault === false) return false;
 
   const locales = Array.isArray(languages.locales) ? languages.locales : [];
   if (!locales.length) return false;

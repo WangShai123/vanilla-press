@@ -10,6 +10,12 @@ import { initPrevNext } from "./prev-next.js";
 import { initSearch } from "./search.js";
 import { initSeo } from "./seo.js";
 import { initToc } from "./toc.js";
+import {
+  isPrevNextEnabled,
+  isSearchEnabled,
+  isSidebarEnabled,
+  isTocEnabled,
+} from "../utilities/features.js";
 
 const componentRegistry = {
   tabs: {
@@ -152,26 +158,16 @@ function watchDynamicComponents(names, config = {}) {
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
-function isSearchEnabled(config = {}) {
-  return config.search !== false;
-}
-
-function isSidebarEnabled(config = {}) {
-  return config.sidebar !== false;
-}
-
-function isTocEnabled(config = {}) {
-  if (config.toc === false) return false;
-  return config.toc?.enabled !== false;
-}
-
-function isPrevNextEnabled(config = {}) {
-  return config.prevNext === true || config.prevNext?.enabled === true;
+function syncViewportClasses(mobile) {
+  const html = document.documentElement;
+  html.classList.toggle("is-mobile", mobile);
+  html.classList.toggle("is-desktop", !mobile);
 }
 
 export function initDocPage(options = {}) {
   const components = normalizeComponents(options.components);
   const mobile = isMobile();
+  syncViewportClasses(mobile);
 
   const chrome = initDocChrome(
     options.config,
@@ -193,7 +189,13 @@ export function initDocPage(options = {}) {
 
   if (mobile) {
     if (isSidebarEnabled(options.config) || isTocEnabled(options.config)) {
-      initMobileSecondary(options.sidebar, options.page, chrome.i18n, chrome.locale, options.config);
+      initMobileSecondary(
+        options.sidebar,
+        options.page,
+        chrome.i18n,
+        chrome.locale,
+        options.config,
+      );
     }
   } else if (isTocEnabled(options.config)) {
     initToc(options.config);

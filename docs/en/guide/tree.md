@@ -4,10 +4,12 @@ A component that helps users quickly understand the directory structure of the d
 
 ## Runtime
 
-In `docs/config.js`, configure whether the tree feature is enabled.
+In `docs/config.js`, configure whether the tree component is enabled.
 
 ```javascript
 export const docConfig = {
-  tree: true,
+  components: {
+    tree: true,
+  },
 };
 ```

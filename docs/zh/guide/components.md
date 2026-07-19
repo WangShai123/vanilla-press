@@ -4,6 +4,8 @@
 
 ## Tabs
 
+内置组件，默认启用。
+
 :::tabs
 @tab JavaScript
 
@@ -43,6 +45,8 @@ export function toHtml(file) {
 :::
 
 ## Accordion
+
+内置组件，默认启用。
 
 :::tabs
 @tab 示例
@@ -87,6 +91,8 @@ export function toHtml(file) {
 - `collapsible` 是否允许折叠所有面板，不写即为 false
 
 ## Offcanvas
+
+内置组件，默认启用。
 
 :::tabs
 @tab 示例
@@ -142,6 +148,8 @@ export function toHtml(file) {
 
 ## Tree
 
+内置组件，需要手动启用。
+
 :::tabs
 @tab 示例
 
@@ -183,15 +191,17 @@ my-project/
 
 ```javascript
 export const docConfig = {
-  tree: {
-    enabled: true,
-    fileIcon: true,
+  components: {
+    tree: {
+      enabled: true,
+      fileIcon: true,
+    },
   },
 };
 ```
 
-- `tree` 默认关闭，设置为 `true` 或 `{ enabled: true }` 后启用。
-- `tree.fileIcon` 默认开启，仅对文件节点查找后缀图标，未注册时回退为 `file` 图标。
+- `components.tree` 默认关闭，设置为 `true` 或 `{ enabled: true }` 后启用。
+- `components.tree.fileIcon` 默认开启，仅对文件节点查找后缀图标，未注册时回退为 `file` 图标。
 - 在文件夹名称后添加 `[collapsed]` 可以设置该文件夹默认收起，例如 `components/ [collapsed]`。
 
 #### 扩展图标

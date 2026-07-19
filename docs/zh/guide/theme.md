@@ -8,7 +8,9 @@
 
 ```javascript
 export const docConfig = {
-  theme: true,
+  runtime: {
+    theme: true,
+  },
 };
 ```
 
@@ -21,10 +23,10 @@ export const docConfig = {
 
 | 配置项                      | 类型              | 默认值         | 说明                                  |
 | --------------------------- | ----------------- | -------------- | ------------------------------------- |
-| theme                       | boolean \| object | 启用           | 主题配置                              |
-| `theme.enabled`             | boolean           | true           | 是否启用主题功能                      |
-| `theme.label`               | string            | "theme.button" | 主题按钮的 i18n key                   |
-| `theme.options`             | object            | -              | 传给 `vanilla-jui` Theme 的配置对象   |
-| `theme.panel`               | object \| null    | -              | 传给 `theme.createPanel()` 的面板配置 |
-| `theme.offcanvas`           | object            | -              | 主题面板抽屉配置对象                  |
-| `theme.offcanvas.direction` | string            | "right"        | 主题面板抽屉方向                      |
+| runtime.theme                       | boolean \| object | 启用           | 主题配置                              |
+| `runtime.theme.enabled`             | boolean           | true           | 是否启用主题功能                      |
+| `runtime.theme.label`               | string            | "theme.button" | 主题按钮的 i18n key                   |
+| `runtime.theme.options`             | object            | -              | 传给 `vanilla-jui` Theme 的配置对象   |
+| `runtime.theme.panel`               | object \| null    | -              | 传给 `theme.createPanel()` 的面板配置 |
+| `runtime.theme.offcanvas`           | object            | -              | 主题面板抽屉配置对象                  |
+| `runtime.theme.offcanvas.direction` | string            | "right"        | 主题面板抽屉方向                      |

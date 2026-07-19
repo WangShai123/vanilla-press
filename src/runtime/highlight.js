@@ -1,18 +1,18 @@
 const LANG_ALIASES = {
-  js: 'javascript',
-  jsx: 'javascript',
-  ts: 'typescript',
-  tsx: 'typescript',
-  sh: 'bash',
-  shell: 'bash',
+  js: "javascript",
+  jsx: "javascript",
+  ts: "typescript",
+  tsx: "typescript",
+  sh: "bash",
+  shell: "bash",
 };
 
 function escapeHtml(value) {
   return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 }
 
 function highlightPlainJavaScript(value) {
@@ -22,31 +22,31 @@ function highlightPlainJavaScript(value) {
       if (keyword) return `<span class="hljs-keyword">${escapeHtml(keyword)}</span>`;
       if (number) return `<span class="hljs-number">${escapeHtml(number)}</span>`;
       return escapeHtml(match);
-    }
+    },
   );
 }
 
 function highlightJavaScript(code) {
   let index = 0;
-  let html = '';
+  let html = "";
 
   while (index < code.length) {
     const char = code[index];
     const next = code[index + 1];
 
-    if (char === '/' && next === '/') {
-      const end = code.indexOf('\n', index);
+    if (char === "/" && next === "/") {
+      const end = code.indexOf("\n", index);
       const stop = end === -1 ? code.length : end;
       html += `<span class="hljs-comment">${escapeHtml(code.slice(index, stop))}</span>`;
       index = stop;
       continue;
     }
 
-    if (char === '"' || char === "'" || char === '`') {
+    if (char === '"' || char === "'" || char === "`") {
       const quote = char;
       let stop = index + 1;
       while (stop < code.length) {
-        if (code[stop] === '\\') {
+        if (code[stop] === "\\") {
           stop += 2;
           continue;
         }
@@ -68,8 +68,8 @@ function highlightJavaScript(code) {
       if (
         current === '"' ||
         current === "'" ||
-        current === '`' ||
-        (current === '/' && lookahead === '/')
+        current === "`" ||
+        (current === "/" && lookahead === "/")
       ) {
         break;
       }
@@ -88,26 +88,26 @@ function highlightMarkup(code) {
     (_match, open, tag, attrs, close) => {
       const highlightedAttrs = attrs.replace(
         /([\w:-]+)(=)(&quot;.*?&quot;|'.*?')/g,
-        '<span class="hljs-attr">$1</span>$2<span class="hljs-string">$3</span>'
+        '<span class="hljs-attr">$1</span>$2<span class="hljs-string">$3</span>',
       );
       return `${open}<span class="hljs-name">${tag}</span>${highlightedAttrs}${close}`;
-    }
+    },
   );
 }
 
-export function normalizeLang(lang = '') {
+export function normalizeLang(lang = "") {
   const normalized = String(lang).trim().toLowerCase();
-  return LANG_ALIASES[normalized] || normalized || 'text';
+  return LANG_ALIASES[normalized] || normalized || "text";
 }
 
 export function highlight(code, lang) {
   const language = normalizeLang(lang);
   const highlighted =
-    language === 'javascript' || language === 'typescript'
+    language === "javascript" || language === "typescript"
       ? highlightJavaScript(code)
-      : language === 'html' || language === 'xml'
+      : language === "html" || language === "xml"
         ? highlightMarkup(code)
         : escapeHtml(code);
 
-  return `<pre class="j-code-editor hljs language-${language}"><code class="language-${language}">${highlighted}</code></pre>`;
+  return `<pre class="j-code-editor hljs"><code class="language-${language}">${highlighted}</code></pre>`;
 }

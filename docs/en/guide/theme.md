@@ -8,7 +8,9 @@ In `docs/config.js`, configure whether the theme feature is enabled.
 
 ```javascript
 export const docConfig = {
-  theme: true,
+  runtime: {
+    theme: true,
+  },
 };
 ```
 
@@ -21,10 +23,10 @@ Implemented with the `Theme` and `Offcanvas` components from `vanilla-jui`.
 
 | Option                      | Type              | Default        | Description                                  |
 | --------------------------- | ----------------- | -------------- | -------------------------------------------- |
-| theme                       | boolean \| object | Enabled        | Theme configuration                          |
-| `theme.enabled`             | boolean           | true           | Whether the theme feature is enabled         |
-| `theme.label`               | string            | "theme.button" | i18n key for the theme button label          |
-| `theme.options`             | object            | -              | Options object passed to `vanilla-jui` Theme |
-| `theme.panel`               | object \| null    | -              | Panel config passed to `theme.createPanel()` |
-| `theme.offcanvas`           | object            | -              | Offcanvas config for the theme panel         |
-| `theme.offcanvas.direction` | string            | "right"        | Direction of the theme panel offcanvas       |
+| runtime.theme                       | boolean \| object | Enabled        | Theme configuration                          |
+| `runtime.theme.enabled`             | boolean           | true           | Whether the theme feature is enabled         |
+| `runtime.theme.label`               | string            | "theme.button" | i18n key for the theme button label          |
+| `runtime.theme.options`             | object            | -              | Options object passed to `vanilla-jui` Theme |
+| `runtime.theme.panel`               | object \| null    | -              | Panel config passed to `theme.createPanel()` |
+| `runtime.theme.offcanvas`           | object            | -              | Offcanvas config for the theme panel         |
+| `runtime.theme.offcanvas.direction` | string            | "right"        | Direction of the theme panel offcanvas       |

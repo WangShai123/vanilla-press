@@ -1,12 +1,13 @@
-import path from "path";
-
 export function pageTitle(markdown, file) {
   const heading = markdown.match(/^#\s+(.+)$/m)?.[1]?.trim();
-  return heading || path.basename(file, ".md");
+  if (heading) return heading;
+  const value = String(file || "");
+  const name = value.split(/[/\\]/).pop() || "";
+  return name.replace(/\.md$/i, "");
 }
 
 export function normalizeSiteName(config = {}) {
-  return String(config.siteName || "Docs").trim() || "Docs";
+  return String(config.siteName || "VanillaPress").trim() || "VanillaPress";
 }
 
 export function documentTitle(title, config = {}) {
@@ -16,7 +17,9 @@ export function documentTitle(title, config = {}) {
 }
 
 export function excerptText(text = "", maxLength = 180) {
-  const value = String(text || "").replace(/\s+/g, " ").trim();
+  const value = String(text || "")
+    .replace(/\s+/g, " ")
+    .trim();
   if (value.length <= maxLength) return value;
   return `${value.slice(0, maxLength).trim()}...`;
 }

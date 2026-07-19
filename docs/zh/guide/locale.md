@@ -8,10 +8,12 @@
 
 ```javascript
 export const docConfig = {
-  i18n: {
-    enabled: true, // 是否启用国际化功能
-    defaultLocale: "zh-CN", // 默认语言
-    redirectToDefault: true, // 是否重定向到默认语言
+  runtime: {
+    i18n: {
+      enabled: true,
+      defaultLocale: "zh-CN", // 默认语言
+      redirectToDefault: true, // 是否重定向到默认语言
+    },
   },
 };
 ```
@@ -42,12 +44,10 @@ export const languages = {
         home: "首页",
         guide: "指南",
         components: "组件",
-        api: "API",
       },
       sidebar: {
         home: "首页",
         components: "组件",
-        api: "API",
         runtime: "运行时",
         locale: "国际化",
       },
@@ -62,9 +62,6 @@ export const languages = {
         empty: "没有找到匹配内容",
         hint: "输入关键词搜索标题和正文",
       },
-      footer: {
-        text: "Built with markdown-it and vanilla-jui.",
-      },
       theme: {
         button: "主题",
       },
@@ -74,12 +71,10 @@ export const languages = {
         home: "Home",
         guide: "Guide",
         components: "Components",
-        api: "API",
       },
       sidebar: {
         home: "Home",
         components: "Components",
-        api: "API",
         runtime: "Runtime",
         locale: "Locale",
       },
@@ -93,9 +88,6 @@ export const languages = {
         placeholder: "Type keywords...",
         empty: "No results found",
         hint: "Search titles and page content",
-      },
-      footer: {
-        text: "Built with markdown-it and vanilla-jui.",
       },
       theme: {
         button: "Theme",

@@ -4,10 +4,12 @@
 
 ## 运行时
 
-在 `docs/config.js` 中，按需配置是否启用目录树功能。
+在 `docs/config.js` 中，按需配置是否启用目录树组件。
 
 ```javascript
 export const docConfig = {
-  tree: true,
+  components: {
+    tree: true,
+  },
 };
 ```

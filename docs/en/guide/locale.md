@@ -8,10 +8,12 @@ In `docs/config.js`, configure whether internationalization is enabled.
 
 ```javascript
 export const docConfig = {
-  i18n: {
-    enabled: true, // Whether to enable i18n
-    defaultLocale: "zh-CN", // Default language
-    redirectToDefault: true, // Whether to redirect to the default locale
+  runtime: {
+    i18n: {
+      enabled: true,
+      defaultLocale: "zh-CN", // Default language
+      redirectToDefault: true, // Whether to redirect to the default locale
+    },
   },
 };
 ```
