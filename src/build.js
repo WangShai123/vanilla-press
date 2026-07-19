@@ -4,6 +4,7 @@ import { glob } from "glob";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { build as viteBuild } from "vite";
+import { randomId } from "vanilla-jui";
 import {
   DEFAULT_CONFIG_JS,
   DEFAULT_LANGUAGES_JS,
@@ -85,11 +86,15 @@ function validateDocConfig(config = {}) {
   try {
     url = new URL(siteUrl);
   } catch {
-    throw new Error('docConfig.siteUrl must be an absolute URL, for example: "https://example.com".');
+    throw new Error(
+      'docConfig.siteUrl must be an absolute URL, for example: "https://example.com".',
+    );
   }
 
   if (!["http:", "https:"].includes(url.protocol)) {
-    throw new Error('docConfig.siteUrl must be an http(s) URL, for example: "https://example.com".');
+    throw new Error(
+      'docConfig.siteUrl must be an http(s) URL, for example: "https://example.com".',
+    );
   }
 }
 
@@ -174,6 +179,69 @@ async function buildRuntime(outputDir) {
   });
 }
 
+function hashFileName(fileName) {
+  const ext = path.extname(fileName);
+  const baseName = path.basename(fileName, ext);
+  return `${baseName}.${randomId(8)}${ext}`;
+}
+
+function rewriteAssetReferences(html, assetMap = new Map()) {
+  let output = html;
+
+  for (const [from, to] of assetMap) {
+    const pattern = new RegExp(`(["'])([^"']*?)${from}(["'])`, "g");
+    output = output.replaceAll(pattern, `$1$2${to}$3`);
+  }
+
+  return output;
+}
+
+async function hashRootAssets(outputDir) {
+  const assetFiles = [
+    "styles.css",
+    "runtime.js",
+    "search-index.js",
+    "config.js",
+    "languages.js",
+    "menu.js",
+    "sidebar.js",
+  ];
+
+  const assetMap = new Map();
+
+  for (const file of assetFiles) {
+    const fullPath = path.join(outputDir, file);
+    if (!(await pathExists(fullPath))) continue;
+
+    const hashedFile = hashFileName(file);
+    await fs.rename(fullPath, path.join(outputDir, hashedFile));
+    assetMap.set(file, hashedFile);
+  }
+
+  return assetMap;
+}
+
+async function rewriteHtmlAssets(outputDir, assetMap = new Map()) {
+  const files = (
+    await glob("**/*.html", {
+      cwd: outputDir,
+      nodir: true,
+      windowsPathsNoEscape: true,
+    })
+  ).sort();
+
+  await Promise.all(
+    files.map(async (file) => {
+      const fullPath = path.join(outputDir, file);
+      const html = await fs.readFile(fullPath, "utf8");
+      const next = rewriteAssetReferences(html, assetMap);
+      if (next !== html) {
+        await fs.writeFile(fullPath, next, "utf8");
+      }
+    }),
+  );
+}
+
 async function minifyJsAssets(outputDir) {
   const files = (
     await glob("**/*.js", {
@@ -255,7 +323,9 @@ async function writeSearchIndex(outputDir, pages = []) {
 }
 
 function siteUrl(config = {}) {
-  return String(config.siteUrl || "").trim().replace(/\/+$/g, "");
+  return String(config.siteUrl || "")
+    .trim()
+    .replace(/\/+$/g, "");
 }
 
 function sitemapLoc(page, baseUrl) {
@@ -306,7 +376,9 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
     })
   ).sort();
   const sources = await Promise.all(
-    files.map(async (file) => readSource(file, await fs.readFile(path.join(inputDir, file), "utf8"))),
+    files.map(async (file) =>
+      readSource(file, await fs.readFile(path.join(inputDir, file), "utf8")),
+    ),
   );
 
   await buildCss(outputDir);
@@ -325,6 +397,8 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
 
   await writeDefaultLocaleEntrypoint(outputDir, config, languages, pages);
   await minifyJsAssets(outputDir);
+  const assetMap = await hashRootAssets(outputDir);
+  await rewriteHtmlAssets(outputDir, assetMap);
 
   console.log(`done: ${pages.length} page(s), ${toPosix(path.relative(projectRoot, outputDir))}`);
 }
