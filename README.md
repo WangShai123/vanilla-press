@@ -1,12 +1,12 @@
-# vanilla-press
+# create-vanilla-press
 
-A lightweight static documentation generator built with `markdown-it` and `vanilla-jui`.
+A lightweight npm create scaffold for vanilla-press, built from the existing documentation project template.
 
 - [README 中文](README_zh.md)
 
 ## Overview
 
-`vanilla-press` converts Markdown files under `docs/` into deployable static HTML pages in `dist/`.
+`create-vanilla-press` scaffolds a vanilla-press project that converts Markdown files under `docs/` into deployable static HTML pages in `dist/`.
 
 It uses a split architecture:
 
@@ -15,8 +15,18 @@ It uses a split architecture:
 
 ## Installation
 
+Git:
+
 ```bash
 git clone https://github.com/WangShai123/vanilla-press.git
+cd vanilla-press
+npm install
+```
+
+NPM:
+
+```bash
+npm create vanilla-press@latest vanilla-press
 cd vanilla-press
 npm install
 ```

@@ -16,8 +16,29 @@ description: Vanilla-Press is a lightweight static documentation generator built
 
 ## Installation
 
+:::tabs
+@tab git
+
 ```bash
 git clone https://github.com/WangShai123/vanilla-press.git
+cd vanilla-press
+npm install
+```
+
+@tab npm
+
+```bash
+npm create vanilla-press@latest vanilla-press
+cd vanilla-press
+npm install
+```
+
+:::
+
+You can also run the same initializer directly from the root package:
+
+```bash
+npx vanilla-press@latest init vanilla-press
 cd vanilla-press
 npm install
 ```

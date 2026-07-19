@@ -16,8 +16,29 @@ description: Vanilla-Press 是基于 markdown-it 和 vanilla-jui 的轻量静态
 
 ## 安装
 
+:::tabs
+@tab git
+
 ```bash
 git clone https://github.com/WangShai123/vanilla-press.git
+cd vanilla-press
+npm install
+```
+
+@tab npm
+
+```bash
+npm create vanilla-press@latest vanilla-press
+cd vanilla-press
+npm install
+```
+
+:::
+
+也可以直接调用根包里的同一套初始化命令：
+
+```bash
+npx vanilla-press@latest init vanilla-press
 cd vanilla-press
 npm install
 ```

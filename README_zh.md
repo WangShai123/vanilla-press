@@ -1,12 +1,12 @@
-# vanilla-press
+# create-vanilla-press
 
-一个基于 `markdown-it` 与 `vanilla-jui` 的轻量静态文档生成器。
+一个基于现有 vanilla-press 模板生成项目的 npm create 脚手架。
 
 - [README](README.md)
 
 ## 项目简介
 
-`vanilla-press` 会将 `docs/` 目录下的 Markdown 文档构建为可部署的静态 HTML，并输出到 `dist/`。
+`create-vanilla-press` 会生成一个 vanilla-press 项目，该项目会将 `docs/` 目录下的 Markdown 文档构建为可部署的静态 HTML，并输出到 `dist/`。
 
 整体采用“编译期 + 运行期”分层设计：
 
@@ -15,8 +15,18 @@
 
 ## 安装
 
+Git:
+
 ```bash
 git clone https://github.com/WangShai123/vanilla-press.git
+cd vanilla-press
+npm install
+```
+
+NPM:
+
+```bash
+npm create vanilla-press@latest vanilla-press
 cd vanilla-press
 npm install
 ```
