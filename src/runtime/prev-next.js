@@ -73,8 +73,8 @@ function createLink(item, page, locale, direction, i18n) {
 export function initPrevNext(config = {}, sidebar = [], page = {}, i18n, locale = null) {
   if (!isPrevNextEnabled(config)) return;
 
-  const article = document.querySelector(".j-content");
-  if (!article || article.dataset.docPrevNextReady === "true") return;
+  const slot = document.querySelector("[data-doc-prev-next]");
+  if (!slot || slot.dataset.docPrevNextReady === "true") return;
 
   const items = flattenItems(sidebar, i18n);
   const current = resolveCurrentRel(page, locale);
@@ -87,10 +87,10 @@ export function initPrevNext(config = {}, sidebar = [], page = {}, i18n, locale 
 
   const nav = document.createElement("nav");
   nav.className = "doc-prev-next";
+  nav.dataset.docPrevNextReady = "true";
   nav.setAttribute("aria-label", "Previous and next pages");
   if (prev) nav.append(createLink(prev, page, locale, "prev", i18n));
   if (next) nav.append(createLink(next, page, locale, "next", i18n));
 
-  article.after(nav);
-  article.dataset.docPrevNextReady = "true";
+  slot.replaceWith(nav);
 }

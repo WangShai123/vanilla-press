@@ -1,0 +1,66 @@
+<div class="aurora" aria-hidden="true"></div>
+
+<main class="doc-home">
+  <section class="doc-home-hero">
+    <article class="doc-home-hero-copy" data-reveal="2">
+      <span class="doc-home-badge">{{ layout.hero.badge }}</span>
+      <h1>{{ layout.hero.title }}</h1>
+      <p class="doc-home-lead">{{ layout.hero.description }}</p>
+      <div class="doc-home-actions">
+        {{#layout.hero.actions}}
+        <a class="doc-home-button {{ variant }}" href="{{ link }}">{{ text }}</a>
+        {{/layout.hero.actions}}
+      </div>
+      <p class="doc-home-hint">{{ layout.hero.hint }}</p>
+    </article>
+
+    <aside class="doc-home-visual" data-reveal="3" aria-label="{{ layout.quickStart.title }}">
+      <div class="doc-home-code-card">
+        <div class="doc-home-code-head">
+          <span class="doc-home-code-dots" aria-hidden="true"></span>
+          <span>{{ layout.quickStart.title }}</span>
+        </div>
+        {{#layout.quickStart.groups}}
+        <section class="doc-home-command-group">
+          <h2>{{ title }}</h2>
+          <pre><code>{{#lines}}{{ this }}
+{{/lines}}</code></pre>
+        </section>
+        {{/layout.quickStart.groups}}
+      </div>
+    </aside>
+  </section>
+
+  <section class="doc-home-section" id="features" data-reveal="3">
+    <div class="doc-home-section-head">
+      <h2>{{ layout.features.title }}</h2>
+      <p>{{ layout.features.description }}</p>
+    </div>
+    <div class="doc-home-features">
+      {{#layout.features.items}}
+      <article class="doc-home-feature">
+        <div class="doc-home-feature-index">{{ index }}</div>
+        <h3>{{ title }}</h3>
+        <p>{{ description }}</p>
+      </article>
+      {{/layout.features.items}}
+    </div>
+  </section>
+
+  <section class="doc-home-cta" data-reveal="4">
+    <div>
+      <h2>{{ layout.cta.title }}</h2>
+      <p>{{ layout.cta.description }}</p>
+    </div>
+    <div class="doc-home-actions">
+      {{#layout.cta.actions}}
+      <a class="doc-home-button {{ variant }}" href="{{ link }}">{{ text }}</a>
+      {{/layout.cta.actions}}
+    </div>
+  </section>
+
+  <section class="doc-home-content j-content is-sm">
+    {{{ content }}}
+  </section>
+</main>
+<footer class="doc-footer" data-doc-footer></footer>

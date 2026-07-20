@@ -12,6 +12,7 @@ import {
   DEFAULT_SIDEBAR_JS,
 } from "./config/defaults.js";
 import { createMarkdown } from "./core/md.js";
+import { layoutStyles, loadLayouts, renderLayout } from "./render/layout.js";
 import { renderDefaultLocaleEntrypoint, renderHtml } from "./render/html.js";
 import {
   isI18nEnabled,
@@ -21,6 +22,7 @@ import {
   isSeoEnabled,
   isSidebarEnabled,
   runtimeOption,
+  isTocEnabled,
 } from "./utilities/features.js";
 import { parseFrontmatter, pickSeoFrontmatter } from "./utilities/frontmatter.js";
 import { cleanHtml, htmlText } from "./utilities/html.js";
@@ -147,12 +149,13 @@ async function writeDefaultLocaleEntrypoint(outputDir, config = {}, languages = 
   console.log(`built ${toPosix(path.relative(projectRoot, rootIndexFile))}`);
 }
 
-async function buildCss(outputDir) {
+async function buildCss(outputDir, layouts) {
   const juiCssUrl = await import.meta.resolve("vanilla-jui/style.css");
   const juiCss = await fs.readFile(fileURLToPath(juiCssUrl), "utf8");
   const customCss = await fs.readFile(path.join(projectRoot, "src/style.css"), "utf8");
+  const styles = [juiCss, customCss, ...layoutStyles(layouts)];
 
-  await fs.writeFile(path.join(outputDir, "styles.css"), `${juiCss}\n\n${customCss}`, "utf8");
+  await fs.writeFile(path.join(outputDir, "styles.css"), styles.join("\n\n"), "utf8");
 }
 
 async function buildRuntime(outputDir) {
@@ -286,10 +289,18 @@ function readSource(file, markdown) {
   };
 }
 
-function renderSource(source, md, config, languages) {
+function renderSource(source, md, config, languages, layouts) {
   const env = { file: source.file, components: new Set(), config };
   const rendered = md.render(source.markdown, env);
   const body = cleanHtml(rendered);
+  const pageLayout = renderLayout({
+    body,
+    source,
+    config,
+    sidebarEnabled: isSidebarEnabled(config),
+    tocEnabled: isTocEnabled(config),
+    layouts,
+  });
 
   return {
     ...source,
@@ -304,6 +315,7 @@ function renderSource(source, md, config, languages) {
       components: Array.from(env.components).sort(),
       config,
       languages,
+      pageLayout,
       searchEnabled: isSearchEnabled(config),
     }),
   };
@@ -365,6 +377,7 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
   const config = await loadDocConfig(inputDir);
   validateDocConfig(config);
   const md = createMarkdown(config);
+  const layouts = await loadLayouts({ projectRoot, inputDir });
 
   await fs.rm(outputDir, { force: true, recursive: true });
   await fs.mkdir(outputDir, { recursive: true });
@@ -384,10 +397,10 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
     ),
   );
 
-  await buildCss(outputDir);
+  await buildCss(outputDir, layouts);
   await buildRuntime(outputDir);
 
-  const pages = sources.map((source) => renderSource(source, md, config, languages));
+  const pages = sources.map((source) => renderSource(source, md, config, languages, layouts));
   if (isSearchEnabled(config)) await writeSearchIndex(outputDir, pages);
   if (isSitemapEnabled(config)) await writeSitemap(outputDir, pages, config);
 

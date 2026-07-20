@@ -26,6 +26,8 @@ export const languages = {
         tree: "目录树",
         prevNext: "分页导航",
         sitemap: "站点地图",
+        quickStart: "快速开始",
+        layout: "布局",
       },
       mobile: {
         navigation: "导航",
@@ -66,6 +68,8 @@ export const languages = {
         tree: "Tree",
         prevNext: "Prev/Next",
         sitemap: "Sitemap",
+        quickStart: "Quick Start",
+        layout: "Layout",
       },
       mobile: {
         navigation: "Navigation",

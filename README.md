@@ -13,6 +13,13 @@ It uses a split architecture:
 - Build-time rendering for markdown parsing and page generation.
 - Runtime enhancement for interactive UI components.
 
+## Features
+
+- Native only: no framework runtime dependency.
+- Lightweight: small and simple static output.
+- Personalized: easily customize layouts, styles, and components.
+- Extensible: container components with runtime enhancement.
+
 ## Installation
 
 Git:

@@ -1,9 +1,21 @@
 export const sidebarItems = [
-  { label: "sidebar.home", path: "index" },
-  { label: "sidebar.components", path: "guide/components" },
-  { label: "API", path: "guide/api" },
+  { label: "sidebar.quickStart", path: "guide/quick-start" },
   {
-    label: "sidebar.config",
+    label: "sidebar.layout",
+    children: [
+      { label: "API", path: "guide/layout-api" },
+      { label: "sidebar.home", path: "guide/layout-home" },
+    ],
+  },
+  {
+    label: "sidebar.components",
+    children: [
+      { label: "sidebar.components", path: "guide/components" },
+      { label: "API", path: "guide/api" },
+    ],
+  },
+  {
+    label: "sidebar.runtime",
     collapse: true,
     children: [
       { label: "sidebar.runtime", path: "guide/runtime" },

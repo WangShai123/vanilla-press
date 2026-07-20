@@ -13,3 +13,42 @@ export const docConfig = {
   },
 };
 ```
+
+## Example
+
+:::tabs
+@tab Demo
+
+:::tree
+my-project/
+├── src/
+│ ├── components/ [collapsed]
+│ │ ├── Header.vue
+│ │ └── Footer.vue
+│ ├── App.vue
+│ └── main.js
+├── public/
+│ └── index.html
+├── package.json
+└── README.md
+:::
+
+@tab Syntax
+
+```markdown
+:::tree
+my-project/
+├── src/
+│ ├── components/ [collapsed]
+│ │ ├── Header.vue
+│ │ └── Footer.vue
+│ ├── App.vue
+│ └── main.js
+├── public/
+│ └── index.html
+├── package.json
+└── README.md
+:::
+```
+
+:::

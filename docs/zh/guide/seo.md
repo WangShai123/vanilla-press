@@ -20,3 +20,15 @@ export const docConfig = {
 
 - `false`: 仅自动解析 html title
 - `true`: 支持在 `markdown` 文档中使用 `frontmatter` 配置 `title`、`description`、`keywords`，并自动解析。
+
+## 示例
+
+在 `markdown` 文档的顶部，使用 `frontmatter` 配置 SEO 信息。
+
+```markdown
+---
+title: 文档站点 SEO 配置示例
+description: 这是一个文档站点 SEO 配置示例，展示如何在 markdown 文档中使用 frontmatter 配置 SEO 信息。
+keywords: 文档站点, SEO, 配置示例
+---
+```

@@ -1,0 +1,13 @@
+<main class="{{ shell.className }}">
+{{{ slots.sidebar }}}
+  <section class="{{ shell.mainClassName }}">
+    <div>
+      <article class="j-content is-sm">
+        {{{ content }}}
+      </article>
+      {{{ slots.prevNext }}}
+    </div>
+{{{ slots.aside }}}
+  </section>
+</main>
+<footer class="doc-footer" data-doc-footer></footer>

@@ -13,7 +13,6 @@ import { normalizePath, relativeAsset } from "../utilities/path.js";
 import { renderHeaderTemplates } from "./template/chrome.js";
 import { renderHead } from "./template/head.js";
 import { renderRuntimeScript } from "./template/runtime.js";
-import { renderPageShell } from "./template/shell.js";
 
 function resolveHtmlLang(rel, config = {}, languages = {}) {
   const i18n = runtimeOption(config, "i18n");
@@ -40,6 +39,7 @@ export function renderHtml({
   components,
   config,
   languages,
+  pageLayout,
   searchEnabled = isSearchEnabled(config),
 }) {
   const cssHref = relativeAsset(rel, "styles.css");
@@ -60,7 +60,7 @@ export function renderHtml({
   return `<!doctype html>
 <html lang="${htmlLang}">
 ${renderHead({ title: htmlTitle, seo, themeEnabled, cssHref })}
-<body>
+<body class="doc-layout-${pageLayout?.name || "default"}">
   ${renderHeaderTemplates({
     rel,
     menuEnabled,
@@ -70,7 +70,7 @@ ${renderHead({ title: htmlTitle, seo, themeEnabled, cssHref })}
     tocEnabled,
     themeEnabled,
   })}
-  ${renderPageShell({ body, config, sidebarEnabled, tocEnabled })}
+  ${pageLayout?.html || body}
   ${renderRuntimeScript({
     runtimeHref,
     configHref,

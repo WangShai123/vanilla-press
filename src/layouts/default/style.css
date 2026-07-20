@@ -1,0 +1,3 @@
+.doc-layout-default .doc-shell {
+  min-height: calc(100vh - var(--doc-header-height));
+}

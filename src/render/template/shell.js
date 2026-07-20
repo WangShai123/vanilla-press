@@ -38,3 +38,23 @@ ${aside}
   </main>
   <footer class="doc-footer" data-doc-footer></footer>`;
 }
+
+export function createPageShellContext({ config, sidebarEnabled, tocEnabled }) {
+  const sidebar = renderSidebar(sidebarEnabled);
+  const toc = renderToc(tocEnabled);
+  const aside = renderAside({ config, toc });
+  const hasAside = Boolean(aside);
+
+  return {
+    shell: {
+      className: `doc-shell${sidebarEnabled ? " has-sidebar" : ""}`,
+      mainClassName: `doc-main${hasAside ? " has-aside" : ""}`,
+    },
+    slots: {
+      sidebar,
+      toc,
+      aside,
+      prevNext: '<div data-doc-prev-next></div>',
+    },
+  };
+}

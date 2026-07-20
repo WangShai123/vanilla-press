@@ -13,3 +13,5 @@ export const docConfig = {
   },
 };
 ```
+
+分页导航只会渲染到当前布局声明的 `<div data-doc-prev-next></div>` 插槽中。默认文档布局已包含该插槽；`layout: home` 首页布局默认不渲染分页导航。

@@ -13,3 +13,5 @@ export const docConfig = {
   },
 };
 ```
+
+Pagination only renders into a `<div data-doc-prev-next></div>` slot provided by the selected layout. The default documentation layout includes this slot; the `layout: home` homepage layout does not render pagination by default.

@@ -9,18 +9,41 @@
   --doc-accent-bg: var(--tone-soft);
 }
 
-body {
-  background:
-    radial-gradient(circle at 12% -8%,
-      color-mix(in srgb, var(--tone-soft) 66%, transparent),
-      transparent 42%),
-    radial-gradient(circle at 86% 0%,
-      color-mix(in srgb, var(--state-info-soft) 64%, transparent),
-      transparent 40%),
-    radial-gradient(circle at 20% 96%,
-      color-mix(in srgb, var(--state-success-soft) 56%, transparent),
-      transparent 36%),
-    linear-gradient(180deg, var(--ui-bg), var(--ui-bg-subtle));
+/* body {} */
+
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora::before,
+.aurora::after {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(54px);
+  opacity: 0.42;
+  animation: doc-home-float 9s ease-in-out infinite;
+  content: "";
+}
+
+.aurora::before {
+  top: 6%;
+  left: 4%;
+  width: 18rem;
+  height: 18rem;
+  background: color-mix(in srgb, var(--tone-solid) 22%, transparent);
+}
+
+.aurora::after {
+  right: 8%;
+  bottom: 7%;
+  width: 20rem;
+  height: 20rem;
+  background: color-mix(in srgb, var(--state-warning) 18%, transparent);
+  animation-delay: -3.6s;
 }
 
 .doc-header {
