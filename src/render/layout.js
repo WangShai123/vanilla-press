@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import { glob } from "glob";
 import { renderTemplate } from "./template/engine.js";
+import { renderHeaderTemplates, renderSecondaryTemplate } from "./template/chrome.js";
 import { createPageShellContext } from "./template/shell.js";
 
 const defaultLayoutName = "default";
@@ -103,6 +104,7 @@ export function renderLayout({
   config,
   sidebarEnabled,
   tocEnabled,
+  chrome,
   layouts,
 }) {
   const name = pageLayoutName(source.frontmatter);
@@ -111,7 +113,13 @@ export function renderLayout({
     throw new Error(`Unknown layout "${name}" in ${source.file}. Add ${name}/template.html under src/layouts or docs/layouts.`);
   }
 
-  const shellContext = createPageShellContext({ config, sidebarEnabled, tocEnabled });
+  const shellContext = createPageShellContext({
+    config,
+    sidebarEnabled,
+    tocEnabled,
+    header: renderHeaderTemplates(chrome),
+    secondary: renderSecondaryTemplate(chrome),
+  });
   const context = {
     ...shellContext,
     content: body,

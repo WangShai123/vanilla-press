@@ -10,7 +10,6 @@ import {
 import { escapeHtml } from "../utilities/html.js";
 import { documentTitle } from "../utilities/page.js";
 import { normalizePath, relativeAsset } from "../utilities/path.js";
-import { renderHeaderTemplates } from "./template/chrome.js";
 import { renderHead } from "./template/head.js";
 import { renderRuntimeScript } from "./template/runtime.js";
 
@@ -61,15 +60,6 @@ export function renderHtml({
 <html lang="${htmlLang}">
 ${renderHead({ title: htmlTitle, seo, themeEnabled, cssHref })}
 <body class="doc-layout-${pageLayout?.name || "default"}">
-  ${renderHeaderTemplates({
-    rel,
-    menuEnabled,
-    searchEnabled,
-    i18nEnabled,
-    sidebarEnabled,
-    tocEnabled,
-    themeEnabled,
-  })}
   ${pageLayout?.html || body}
   ${renderRuntimeScript({
     runtimeHref,

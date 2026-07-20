@@ -1,4 +1,4 @@
-import { createModal, icon } from "vanilla-jui";
+import { createModal, icon, randomId } from "vanilla-jui";
 import { localize } from "./i18n.js";
 import { normalizeRel, relativeAsset } from "./path.js";
 import { isSearchEnabled } from "../utilities/features.js";
@@ -53,6 +53,7 @@ function createSearchPanel({ items, page, i18n, onNavigate }) {
 
   const input = document.createElement("input");
   input.className = "j-input doc-search-input";
+  input.id = randomId();
   input.type = "search";
   input.autocomplete = "off";
   input.placeholder = translate("search.placeholder", "输入关键词...", i18n);

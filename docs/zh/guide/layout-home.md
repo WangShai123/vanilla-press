@@ -1,6 +1,6 @@
 # 首页布局
 
-`home` 是 VanillaPress 提供的首页布局示例，用于展示如何通过 frontmatter 驱动一个更自由的页面结构。它复用站点通用 header，但页面主体由 `src/layouts/home/template.html` 和 `src/layouts/home/style.css` 控制。
+`home` 是 VanillaPress 提供的首页布局示例，用于展示如何通过 frontmatter 驱动一个更自由的页面结构。它在 `.doc-header` 内通过 `{{{ slots.header }}}` 复用站点通用 header，但不使用手机次级菜单 `{{{ slots.secondary }}}`。页面主体由 `src/layouts/home/template.html` 和 `src/layouts/home/style.css` 控制。
 
 ## 启用方式
 
@@ -149,7 +149,7 @@ cta:
 
 ## 与默认布局的区别
 
-`home` 布局不使用默认文档页的侧边栏、右侧目录和分页导航。即使 `docs/config.js` 中开启了 `runtime.prevNext`，首页也不会渲染分页导航，因为 `home` 模板没有声明 `<div data-doc-prev-next></div>` 插槽。
+`home` 布局只在 `.doc-header` 内使用主菜单插槽 `{{{ slots.header }}}`，不使用手机次级菜单 `{{{ slots.secondary }}}`，也不使用默认文档页的侧边栏、右侧目录和分页导航。即使 `docs/config.js` 中开启了 `runtime.prevNext`，首页也不会渲染分页导航，因为 `home` 模板没有声明 `<div data-doc-prev-next></div>` 插槽。
 
 如果你基于 `home` 复制出一个新的落地页布局，并希望显示分页导航，可以在模板中手动加入：
 

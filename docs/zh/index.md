@@ -8,7 +8,7 @@ layouts:
     hero:
       badge: vanilla press
       title: 轻量、优雅的静态文档生成器
-      description: 基于 `markdown-it` 的静态文档脚手架，按需引用功能和组件，最小化构建 JavaScript 运行时。
+      description: 基于 markdown-it 的静态文档脚手架，按需引用功能和组件，构建最小化 JavaScript 运行时。
       hint: 内置多语言、搜索、SEO、主题模式等常用功能。
       actions:
         - text: 快速开始

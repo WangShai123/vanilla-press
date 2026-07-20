@@ -1,6 +1,6 @@
 # Home Layout
 
-`home` is the homepage layout example provided by VanillaPress. It shows how to drive a freer page structure from frontmatter. It reuses the shared site header, while the page body is controlled by `src/layouts/home/template.html` and `src/layouts/home/style.css`.
+`home` is the homepage layout example provided by VanillaPress. It shows how to drive a freer page structure from frontmatter. It reuses the shared site header through `{{{ slots.header }}}` inside `.doc-header`, but does not use the mobile secondary menu `{{{ slots.secondary }}}`. The page body is controlled by `src/layouts/home/template.html` and `src/layouts/home/style.css`.
 
 ## Enable It
 
@@ -149,7 +149,7 @@ If you want the homepage to show Markdown content, override the `home` layout st
 
 ## Difference from the Default Layout
 
-The `home` layout does not use the default documentation sidebar, right-side table of contents, or previous/next navigation. Even if `runtime.prevNext` is enabled in `docs/config.js`, the homepage will not render previous/next navigation because the `home` template does not declare a `<div data-doc-prev-next></div>` slot.
+The `home` layout only uses the main menu slot `{{{ slots.header }}}` inside `.doc-header`. It does not use the mobile secondary menu `{{{ slots.secondary }}}`, the default documentation sidebar, the right-side table of contents, or previous/next navigation. Even if `runtime.prevNext` is enabled in `docs/config.js`, the homepage will not render previous/next navigation because the `home` template does not declare a `<div data-doc-prev-next></div>` slot.
 
 If you copy `home` into a new landing-page layout and want to show previous/next navigation, add the slot manually:
 

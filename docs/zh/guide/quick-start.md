@@ -59,15 +59,13 @@ npm run dev
 
 :::
 
-## 预览
-
-[在线预览](http://wangshai123.github.io/vanilla-press)
-
 ## 样式
 
-`vanilla-press` 仅提供基础样式，请在项目中按需覆写 `style.css`。
+`vanilla-press` 采用 `desktop` 与 `mobile` 隔离策略，会根据用户设备类型，加载对应运行时和渲染样式。
 
-采用 `desktop` 与 `mobile` 隔离策略，`VanillaPress` 会根据用户设备类型，加载对应运行时和渲染样式。
+`vanilla-press` 仅提供基础样式，并在 `src/config/style.js` 设置样式 `预设源`。
+
+您可以通过 覆写 `style.css` 和变更 `src/config/style.js` 预设源，来 100% 完全定制样式。
 
 ## 项目架构
 

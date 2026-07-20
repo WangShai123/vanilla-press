@@ -16,17 +16,9 @@ body.doc-layout-home {
 }
 
 .doc-layout-home .doc-header,
-.doc-layout-home .doc-footer,
-.doc-layout-home .doc-home {
-  position: relative;
-  /* z-index: 1; */
-}
-
-.doc-layout-home .doc-header,
 .doc-layout-home .doc-footer {
   background: color-mix(in srgb, var(--ui-surface-raised) 14%, transparent);
   backdrop-filter: blur(8px);
-  box-shadow: var(--shadow-md);
 }
 
 .doc-home {

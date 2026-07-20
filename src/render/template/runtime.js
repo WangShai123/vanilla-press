@@ -49,18 +49,26 @@ export function renderRuntimeScript({
     ${searchImport}
     ${languagesImport}
     const mobile = isMobile();
-    const header = document.querySelector('.doc-header');
     const desktopChromeTemplate = document.querySelector('[data-doc-desktop-chrome]');
     const mobileChromeTemplate = document.querySelector('[data-doc-mobile-chrome]');
-    if (header) {
-      if (mobile && mobileChromeTemplate) {
-        header.append(mobileChromeTemplate.content.cloneNode(true));
-      } else if (!mobile && desktopChromeTemplate) {
-        header.append(desktopChromeTemplate.content.cloneNode(true));
+    const mobileSecondaryTemplate = document.querySelector('[data-doc-mobile-secondary-chrome]');
+    if (mobile && mobileChromeTemplate) {
+      mobileChromeTemplate.replaceWith(mobileChromeTemplate.content.cloneNode(true));
+      desktopChromeTemplate?.remove();
+    } else if (!mobile && desktopChromeTemplate) {
+      desktopChromeTemplate.replaceWith(desktopChromeTemplate.content.cloneNode(true));
+      mobileChromeTemplate?.remove();
+    } else {
+      desktopChromeTemplate?.remove();
+      mobileChromeTemplate?.remove();
+    }
+    if (mobileSecondaryTemplate) {
+      if (mobile) {
+        mobileSecondaryTemplate.replaceWith(mobileSecondaryTemplate.content.cloneNode(true));
+      } else {
+        mobileSecondaryTemplate.remove();
       }
     }
-    desktopChromeTemplate?.remove();
-    mobileChromeTemplate?.remove();
     initDocPage({
       components: ${JSON.stringify(components)},
       config: docConfig,

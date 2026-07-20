@@ -59,15 +59,13 @@ npm run dev
 
 :::
 
-## Preview
-
-[Online Preview](http://wangshai123.github.io/vanilla-press)
-
 ## Styling
 
-`vanilla-press` only ships base styles. Override `style.css` in your project as needed.
+The runtime separates `desktop` and `mobile` strategies. `vanilla-press` detects the device type and loads the matching runtime behavior and rendering styles.
 
-The runtime separates `desktop` and `mobile` strategies. `VanillaPress` detects the device type and loads the matching runtime behavior and rendering styles.
+`vanilla-press` provides only basic styles, with the style `preset source` set in `src/config/style.js`.
+
+You can 100% customize the styles by overriding `style.css` and changing the `preset source` in `src/config/style.js`.
 
 ## Project Structure
 

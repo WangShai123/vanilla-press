@@ -94,15 +94,20 @@ function renderMobileSecondary({ sidebarEnabled, tocEnabled }) {
 export function renderHeaderTemplates(options) {
   const desktopHeader = renderDesktopHeader(options);
   const mobileHeader = renderMobileHeader(options);
-  const mobileSecondary = renderMobileSecondary(options);
 
-  return `<header class="doc-header">
-    <template data-doc-desktop-chrome>
+  return `<template data-doc-desktop-chrome>
 ${desktopHeader}
-    </template>
-    <template data-doc-mobile-chrome>
+  </template>
+  <template data-doc-mobile-chrome>
 ${mobileHeader}
+  </template>`;
+}
+
+export function renderSecondaryTemplate(options) {
+  const mobileSecondary = renderMobileSecondary(options);
+  if (!mobileSecondary) return "";
+
+  return `<template data-doc-mobile-secondary-chrome>
 ${mobileSecondary}
-    </template>
-  </header>`;
+  </template>`;
 }

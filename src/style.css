@@ -9,8 +9,6 @@
   --doc-accent-bg: var(--tone-soft);
 }
 
-/* body {} */
-
 .aurora {
   position: fixed;
   inset: 0;
@@ -191,6 +189,8 @@
   gap: 8px;
   max-height: min(58vh, 420px);
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-border) transparent;
 }
 
 .doc-search-result {

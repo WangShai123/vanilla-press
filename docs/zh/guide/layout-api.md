@@ -96,13 +96,15 @@ layouts:
 | `{{ layout.* }}`         | 当前布局作用域下的数据           |
 | `{{ layouts.* }}`        | 所有布局作用域数据               |
 | `{{{ content }}}`        | Markdown 渲染后的 HTML           |
+| `{{{ slots.header }}}`   | 桌面主菜单和手机主菜单模板       |
+| `{{{ slots.secondary }}}` | 手机次级菜单模板                 |
 | `{{{ slots.sidebar }}}`  | 默认侧边栏插槽                   |
 | `{{{ slots.aside }}}`    | 默认右侧区域插槽，包含目录       |
 | `{{{ slots.prevNext }}}` | 分页导航插槽                     |
 
 普通双花括号会进行 HTML 转义，适合输出 frontmatter 中的文本。
 
-三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`slots.sidebar`、`slots.aside` 和 `slots.prevNext`。
+三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`slots.header`、`slots.secondary`、`slots.sidebar`、`slots.aside` 和 `slots.prevNext`。
 
 ## 数组循环
 
@@ -162,6 +164,10 @@ layouts:
 内置 `default` 布局复用文档站常规结构：左侧侧边栏、正文、右侧目录和页脚。它的模板核心结构如下：
 
 ```html
+<header class="doc-header">
+{{{ slots.header }}}
+{{{ slots.secondary }}}
+</header>
 <main class="{{ shell.className }}">
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">
@@ -175,4 +181,4 @@ layouts:
 <footer class="doc-footer" data-doc-footer></footer>
 ```
 
-如果新布局仍然是文档页，可以从这个结构复制后调整。如果新布局是首页或营销页，可以只保留通用 header，然后自行设计页面主体。
+如果新布局仍然是文档页，可以从这个结构复制后调整。`{{{ slots.header }}}` 和 `{{{ slots.secondary }}}` 都应该放在 `.doc-header` 内部，因为运行时会把 `.doc-mobile-header` 和 `.doc-mobile-secondary` 都挂载为 `.doc-header` 的子元素。如果新布局是首页或营销页，通常只在 `.doc-header` 内保留 `{{{ slots.header }}}`，不使用 `{{{ slots.secondary }}}`，然后自行设计页面主体。

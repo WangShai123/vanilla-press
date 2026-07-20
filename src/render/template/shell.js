@@ -39,7 +39,13 @@ ${aside}
   <footer class="doc-footer" data-doc-footer></footer>`;
 }
 
-export function createPageShellContext({ config, sidebarEnabled, tocEnabled }) {
+export function createPageShellContext({
+  config,
+  sidebarEnabled,
+  tocEnabled,
+  header = "",
+  secondary = "",
+}) {
   const sidebar = renderSidebar(sidebarEnabled);
   const toc = renderToc(tocEnabled);
   const aside = renderAside({ config, toc });
@@ -51,6 +57,8 @@ export function createPageShellContext({ config, sidebarEnabled, tocEnabled }) {
       mainClassName: `doc-main${hasAside ? " has-aside" : ""}`,
     },
     slots: {
+      header,
+      secondary,
       sidebar,
       toc,
       aside,

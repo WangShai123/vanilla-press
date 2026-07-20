@@ -21,6 +21,7 @@ import {
   isSearchEnabled,
   isSeoEnabled,
   isSidebarEnabled,
+  isThemeEnabled,
   runtimeOption,
   isTocEnabled,
 } from "./utilities/features.js";
@@ -28,6 +29,7 @@ import { parseFrontmatter, pickSeoFrontmatter } from "./utilities/frontmatter.js
 import { cleanHtml, htmlText } from "./utilities/html.js";
 import { excerptText, pageTitle } from "./utilities/page.js";
 import { normalizePath, resolveDir, stripMdExt, toPosix } from "./utilities/path.js";
+import { minifyCss, readStyleConfig } from "./utilities/style.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, "..");
@@ -150,12 +152,12 @@ async function writeDefaultLocaleEntrypoint(outputDir, config = {}, languages = 
 }
 
 async function buildCss(outputDir, layouts) {
-  const juiCssUrl = await import.meta.resolve("vanilla-jui/style.css");
-  const juiCss = await fs.readFile(fileURLToPath(juiCssUrl), "utf8");
+  const configuredCss = await readStyleConfig(path.join(projectRoot, "src/config/style.js"));
   const customCss = await fs.readFile(path.join(projectRoot, "src/style.css"), "utf8");
-  const styles = [juiCss, customCss, ...layoutStyles(layouts)];
+  const styles = [...configuredCss, customCss, ...layoutStyles(layouts)];
+  const css = await minifyCss(styles.join("\n\n"));
 
-  await fs.writeFile(path.join(outputDir, "styles.css"), styles.join("\n\n"), "utf8");
+  await fs.writeFile(path.join(outputDir, "styles.css"), css, "utf8");
 }
 
 async function buildRuntime(outputDir) {
@@ -299,6 +301,15 @@ function renderSource(source, md, config, languages, layouts) {
     config,
     sidebarEnabled: isSidebarEnabled(config),
     tocEnabled: isTocEnabled(config),
+    chrome: {
+      rel: source.rel,
+      menuEnabled: isMenuEnabled(config),
+      searchEnabled: isSearchEnabled(config),
+      i18nEnabled: isI18nEnabled(config),
+      sidebarEnabled: isSidebarEnabled(config),
+      tocEnabled: isTocEnabled(config),
+      themeEnabled: isThemeEnabled(config),
+    },
     layouts,
   });
 
