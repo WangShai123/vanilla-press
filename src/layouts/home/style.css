@@ -192,13 +192,13 @@ body.doc-layout-home {
   background: color-mix(in srgb, var(--ui-bg-subtle) 52%, var(--ui-surface));
   font-size: 0.86rem;
   line-height: 1.6;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-border) transparent;
 }
 
 .doc-home-command-group code {
   white-space: pre;
   overflow-wrap: anywhere;
-  scrollbar-width: thin;
-  scrollbar-color: var(--ui-border) transparent;
 }
 
 .doc-home-section {
