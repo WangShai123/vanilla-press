@@ -29,6 +29,8 @@ export const sidebarItems = [
       { label: "sidebar.tree", path: "guide/tree" },
       { label: "sidebar.prevNext", path: "guide/prev-next" },
       { label: "sidebar.sitemap", path: "guide/sitemap" },
+      { label: "sidebar.robots", path: "guide/robots" },
+      { label: "sidebar.llms", path: "guide/llms" },
       { label: "theme.button", path: "guide/theme" },
     ],
   },

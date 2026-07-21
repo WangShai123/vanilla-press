@@ -8,12 +8,15 @@
 
 ```javascript
 export const docConfig = {
+  siteUrl: "https://example.com",
   runtime: {
     sitemap: true,
   },
 };
 ```
 
+站点地图 URL: `https://example.com/sitemap.xml`
+
 ## 地址
 
-`https://example.com/sitemap.xml`
+站点地图中，根据 `siteUrl` 配置的地址，生成对应的 `loc` URL 地址。

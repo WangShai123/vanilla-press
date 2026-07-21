@@ -21,6 +21,13 @@
 | `runtime.toc.headings`              | string            | "h2, h3"       | 目录标题选择器                                                                            |
 | `runtime.prevNext`                  | boolean \| object | false          | 是否启用上一页/下一页分页导航                                                             |
 | `runtime.sitemap`                   | boolean \| object | false          | 是否在 `dist/` 中输出 `sitemap.xml`                                                       |
+| `runtime.robots`                    | boolean           | true           | 是否在 `dist/` 中输出 `robots.txt`，设置为 `false` 时关闭                                 |
+| `runtime.llms`                      | boolean \| object | true           | 是否在 `dist/` 中输出 `llms.txt`、每个页面对应的 Markdown 路由和页面 Markdown 操作入口    |
+| `runtime.llms.enabled`              | boolean           | true           | 是否启用 LLMs 功能，设置为 `false` 时关闭                                                 |
+| `runtime.llms.link`                 | boolean           | true           | 是否在正文标题下输出“查看 Markdown”按钮                                                   |
+| `runtime.llms.copy`                 | boolean           | true           | 是否在 LLMs 下拉菜单中输出复制 Markdown 链接入口                                          |
+| `runtime.llms.chatgpt`              | boolean           | true           | 是否在 LLMs 下拉菜单中输出 ChatGPT 打开入口                                               |
+| `runtime.llms.claude`               | boolean           | true           | 是否在 LLMs 下拉菜单中输出 Claude 打开入口                                                |
 | `runtime.i18n`                      | object            | 启用           | 国际化配置对象                                                                            |
 | `runtime.i18n.enabled`              | boolean           | true           | 是否启用国际化功能                                                                        |
 | `runtime.i18n.defaultLocale`        | string            | "zh-CN"        | 默认语言                                                                                  |
@@ -53,6 +60,14 @@ export const docConfig = {
     toc: true,
     prevNext: false,
     sitemap: false,
+    robots: true,
+    llms: {
+      enabled: true,
+      link: true,
+      copy: true,
+      chatgpt: true,
+      claude: true,
+    },
     i18n: {
       enabled: true,
       defaultLocale: "zh-CN",

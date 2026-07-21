@@ -1,7 +1,6 @@
 export const docConfig = {
   siteName: "VanillaPress",
-  // siteUrl: "https://vanilla-press.jealer.com",
-  siteUrl: "http://localhost:5500/dist/",
+  siteUrl: "https://vanilla-press.jealer.com",
   runtime: {
     seo: true,
     highlight: true,
@@ -14,6 +13,14 @@ export const docConfig = {
     search: true,
     prevNext: true,
     sitemap: true,
+    robots: true,
+    llms: {
+      enabled: true,
+      link: true,
+      copy: true,
+      chatgpt: true,
+      claude: true,
+    },
     i18n: {
       enabled: true,
       defaultLocale: "zh-CN",

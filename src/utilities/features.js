@@ -65,6 +65,29 @@ export function isSitemapEnabled(config = {}) {
   return sitemap === true || sitemap?.enabled === true;
 }
 
+export function isRobotsEnabled(config = {}) {
+  return runtimeOption(config, "robots") !== false;
+}
+
+export function isLlmsEnabled(config = {}) {
+  const llms = runtimeOption(config, "llms");
+  if (llms === false) return false;
+  return llms?.enabled !== false;
+}
+
+export function llmsOptions(config = {}) {
+  const llms = runtimeOption(config, "llms");
+  const enabled = isLlmsEnabled(config);
+
+  return {
+    enabled,
+    link: enabled && llms?.link !== false,
+    copy: enabled && llms?.copy !== false,
+    chatgpt: enabled && llms?.chatgpt !== false,
+    claude: enabled && llms?.claude !== false,
+  };
+}
+
 export function isTreeEnabled(config = {}) {
   const tree = componentOption(config, "tree");
   return tree === true || tree?.enabled === true;

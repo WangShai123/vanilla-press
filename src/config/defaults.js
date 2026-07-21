@@ -10,6 +10,14 @@ export const DEFAULT_CONFIG_JS = `export const docConfig = {
     toc: true,
     prevNext: false,
     sitemap: false,
+    robots: true,
+    llms: {
+      enabled: true,
+      link: true,
+      copy: true,
+      chatgpt: true,
+      claude: true
+    },
     i18n: {
       enabled: true,
       defaultLocale: "zh-CN",
@@ -27,6 +35,80 @@ export const DEFAULT_CONFIG_JS = `export const docConfig = {
   },
   social: {
     github: "https://github.com/WangShai123/vanilla-press"
+  }
+};
+`;
+
+export const DEFAULT_ROBOTS_CONFIG = {
+  rules: [
+    {
+      userAgent: "*",
+      allow: ["/"],
+      disallow: [],
+    },
+  ],
+  sitemap: false,
+  llms: false,
+};
+
+export const DEFAULT_ROBOTS_JS = `export const robots = {
+  rules: [
+    {
+      userAgent: "*",
+      allow: ["/"],
+      disallow: []
+    }
+  ],
+  sitemap: false,
+  llms: false
+};
+`;
+
+export const DEFAULT_LLMS_CONFIG = {
+  title: "VanillaPress",
+  description: "Markdown source routes for LLMs.",
+  sectionTitle: "Docs",
+  container: {
+    labels: {
+      "zh-CN": {
+        link: "查看 Markdown",
+        copy: "复制 Markdown 链接",
+        chatgpt: "在 ChatGPT 中打开",
+        claude: "在 Claude 中打开",
+        options: "LLMs"
+      },
+      en: {
+        link: "View Markdown",
+        copy: "Copy Markdown link",
+        chatgpt: "Open in ChatGPT",
+        claude: "Open in Claude",
+        options: "LLMs"
+      }
+    }
+  },
+};
+
+export const DEFAULT_LLMS_JS = `export const llms = {
+  title: "VanillaPress",
+  description: "Markdown source routes for LLMs.",
+  sectionTitle: "Docs",
+  container: {
+    labels: {
+      "zh-CN": {
+        link: "查看 Markdown",
+        copy: "复制 Markdown 链接",
+        chatgpt: "在 ChatGPT 中打开",
+        claude: "在 Claude 中打开",
+        options: "LLMs"
+      },
+      en: {
+        link: "View Markdown",
+        copy: "Copy Markdown link",
+        chatgpt: "Open in ChatGPT",
+        claude: "Open in Claude",
+        options: "LLMs"
+      }
+    }
   }
 };
 `;

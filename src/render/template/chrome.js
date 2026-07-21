@@ -18,7 +18,7 @@ function renderDesktopLocale(i18nEnabled) {
 
 function renderDesktopTheme(themeEnabled) {
   return themeEnabled
-    ? '<button class="doc-theme-button j-button is-outline" type="button" data-doc-theme hidden></button>'
+    ? '<button class="doc-theme-button j-button is-default" type="button" data-doc-theme hidden></button>'
     : "";
 }
 

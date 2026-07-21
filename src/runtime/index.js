@@ -5,6 +5,7 @@ import { initOffcanvas } from "../components/offcanvas.js";
 import { initTabs } from "../components/tabs.js";
 import { initTree } from "../components/tree.js";
 import { initDocChrome } from "./chrome.js";
+import { initLlms } from "./llms.js";
 import { initMobileSecondary } from "./menu.js";
 import { initPrevNext } from "./prev-next.js";
 import { initSearch } from "./search.js";
@@ -12,6 +13,7 @@ import { initSeo } from "./seo.js";
 import { initToc } from "./toc.js";
 import {
   isPrevNextEnabled,
+  isLlmsEnabled,
   isSearchEnabled,
   isSidebarEnabled,
   isTocEnabled,
@@ -183,6 +185,9 @@ export function initDocPage(options = {}) {
   initSeo(options.config, options.page);
   if (isSearchEnabled(options.config)) {
     initSearch(options.config, options.search, options.page, chrome.i18n, chrome.locale);
+  }
+  if (isLlmsEnabled(options.config)) {
+    initLlms();
   }
   initComponents(document, components, options.config);
   watchDynamicComponents(components, options.config);

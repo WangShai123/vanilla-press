@@ -8,7 +8,11 @@ import { randomId } from "vanilla-jui";
 import {
   DEFAULT_CONFIG_JS,
   DEFAULT_LANGUAGES_JS,
+  DEFAULT_LLMS_CONFIG,
+  DEFAULT_LLMS_JS,
   DEFAULT_MENU_JS,
+  DEFAULT_ROBOTS_CONFIG,
+  DEFAULT_ROBOTS_JS,
   DEFAULT_SIDEBAR_JS,
 } from "./config/defaults.js";
 import { createMarkdown } from "./core/md.js";
@@ -16,7 +20,9 @@ import { layoutStyles, loadLayouts, renderLayout } from "./render/layout.js";
 import { renderDefaultLocaleEntrypoint, renderHtml } from "./render/html.js";
 import {
   isI18nEnabled,
+  isLlmsEnabled,
   isMenuEnabled,
+  isRobotsEnabled,
   isSitemapEnabled,
   isSearchEnabled,
   isSeoEnabled,
@@ -27,8 +33,10 @@ import {
 } from "./utilities/features.js";
 import { parseFrontmatter, pickSeoFrontmatter } from "./utilities/frontmatter.js";
 import { cleanHtml, htmlText } from "./utilities/html.js";
+import { injectLlmsControls, markdownRouteRel, renderLlmsTxt } from "./utilities/llms.js";
 import { excerptText, pageTitle } from "./utilities/page.js";
 import { normalizePath, resolveDir, stripMdExt, toPosix } from "./utilities/path.js";
+import { renderRobotsTxt } from "./utilities/robots.js";
 import { minifyCss, readStyleConfig } from "./utilities/style.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -49,7 +57,9 @@ async function ensureSourceConfig(inputDir) {
   const files = [
     ["config.js", DEFAULT_CONFIG_JS],
     ["languages.js", DEFAULT_LANGUAGES_JS],
+    ["llms.js", DEFAULT_LLMS_JS],
     ["menu.js", DEFAULT_MENU_JS],
+    ["robots.js", DEFAULT_ROBOTS_JS],
     ["sidebar.js", DEFAULT_SIDEBAR_JS],
   ];
 
@@ -76,6 +86,22 @@ async function loadDocConfig(inputDir) {
   const file = path.join(inputDir, "config.js");
   const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
   return mod.docConfig || {};
+}
+
+async function loadRobotsConfig(inputDir) {
+  const file = path.join(inputDir, "robots.js");
+  if (!(await pathExists(file))) return DEFAULT_ROBOTS_CONFIG;
+
+  const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
+  return mod.robots || mod.default || DEFAULT_ROBOTS_CONFIG;
+}
+
+async function loadLlmsConfig(inputDir) {
+  const file = path.join(inputDir, "llms.js");
+  if (!(await pathExists(file))) return DEFAULT_LLMS_CONFIG;
+
+  const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
+  return mod.llms || mod.default || DEFAULT_LLMS_CONFIG;
 }
 
 function validateDocConfig(config = {}) {
@@ -291,10 +317,10 @@ function readSource(file, markdown) {
   };
 }
 
-function renderSource(source, md, config, languages, layouts) {
+function renderSource(source, md, config, languages, layouts, llmsConfig) {
   const env = { file: source.file, components: new Set(), config };
   const rendered = md.render(source.markdown, env);
-  const body = cleanHtml(rendered);
+  const body = injectLlmsControls(cleanHtml(rendered), source, config, llmsConfig, languages);
   const pageLayout = renderLayout({
     body,
     source,
@@ -378,6 +404,24 @@ async function writeSitemap(outputDir, pages = [], config = {}) {
   await fs.writeFile(path.join(outputDir, "sitemap.xml"), xml, "utf8");
 }
 
+async function writeRobots(outputDir, config = {}, robotsConfig = {}) {
+  const text = renderRobotsTxt(robotsConfig, config);
+  await fs.writeFile(path.join(outputDir, "robots.txt"), text, "utf8");
+}
+
+async function writeLlms(outputDir, pages = [], config = {}, llmsConfig = {}) {
+  const text = renderLlmsTxt(llmsConfig, config, pages);
+  await fs.writeFile(path.join(outputDir, "llms.txt"), text, "utf8");
+
+  await Promise.all(
+    pages.map(async (page) => {
+      const outputFile = path.join(outputDir, markdownRouteRel(page));
+      await fs.mkdir(path.dirname(outputFile), { recursive: true });
+      await fs.writeFile(outputFile, page.markdown, "utf8");
+    }),
+  );
+}
+
 export async function build({ inputDir = defaultInputDir, outputDir = defaultOutputDir } = {}) {
   if (path.resolve(inputDir) === path.resolve(outputDir)) {
     throw new Error("inputDir and outputDir must be different directories.");
@@ -395,6 +439,7 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
 
   await copyRuntimeConfig(inputDir, outputDir, config);
   const languages = isI18nEnabled(config) ? await loadLanguages(inputDir) : {};
+  const llmsConfig = isLlmsEnabled(config) ? await loadLlmsConfig(inputDir) : {};
   const files = (
     await glob("**/*.md", {
       cwd: inputDir,
@@ -411,9 +456,17 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
   await buildCss(outputDir, layouts);
   await buildRuntime(outputDir);
 
-  const pages = sources.map((source) => renderSource(source, md, config, languages, layouts));
+  const pages = sources.map((source) =>
+    renderSource(source, md, config, languages, layouts, llmsConfig),
+  );
   if (isSearchEnabled(config)) await writeSearchIndex(outputDir, pages);
   if (isSitemapEnabled(config)) await writeSitemap(outputDir, pages, config);
+  if (isLlmsEnabled(config)) {
+    await writeLlms(outputDir, pages, config, llmsConfig);
+  }
+  if (isRobotsEnabled(config)) {
+    await writeRobots(outputDir, config, await loadRobotsConfig(inputDir));
+  }
 
   for (const page of pages) {
     const outputFile = path.join(outputDir, page.rel);

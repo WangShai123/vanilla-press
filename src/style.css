@@ -103,6 +103,12 @@
   gap: 8px;
 }
 
+.doc-header-actions,
+.doc-locale,
+.doc-theme-button {
+  color: var(--tone-caption);
+}
+
 .doc-mobile-header,
 .doc-mobile-secondary {
   display: none;
@@ -156,10 +162,6 @@
 
 .doc-mobile-menu-panel .j-mobile-menu {
   width: 100%;
-}
-
-.doc-locale {
-  color: var(--tone-caption);
 }
 
 .doc-search-button svg {
@@ -351,6 +353,50 @@
   border: 1px solid var(--doc-line);
   border-radius: var(--radius-md);
   background: var(--doc-panel);
+}
+
+.doc-main .j-content .llms-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 2rem;
+}
+
+.llms-options-trigger svg {
+  transition: transform 0.18s ease;
+}
+
+.llms-options-trigger.is-active svg {
+  transform: rotate(180deg);
+}
+
+.llms-drop-menu {
+  display: flex;
+  flex-direction: column;
+  background: var(--ui-bg-subtle);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-md);
+}
+
+.llms-drop-item {
+  padding: 8px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.llms-drop-item svg {
+  width: 16px;
+  height: 16px;
+}
+
+.llms-drop-item:hover,
+.llms-drop-item:focus-visible {
+  outline: none;
+  background: var(--surface-2);
 }
 
 .doc-prev-next {

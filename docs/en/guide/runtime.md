@@ -21,6 +21,13 @@ The `docConfig` object in `docs/config.js` is used to configure site runtime dat
 | `runtime.toc.headings`              | string            | "h2, h3"       | Heading selector used to build the table of contents.                                         |
 | `runtime.prevNext`                  | boolean \| object | false          | Whether to enable previous/next page navigation.                                              |
 | `runtime.sitemap`                   | boolean \| object | false          | Whether to output `sitemap.xml` into `dist/`.                                                 |
+| `runtime.robots`                    | boolean           | true           | Whether to output `robots.txt` into `dist/`. Set to `false` to disable it.                    |
+| `runtime.llms`                      | boolean \| object | true           | Whether to output `llms.txt`, per-page Markdown routes, and page Markdown actions.            |
+| `runtime.llms.enabled`              | boolean           | true           | Whether to enable LLMs. Set to `false` to disable it.                                         |
+| `runtime.llms.link`                 | boolean           | true           | Whether to render the "View Markdown" button below the content title.                         |
+| `runtime.llms.copy`                 | boolean           | true           | Whether to render the copy Markdown link action in the LLMs menu.                             |
+| `runtime.llms.chatgpt`              | boolean           | true           | Whether to render the ChatGPT action in the LLMs menu.                                        |
+| `runtime.llms.claude`               | boolean           | true           | Whether to render the Claude action in the LLMs menu.                                         |
 | `runtime.i18n`                      | object            | Enabled        | Internationalization configuration object.                                                    |
 | `runtime.i18n.enabled`              | boolean           | true           | Whether to enable i18n.                                                                       |
 | `runtime.i18n.defaultLocale`        | string            | "zh-CN"        | Default language.                                                                             |
@@ -53,6 +60,14 @@ export const docConfig = {
     toc: true,
     prevNext: false,
     sitemap: false,
+    robots: true,
+    llms: {
+      enabled: true,
+      link: true,
+      copy: true,
+      chatgpt: true,
+      claude: true,
+    },
     i18n: {
       enabled: true,
       defaultLocale: "zh-CN",
