@@ -1,53 +1,18 @@
-function renderMenuImport(menuEnabled, menuHref) {
-  return menuEnabled ? `import { menuItems } from '${menuHref}';` : "const menuItems = [];";
-}
-
-function renderSidebarImport(sidebarEnabled, sidebarHref) {
-  return sidebarEnabled
-    ? `import { sidebarItems } from '${sidebarHref}';`
-    : "const sidebarItems = [];";
-}
-
-function renderSearchImport(searchEnabled, searchHref) {
-  return searchEnabled
-    ? `import { searchIndex } from '${searchHref}';`
-    : "const searchIndex = [];";
-}
-
-function renderLanguagesImport(i18nEnabled, languagesHref) {
-  return i18nEnabled
-    ? `const languages = ((await import('${languagesHref}')).languages || {});`
-    : "const languages = {};";
-}
-
 export function renderRuntimeScript({
   runtimeHref,
-  configHref,
-  languagesHref,
-  menuHref,
-  sidebarHref,
   searchHref,
-  menuEnabled,
-  sidebarEnabled,
   searchEnabled,
-  i18nEnabled,
   components,
   title,
   rel,
   seo,
 }) {
-  const menuImport = renderMenuImport(menuEnabled, menuHref);
-  const sidebarImport = renderSidebarImport(sidebarEnabled, sidebarHref);
-  const searchImport = renderSearchImport(searchEnabled, searchHref);
-  const languagesImport = renderLanguagesImport(i18nEnabled, languagesHref);
+  const searchSource = searchEnabled
+    ? `() => import('${searchHref}').then((mod) => mod.searchIndex || [])`
+    : "[]";
 
   return `<script type="module">
-    import { initDocPage, isMobile } from '${runtimeHref}';
-    import { docConfig } from '${configHref}';
-    ${menuImport}
-    ${sidebarImport}
-    ${searchImport}
-    ${languagesImport}
+    import { initDocPage, isMobile, docConfig, languages, menuItems, sidebarItems } from '${runtimeHref}';
     const mobile = isMobile();
     const desktopChromeTemplate = document.querySelector('[data-doc-desktop-chrome]');
     const mobileChromeTemplate = document.querySelector('[data-doc-mobile-chrome]');
@@ -74,7 +39,7 @@ export function renderRuntimeScript({
       config: docConfig,
       languages,
       menu: menuItems,
-      search: searchIndex,
+      search: ${searchSource},
       sidebar: sidebarItems,
       page: {
         title: ${JSON.stringify(title)},

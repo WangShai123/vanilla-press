@@ -1,10 +1,7 @@
 import {
   isI18nEnabled,
-  isMenuEnabled,
   isSearchEnabled,
-  isSidebarEnabled,
   isThemeEnabled,
-  isTocEnabled,
   runtimeOption,
 } from "../utilities/features.js";
 import { escapeHtml } from "../utilities/html.js";
@@ -43,16 +40,8 @@ export function renderHtml({
 }) {
   const cssHref = relativeAsset(rel, "styles.css");
   const runtimeHref = relativeAsset(rel, "runtime.js");
-  const configHref = relativeAsset(rel, "config.js");
-  const languagesHref = relativeAsset(rel, "languages.js");
-  const menuHref = relativeAsset(rel, "menu.js");
-  const sidebarHref = relativeAsset(rel, "sidebar.js");
-  const searchHref = relativeAsset(rel, "search-index.js");
+  const searchHref = relativeAsset(rel, "search.js");
   const themeEnabled = isThemeEnabled(config);
-  const i18nEnabled = isI18nEnabled(config);
-  const menuEnabled = isMenuEnabled(config);
-  const sidebarEnabled = isSidebarEnabled(config);
-  const tocEnabled = isTocEnabled(config);
   const htmlLang = resolveHtmlLang(rel, config, languages);
   const htmlTitle = documentTitle(seo?.title || title, config);
 
@@ -63,15 +52,8 @@ ${renderHead({ title: htmlTitle, seo, themeEnabled, cssHref })}
   ${pageLayout?.html || body}
   ${renderRuntimeScript({
     runtimeHref,
-    configHref,
-    languagesHref,
-    menuHref,
-    sidebarHref,
     searchHref,
-    menuEnabled,
-    sidebarEnabled,
     searchEnabled,
-    i18nEnabled,
     components,
     title,
     rel,

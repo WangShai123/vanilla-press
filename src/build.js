@@ -1,6 +1,7 @@
 import { transform as esbuildTransform } from "esbuild";
 import fs from "fs/promises";
 import { glob } from "glob";
+import os from "os";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { build as viteBuild } from "vite";
@@ -71,17 +72,6 @@ async function ensureSourceConfig(inputDir) {
   }
 }
 
-async function copyRuntimeConfig(inputDir, outputDir, config = {}) {
-  const files = ["config.js"];
-  if (isI18nEnabled(config)) files.push("languages.js");
-  if (isMenuEnabled(config)) files.push("menu.js");
-  if (isSidebarEnabled(config)) files.push("sidebar.js");
-
-  await Promise.all(
-    files.map((file) => fs.copyFile(path.join(inputDir, file), path.join(outputDir, file))),
-  );
-}
-
 async function loadDocConfig(inputDir) {
   const file = path.join(inputDir, "config.js");
   const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
@@ -137,6 +127,22 @@ async function loadLanguages(inputDir) {
   return mod.languages || {};
 }
 
+async function loadMenuItems(inputDir) {
+  const file = path.join(inputDir, "menu.js");
+  if (!(await pathExists(file))) return [];
+
+  const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
+  return mod.menuItems || mod.default || [];
+}
+
+async function loadSidebarItems(inputDir) {
+  const file = path.join(inputDir, "sidebar.js");
+  if (!(await pathExists(file))) return [];
+
+  const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
+  return mod.sidebarItems || mod.default || [];
+}
+
 function resolveDefaultLocale(config = {}, languages = {}) {
   const locales = Array.isArray(languages.locales) ? languages.locales : [];
   if (!locales.length) return null;
@@ -186,31 +192,58 @@ async function buildCss(outputDir, layouts) {
   await fs.writeFile(path.join(outputDir, "styles.css"), css, "utf8");
 }
 
-async function buildRuntime(outputDir) {
-  await viteBuild({
-    configFile: false,
-    root: projectRoot,
-    publicDir: false,
-    logLevel: "warn",
-    build: {
-      emptyOutDir: false,
-      minify: "oxc",
-      outDir: outputDir,
-      sourcemap: false,
-      target: "es2020",
-      lib: {
-        entry: path.join(projectRoot, "src/runtime.js"),
-        formats: ["es"],
-        fileName: () => "runtime.js",
-      },
-      rollupOptions: {
-        output: {
-          assetFileNames: "assets/[name][extname]",
-          chunkFileNames: "assets/[name]-[hash].js",
+function serializeRuntimeValue(value) {
+  const serialized = JSON.stringify(value);
+  return serialized === undefined ? "undefined" : serialized;
+}
+
+async function writeRuntimeEntry(dir, data = {}) {
+  const runtimeHref = pathToFileURL(path.join(projectRoot, "src/runtime.js")).href;
+  const code = `import { initDocPage, isMobile } from ${JSON.stringify(runtimeHref)};
+export { initDocPage, isMobile };
+export const docConfig = ${serializeRuntimeValue(data.config)};
+export const languages = ${serializeRuntimeValue(data.languages || {})};
+export const menuItems = ${serializeRuntimeValue(data.menuItems || [])};
+export const sidebarItems = ${serializeRuntimeValue(data.sidebarItems || [])};
+`;
+  const file = path.join(dir, "runtime-entry.js");
+  await fs.writeFile(file, code, "utf8");
+  return file;
+}
+
+async function buildRuntime(outputDir, data = {}) {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "vanilla-press-runtime-"));
+
+  try {
+    const entry = await writeRuntimeEntry(tempDir, data);
+
+    await viteBuild({
+      configFile: false,
+      root: projectRoot,
+      publicDir: false,
+      logLevel: "warn",
+      build: {
+        emptyOutDir: false,
+        minify: "oxc",
+        outDir: outputDir,
+        sourcemap: false,
+        target: "es2020",
+        lib: {
+          entry,
+          formats: ["es"],
+          fileName: () => "runtime.js",
+        },
+        rollupOptions: {
+          output: {
+            assetFileNames: "assets/[name][extname]",
+            chunkFileNames: "assets/[name]-[hash].js",
+          },
         },
       },
-    },
-  });
+    });
+  } finally {
+    await fs.rm(tempDir, { force: true, recursive: true });
+  }
 }
 
 function hashFileName(fileName) {
@@ -234,11 +267,7 @@ async function hashRootAssets(outputDir) {
   const assetFiles = [
     "styles.css",
     "runtime.js",
-    "search-index.js",
-    "config.js",
-    "languages.js",
-    "menu.js",
-    "sidebar.js",
+    "search.js",
   ];
 
   const assetMap = new Map();
@@ -371,7 +400,7 @@ function createSearchIndex(pages = []) {
 
 async function writeSearchIndex(outputDir, pages = []) {
   const code = `export const searchIndex = ${JSON.stringify(createSearchIndex(pages))};\n`;
-  await fs.writeFile(path.join(outputDir, "search-index.js"), code, "utf8");
+  await fs.writeFile(path.join(outputDir, "search.js"), code, "utf8");
 }
 
 function siteUrl(config = {}) {
@@ -437,8 +466,9 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
   await fs.rm(outputDir, { force: true, recursive: true });
   await fs.mkdir(outputDir, { recursive: true });
 
-  await copyRuntimeConfig(inputDir, outputDir, config);
   const languages = isI18nEnabled(config) ? await loadLanguages(inputDir) : {};
+  const menuItems = isMenuEnabled(config) ? await loadMenuItems(inputDir) : [];
+  const sidebarItems = isSidebarEnabled(config) ? await loadSidebarItems(inputDir) : [];
   const llmsConfig = isLlmsEnabled(config) ? await loadLlmsConfig(inputDir) : {};
   const files = (
     await glob("**/*.md", {
@@ -454,7 +484,7 @@ export async function build({ inputDir = defaultInputDir, outputDir = defaultOut
   );
 
   await buildCss(outputDir, layouts);
-  await buildRuntime(outputDir);
+  await buildRuntime(outputDir, { config, languages, menuItems, sidebarItems });
 
   const pages = sources.map((source) =>
     renderSource(source, md, config, languages, layouts, llmsConfig),

@@ -47,6 +47,17 @@ function searchItems(items, query) {
     .map((entry) => entry.item);
 }
 
+function searchLoader(source) {
+  if (typeof source === "function") return source;
+  return async () => source;
+}
+
+function normalizeSearchIndex(value) {
+  if (Array.isArray(value)) return value;
+  if (Array.isArray(value?.searchIndex)) return value.searchIndex;
+  return [];
+}
+
 function createSearchPanel({ items, page, i18n, onNavigate }) {
   const panel = document.createElement("div");
   panel.className = "doc-search-panel";
@@ -121,7 +132,7 @@ function createSearchPanel({ items, page, i18n, onNavigate }) {
   };
 }
 
-export function initSearch(config = {}, searchIndex = [], page = {}, i18n, locale = null) {
+export function initSearch(config = {}, searchSource = [], page = {}, i18n, locale = null) {
   const buttons = Array.from(document.querySelectorAll("[data-doc-search]")).filter(
     (button) => button.dataset.docReady !== "true",
   );
@@ -136,16 +147,28 @@ export function initSearch(config = {}, searchIndex = [], page = {}, i18n, local
     return;
   }
 
-  const items = searchIndex.filter((item) => inCurrentLocale(item, locale));
+  const loadSearch = searchLoader(searchSource);
   const buttonLabel = translate("search.button", "搜索", i18n);
+  let itemsPromise = null;
   let modal = null;
   let panelApi = null;
 
-  function ensureModal() {
+  function loadItems() {
+    itemsPromise ||= Promise.resolve(loadSearch())
+      .then((value) => normalizeSearchIndex(value).filter((item) => inCurrentLocale(item, locale)))
+      .catch((error) => {
+        console.error("[vanilla-press] failed to load search index", error);
+        return [];
+      });
+
+    return itemsPromise;
+  }
+
+  async function ensureModal() {
     if (modal) return modal;
 
     panelApi = createSearchPanel({
-      items,
+      items: await loadItems(),
       page,
       i18n,
       onNavigate: () => modal?.hide(),
@@ -173,9 +196,15 @@ export function initSearch(config = {}, searchIndex = [], page = {}, i18n, local
     button.title = buttonLabel;
     button.setAttribute("aria-label", buttonLabel);
     button.append(icon("search", { className: "el-icon el-prefix" }));
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
+      button.disabled = true;
       panelApi?.reset();
-      ensureModal().show();
+      try {
+        const nextModal = await ensureModal();
+        nextModal.show();
+      } finally {
+        button.disabled = false;
+      }
     });
     button.dataset.docReady = "true";
   });
