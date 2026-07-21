@@ -395,8 +395,7 @@
 
 .llms-drop-item:hover,
 .llms-drop-item:focus-visible {
-  outline: none;
-  background: var(--surface-2);
+  background: var(--tone-subtle);
 }
 
 .doc-prev-next {
