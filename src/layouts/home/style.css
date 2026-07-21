@@ -195,8 +195,10 @@ body.doc-layout-home {
 }
 
 .doc-home-command-group code {
-  white-space: pre-wrap;
+  white-space: pre;
   overflow-wrap: anywhere;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-border) transparent;
 }
 
 .doc-home-section {
