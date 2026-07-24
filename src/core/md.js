@@ -16,7 +16,7 @@ function renderPlainCode(code, lang) {
 
 export function createMarkdown(config = {}) {
   const md = new MarkdownIt({
-    html: false,
+    html: true,
     linkify: true,
     typographer: true,
     highlight: isHighlightEnabled(config) ? highlight : renderPlainCode,

@@ -109,6 +109,10 @@
   color: var(--tone-caption);
 }
 
+.doc-theme-button {
+  background: transparent;
+}
+
 .doc-mobile-header,
 .doc-mobile-secondary {
   display: none;
