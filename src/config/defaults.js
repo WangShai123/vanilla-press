@@ -30,9 +30,6 @@ export const DEFAULT_CONFIG_JS = `export const docConfig = {
       }
     }
   },
-  components: {
-    tree: false
-  },
   social: {
     github: "https://github.com/WangShai123/vanilla-press"
   }

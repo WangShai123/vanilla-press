@@ -1,10 +1,8 @@
 import { getRegistedIconPath, icon } from "vanilla-jui";
-import { isTreeEnabled, treeOptions } from "../utilities/features.js";
 import { escapeAttr, markComponent, readContainer } from "../utilities/markdown.js";
 
 let globalTreeEventsReady = false;
 let activeTreeIcons = null;
-let activeTreeFileIcon = true;
 
 function escapeHtml(value) {
   return escapeAttr(value);
@@ -142,26 +140,15 @@ export function installTree(md) {
 
   md.renderer.rules.doc_tree = (tokens, idx, _options, env) => {
     const content = tokens[idx].content;
-    const config = env?.config || {};
 
-    if (!isTreeEnabled(config)) {
-      return `<pre><code>${escapeHtml(content)}</code></pre>`;
-    }
-
-    const options = treeOptions(config);
     markComponent(env, "tree");
 
-    return `<div class="doc-component j-tree" data-doc-component="tree" data-file-icon="${String(options.fileIcon)}">${renderTreeNodes(parseTree(content))}</div>`;
+    return `<div class="doc-component j-tree" data-doc-component="tree">${renderTreeNodes(parseTree(content))}</div>`;
   };
 }
 
 function iconExists(name, icons) {
   return Boolean(name && icons[name]);
-}
-
-function treeFileIconEnabled(config = {}) {
-  if (!isTreeEnabled(config)) return false;
-  return treeOptions(config).fileIcon;
 }
 
 function directChild(item, selector) {
@@ -188,26 +175,24 @@ function isCollapsed(item) {
   return item.classList.contains("is-collapsed");
 }
 
-function resolveTreeIcon(item, icons, fileIcon) {
+function resolveTreeIcon(item, icons) {
   const type = item.dataset.treeType || "file";
   if (type === "directory") {
     const folder = hasChildren(item) && !isCollapsed(item) ? "folder-open" : "folder";
     return [folder, "file"].find((name) => iconExists(name, icons)) || "file";
   }
 
-  if (!fileIcon) return "file";
-
   const ext = String(item.dataset.treeExt || "").trim().toLowerCase();
   const candidates = [ext, ext ? `file-${ext}` : "", "file"];
   return candidates.find((name) => iconExists(name, icons)) || "file";
 }
 
-function renderTreeIcon(target, item, icons, fileIcon) {
+function renderTreeIcon(target, item, icons) {
   target.textContent = "";
-  target.append(icon(resolveTreeIcon(item, icons, fileIcon), { className: "el-icon" }));
+  target.append(icon(resolveTreeIcon(item, icons), { className: "el-icon" }));
 }
 
-function setDirectoryState(item, collapsed, icons, fileIcon) {
+function setDirectoryState(item, collapsed, icons) {
   const children = directTreeList(item);
   const node = directTreeNode(item);
   const target = directTreeIcon(item);
@@ -217,10 +202,10 @@ function setDirectoryState(item, collapsed, icons, fileIcon) {
   if (node?.hasAttribute("aria-expanded")) {
     node.setAttribute("aria-expanded", String(!collapsed));
   }
-  if (target) renderTreeIcon(target, item, icons, fileIcon);
+  if (target) renderTreeIcon(target, item, icons);
 }
 
-function bindDirectoryToggle(item, icons, fileIcon) {
+function bindDirectoryToggle(item, icons) {
   const children = directTreeList(item);
   const node = directTreeNode(item);
   if (!children || !node) return;
@@ -228,17 +213,17 @@ function bindDirectoryToggle(item, icons, fileIcon) {
   const collapsed = item.dataset.treeCollapsed === "true";
   node.setAttribute("role", "button");
   node.tabIndex = 0;
-  setDirectoryState(item, collapsed, icons, fileIcon);
+  setDirectoryState(item, collapsed, icons);
 
   if (node.dataset.treeToggleReady === "true") return;
 
   node.addEventListener("click", (event) => {
     event.stopPropagation();
-    toggleDirectoryNode(node, icons, fileIcon);
+    toggleDirectoryNode(node, icons);
   });
   node.addEventListener("keydown", (event) => {
     if (!["Enter", " "].includes(event.key)) return;
-    if (!toggleDirectoryNode(node, icons, fileIcon)) return;
+    if (!toggleDirectoryNode(node, icons)) return;
 
     event.preventDefault();
     event.stopPropagation();
@@ -246,11 +231,11 @@ function bindDirectoryToggle(item, icons, fileIcon) {
   node.dataset.treeToggleReady = "true";
 }
 
-function toggleDirectoryNode(node, icons, fileIcon) {
+function toggleDirectoryNode(node, icons) {
   const item = node?.parentElement;
   if (!item || item.dataset.treeType !== "directory" || !hasChildren(item)) return false;
 
-  setDirectoryState(item, !isCollapsed(item), icons, fileIcon);
+  setDirectoryState(item, !isCollapsed(item), icons);
   return true;
 }
 
@@ -260,8 +245,7 @@ function toggleTreeEventTarget(target, event) {
   if (!node || !tree) return;
 
   const icons = activeTreeIcons || getRegistedIconPath();
-  const fileIcon = tree.dataset.fileIcon === "false" ? false : activeTreeFileIcon;
-  if (!toggleDirectoryNode(node, icons, fileIcon)) return;
+  if (!toggleDirectoryNode(node, icons)) return;
 
   event.preventDefault();
   event.stopPropagation();
@@ -282,13 +266,13 @@ function bindGlobalTreeEvents() {
   globalTreeEventsReady = true;
 }
 
-function bindTreeEvents(container, icons, fileIcon) {
+function bindTreeEvents(container, icons) {
   if (container.dataset.treeEventsReady === "true") return;
 
   container.addEventListener("click", (event) => {
     const node = event.target.closest(".j-tree-node");
     if (!node || !container.contains(node)) return;
-    toggleDirectoryNode(node, icons, fileIcon);
+    toggleDirectoryNode(node, icons);
   });
 
   container.addEventListener("keydown", (event) => {
@@ -296,7 +280,7 @@ function bindTreeEvents(container, icons, fileIcon) {
 
     const node = event.target.closest(".j-tree-node");
     if (!node || !container.contains(node)) return;
-    if (!toggleDirectoryNode(node, icons, fileIcon)) return;
+    if (!toggleDirectoryNode(node, icons)) return;
 
     event.preventDefault();
   });
@@ -304,13 +288,9 @@ function bindTreeEvents(container, icons, fileIcon) {
   container.dataset.treeEventsReady = "true";
 }
 
-export function initTree(root = document, config = {}) {
-  if (!isTreeEnabled(config)) return;
-
+export function initTree(root = document) {
   const icons = getRegistedIconPath();
-  const fileIcon = treeFileIconEnabled(config);
   activeTreeIcons = icons;
-  activeTreeFileIcon = fileIcon;
   bindGlobalTreeEvents();
 
   root.querySelectorAll('[data-doc-component="tree"]').forEach((container) => {
@@ -321,16 +301,16 @@ export function initTree(root = document, config = {}) {
 
       if (item.dataset.treeType === "directory") {
         if (hasChildren(item)) {
-          bindDirectoryToggle(item, icons, fileIcon);
+          bindDirectoryToggle(item, icons);
         } else if (target) {
-          renderTreeIcon(target, item, icons, fileIcon);
+          renderTreeIcon(target, item, icons);
         }
       } else if (target) {
-        renderTreeIcon(target, item, icons, fileIcon);
+        renderTreeIcon(target, item, icons);
       }
     });
 
-    bindTreeEvents(container, icons, fileIcon);
+    bindTreeEvents(container, icons);
     container.dataset.docReady = "true";
   });
 }

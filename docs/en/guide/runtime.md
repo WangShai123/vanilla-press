@@ -39,10 +39,6 @@ The `docConfig` object in `docs/config.js` is used to configure site runtime dat
 | `runtime.theme.panel`               | object \| null    | -              | Panel configuration passed to `theme.createPanel()`.                                          |
 | `runtime.theme.offcanvas`           | object            | -              | Offcanvas configuration object for the theme panel.                                           |
 | `runtime.theme.offcanvas.direction` | string            | "right"        | Direction of the theme panel offcanvas.                                                       |
-| components                          | object            | -              | Markdown component configuration object.                                                      |
-| `components.tree`                   | boolean \| object | false          | Whether to enable the tree file-directory component.                                          |
-| `components.tree.enabled`           | boolean           | false          | In object form, must be set to `true` to enable it.                                           |
-| `components.tree.fileIcon`          | boolean           | true           | Render file icons by file extension when enabled.                                             |
 | social                              | object            | -              | Footer social links object. Keys are icon names and values are URLs.                          |
 
 ## Default Configuration
@@ -79,9 +75,6 @@ export const docConfig = {
         direction: "right",
       },
     },
-  },
-  components: {
-    tree: false,
   },
   social: {
     github: "https://github.com/WangShai123/vanilla-press",

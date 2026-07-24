@@ -12,6 +12,7 @@ import popup from "vanilla-jui/src/css/popup.css";
 import modal from "vanilla-jui/src/css/modal.css";
 import offcanvas from "vanilla-jui/src/css/offcanvas.css";
 import tabs from "vanilla-jui/src/css/tabs.css";
+import tip from "vanilla-jui/src/css/tip.css";
 import drop from "vanilla-jui/src/css/drop.css";
 import accordion from "vanilla-jui/src/css/accordion.css";
 import toc from "vanilla-jui/src/css/toc.css";
@@ -32,6 +33,7 @@ export default [
   modal,
   offcanvas,
   tabs,
+  tip,
   drop,
   accordion,
   toc,

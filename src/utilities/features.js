@@ -5,11 +5,6 @@ export function runtimeOption(config = {}, key) {
   return hasOwn(runtime, key) ? runtime[key] : config[key];
 }
 
-export function componentOption(config = {}, key) {
-  const components = isPlainObject(config.components) ? config.components : {};
-  return hasOwn(components, key) ? components[key] : config[key];
-}
-
 export function isThemeEnabled(config = {}) {
   const theme = runtimeOption(config, "theme");
   if (theme === false) return false;
@@ -85,17 +80,5 @@ export function llmsOptions(config = {}) {
     copy: enabled && llms?.copy !== false,
     chatgpt: enabled && llms?.chatgpt !== false,
     claude: enabled && llms?.claude !== false,
-  };
-}
-
-export function isTreeEnabled(config = {}) {
-  const tree = componentOption(config, "tree");
-  return tree === true || tree?.enabled === true;
-}
-
-export function treeOptions(config = {}) {
-  const tree = componentOption(config, "tree");
-  return {
-    fileIcon: tree?.fileIcon !== false,
   };
 }

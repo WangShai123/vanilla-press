@@ -140,7 +140,64 @@ export function toHtml(file) {
 - `title`: button text, written as `:::offcanvas [Button Text]`; default is `Open Panel`
 - `direction`: panel direction, written as `:::offcanvas [Button Text] direction`; supports `left`, `right`, `top`, and `bottom`, with `right` as the default
 
+## Tip
+
+内置组件，默认启用。
+
+:::tabs
+@tab Demo
+
+:::tip
+This is a tip message.
+:::
+
+::: success Success
+The operation has completed.
+:::
+
+::: warning Warning
+Please confirm the configuration.
+:::
+
+::: danger Danger
+This action cannot be undone.
+:::
+
+@tab Syntax
+
+```markdown
+:::tip
+This is a tip message.
+:::
+
+::: info Custom title
+This is a tip message.
+:::
+
+::: success Success
+The operation has completed.
+:::
+
+::: warning Warning
+Please confirm the configuration.
+:::
+
+::: danger Danger
+This action cannot be undone.
+:::
+```
+
+:::
+
+#### Parameters
+
+- `:::tip` is syntax sugar for `::: info`, and outputs `is-default`.
+- `info`, `success`, `warning`, and `danger` map to `is-default`, `is-success`, `is-warning`, and `is-danger`.
+- When no title is provided, Chinese pages show `提示` and English pages show `Tip`.
+
 ## Tree
+
+A component that helps users quickly understand the directory structure of the documentation.
 
 :::tabs
 @tab Demo
@@ -179,21 +236,9 @@ my-project/
 
 :::
 
-#### Config
+#### Notes
 
-```javascript
-export const docConfig = {
-  components: {
-    tree: {
-      enabled: true,
-      fileIcon: true,
-    },
-  },
-};
-```
-
-- `components.tree` is disabled by default. Set it to `true` or `{ enabled: true }` to enable it.
-- `components.tree.fileIcon` defaults to true. It only applies extension icons to file nodes, and falls back to the `file` icon when no matching icon is registered.
+- File nodes resolve icons by extension and fall back to the `file` icon when no matching icon is registered.
 - Add `[collapsed]` after a folder name to make that folder collapsed by default, for example `components/ [collapsed]`.
 
 #### Extend Icons

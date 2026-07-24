@@ -39,10 +39,6 @@
 | `runtime.theme.panel`               | object \| null    | -              | 传给 `theme.createPanel()` 的面板配置                                                     |
 | `runtime.theme.offcanvas`           | object            | -              | 主题面板抽屉配置对象                                                                      |
 | `runtime.theme.offcanvas.direction` | string            | "right"        | 主题面板抽屉方向                                                                          |
-| components                          | object            | -              | Markdown 组件配置对象                                                                     |
-| `components.tree`                   | boolean \| object | false          | 是否启用树状文件目录组件                                                                  |
-| `components.tree.enabled`           | boolean           | false          | 对象形式下必须设置为 `true` 才会启用                                                      |
-| `components.tree.fileIcon`          | boolean           | true           | 启用后按文件后缀渲染文件图标                                                              |
 | social                              | object            | -              | 页脚社交链接配置对象，key 为图标名，value 为链接地址                                      |
 
 ## 默认配置
@@ -79,9 +75,6 @@ export const docConfig = {
         direction: "right",
       },
     },
-  },
-  components: {
-    tree: false,
   },
   social: {
     github: "https://github.com/WangShai123/vanilla-press",

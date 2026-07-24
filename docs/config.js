@@ -33,12 +33,6 @@ export const docConfig = {
       },
     },
   },
-  components: {
-    tree: {
-      enabled: true,
-      fileIcon: true,
-    },
-  },
   social: {
     github: "https://github.com/WangShai123/vanilla-press",
   },

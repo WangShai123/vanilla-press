@@ -146,9 +146,64 @@ export function toHtml(file) {
 - `title` 按钮文本，写法 `:::offcanvas [按钮文本]`，默认值 `打开面板`
 - `direction` 面板方向，写法 `:::offcanvas [按钮文本] direction`，支持 `left`、`right`、`top`、`bottom`，默认值 `right`
 
+## Tip
+
+内置组件，默认启用。
+
+:::tabs
+@tab 示例
+
+:::tip
+这是一个提示信息。
+:::
+
+::: success 成功
+操作已完成。
+:::
+
+::: warning 注意
+请确认配置内容。
+:::
+
+::: danger 危险
+删除后不可恢复。
+:::
+
+@tab 语法
+
+```markdown
+:::tip
+这是一个提示信息。
+:::
+
+::: info 自定义标题
+这是一个提示信息。
+:::
+
+::: success 成功
+操作已完成。
+:::
+
+::: warning 注意
+请确认配置内容。
+:::
+
+::: danger 危险
+删除后不可恢复。
+:::
+```
+
+:::
+
+#### 参数说明
+
+- `:::tip` 是 `::: info` 的语法糖，输出 `is-default`。
+- `info`、`success`、`warning`、`danger` 分别对应 `is-default`、`is-success`、`is-warning`、`is-danger`。
+- 不传标题时，中文页面默认显示 `提示`，英文页面默认显示 `Tip`。
+
 ## Tree
 
-内置组件，需要手动启用。
+帮助用户快速了解文档的目录结构的组件。
 
 :::tabs
 @tab 示例
@@ -187,21 +242,9 @@ my-project/
 
 :::
 
-#### 配置
+#### 说明
 
-```javascript
-export const docConfig = {
-  components: {
-    tree: {
-      enabled: true,
-      fileIcon: true,
-    },
-  },
-};
-```
-
-- `components.tree` 默认关闭，设置为 `true` 或 `{ enabled: true }` 后启用。
-- `components.tree.fileIcon` 默认开启，仅对文件节点查找后缀图标，未注册时回退为 `file` 图标。
+- 文件节点会按后缀查找图标，未注册时回退为 `file` 图标。
 - 在文件夹名称后添加 `[collapsed]` 可以设置该文件夹默认收起，例如 `components/ [collapsed]`。
 
 #### 扩展图标

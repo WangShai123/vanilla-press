@@ -3,6 +3,7 @@ import "./icons.js";
 import { initAccordion } from "../components/accordion.js";
 import { initOffcanvas } from "../components/offcanvas.js";
 import { initTabs } from "../components/tabs.js";
+import { initTip } from "../components/tip.js";
 import { initTree } from "../components/tree.js";
 import { initDocChrome } from "./chrome.js";
 import { initLlms } from "./llms.js";
@@ -34,6 +35,10 @@ const componentRegistry = {
   },
   tree: {
     init: initTree,
+    dependsOn: [],
+  },
+  tip: {
+    init: initTip,
     dependsOn: [],
   },
 };

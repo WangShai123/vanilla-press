@@ -62,6 +62,6 @@ layouts:
           link: ./guide/quick-start.html
           variant: is-primary
         - text: 查看 API
-          link: ./guide/api.html
+          link: ./guide/layout-api.html
           variant: is-secondary
 ---

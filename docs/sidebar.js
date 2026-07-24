@@ -26,7 +26,6 @@ export const sidebarItems = [
       { label: "sidebar.toc", path: "guide/toc" },
       { label: "SEO", path: "guide/seo" },
       { label: "search.button", path: "guide/search" },
-      { label: "sidebar.tree", path: "guide/tree" },
       { label: "sidebar.prevNext", path: "guide/prev-next" },
       { label: "sidebar.sitemap", path: "guide/sitemap" },
       { label: "sidebar.robots", path: "guide/robots" },

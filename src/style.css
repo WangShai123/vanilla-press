@@ -712,6 +712,10 @@ html.is-mobile .j-toc .toc-link {
   padding-block: .75rem;
 }
 
+.j-tip {
+  margin-bottom: 1rem;
+}
+
 @media (max-width: 960px) {
   .doc-header-inner {
     flex-wrap: wrap;
