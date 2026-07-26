@@ -45,8 +45,11 @@ export function isTocEnabled(config = {}) {
 
 export function tocOptions(config = {}) {
   const toc = runtimeOption(config, "toc");
+  const offset = Number(toc?.offset);
+
   return {
     headings: typeof toc?.headings === "string" && toc.headings.trim() ? toc.headings : "h2, h3",
+    offset: Number.isFinite(offset) ? offset : 80,
   };
 }
 

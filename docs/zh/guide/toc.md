@@ -22,9 +22,12 @@ export const docConfig = {
     toc: {
       enabled: true,
       headings: "h2, h3",
+      offset: 80,
     },
   },
 };
 ```
 
 需要关闭目录时，可以设置为 `false`，或设置 `runtime.toc.enabled: false`。
+
+`runtime.toc.offset` 会传给 `createToc()`，用于设置滚动定位偏移量，默认值为 `80`。

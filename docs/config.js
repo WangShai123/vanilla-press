@@ -9,6 +9,7 @@ export const docConfig = {
     toc: {
       enabled: true,
       headings: "h2, h3",
+      offset: 80,
     },
     search: true,
     prevNext: true,

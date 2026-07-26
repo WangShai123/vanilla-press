@@ -19,6 +19,7 @@
 | `runtime.toc`                       | boolean \| object | true           | 是否启用页面目录                                                                          |
 | `runtime.toc.enabled`               | boolean           | true           | 是否启用页面目录，设置为 `false` 时关闭                                                   |
 | `runtime.toc.headings`              | string            | "h2, h3"       | 目录标题选择器                                                                            |
+| `runtime.toc.offset`                | number            | 80             | 滚动定位偏移量                                                                            |
 | `runtime.prevNext`                  | boolean \| object | false          | 是否启用上一页/下一页分页导航                                                             |
 | `runtime.sitemap`                   | boolean \| object | false          | 是否在 `dist/` 中输出 `sitemap.xml`                                                       |
 | `runtime.robots`                    | boolean           | true           | 是否在 `dist/` 中输出 `robots.txt`，设置为 `false` 时关闭                                 |

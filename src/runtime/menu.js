@@ -281,13 +281,13 @@ export function initMobileSecondary(
     const tocPanel = document.createElement("div");
     tocPanel.className = "doc-mobile-toc-panel";
     const article = document.querySelector(".j-content");
-    const { headings } = tocOptions(config);
+    const { headings, offset } = tocOptions(config);
     if (article?.querySelector(headings)) {
       createToc({
         container: tocPanel,
         target: article,
         headings,
-        offset: 80,
+        offset,
       }).build();
     } else {
       tocButton.hidden = true;

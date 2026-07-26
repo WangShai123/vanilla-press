@@ -19,6 +19,7 @@ The `docConfig` object in `docs/config.js` is used to configure site runtime dat
 | `runtime.toc`                       | boolean \| object | true           | Whether to enable the page table of contents.                                                 |
 | `runtime.toc.enabled`               | boolean           | true           | Whether to enable the table of contents. Set to `false` to disable it.                        |
 | `runtime.toc.headings`              | string            | "h2, h3"       | Heading selector used to build the table of contents.                                         |
+| `runtime.toc.offset`                | number            | 80             | Scroll positioning offset.                                                                    |
 | `runtime.prevNext`                  | boolean \| object | false          | Whether to enable previous/next page navigation.                                              |
 | `runtime.sitemap`                   | boolean \| object | false          | Whether to output `sitemap.xml` into `dist/`.                                                 |
 | `runtime.robots`                    | boolean           | true           | Whether to output `robots.txt` into `dist/`. Set to `false` to disable it.                    |

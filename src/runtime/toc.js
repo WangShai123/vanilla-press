@@ -6,7 +6,7 @@ export function initToc(config = {}) {
   const article = document.querySelector(".j-content");
   if (!toc || !article || toc.dataset.docReady === "true") return;
 
-  const { headings } = tocOptions(config);
+  const { headings, offset } = tocOptions(config);
   if (!article.querySelector(headings)) {
     toc.hidden = true;
     return;
@@ -16,7 +16,7 @@ export function initToc(config = {}) {
     container: toc,
     target: article,
     headings,
-    offset: 80,
+    offset,
   }).build();
   toc.dataset.docReady = "true";
 }
