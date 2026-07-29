@@ -13,7 +13,10 @@ The `docConfig` object in `docs/config.js` is used to configure site runtime dat
 | runtime                             | object            | -              | Runtime feature configuration object.                                                         |
 | `runtime.seo`                       | boolean           | true           | Whether to enable SEO. Set to `false` to disable it.                                          |
 | `runtime.search`                    | boolean           | true           | Whether to enable search. Set to `false` to disable it.                                       |
-| `runtime.highlight`                 | boolean           | true           | Whether to enable code highlighting. Set to `false` to disable it.                            |
+| `runtime.externalLink`              | boolean           | true           | Whether to enhance external links in the content area. Set to `false` to disable it.          |
+| `runtime.highlight`                 | boolean \| object | true           | Whether to enable code highlighting. Set to `false` to disable it.                            |
+| `runtime.highlight.enabled`         | boolean           | true           | Whether to enable code highlighting. Set to `false` to disable it.                            |
+| `runtime.highlight.languages`       | array             | Default list   | Supported highlight languages. Only listed `highlight.js` language modules are registered.    |
 | `runtime.menu`                      | boolean           | true           | Whether to enable the top menu. Set to `false` to disable it.                                 |
 | `runtime.sidebar`                   | boolean           | true           | Whether to enable the sidebar. Set to `false` to disable it.                                  |
 | `runtime.toc`                       | boolean \| object | true           | Whether to enable the page table of contents.                                                 |
@@ -42,6 +45,24 @@ The `docConfig` object in `docs/config.js` is used to configure site runtime dat
 | `runtime.theme.offcanvas.direction` | string            | "right"        | Direction of the theme panel offcanvas.                                                       |
 | social                              | object            | -              | Footer social links object. Keys are icon names and values are URLs.                          |
 
+## External Links
+
+`runtime.externalLink` is enabled by default. When enabled, links inside `.j-content` whose `href` starts with `http://` or `https://` receive:
+
+- `target="_blank"`
+- `rel="noopener noreferrer"`
+- the `external-link` icon
+
+Set it to `false` to disable this behavior:
+
+```javascript
+export const docConfig = {
+  runtime: {
+    externalLink: false,
+  },
+};
+```
+
 ## Default Configuration
 
 ```javascript
@@ -51,7 +72,36 @@ export const docConfig = {
   runtime: {
     seo: true,
     search: true,
-    highlight: true,
+    externalLink: true,
+    highlight: {
+      enabled: true,
+      languages: [
+        { value: "plaintext", label: "Plain Text" },
+        { value: "bash", label: "Bash" },
+        { value: "c", label: "C" },
+        { value: "cpp", label: "C++" },
+        { value: "css", label: "CSS" },
+        { value: "dockerfile", label: "Dockerfile" },
+        { value: "go", label: "Go" },
+        { value: "graphql", label: "GraphQL" },
+        { value: "html", label: "HTML" },
+        { value: "java", label: "Java" },
+        { value: "javascript", label: "JavaScript" },
+        { value: "json", label: "JSON" },
+        { value: "kotlin", label: "Kotlin" },
+        { value: "markdown", label: "Markdown" },
+        { value: "nginx", label: "Nginx" },
+        { value: "php", label: "PHP" },
+        { value: "python", label: "Python" },
+        { value: "ruby", label: "Ruby" },
+        { value: "rust", label: "Rust" },
+        { value: "sql", label: "SQL" },
+        { value: "swift", label: "Swift" },
+        { value: "typescript", label: "TypeScript" },
+        { value: "xml", label: "XML" },
+        { value: "yaml", label: "YAML" },
+      ],
+    },
     menu: true,
     sidebar: true,
     toc: true,

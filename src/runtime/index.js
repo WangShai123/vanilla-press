@@ -6,6 +6,7 @@ import { initTabs } from "../components/tabs.js";
 import { initTip } from "../components/tip.js";
 import { initTree } from "../components/tree.js";
 import { initDocChrome } from "./chrome.js";
+import { initLinkAttributes } from "./link-attributes.js";
 import { initLlms } from "./llms.js";
 import { initMobileSecondary } from "./menu.js";
 import { initPrevNext } from "./prev-next.js";
@@ -14,6 +15,7 @@ import { initSeo } from "./seo.js";
 import { initToc } from "./toc.js";
 import {
   isPrevNextEnabled,
+  isExternalLinkEnabled,
   isLlmsEnabled,
   isSearchEnabled,
   isSidebarEnabled,
@@ -193,6 +195,9 @@ export function initDocPage(options = {}) {
   }
   if (isLlmsEnabled(options.config)) {
     initLlms();
+  }
+  if (isExternalLinkEnabled(options.config)) {
+    initLinkAttributes();
   }
   initComponents(document, components, options.config);
   watchDynamicComponents(components, options.config);

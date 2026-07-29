@@ -1,113 +1,130 @@
-const LANG_ALIASES = {
-  js: "javascript",
-  jsx: "javascript",
-  ts: "typescript",
-  tsx: "typescript",
-  sh: "bash",
-  shell: "bash",
+import { createRequire } from "module";
+import { DEFAULT_HIGHLIGHT_LANGUAGES } from "../config/defaults.js";
+import { runtimeOption } from "../utilities/features.js";
+
+const require = createRequire(import.meta.url);
+const hljs = require("highlight.js/lib/core");
+
+const LANGUAGE_EXTRAS = {
+  plaintext: { aliases: ["plain", "text", "txt"] },
+  bash: { aliases: ["shell", "sh", "zsh"] },
+  cpp: { aliases: ["c++", "cxx", "cc", "hpp"] },
+  html: { module: "xml" },
+  javascript: { aliases: ["js", "jsx"] },
+  markdown: { aliases: ["md"] },
+  typescript: { aliases: ["ts", "tsx"] },
+  yaml: { aliases: ["yml"] },
 };
+
+const languageRegistry = new Map(
+  DEFAULT_HIGHLIGHT_LANGUAGES.map(({ value, label }) => [
+    value,
+    {
+      value,
+      label,
+      module: LANGUAGE_EXTRAS[value]?.module || value,
+      aliases: LANGUAGE_EXTRAS[value]?.aliases || [],
+    },
+  ]),
+);
+const languageAliases = new Map();
+const registeredModules = new Set();
+
+for (const language of languageRegistry.values()) {
+  languageAliases.set(language.value, language.value);
+  for (const alias of language.aliases) {
+    languageAliases.set(alias, language.value);
+  }
+}
 
 function escapeHtml(value) {
   return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
-function highlightPlainJavaScript(value) {
-  return value.replace(
-    /\b(const|let|var|function|return|import|from|export|if|else|for|while|class|new|await|async|true|false|null|undefined)\b|\b(\d+(?:\.\d+)?)\b/g,
-    (match, keyword, number) => {
-      if (keyword) return `<span class="hljs-keyword">${escapeHtml(keyword)}</span>`;
-      if (number) return `<span class="hljs-number">${escapeHtml(number)}</span>`;
-      return escapeHtml(match);
-    },
-  );
+function normalizeLanguage(value) {
+  const language = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/^language-/, "");
+
+  if (!language) return "plaintext";
+  return languageAliases.get(language) || language;
 }
 
-function highlightJavaScript(code) {
-  let index = 0;
-  let html = "";
+function normalizeLanguageEntry(entry) {
+  const value =
+    typeof entry === "string" ? entry : entry && typeof entry === "object" ? entry.value : "";
+  const language = normalizeLanguage(value);
+  return languageRegistry.has(language) ? language : "";
+}
 
-  while (index < code.length) {
-    const char = code[index];
-    const next = code[index + 1];
+function defaultLanguageLabel(language) {
+  return languageRegistry.get(language)?.label || language;
+}
 
-    if (char === "/" && next === "/") {
-      const end = code.indexOf("\n", index);
-      const stop = end === -1 ? code.length : end;
-      html += `<span class="hljs-comment">${escapeHtml(code.slice(index, stop))}</span>`;
-      index = stop;
-      continue;
-    }
+function configuredLanguages(config = {}) {
+  const highlight = runtimeOption(config, "highlight");
+  const hasCustomLanguages =
+    highlight && typeof highlight === "object" && Array.isArray(highlight.languages);
+  const languages = hasCustomLanguages ? highlight.languages : DEFAULT_HIGHLIGHT_LANGUAGES;
+  const supported = new Map();
 
-    if (char === '"' || char === "'" || char === "`") {
-      const quote = char;
-      let stop = index + 1;
-      while (stop < code.length) {
-        if (code[stop] === "\\") {
-          stop += 2;
-          continue;
-        }
-        if (code[stop] === quote) {
-          stop += 1;
-          break;
-        }
-        stop += 1;
-      }
-      html += `<span class="hljs-string">${escapeHtml(code.slice(index, stop))}</span>`;
-      index = stop;
-      continue;
-    }
+  for (const entry of languages) {
+    const language = normalizeLanguageEntry(entry);
+    if (!language) continue;
 
-    let stop = index + 1;
-    while (stop < code.length) {
-      const current = code[stop];
-      const lookahead = code[stop + 1];
-      if (
-        current === '"' ||
-        current === "'" ||
-        current === "`" ||
-        (current === "/" && lookahead === "/")
-      ) {
-        break;
-      }
-      stop += 1;
-    }
-    html += highlightPlainJavaScript(escapeHtml(code.slice(index, stop)));
-    index = stop;
+    const label =
+      entry && typeof entry === "object" && typeof entry.label === "string" && entry.label.trim()
+        ? entry.label.trim()
+        : defaultLanguageLabel(language);
+    supported.set(language, label);
   }
 
-  return html;
+  return supported;
 }
 
-function highlightMarkup(code) {
-  return escapeHtml(code).replace(
-    /(&lt;\/?)([A-Za-z][\w-]*)(.*?)(\/?&gt;)/g,
-    (_match, open, tag, attrs, close) => {
-      const highlightedAttrs = attrs.replace(
-        /([\w:-]+)(=)(&quot;.*?&quot;|'.*?')/g,
-        '<span class="hljs-attr">$1</span>$2<span class="hljs-string">$3</span>',
-      );
-      return `${open}<span class="hljs-name">${tag}</span>${highlightedAttrs}${close}`;
-    },
-  );
+function ensureLanguage(language) {
+  const moduleName = languageRegistry.get(language)?.module;
+  if (!moduleName) return "";
+  if (registeredModules.has(moduleName)) return moduleName;
+
+  try {
+    const languageFactory = require(`highlight.js/lib/languages/${moduleName}`);
+    hljs.registerLanguage(moduleName, languageFactory);
+    registeredModules.add(moduleName);
+    return moduleName;
+  } catch {
+    return "";
+  }
 }
 
-export function normalizeLang(lang = "") {
-  const normalized = String(lang).trim().toLowerCase();
-  return LANG_ALIASES[normalized] || normalized || "text";
+function languageClass(language) {
+  return String(language || "plaintext").replace(/[^\w-]/g, "-");
+}
+
+function renderCode(language, label, value) {
+  return `<pre class="j-code-editor hljs"><div class="code-header"><span class="code-header-dots"></span><span class="code-header-language">${escapeHtml(label)}</span></div><code class="language-${languageClass(language)}">${value}</code></pre>`;
+}
+
+export function createHighlighter(config = {}) {
+  const supportedLanguages = configuredLanguages(config);
+
+  return (code, lang) => {
+    const language = normalizeLanguage(lang);
+    const label = supportedLanguages.get(language) || defaultLanguageLabel(language);
+    const moduleName = supportedLanguages.has(language) ? ensureLanguage(language) : "";
+    const value = moduleName
+      ? hljs.highlight(String(code), { language: moduleName, ignoreIllegals: true }).value
+      : escapeHtml(code);
+
+    return renderCode(language, label, value);
+  };
 }
 
 export function highlight(code, lang) {
-  const language = normalizeLang(lang);
-  const highlighted =
-    language === "javascript" || language === "typescript"
-      ? highlightJavaScript(code)
-      : language === "html" || language === "xml"
-        ? highlightMarkup(code)
-        : escapeHtml(code);
-
-  return `<pre class="j-code-editor hljs"><code class="language-${language}">${highlighted}</code></pre>`;
+  return createHighlighter()(code, lang);
 }

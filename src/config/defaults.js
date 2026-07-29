@@ -1,10 +1,48 @@
+export const DEFAULT_HIGHLIGHT_LANGUAGES = [
+  { value: "plaintext", label: "Plain Text" },
+  { value: "bash", label: "Bash" },
+  { value: "c", label: "C" },
+  { value: "cpp", label: "C++" },
+  { value: "css", label: "CSS" },
+  { value: "dockerfile", label: "Dockerfile" },
+  { value: "go", label: "Go" },
+  { value: "graphql", label: "GraphQL" },
+  { value: "html", label: "HTML" },
+  { value: "java", label: "Java" },
+  { value: "javascript", label: "JavaScript" },
+  { value: "json", label: "JSON" },
+  { value: "kotlin", label: "Kotlin" },
+  { value: "markdown", label: "Markdown" },
+  { value: "nginx", label: "Nginx" },
+  { value: "php", label: "PHP" },
+  { value: "python", label: "Python" },
+  { value: "ruby", label: "Ruby" },
+  { value: "rust", label: "Rust" },
+  { value: "sql", label: "SQL" },
+  { value: "swift", label: "Swift" },
+  { value: "typescript", label: "TypeScript" },
+  { value: "xml", label: "XML" },
+  { value: "yaml", label: "YAML" },
+];
+
+const DEFAULT_HIGHLIGHT_LANGUAGES_JS = `[
+${DEFAULT_HIGHLIGHT_LANGUAGES.map(
+  ({ value, label }, index) =>
+    `        { value: ${JSON.stringify(value)}, label: ${JSON.stringify(label)} }${index === DEFAULT_HIGHLIGHT_LANGUAGES.length - 1 ? "" : ","}`,
+).join("\n")}
+      ]`;
+
 export const DEFAULT_CONFIG_JS = `export const docConfig = {
   siteName: "VanillaPress",
   siteUrl: "https://example.com",
   runtime: {
     seo: true,
     search: true,
-    highlight: true,
+    externalLink: true,
+    highlight: {
+      enabled: true,
+      languages: ${DEFAULT_HIGHLIGHT_LANGUAGES_JS}
+    },
     menu: true,
     sidebar: true,
     toc: true,
@@ -218,7 +256,7 @@ export const DEFAULT_SIDEBAR_JS = `export const sidebarItems = [
 `;
 
 export const THEME_BOOT_SCRIPT =
-  "(function(d,k){var v={mode:'dark',theme:'indigo',radius:'sm',shadow:'sm',font:'sm'},m=d.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)')),o=v;if(m){try{o=Object.assign({},v,JSON.parse(m[1]));}catch(e){o=v;}}else{d.cookie=k+'='+JSON.stringify(v)+'; expires='+new Date(Date.now()+864e5).toUTCString()+'; path=/; sameSite=strict';}try{var r=o.mode==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):o.mode,h=d.documentElement;h.classList.add(r||'dark','j-theme-'+(o.theme||v.theme),'j-radius-'+(o.radius||v.radius),'j-shadow-'+(o.shadow||v.shadow),'j-font-'+(o.font||v.font));}catch(e){}})(document,'ui-theme');";
+  "(function(d,k){var v={mode:'dark',theme:'indigo',radius:'sm',shadow:'sm',font:'sm'},m=d.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)')),o=v;if(m){try{o = Object.assign({}, v, JSON.parse(decodeURIComponent(m[1])));}catch(e){o=v;}}else{d.cookie=k+'='+JSON.stringify(v)+'; expires='+new Date(Date.now()+864e5).toUTCString()+'; path=/; sameSite=strict';}try{var r=o.mode==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):o.mode,h=d.documentElement;h.classList.add(r||'dark','j-theme-'+(o.theme||v.theme),'j-radius-'+(o.radius||v.radius),'j-shadow-'+(o.shadow||v.shadow),'j-font-'+(o.font||v.font));}catch(e){}})(document,'ui-theme');";
 
 export const MOBILE_CLASS_BOOT_SCRIPT =
   "(function(w,n){function m(){if(n.userAgentData&&typeof n.userAgentData.mobile==='boolean')return n.userAgentData.mobile;var u=n.userAgent||n.vendor||w.opera||'',p=/Android|iPhone|iPad|iPod|Mobile|Windows Phone|webOS|BlackBerry|IEMobile|Opera Mini/i.test(u),t=/iPad|Android(?!.*Mobile)|Tablet/i.test(u),h='maxTouchPoints'in n?n.maxTouchPoints>0:'ontouchstart'in w,s=Math.min(w.screen.width,w.screen.height)<=768;if(p&&!t){if(/iPhone|iPod|Windows Phone|webOS|BlackBerry|IEMobile|Opera Mini/i.test(u))return true;if(/Android/i.test(u))return s||h}return /Macintosh|MacIntel/i.test(u)&&h&&s}var r=w.document.documentElement,b=m();r.classList.toggle('is-mobile',b);r.classList.toggle('is-desktop',!b)})(window,navigator);";

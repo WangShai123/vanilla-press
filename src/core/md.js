@@ -7,7 +7,7 @@ import { installOffcanvas } from "../components/offcanvas.js";
 import { installTabs } from "../components/tabs.js";
 import { installTip } from "../components/tip.js";
 import { installTree } from "../components/tree.js";
-import { highlight } from "../runtime/highlight.js";
+import { createHighlighter } from "../runtime/highlight.js";
 import { isHighlightEnabled } from "../utilities/features.js";
 import { escapeHtml } from "../utilities/html.js";
 
@@ -18,11 +18,12 @@ function renderPlainCode(code, lang) {
 }
 
 export function createMarkdown(config = {}) {
+  const highlighter = isHighlightEnabled(config) ? createHighlighter(config) : renderPlainCode;
   const md = new MarkdownIt({
     html: true,
     linkify: true,
     typographer: true,
-    highlight: isHighlightEnabled(config) ? highlight : renderPlainCode,
+    highlight: highlighter,
   });
 
   md.use(frontMatter, () => {});

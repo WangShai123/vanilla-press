@@ -13,7 +13,10 @@
 | runtime                             | object            | -              | 运行时功能配置对象                                                                        |
 | `runtime.seo`                       | boolean           | true           | 是否启用 SEO 功能，设置为 `false` 时关闭                                                  |
 | `runtime.search`                    | boolean           | true           | 是否启用搜索功能，设置为 `false` 时关闭                                                   |
-| `runtime.highlight`                 | boolean           | true           | 是否启用代码高亮，设置为 `false` 时关闭                                                   |
+| `runtime.externalLink`              | boolean           | true           | 是否增强正文区域的站外链接，设置为 `false` 时关闭                                         |
+| `runtime.highlight`                 | boolean \| object | true           | 是否启用代码高亮，设置为 `false` 时关闭                                                   |
+| `runtime.highlight.enabled`         | boolean           | true           | 是否启用代码高亮，设置为 `false` 时关闭                                                   |
+| `runtime.highlight.languages`       | array             | 默认语言列表   | 支持高亮的语言列表，仅会注册列表中的 `highlight.js` 语言模块                              |
 | `runtime.menu`                      | boolean           | true           | 是否启用顶部主菜单，设置为 `false` 时关闭                                                 |
 | `runtime.sidebar`                   | boolean           | true           | 是否启用侧边栏，设置为 `false` 时关闭                                                     |
 | `runtime.toc`                       | boolean \| object | true           | 是否启用页面目录                                                                          |
@@ -42,6 +45,24 @@
 | `runtime.theme.offcanvas.direction` | string            | "right"        | 主题面板抽屉方向                                                                          |
 | social                              | object            | -              | 页脚社交链接配置对象，key 为图标名，value 为链接地址                                      |
 
+## 站外链接
+
+`runtime.externalLink` 默认启用。启用后会匹配正文区域 `.j-content` 内 `href` 以 `http://` 或 `https://` 开头的链接，并追加：
+
+- `target="_blank"`
+- `rel="noopener noreferrer"`
+- `external-link` 图标
+
+需要关闭时，设置为 `false`：
+
+```javascript
+export const docConfig = {
+  runtime: {
+    externalLink: false,
+  },
+};
+```
+
 ## 默认配置
 
 ```javascript
@@ -51,7 +72,36 @@ export const docConfig = {
   runtime: {
     seo: true,
     search: true,
-    highlight: true,
+    externalLink: true,
+    highlight: {
+      enabled: true,
+      languages: [
+        { value: "plaintext", label: "Plain Text" },
+        { value: "bash", label: "Bash" },
+        { value: "c", label: "C" },
+        { value: "cpp", label: "C++" },
+        { value: "css", label: "CSS" },
+        { value: "dockerfile", label: "Dockerfile" },
+        { value: "go", label: "Go" },
+        { value: "graphql", label: "GraphQL" },
+        { value: "html", label: "HTML" },
+        { value: "java", label: "Java" },
+        { value: "javascript", label: "JavaScript" },
+        { value: "json", label: "JSON" },
+        { value: "kotlin", label: "Kotlin" },
+        { value: "markdown", label: "Markdown" },
+        { value: "nginx", label: "Nginx" },
+        { value: "php", label: "PHP" },
+        { value: "python", label: "Python" },
+        { value: "ruby", label: "Ruby" },
+        { value: "rust", label: "Rust" },
+        { value: "sql", label: "SQL" },
+        { value: "swift", label: "Swift" },
+        { value: "typescript", label: "TypeScript" },
+        { value: "xml", label: "XML" },
+        { value: "yaml", label: "YAML" },
+      ],
+    },
     menu: true,
     sidebar: true,
     toc: true,

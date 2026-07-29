@@ -26,7 +26,13 @@ export function isSearchEnabled(config = {}) {
 }
 
 export function isHighlightEnabled(config = {}) {
-  return runtimeOption(config, "highlight") !== false;
+  const highlight = runtimeOption(config, "highlight");
+  if (highlight === false) return false;
+  return highlight?.enabled !== false;
+}
+
+export function isExternalLinkEnabled(config = {}) {
+  return runtimeOption(config, "externalLink") !== false;
 }
 
 export function isMenuEnabled(config = {}) {

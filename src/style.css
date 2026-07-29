@@ -716,6 +716,41 @@ html.is-mobile .j-toc .toc-link {
   margin-bottom: 1rem;
 }
 
+.j-code-editor .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: .5rem 1rem 0;
+  color: var(--ui-fg-soft);
+  font-size: .78rem;
+}
+
+.j-code-editor .code-header .code-header-dots {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--state-success);
+  box-shadow: 14px 0 0 var(--state-warning), 28px 0 0 var(--state-danger);
+}
+
+.j-code-editor .code-header .code-header-language {
+  font-size: .78rem;
+}
+
+.j-content pre code[class*=language-] {
+  padding: .5rem 1rem 1rem;
+}
+
+a[data-doc-external-link] {
+  display: inline-flex;
+  align-items: center;
+}
+
+a[data-doc-external-link] span.external-link svg {
+  width: var(--font-size-md);
+}
+
 @media (max-width: 960px) {
   .doc-header-inner {
     flex-wrap: wrap;
