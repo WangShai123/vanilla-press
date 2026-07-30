@@ -1,5 +1,7 @@
 import { normalizeSiteName } from "../utilities/page.js";
 import { isSeoEnabled } from "../utilities/features.js";
+import { q } from "vanilla-jui";
+import { jsx } from "vanilla-signal";
 
 function pageTitle(config = {}, page = {}) {
   const title = String(page.seo?.title || page.title || "").trim();
@@ -8,7 +10,7 @@ function pageTitle(config = {}, page = {}) {
 
 function syncMeta(name, content) {
   const value = String(content || "").trim();
-  let meta = document.querySelector(`meta[data-doc-seo="${name}"]`);
+  let meta = q(`meta[data-doc-seo="${name}"]`);
 
   if (!value) {
     meta?.remove();
@@ -16,9 +18,10 @@ function syncMeta(name, content) {
   }
 
   if (!meta) {
-    meta = document.createElement("meta");
-    meta.name = name;
-    meta.dataset.docSeo = name;
+    meta = jsx("meta", {
+      name,
+      "data-doc-seo": name,
+    });
     document.head.append(meta);
   }
 

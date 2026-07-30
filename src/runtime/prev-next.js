@@ -1,4 +1,5 @@
-import { icon } from "vanilla-jui";
+import { icon, q } from "vanilla-jui";
+import { jsx } from "vanilla-signal";
 import { joinLocalePath, localize, pageWithoutLocale } from "./i18n.js";
 import { normalizeRel, relativeAsset } from "./path.js";
 import { isPrevNextEnabled } from "../utilities/features.js";
@@ -48,32 +49,31 @@ function translate(key, fallback, i18n) {
 }
 
 function createLink(item, page, locale, direction, i18n) {
-  const link = document.createElement("a");
-  link.className = `doc-prev-next-link is-${direction}`;
-  link.href = relativeAsset(page.rel, locale ? joinLocalePath(locale, item.rel) : item.rel);
-
-  const label = document.createElement("span");
-  label.className = "doc-prev-next-label";
-
-  label.textContent =
-    direction === "prev"
-      ? translate("prevNext.previous", "Previous", i18n)
-      : translate("prevNext.next", "Next", i18n);
-  label.append(icon(direction === "prev" ? "arrow-left" : "arrow-right", { className: "el-icon" }));
-
-  const title = document.createElement("strong");
-  title.className = "doc-prev-next-title";
-  title.textContent = item.title;
-
-  link.append(label, title);
-
-  return link;
+  return jsx("a", {
+    className: `doc-prev-next-link is-${direction}`,
+    href: relativeAsset(page.rel, locale ? joinLocalePath(locale, item.rel) : item.rel),
+    children: [
+      jsx("span", {
+        className: "doc-prev-next-label",
+        children: [
+          direction === "prev"
+            ? translate("prevNext.previous", "Previous", i18n)
+            : translate("prevNext.next", "Next", i18n),
+          icon(direction === "prev" ? "arrow-left" : "arrow-right", { className: "el-icon" }),
+        ],
+      }),
+      jsx("strong", {
+        className: "doc-prev-next-title",
+        children: item.title,
+      }),
+    ],
+  });
 }
 
 export function initPrevNext(config = {}, sidebar = [], page = {}, i18n, locale = null) {
   if (!isPrevNextEnabled(config)) return;
 
-  const slot = document.querySelector("[data-doc-prev-next]");
+  const slot = q("[data-doc-prev-next]");
   if (!slot || slot.dataset.docPrevNextReady === "true") return;
 
   const items = flattenItems(sidebar, i18n);
@@ -85,12 +85,15 @@ export function initPrevNext(config = {}, sidebar = [], page = {}, i18n, locale 
   const next = items[index + 1] || null;
   if (!prev && !next) return;
 
-  const nav = document.createElement("nav");
-  nav.className = "doc-prev-next";
-  nav.dataset.docPrevNextReady = "true";
-  nav.setAttribute("aria-label", "Previous and next pages");
-  if (prev) nav.append(createLink(prev, page, locale, "prev", i18n));
-  if (next) nav.append(createLink(next, page, locale, "next", i18n));
+  const nav = jsx("nav", {
+    className: "doc-prev-next",
+    "data-doc-prev-next-ready": "true",
+    "aria-label": "Previous and next pages",
+    children: [
+      prev ? createLink(prev, page, locale, "prev", i18n) : null,
+      next ? createLink(next, page, locale, "next", i18n) : null,
+    ],
+  });
 
   slot.replaceWith(nav);
 }

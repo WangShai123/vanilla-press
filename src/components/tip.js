@@ -1,4 +1,4 @@
-import { icon } from 'vanilla-jui';
+import { all, icon, q } from 'vanilla-jui';
 import { escapeAttr, markComponent, readContainer } from '../utilities/markdown.js';
 
 const TIP_TYPES = new Set(['info', 'success', 'warning', 'danger']);
@@ -76,11 +76,11 @@ export function installTip(md) {
 }
 
 export function initTip(root = document) {
-  root.querySelectorAll('[data-doc-component="tip"]').forEach((container) => {
+  all('[data-doc-component="tip"]', root).forEach((container) => {
     if (container.dataset.docReady === 'true') return;
 
-    const iconTarget = container.querySelector('[data-doc-tip-icon]');
-    const title = container.querySelector('[data-doc-tip-title]');
+    const iconTarget = q('[data-doc-tip-icon]', container);
+    const title = q('[data-doc-tip-title]', container);
 
     if (iconTarget) {
       iconTarget.textContent = '';

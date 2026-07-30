@@ -1,4 +1,4 @@
-import { createAccordion } from 'vanilla-jui';
+import { all, createAccordion } from 'vanilla-jui';
 import {
   escapeAttr,
   markComponent,
@@ -66,14 +66,11 @@ export function installAccordion(md) {
 }
 
 export function initAccordion(root = document) {
-  root
-    .querySelectorAll('[data-doc-component="accordion"]')
+  all('[data-doc-component="accordion"]', root)
     .forEach((container) => {
       if (container.dataset.docReady === 'true') return;
 
-      const panels = Array.from(
-        container.querySelectorAll(':scope > [data-doc-accordion-item]')
-      );
+      const panels = all(':scope > [data-doc-accordion-item]', container);
       if (!panels.length) return;
 
       const items = panels.map((panel, index) => ({

@@ -1,4 +1,4 @@
-import { getRegistedIconPath, icon } from "vanilla-jui";
+import { all, getRegistedIconPath, icon, q } from "vanilla-jui";
 import { escapeAttr, markComponent, readContainer } from "../utilities/markdown.js";
 
 let globalTreeEventsReady = false;
@@ -164,7 +164,8 @@ function directTreeNode(item) {
 }
 
 function directTreeIcon(item) {
-  return directTreeNode(item)?.querySelector("[data-tree-icon]") || null;
+  const node = directTreeNode(item);
+  return node ? q("[data-tree-icon]", node) : null;
 }
 
 function hasChildren(item) {
@@ -293,10 +294,10 @@ export function initTree(root = document) {
   activeTreeIcons = icons;
   bindGlobalTreeEvents();
 
-  root.querySelectorAll('[data-doc-component="tree"]').forEach((container) => {
+  all('[data-doc-component="tree"]', root).forEach((container) => {
     if (container.dataset.docReady === "true") return;
 
-    container.querySelectorAll(".j-tree-item").forEach((item) => {
+    all(".j-tree-item", container).forEach((item) => {
       const target = directTreeIcon(item);
 
       if (item.dataset.treeType === "directory") {

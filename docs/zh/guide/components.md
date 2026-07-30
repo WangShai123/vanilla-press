@@ -255,10 +255,10 @@ my-project/
 在 `src/config/icons.js` 中，按需增减 svg 图标的配置。
 
 ```javascript
-import { addIcons } from "vanilla-jui";
-addIcons({
+export default {
   "align-left": '<path d="M3 4H21V6H3V4ZM3 19H17V21H3V19ZM3 14H21V16H3V14ZM3 9H17V11H3V9Z"></path>',
   "align-right":
     '<path d="M3 4H21V6H3V4ZM7 19H21V21H7V19ZM3 14H21V16H3V14ZM7 9H21V11H7V9Z"></path>',
-});
+  copy: '<path d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path>',
+};
 ```

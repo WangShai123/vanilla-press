@@ -201,6 +201,9 @@ export const DEFAULT_LANGUAGES_JS = `export const languages = {
       },
       theme: {
         button: "主题"
+      },
+      auth: {
+        login: "登录"
       }
     },
     en: {
@@ -236,6 +239,9 @@ export const DEFAULT_LANGUAGES_JS = `export const languages = {
       },
       theme: {
         button: "Theme"
+      },
+      auth: {
+        login: "Login"
       }
     }
   }

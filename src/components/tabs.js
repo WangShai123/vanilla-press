@@ -1,4 +1,4 @@
-import { createTabs } from 'vanilla-jui';
+import { all, createTabs } from 'vanilla-jui';
 import {
   escapeAttr,
   markComponent,
@@ -62,10 +62,10 @@ export function installTabs(md) {
 }
 
 export function initTabs(root = document) {
-  root.querySelectorAll('[data-doc-component="tabs"]').forEach((container) => {
+  all('[data-doc-component="tabs"]', root).forEach((container) => {
     if (container.dataset.docReady === 'true') return;
 
-    const panels = Array.from(container.querySelectorAll(':scope > [data-doc-tab]'));
+    const panels = all(':scope > [data-doc-tab]', container);
     if (!panels.length) return;
 
     const tabs = panels.map((panel, index) => ({

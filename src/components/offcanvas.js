@@ -1,4 +1,4 @@
-import { createOffcanvas } from 'vanilla-jui';
+import { all, createOffcanvas, q } from 'vanilla-jui';
 import { escapeAttr, markComponent, parseBracketTitle, readContainer } from '../utilities/markdown.js';
 
 const DIRECTIONS = new Set(['left', 'right', 'top', 'bottom']);
@@ -52,13 +52,12 @@ export function installOffcanvas(md) {
 }
 
 export function initOffcanvas(root = document) {
-  root
-    .querySelectorAll('[data-doc-component="offcanvas"]')
+  all('[data-doc-component="offcanvas"]', root)
     .forEach((container) => {
       if (container.dataset.docReady === 'true') return;
 
-      const trigger = container.querySelector('[data-doc-offcanvas-trigger]');
-      const content = container.querySelector('[data-doc-offcanvas-content]');
+      const trigger = q('[data-doc-offcanvas-trigger]', container);
+      const content = q('[data-doc-offcanvas-content]', container);
       if (!trigger || !content) return;
 
       const contentBody = content.firstElementChild;

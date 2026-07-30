@@ -1,4 +1,5 @@
-import { createModal, icon, randomId } from "vanilla-jui";
+import { all, createModal, icon, randomId } from "vanilla-jui";
+import { jsx } from "vanilla-signal";
 import { localize } from "./i18n.js";
 import { normalizeRel, relativeAsset } from "./path.js";
 import { isSearchEnabled } from "../utilities/features.js";
@@ -59,25 +60,27 @@ function normalizeSearchIndex(value) {
 }
 
 function createSearchPanel({ items, page, i18n, onNavigate }) {
-  const panel = document.createElement("div");
-  panel.className = "doc-search-panel";
-
-  const input = document.createElement("input");
-  input.className = "j-input doc-search-input";
-  input.id = randomId();
-  input.type = "search";
-  input.autocomplete = "off";
-  input.placeholder = translate("search.placeholder", "输入关键词...", i18n);
-
-  const results = document.createElement("div");
-  results.className = "doc-search-results";
+  const input = jsx("input", {
+    className: "j-input doc-search-input",
+    id: randomId(),
+    type: "search",
+    autocomplete: "off",
+    placeholder: translate("search.placeholder", "输入关键词...", i18n),
+  });
+  const results = jsx("div", { className: "doc-search-results" });
+  const panel = jsx("div", {
+    className: "doc-search-panel",
+    children: [input, results],
+  });
 
   function renderEmpty(message) {
     results.textContent = "";
-    const empty = document.createElement("p");
-    empty.className = "doc-search-empty";
-    empty.textContent = message;
-    results.append(empty);
+    results.append(
+      jsx("p", {
+        className: "doc-search-empty",
+        children: message,
+      }),
+    );
   }
 
   function renderResults() {
@@ -96,20 +99,22 @@ function createSearchPanel({ items, page, i18n, onNavigate }) {
     }
 
     for (const item of matches) {
-      const link = document.createElement("a");
-      link.className = "doc-search-result";
-      link.href = relativeAsset(page.rel, item.rel);
-
-      const title = document.createElement("strong");
-      title.className = "doc-search-result-title";
-      title.textContent = item.title || item.rel;
-
-      const excerpt = document.createElement("span");
-      excerpt.className = "doc-search-result-excerpt";
-      excerpt.textContent = item.description || item.excerpt || item.rel;
-
-      link.append(title, excerpt);
-      results.append(link);
+      results.append(
+        jsx("a", {
+          className: "doc-search-result",
+          href: relativeAsset(page.rel, item.rel),
+          children: [
+            jsx("strong", {
+              className: "doc-search-result-title",
+              children: item.title || item.rel,
+            }),
+            jsx("span", {
+              className: "doc-search-result-excerpt",
+              children: item.description || item.excerpt || item.rel,
+            }),
+          ],
+        }),
+      );
     }
   }
 
@@ -119,7 +124,6 @@ function createSearchPanel({ items, page, i18n, onNavigate }) {
     if (link) onNavigate?.();
   });
 
-  panel.append(input, results);
   renderResults();
 
   return {
@@ -133,7 +137,7 @@ function createSearchPanel({ items, page, i18n, onNavigate }) {
 }
 
 export function initSearch(config = {}, searchSource = [], page = {}, i18n, locale = null) {
-  const buttons = Array.from(document.querySelectorAll("[data-doc-search]")).filter(
+  const buttons = all("[data-doc-search]").filter(
     (button) => button.dataset.docReady !== "true",
   );
   if (!buttons.length) return;

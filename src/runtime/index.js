@@ -1,4 +1,4 @@
-import { isMobile } from "vanilla-jui";
+import { all, isMobile, q } from "vanilla-jui";
 import "./icons.js";
 import { initAccordion } from "../components/accordion.js";
 import { initOffcanvas } from "../components/offcanvas.js";
@@ -106,8 +106,7 @@ function resolveExecutionOrder(names) {
 }
 
 function countPending(root, name) {
-  return root.querySelectorAll(`[data-doc-component="${name}"]:not([data-doc-ready="true"])`)
-    .length;
+  return all(`[data-doc-component="${name}"]:not([data-doc-ready="true"])`, root).length;
 }
 
 function hasPending(root, names) {
@@ -117,7 +116,7 @@ function hasPending(root, names) {
 function nodeContainsComponents(node) {
   if (!(node instanceof Element)) return false;
   if (node.hasAttribute("data-doc-component")) return true;
-  return Boolean(node.querySelector("[data-doc-component]"));
+  return Boolean(q("[data-doc-component]", node));
 }
 
 function initComponents(root, names, config = {}, maxPasses = 5) {

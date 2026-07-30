@@ -1,5 +1,5 @@
-import { createEffect } from "vanilla-signal";
-import { Menu, createOffcanvas, createToc, icon } from "vanilla-jui";
+import { createEffect, jsx } from "vanilla-signal";
+import { Menu, createOffcanvas, createToc, icon, q } from "vanilla-jui";
 import { joinLocalePath } from "./i18n.js";
 import { localize } from "./i18n.js";
 import { normalizeRel, relativeAsset } from "./path.js";
@@ -83,7 +83,6 @@ function toMenuItems(items = [], page = {}, i18n, locale) {
 }
 
 function renderMenuItem(item, page, i18n, locale) {
-  const li = document.createElement("li");
   const children = Array.isArray(item.children) ? item.children : [];
   const active = menuItemIsActive(item, page, locale);
   const classes = ["menu-item"];
@@ -91,57 +90,59 @@ function renderMenuItem(item, page, i18n, locale) {
   if (children.length) classes.push("menu-item-has-children");
   if (active) classes.push("current-menu-item");
   if (Array.isArray(item.classes)) classes.push(...item.classes);
-  li.className = classes.join(" ");
 
-  const link = document.createElement("a");
-  link.className = "menu-link";
   const href = resolveItemHref(item, page, locale);
-  if (href) link.href = href;
-  if (item.target) link.target = item.target;
 
-  const text = document.createElement("span");
-  text.className = "menu-text";
-  text.textContent = localize(item.i18n || item.label || item.title, i18n);
-  link.append(text);
-  li.append(link);
-
-  if (children.length) {
-    const subMenu = document.createElement("ul");
-    subMenu.className = "sub-menu";
-    children.forEach((child) => subMenu.append(renderMenuItem(child, page, i18n, locale)));
-    li.append(subMenu);
-  }
-
-  return li;
+  return jsx("li", {
+    className: classes.join(" "),
+    children: [
+      jsx("a", {
+        className: "menu-link",
+        ...(href ? { href } : {}),
+        ...(item.target ? { target: item.target } : {}),
+        children: jsx("span", {
+          className: "menu-text",
+          children: localize(item.i18n || item.label || item.title, i18n),
+        }),
+      }),
+      children.length
+        ? jsx("ul", {
+            className: "sub-menu",
+            children: children.map((child) => renderMenuItem(child, page, i18n, locale)),
+          })
+        : null,
+    ],
+  });
 }
 
 export function initHeaderMenu(menuItems = [], page = {}, i18n, locale = null) {
-  const nav = document.querySelector("[data-doc-menu]");
+  const nav = q("[data-doc-menu]");
   if (!nav || nav.dataset.docReady === "true") return;
 
   nav.classList.add("j-menu");
   createEffect(() => {
     nav.textContent = "";
-    const list = document.createElement("ul");
-    list.className = "menu";
-    menuItems.forEach((item) => list.append(renderMenuItem(item, page, i18n, locale)));
-    nav.append(list);
+    nav.append(
+      jsx("ul", {
+        className: "menu",
+        children: menuItems.map((item) => renderMenuItem(item, page, i18n, locale)),
+      }),
+    );
   });
 
   nav.dataset.docReady = "true";
 }
 
 export function initMobileHeader(menuItems = [], page = {}, i18n, locale = null) {
-  const header = document.querySelector("[data-doc-mobile-header]");
-  const menuButton = document.querySelector("[data-doc-mobile-menu]");
+  const header = q("[data-doc-mobile-header]");
+  const menuButton = q("[data-doc-mobile-menu]");
   if (!header || !menuButton || header.dataset.docReady === "true") return;
 
   header.hidden = false;
   menuButton.textContent = "";
   menuButton.append(icon("menu", { className: "el-icon" }));
 
-  const panel = document.createElement("div");
-  panel.className = "doc-mobile-menu-panel";
+  const panel = jsx("div", { className: "doc-mobile-menu-panel" });
   let menu = null;
 
   const destroyMenu = () => {
@@ -171,36 +172,43 @@ export function initMobileHeader(menuItems = [], page = {}, i18n, locale = null)
 
 function renderSidebarItem(item, page, i18n, locale) {
   const children = Array.isArray(item.children) ? item.children : [];
-  const wrapper = document.createElement("div");
   const active = menuItemIsActive(item, page, locale);
   const collapsed = children.length && item.collapse === true && !active;
-
-  wrapper.className = children.length
+  const className = children.length
     ? `doc-nav-item has-children${active ? " is-active" : ""}${collapsed ? " is-collapsed" : ""}`
     : `doc-nav-item${active ? " is-active" : ""}`;
 
-  const title = document.createElement("a");
-  title.className = `doc-nav-title${active ? " is-active" : ""}`;
   const href = resolveItemHref(item, page, locale);
-  if (href) title.href = href;
-  title.textContent = localize(item.i18n || item.label || item.title, i18n);
-  wrapper.append(title);
+  const titleText = localize(item.i18n || item.label || item.title, i18n);
+  const title = jsx("a", {
+    className: `doc-nav-title${active ? " is-active" : ""}`,
+    ...(href ? { href } : {}),
+    children: titleText,
+  });
 
-  if (!children.length) return wrapper;
+  if (!children.length) {
+    return jsx("div", {
+      className,
+      children: title,
+    });
+  }
 
-  const toggle = document.createElement("button");
-  toggle.className = "doc-nav-toggle j-button is-ghost is-icon";
-  toggle.type = "button";
-  toggle.setAttribute("aria-label", title.textContent);
-  toggle.setAttribute("aria-expanded", String(!collapsed));
-  toggle.append(icon("arrow-down", { className: "el-icon" }));
-  wrapper.append(toggle);
-
-  const list = document.createElement("div");
-  list.className = "doc-nav-children";
-  list.hidden = collapsed;
-  children.forEach((child) => list.append(renderSidebarItem(child, page, i18n, locale)));
-  wrapper.append(list);
+  const toggle = jsx("button", {
+    className: "doc-nav-toggle j-button is-ghost is-icon",
+    type: "button",
+    "aria-label": titleText,
+    "aria-expanded": String(!collapsed),
+    children: icon("arrow-down", { className: "el-icon" }),
+  });
+  const list = jsx("div", {
+    className: "doc-nav-children",
+    hidden: collapsed,
+    children: children.map((child) => renderSidebarItem(child, page, i18n, locale)),
+  });
+  const wrapper = jsx("div", {
+    className,
+    children: [title, toggle, list],
+  });
 
   toggle.addEventListener("click", () => {
     const next = !wrapper.classList.contains("is-collapsed");
@@ -218,15 +226,15 @@ function renderSidebarItem(item, page, i18n, locale) {
 }
 
 function renderSidebar(sidebarItems = [], page = {}, i18n, locale) {
-  const nav = document.createElement("nav");
-  nav.className = "doc-nav";
-  nav.setAttribute("aria-label", "文档导航");
-  sidebarItems.forEach((item) => nav.append(renderSidebarItem(item, page, i18n, locale)));
-  return nav;
+  return jsx("nav", {
+    className: "doc-nav",
+    "aria-label": "文档导航",
+    children: sidebarItems.map((item) => renderSidebarItem(item, page, i18n, locale)),
+  });
 }
 
 export function initSidebar(sidebarItems = [], page = {}, i18n, locale = null) {
-  const nav = document.querySelector("[data-doc-sidebar]");
+  const nav = q("[data-doc-sidebar]");
   if (!nav || nav.dataset.docReady === "true") return;
 
   createEffect(() => {
@@ -244,9 +252,9 @@ export function initMobileSecondary(
   locale = null,
   config = {},
 ) {
-  const secondary = document.querySelector("[data-doc-mobile-secondary]");
-  const sidebarButton = document.querySelector("[data-doc-mobile-sidebar]");
-  const tocButton = document.querySelector("[data-doc-mobile-toc]");
+  const secondary = q("[data-doc-mobile-secondary]");
+  const sidebarButton = q("[data-doc-mobile-sidebar]");
+  const tocButton = q("[data-doc-mobile-toc]");
   if (!secondary || secondary.dataset.docReady === "true") {
     return;
   }
@@ -259,11 +267,12 @@ export function initMobileSecondary(
     sidebarButton.textContent = "";
     sidebarButton.setAttribute("aria-label", sidebarLabel);
     sidebarButton.append(icon("align-left", { className: "el-icon el-prefix" }));
-    sidebarButton.append(document.createTextNode(sidebarLabel));
+    sidebarButton.append(sidebarLabel);
 
-    const sidebarPanel = document.createElement("div");
-    sidebarPanel.className = "doc-mobile-sidebar-panel";
-    sidebarPanel.append(renderSidebar(sidebarItems, page, i18n, locale));
+    const sidebarPanel = jsx("div", {
+      className: "doc-mobile-sidebar-panel",
+      children: renderSidebar(sidebarItems, page, i18n, locale),
+    });
     const sidebarDrawer = createOffcanvas({
       direction: "left",
       content: sidebarPanel,
@@ -275,14 +284,13 @@ export function initMobileSecondary(
   if (tocButton && isTocEnabled(config)) {
     tocButton.textContent = "";
     tocButton.setAttribute("aria-label", tocLabel);
-    tocButton.append(document.createTextNode(tocLabel));
+    tocButton.append(tocLabel);
     tocButton.append(icon("align-right", { className: "el-icon el-suffix" }));
 
-    const tocPanel = document.createElement("div");
-    tocPanel.className = "doc-mobile-toc-panel";
-    const article = document.querySelector(".j-content");
+    const tocPanel = jsx("div", { className: "doc-mobile-toc-panel" });
+    const article = q(".j-content");
     const { headings, offset } = tocOptions(config);
-    if (article?.querySelector(headings)) {
+    if (article && q(headings, article)) {
       createToc({
         container: tocPanel,
         target: article,

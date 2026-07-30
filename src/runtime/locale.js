@@ -1,4 +1,5 @@
-import { createEffect } from "vanilla-signal";
+import { createEffect, jsx } from "vanilla-signal";
+import { all } from "vanilla-jui";
 import { currentLocale, joinLocalePath, pageWithoutLocale } from "./i18n.js";
 import { localeCode, relativeAsset } from "./path.js";
 import { isI18nEnabled, runtimeOption } from "../utilities/features.js";
@@ -47,14 +48,14 @@ export function maybeRedirectToDefaultLocale(config = {}, languages = {}, page =
 
 export function initLocale(languages = {}, page = {}, i18n, config = {}) {
   if (!isI18nEnabled(config)) {
-    document.querySelectorAll("[data-doc-locale]").forEach((select) => {
+    all("[data-doc-locale]").forEach((select) => {
       select.hidden = true;
       select.dataset.docReady = "true";
     });
     return;
   }
 
-  const selects = Array.from(document.querySelectorAll("[data-doc-locale]")).filter(
+  const selects = all("[data-doc-locale]").filter(
     (select) => select.dataset.docReady !== "true",
   );
   const locales = Array.isArray(languages.locales) ? languages.locales : [];
@@ -66,10 +67,12 @@ export function initLocale(languages = {}, page = {}, i18n, config = {}) {
     select.textContent = "";
 
     for (const locale of locales) {
-      const option = document.createElement("option");
-      option.value = localeCode(locale.code);
-      option.textContent = locale.label || locale.code;
-      select.append(option);
+      select.append(
+        jsx("option", {
+          value: localeCode(locale.code),
+          children: locale.label || locale.code,
+        }),
+      );
     }
 
     select.addEventListener("change", () => {

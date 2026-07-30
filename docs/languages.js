@@ -48,6 +48,9 @@ export const languages = {
       theme: {
         button: "主题",
       },
+      auth: {
+        login: "登录",
+      },
     },
     en: {
       menu: {
@@ -90,6 +93,9 @@ export const languages = {
       },
       theme: {
         button: "Theme",
+      },
+      auth: {
+        login: "Login",
       },
     },
   },

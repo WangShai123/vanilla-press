@@ -1,4 +1,4 @@
-import { icon } from "vanilla-jui";
+import { all, icon, q } from "vanilla-jui";
 import { jsx } from "vanilla-signal";
 import "./icons.js";
 
@@ -14,7 +14,7 @@ function isElement(value) {
 }
 
 function appendExternalIcon(link) {
-  if (link.querySelector(`[${EXTERNAL_LINK_ICON_ATTR}]`)) return;
+  if (q(`[${EXTERNAL_LINK_ICON_ATTR}]`, link)) return;
 
   const iconNode = jsx("span", {
     className: "external-link",
@@ -41,14 +41,14 @@ function applyLinkAttributesIn(root = document) {
     applyLinkAttributes(root);
   }
 
-  root.querySelectorAll?.(EXTERNAL_LINK_SELECTOR).forEach((link) => {
+  all(EXTERNAL_LINK_SELECTOR, root).forEach((link) => {
     applyLinkAttributes(link);
   });
 }
 
 function applyContentLinkAttributes(root = document) {
   if (root === document) {
-    document.querySelectorAll(CONTENT_SELECTOR).forEach((content) => {
+    all(CONTENT_SELECTOR).forEach((content) => {
       applyLinkAttributesIn(content);
     });
     return;
@@ -61,7 +61,7 @@ function applyContentLinkAttributes(root = document) {
     return;
   }
 
-  root.querySelectorAll?.(CONTENT_SELECTOR).forEach((content) => {
+  all(CONTENT_SELECTOR, root).forEach((content) => {
     applyLinkAttributesIn(content);
   });
 }

@@ -83,7 +83,9 @@ export function renderLlmsTxt(config = {}, siteConfig = {}, pages = []) {
 }
 
 function hasVisibleControls(options = {}) {
-  return Boolean(options.enabled && (options.link || options.copy || options.chatgpt || options.claude));
+  return Boolean(
+    options.enabled && (options.link || options.copy || options.chatgpt || options.claude),
+  );
 }
 
 function pageLocaleCode(languages = {}, page = {}) {
@@ -170,7 +172,13 @@ function createOptionsButton(document, labels) {
   return button;
 }
 
-function createLlmsContainer(document, page = {}, siteConfig = {}, llmsConfig = {}, languages = {}) {
+function createLlmsContainer(
+  document,
+  page = {},
+  siteConfig = {},
+  llmsConfig = {},
+  languages = {},
+) {
   const options = llmsOptions(siteConfig);
   if (!hasVisibleControls(options)) return null;
 

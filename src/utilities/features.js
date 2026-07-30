@@ -11,6 +11,11 @@ export function isThemeEnabled(config = {}) {
   return theme?.enabled !== false;
 }
 
+export function isAuthEnabled(config = {}) {
+  const auth = runtimeOption(config, "auth");
+  return auth === true || auth?.enabled === true;
+}
+
 export function isI18nEnabled(config = {}) {
   const i18n = runtimeOption(config, "i18n");
   if (i18n === false) return false;

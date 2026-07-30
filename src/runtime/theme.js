@@ -1,10 +1,10 @@
-import { createEffect } from "vanilla-signal";
-import { Theme, createOffcanvas, icon } from "vanilla-jui";
+import { createEffect, jsx } from "vanilla-signal";
+import { Theme, all, createOffcanvas, icon } from "vanilla-jui";
 import { isThemeEnabled, runtimeOption } from "../utilities/features.js";
 
 export function initTheme(config = {}, i18n) {
   const themeConfig = runtimeOption(config, "theme") || {};
-  const buttons = Array.from(document.querySelectorAll("[data-doc-theme]")).filter(
+  const buttons = all("[data-doc-theme]").filter(
     (button) => button.dataset.docReady !== "true",
   );
   if (!buttons.length) return;
@@ -31,8 +31,7 @@ export function initTheme(config = {}, i18n) {
     button.append(icon("palette", { className: "el-icon el-prefix" }));
 
     if (!button.classList.contains("is-icon")) {
-      const text = document.createElement("span");
-      text.className = "button-content";
+      const text = jsx("span", { className: "button-content" });
       button.append(text);
 
       createEffect(() => {

@@ -105,11 +105,13 @@
 
 .doc-header-actions,
 .doc-locale,
-.doc-theme-button {
+.doc-theme-button,
+.doc-auth-button {
   color: var(--tone-caption);
 }
 
-.doc-theme-button {
+.doc-theme-button,
+.doc-auth-button {
   background: transparent;
 }
 
@@ -134,9 +136,12 @@
 }
 
 .doc-mobile-header-main,
-.doc-mobile-header-actions,
 .footer-social {
   gap: 8px;
+}
+
+.doc-mobile-header-actions {
+  gap: 4px;
 }
 
 .doc-mobile-icon-button {
@@ -745,6 +750,8 @@ html.is-mobile .j-toc .toc-link {
 
 .j-content pre code[class*=language-] {
   padding: .5rem 1rem 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-border) transparent;
 }
 
 a[data-doc-external-link] {

@@ -20,6 +20,7 @@ import { createMarkdown } from "./core/md.js";
 import { layoutStyles, loadLayouts, renderLayout } from "./render/layout.js";
 import { renderDefaultLocaleEntrypoint, renderHtml } from "./render/html.js";
 import {
+  isAuthEnabled,
   isI18nEnabled,
   isLlmsEnabled,
   isMenuEnabled,
@@ -364,6 +365,7 @@ function renderSource(source, md, config, languages, layouts, llmsConfig) {
       sidebarEnabled: isSidebarEnabled(config),
       tocEnabled: isTocEnabled(config),
       themeEnabled: isThemeEnabled(config),
+      authEnabled: isAuthEnabled(config),
     },
     layouts,
   });

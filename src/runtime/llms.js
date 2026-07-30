@@ -1,4 +1,5 @@
-import { Drop, copy, icon } from "vanilla-jui";
+import { Drop, all, copy, icon, q } from "vanilla-jui";
+import { jsx } from "vanilla-signal";
 
 const PROMPT = "I want to ask questions about it.";
 
@@ -37,15 +38,14 @@ function actionIcon(action) {
 }
 
 function createDropItem(text, action) {
-  const item = document.createElement("div");
-  item.className = "llms-drop-item";
-  item.tabIndex = 0;
-  item.role = "button";
-  item.dataset.llmsAction = action;
   const itemIcon = actionIcon(action);
-  if (itemIcon) item.appendChild(itemIcon);
-  item.appendChild(document.createTextNode(text));
-  return item;
+  return jsx("div", {
+    className: "llms-drop-item",
+    tabIndex: 0,
+    role: "button",
+    "data-llms-action": action,
+    children: [itemIcon, text],
+  });
 }
 
 function createDropContent(container) {
@@ -63,10 +63,10 @@ function createDropContent(container) {
     items.push(createDropItem(label(container, "Claude", "在 Claude 中打开"), "claude"));
   }
 
-  const root = document.createElement("div");
-  root.className = "llms-drop-menu";
-  root.append(...items);
-  return root;
+  return jsx("div", {
+    className: "llms-drop-menu",
+    children: items,
+  });
 }
 
 async function runAction(action, mdUrl) {
@@ -115,12 +115,12 @@ function initContainer(container) {
   const mdUrl = container.dataset.docLlmsMdUrl;
   if (!mdUrl) return;
 
-  container.querySelectorAll("[data-doc-llms-icon]").forEach(fillIcon);
+  all("[data-doc-llms-icon]", container).forEach(fillIcon);
 
-  const link = container.querySelector("[data-doc-llms-link]");
+  const link = q("[data-doc-llms-link]", container);
   link?.addEventListener("click", () => openBlank(mdUrl));
 
-  const trigger = container.querySelector("[data-doc-llms-options-trigger]");
+  const trigger = q("[data-doc-llms-options-trigger]", container);
   if (trigger) {
     bindDrop(container, trigger, mdUrl);
   }
@@ -129,5 +129,5 @@ function initContainer(container) {
 }
 
 export function initLlms() {
-  document.querySelectorAll("[data-doc-llms]").forEach(initContainer);
+  all("[data-doc-llms]").forEach(initContainer);
 }

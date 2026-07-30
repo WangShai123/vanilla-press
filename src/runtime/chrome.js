@@ -1,4 +1,5 @@
-import { icon, isPlainObject } from "vanilla-jui";
+import { all, icon, isPlainObject, q } from "vanilla-jui";
+import { initAuth } from "./auth.js";
 import { createDocI18n, currentLocale } from "./i18n.js";
 import { initLocale, maybeRedirectToDefaultLocale } from "./locale.js";
 import { initHeaderMenu, initMobileHeader, initSidebar } from "./menu.js";
@@ -12,13 +13,10 @@ function renderFooter(footer, config = {}) {
 
   footer.textContent = "";
 
-  const brand = document.createElement("div");
   const siteName = normalizeSiteName(config);
   const year = new Date().getFullYear();
-  brand.innerHTML = `${siteName} © ${year}`;
-
-  const social = document.createElement("div");
-  social.className = "footer-social";
+  const brand = jsx("div", { children: `${siteName} © ${year}` });
+  const social = jsx("div", { className: "footer-social" });
 
   const socialConfig = isPlainObject(config.social) ? config.social : {};
 
@@ -26,15 +24,17 @@ function renderFooter(footer, config = {}) {
     const url = String(href || "").trim();
     if (!url) return;
 
-    const item = document.createElement("a");
-    item.href = url;
-    item.className = "j-button is-icon is-sm is-ghost";
-    item.target = "_blank";
-    item.rel = "noreferrer noopener";
-    item.setAttribute("aria-label", name);
-    item.title = name;
-    item.append(icon(name, { className: "el-icon" }));
-    social.append(item);
+    social.append(
+      jsx("a", {
+        href: url,
+        className: "j-button is-icon is-sm is-ghost",
+        target: "_blank",
+        rel: "noreferrer noopener",
+        "aria-label": name,
+        title: name,
+        children: icon(name, { className: "el-icon" }),
+      }),
+    );
   });
 
   const builtBy = jsx`<div>BuiltBy <a href="https://github.com/WangShai123/vanilla-press" target="_blank" rel="noreferrer noopener">VanillaPress</a></div>`;
@@ -58,20 +58,20 @@ export function initDocChrome(
   const locale = i18nEnabled ? currentLocale(languages, page) : null;
   const i18n = createDocI18n(languages, page);
 
-  const desktopHeader = document.querySelector("[data-doc-desktop-header]");
-  const mobileHeader = document.querySelector("[data-doc-mobile-header]");
+  const desktopHeader = q("[data-doc-desktop-header]");
+  const mobileHeader = q("[data-doc-mobile-header]");
   if (desktopHeader) desktopHeader.hidden = mobile;
   if (mobileHeader) mobileHeader.hidden = !mobile;
   const siteName = normalizeSiteName(config);
 
-  document.querySelectorAll("[data-doc-brand]").forEach((brand) => {
+  all("[data-doc-brand]").forEach((brand) => {
     brand.textContent = siteName;
   });
 
-  const footer = document.querySelector("[data-doc-footer]");
+  const footer = q("[data-doc-footer]");
   renderFooter(footer, config);
 
-  const asideCustom = document.querySelector("[data-doc-aside-custom]");
+  const asideCustom = q("[data-doc-aside-custom]");
   if (asideCustom && config.aside?.html) {
     asideCustom.innerHTML = config.aside.html;
   }
@@ -84,6 +84,7 @@ export function initDocChrome(
   }
   if (i18nEnabled) initLocale(languages, page, i18n, config);
   initTheme(config, i18n);
+  initAuth(config, i18n);
 
   return { i18n, locale, redirected: false };
 }
