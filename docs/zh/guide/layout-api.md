@@ -9,29 +9,31 @@
 每个布局对应一个独立目录，目录名就是布局名。
 
 :::tree
-src/layouts/
-├── default/
-│ ├── template.html
-│ └── style.css
-└── home/
-├── template.html
-└── style.css
+src/
+├── layouts/
+│ ├── default/
+│ │ ├── template.html
+│ │ └── style.css
+│ └── home/
+│ │ ├── template.html
+│ │ └── style.css
 :::
 
 项目文档侧也可以新增或覆盖布局：
 
 :::tree
-docs/layouts/
-└── landing/
-├── template.html
-└── style.css
+docs/
+├── _layouts/
+│ └── landing/
+│ │ ├── template.html
+│ │ └── style.css
 :::
 
-构建时会先读取 `src/layouts/` 中的内置布局，再读取 `docs/layouts/` 中的项目布局。相同名称的项目布局会覆盖内置布局。
+构建时会先读取 `src/layouts/` 中的内置布局，再读取 `docs/_layouts/` 中的项目布局。相同名称的项目布局会覆盖内置布局。
 
 ## 新增一个布局
 
-创建 `docs/layouts/landing/template.html`，基于 `layout` 对象定义模板变量：
+创建 `docs/_layouts/landing/template.html`，基于 `layout` 对象定义模板变量：
 
 ```html
 <main class="landing-layout">
@@ -45,7 +47,7 @@ docs/layouts/
 </main>
 ```
 
-创建 `docs/layouts/landing/style.css`：
+创建 `docs/_layouts/landing/style.css`：
 
 ```css
 .landing-layout {
@@ -85,22 +87,22 @@ layouts:
 
 布局模板可以读取构建器注入的上下文。
 
-| 变量                     | 说明                             |
-| ------------------------ | -------------------------------- |
-| `{{ title }}`            | 当前页面标题，优先使用 SEO 标题  |
-| `{{ description }}`      | 当前页面描述，来自 frontmatter   |
-| `{{ keywords }}`         | 当前页面关键词，来自 frontmatter |
-| `{{ page.title }}`       | Markdown 页面标题                |
-| `{{ page.rel }}`         | 当前页面输出路径                 |
-| `{{ site.siteName }}`    | `docs/config.js` 中的站点配置    |
-| `{{ layout.* }}`         | 当前布局作用域下的数据           |
-| `{{ layouts.* }}`        | 所有布局作用域数据               |
-| `{{{ content }}}`        | Markdown 渲染后的 HTML           |
-| `{{{ slots.header }}}`   | 桌面主菜单和手机主菜单模板       |
+| 变量                      | 说明                             |
+| ------------------------- | -------------------------------- |
+| `{{ title }}`             | 当前页面标题，优先使用 SEO 标题  |
+| `{{ description }}`       | 当前页面描述，来自 frontmatter   |
+| `{{ keywords }}`          | 当前页面关键词，来自 frontmatter |
+| `{{ page.title }}`        | Markdown 页面标题                |
+| `{{ page.rel }}`          | 当前页面输出路径                 |
+| `{{ site.siteName }}`     | `docs/config.js` 中的站点配置    |
+| `{{ layout.* }}`          | 当前布局作用域下的数据           |
+| `{{ layouts.* }}`         | 所有布局作用域数据               |
+| `{{{ content }}}`         | Markdown 渲染后的 HTML           |
+| `{{{ slots.header }}}`    | 桌面主菜单和手机主菜单模板       |
 | `{{{ slots.secondary }}}` | 手机次级菜单模板                 |
-| `{{{ slots.sidebar }}}`  | 默认侧边栏插槽                   |
-| `{{{ slots.aside }}}`    | 默认右侧区域插槽，包含目录       |
-| `{{{ slots.prevNext }}}` | 分页导航插槽                     |
+| `{{{ slots.sidebar }}}`   | 默认侧边栏插槽                   |
+| `{{{ slots.aside }}}`     | 默认右侧区域插槽，包含目录       |
+| `{{{ slots.prevNext }}}`  | 分页导航插槽                     |
 
 普通双花括号会进行 HTML 转义，适合输出 frontmatter 中的文本。
 
@@ -164,10 +166,7 @@ layouts:
 内置 `default` 布局复用文档站常规结构：左侧侧边栏、正文、右侧目录和页脚。它的模板核心结构如下：
 
 ```html
-<header class="doc-header">
-{{{ slots.header }}}
-{{{ slots.secondary }}}
-</header>
+<header class="doc-header">{{{ slots.header }}} {{{ slots.secondary }}}</header>
 <main class="{{ shell.className }}">
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">

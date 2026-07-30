@@ -10,7 +10,6 @@
 @tab JavaScript
 
 ```javascript
-// javascript
 const pages = ["index.md", "guide/components.md"];
 
 export function toHtml(file) {
@@ -218,6 +217,8 @@ my-project/
 │ └── main.js
 ├── public/
 │ └── index.html
+├── tests/
+│ └── app.test.ts
 ├── package.json
 └── README.md
 :::
@@ -235,6 +236,8 @@ my-project/
 │ └── main.js
 ├── public/
 │ └── index.html
+├── tests/
+│ └── app.test.ts
 ├── package.json
 └── README.md
 :::
@@ -249,7 +252,7 @@ my-project/
 
 #### 扩展图标
 
-在 `src/runtime/icons.js` 中，使用 `addIcons()` 方法扩展文件图标。
+在 `src/config/icons.js` 中，按需增减 svg 图标的配置。
 
 ```javascript
 import { addIcons } from "vanilla-jui";

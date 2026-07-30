@@ -159,12 +159,14 @@ cta:
 
 ## 自定义样式
 
-内置 `home` 样式包含背景光效、玻璃卡片、按钮动效、代码卡片、特性卡片 hover 效果和 CTA 渐变。你可以复制 `src/layouts/home/` 到 `docs/layouts/home/` 后按项目需要修改：
+内置 `home` 样式包含背景光效、玻璃卡片、按钮动效、代码卡片、特性卡片 hover 效果和 CTA 渐变。你可以复制 `src/layouts/home/` 到 `docs/_layouts/home/` 后按项目需要修改：
 
 :::tree
-docs/layouts/home/
-├── template.html
-└── style.css
+docs/
+├── _layouts/
+│ └── home/
+│ │ ├── template.html
+│ │ └── style.css
 :::
 
 项目侧同名布局会覆盖内置布局，适合在不修改生成器源码的情况下定制首页。

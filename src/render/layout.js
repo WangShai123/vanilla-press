@@ -57,7 +57,7 @@ export async function loadLayouts({ projectRoot, inputDir }) {
   const layouts = new Map();
   const roots = [
     { dir: path.join(projectRoot, "src/layouts"), source: "src" },
-    { dir: path.join(inputDir, "layouts"), source: "docs" },
+    { dir: path.join(inputDir, "_layouts"), source: "docs" },
   ];
 
   for (const root of roots) {
@@ -110,7 +110,7 @@ export function renderLayout({
   const name = pageLayoutName(source.frontmatter);
   const layout = layouts.get(name);
   if (!layout) {
-    throw new Error(`Unknown layout "${name}" in ${source.file}. Add ${name}/template.html under src/layouts or docs/layouts.`);
+    throw new Error(`Unknown layout "${name}" in ${source.file}. Add ${name}/template.html under src/layouts or docs/_layouts.`);
   }
 
   const shellContext = createPageShellContext({

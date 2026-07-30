@@ -9,29 +9,31 @@ Pages use the built-in `default` layout by default. When a page needs a differen
 Each layout has its own directory, and the directory name is the layout name.
 
 :::tree
-src/layouts/
-├── default/
-│ ├── template.html
-│ └── style.css
-└── home/
-├── template.html
-└── style.css
+src/
+├── layouts/
+│ ├── default/
+│ │ ├── template.html
+│ │ └── style.css
+│ └── home/
+│ │ ├── template.html
+│ │ └── style.css
 :::
 
 Project documentation can also add or override layouts:
 
 :::tree
-docs/layouts/
-└── landing/
-├── template.html
-└── style.css
+docs/
+├── _layouts/
+│ └── landing/
+│ │ ├── template.html
+│ │ └── style.css
 :::
 
-During build, VanillaPress reads built-in layouts from `src/layouts/` first, then reads project layouts from `docs/layouts/`. A project layout with the same name overrides the built-in layout.
+During build, VanillaPress reads built-in layouts from `src/layouts/` first, then reads project layouts from `docs/_layouts/`. A project layout with the same name overrides the built-in layout.
 
 ## Add a Layout
 
-Create `docs/layouts/landing/template.html`, and define template variables from the `layout` object:
+Create `docs/_layouts/landing/template.html`, and define template variables from the `layout` object:
 
 ```html
 <main class="landing-layout">
@@ -45,7 +47,7 @@ Create `docs/layouts/landing/template.html`, and define template variables from 
 </main>
 ```
 
-Create `docs/layouts/landing/style.css`:
+Create `docs/_layouts/landing/style.css`:
 
 ```css
 .landing-layout {
@@ -85,22 +87,22 @@ This Markdown content will render into the `{{{ content }}}` slot in the templat
 
 Layout templates can read the context injected by the builder.
 
-| Variable                 | Description                                         |
-| ------------------------ | --------------------------------------------------- |
-| `{{ title }}`            | Current page title, preferring the SEO title        |
-| `{{ description }}`      | Current page description from frontmatter           |
-| `{{ keywords }}`         | Current page keywords from frontmatter              |
-| `{{ page.title }}`       | Markdown page title                                 |
-| `{{ page.rel }}`         | Current page output path                            |
-| `{{ site.siteName }}`    | Site config from `docs/config.js`                   |
-| `{{ layout.* }}`         | Data scoped to the current layout                   |
-| `{{ layouts.* }}`        | Data for all layout scopes                          |
-| `{{{ content }}}`        | HTML rendered from Markdown                         |
-| `{{{ slots.header }}}`   | Desktop main menu and mobile main menu templates    |
-| `{{{ slots.secondary }}}` | Mobile secondary menu template                      |
-| `{{{ slots.sidebar }}}`  | Default sidebar slot                                |
-| `{{{ slots.aside }}}`    | Default right-side region slot, including the table of contents |
-| `{{{ slots.prevNext }}}` | Previous/next navigation slot                       |
+| Variable                  | Description                                                     |
+| ------------------------- | --------------------------------------------------------------- |
+| `{{ title }}`             | Current page title, preferring the SEO title                    |
+| `{{ description }}`       | Current page description from frontmatter                       |
+| `{{ keywords }}`          | Current page keywords from frontmatter                          |
+| `{{ page.title }}`        | Markdown page title                                             |
+| `{{ page.rel }}`          | Current page output path                                        |
+| `{{ site.siteName }}`     | Site config from `docs/config.js`                               |
+| `{{ layout.* }}`          | Data scoped to the current layout                               |
+| `{{ layouts.* }}`         | Data for all layout scopes                                      |
+| `{{{ content }}}`         | HTML rendered from Markdown                                     |
+| `{{{ slots.header }}}`    | Desktop main menu and mobile main menu templates                |
+| `{{{ slots.secondary }}}` | Mobile secondary menu template                                  |
+| `{{{ slots.sidebar }}}`   | Default sidebar slot                                            |
+| `{{{ slots.aside }}}`     | Default right-side region slot, including the table of contents |
+| `{{{ slots.prevNext }}}`  | Previous/next navigation slot                                   |
 
 Double braces perform HTML escaping and are suitable for text from frontmatter.
 
@@ -164,10 +166,7 @@ The default documentation layout already includes this slot. If a custom layout 
 The built-in `default` layout reuses the common documentation structure: left sidebar, content, right-side table of contents, and footer. Its core template structure is:
 
 ```html
-<header class="doc-header">
-{{{ slots.header }}}
-{{{ slots.secondary }}}
-</header>
+<header class="doc-header">{{{ slots.header }}} {{{ slots.secondary }}}</header>
 <main class="{{ shell.className }}">
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">

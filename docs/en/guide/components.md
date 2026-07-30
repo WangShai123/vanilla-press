@@ -8,7 +8,6 @@
 @tab JavaScript
 
 ```javascript
-// javascript
 const pages = ["index.md", "guide/components.md"];
 
 export function toHtml(file) {
@@ -212,6 +211,8 @@ my-project/
 │ └── main.js
 ├── public/
 │ └── index.html
+├── tests/
+│ └── app.test.ts
 ├── package.json
 └── README.md
 :::
@@ -229,6 +230,8 @@ my-project/
 │ └── main.js
 ├── public/
 │ └── index.html
+├── tests/
+│ └── app.test.ts
 ├── package.json
 └── README.md
 :::
@@ -243,7 +246,7 @@ my-project/
 
 #### Extend Icons
 
-Use `addIcons()` in `src/runtime/icons.js` to extend file icons.
+Add or remove svg icons as needed in `src/config/icons.js`.
 
 ```javascript
 import { addIcons } from "vanilla-jui";

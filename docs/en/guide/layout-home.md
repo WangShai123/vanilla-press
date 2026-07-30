@@ -159,12 +159,14 @@ If you copy `home` into a new landing-page layout and want to show previous/next
 
 ## Custom Styles
 
-The built-in `home` styles include background light effects, glass cards, button motion, code cards, feature card hover effects, and a CTA gradient. You can copy `src/layouts/home/` to `docs/layouts/home/` and customize it for your project:
+The built-in `home` styles include background light effects, glass cards, button motion, code cards, feature card hover effects, and a CTA gradient. You can copy `src/layouts/home/` to `docs/_layouts/home/` and customize it for your project:
 
 :::tree
-docs/layouts/home/
-├── template.html
-└── style.css
+docs/
+├── _layouts/
+│ └── home/
+│ │ ├── template.html
+│ │ └── style.css
 :::
 
 A project layout with the same name overrides the built-in layout, which is useful for customizing the homepage without modifying generator source code.

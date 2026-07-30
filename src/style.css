@@ -561,8 +561,8 @@ html.j-radius-round .doc-main .j-content {
 
 .j-tree-list .j-tree-list {
   position: relative;
-  margin-left: 9px;
-  padding-left: 18px;
+  /* margin-left: 8px; */
+  padding-left: 20px;
 }
 
 .j-tree-list .j-tree-list::before {
@@ -587,6 +587,11 @@ html.j-radius-round .doc-main .j-content {
   height: 1px;
   background: var(--doc-line);
   content: "";
+}
+
+.j-tree-list li {
+  margin: 0;
+  padding: 0;
 }
 
 .j-tree-node {
@@ -735,7 +740,7 @@ html.is-mobile .j-toc .toc-link {
 }
 
 .j-code-editor .code-header .code-header-language {
-  font-size: .78rem;
+  font-size: .75rem;
 }
 
 .j-content pre code[class*=language-] {
