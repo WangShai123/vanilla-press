@@ -38,6 +38,12 @@ The `docConfig` object in `docs/config.js` is used to configure site runtime dat
 | `runtime.i18n.redirectToDefault`    | boolean           | true           | Whether to redirect to the default locale.                                                    |
 | `runtime.theme`                     | boolean \| object | Enabled        | Theme configuration.                                                                          |
 | `runtime.theme.enabled`             | boolean           | true           | Whether to enable the theme feature.                                                          |
+| `runtime.theme.default`             | object            | -              | Initial theme values used by the inline boot script.                                          |
+| `runtime.theme.default.mode`        | "dark" \| "light" | "dark"        | Initial color mode. Invalid values fall back to "dark".                                      |
+| `runtime.theme.default.theme`       | enum              | "indigo"      | Initial palette: gray, olive, tomato, ruby, pink, violet, indigo, blue, teal, grass, mint, lime, yellow, orange, gold. |
+| `runtime.theme.default.radius`      | enum              | "sm"          | Initial radius: sm, md, lg, xl, round.                                                        |
+| `runtime.theme.default.shadow`      | enum              | "sm"          | Initial shadow: none, sm, md, lg.                                                            |
+| `runtime.theme.default.font`        | enum              | "sm"          | Initial font size: sm, md.                                                                    |
 | `runtime.theme.label`               | string            | "theme.button" | i18n key for the theme button label.                                                          |
 | `runtime.theme.options`             | object            | -              | Options object passed to `vanilla-jui` Theme.                                                 |
 | `runtime.theme.panel`               | object \| null    | -              | Panel configuration passed to `theme.createPanel()`.                                          |
@@ -122,6 +128,13 @@ export const docConfig = {
     },
     theme: {
       enabled: true,
+      default: {
+        mode: "dark",
+        theme: "indigo",
+        radius: "sm",
+        shadow: "sm",
+        font: "sm",
+      },
       offcanvas: {
         direction: "right",
       },

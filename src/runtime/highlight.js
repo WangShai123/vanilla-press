@@ -1,5 +1,5 @@
 import { createRequire } from "module";
-import { DEFAULT_HIGHLIGHT_LANGUAGES } from "../config/defaults.js";
+import DEFAULT_HIGHLIGHT_LANGUAGES from "../config/highlight.js";
 import { runtimeOption } from "../utilities/features.js";
 
 const require = createRequire(import.meta.url);

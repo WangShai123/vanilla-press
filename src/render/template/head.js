@@ -1,4 +1,5 @@
-import { MOBILE_CLASS_BOOT_SCRIPT, THEME_BOOT_SCRIPT } from "../../config/defaults.js";
+import { MOBILE_CLASS_BOOT_SCRIPT } from "../../config/defaults.js";
+import { themeBootScript } from "../../utilities/theme.js";
 import { escapeHtml } from "../../utilities/html.js";
 
 function renderSeoMeta(seo = {}) {
@@ -13,7 +14,7 @@ function renderSeoMeta(seo = {}) {
     .join("\n");
 }
 
-export function renderHead({ title, seo, themeEnabled, cssHref }) {
+export function renderHead({ title, seo, themeEnabled, themeDefault, cssHref }) {
   const seoMeta = renderSeoMeta(seo);
 
   return `<head>
@@ -22,7 +23,7 @@ export function renderHead({ title, seo, themeEnabled, cssHref }) {
   <title>${escapeHtml(title)}</title>
   ${seoMeta ? `${seoMeta}\n` : ""}
   <script>${MOBILE_CLASS_BOOT_SCRIPT}
-  ${themeEnabled ? `${THEME_BOOT_SCRIPT}` : ""}</script>
+  ${themeEnabled ? `${themeBootScript(themeDefault)}` : ""}</script>
   <link rel="stylesheet" href="${cssHref}">
 </head>`;
 }

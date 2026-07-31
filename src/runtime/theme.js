@@ -4,9 +4,7 @@ import { isThemeEnabled, runtimeOption } from "../utilities/features.js";
 
 export function initTheme(config = {}, i18n) {
   const themeConfig = runtimeOption(config, "theme") || {};
-  const buttons = all("[data-doc-theme]").filter(
-    (button) => button.dataset.docReady !== "true",
-  );
+  const buttons = all("[data-doc-theme]").filter((button) => button.dataset.docReady !== "true");
   if (!buttons.length) return;
 
   if (!isThemeEnabled(config)) {
@@ -19,10 +17,11 @@ export function initTheme(config = {}, i18n) {
   }
 
   const theme = new Theme(themeConfig.options || {});
-  const panel = theme.createPanel("j-theme-palette", themeConfig.panel || null);
+  // const panel = theme.createPanel("j-theme-palette", themeConfig.panel || null);
   const drawer = createOffcanvas({
     direction: themeConfig.offcanvas?.direction || "right",
-    content: panel,
+    content: theme.createPanel("j-theme-palette", themeConfig.panel || null),
+    cache: true,
   });
 
   buttons.forEach((button) => {

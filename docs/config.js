@@ -58,6 +58,13 @@ export const docConfig = {
     },
     theme: {
       enabled: true,
+      default: {
+        mode: "dark",
+        theme: "indigo",
+        radius: "sm",
+        shadow: "sm",
+        font: "sm",
+      },
       offcanvas: {
         direction: "right",
       },

@@ -123,9 +123,9 @@
 .doc-mobile-header {
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
   min-height: var(--doc-header-height);
-  padding: 0 clamp(14px, 4vw, 22px);
+  padding: 0 12px;
 }
 
 .doc-mobile-header-main,
@@ -136,12 +136,12 @@
 }
 
 .doc-mobile-header-main,
-.footer-social {
-  gap: 8px;
-}
-
 .doc-mobile-header-actions {
   gap: 4px;
+}
+
+.footer-social {
+  gap: 8px;
 }
 
 .doc-mobile-icon-button {
@@ -724,6 +724,10 @@ html.is-mobile .j-toc .toc-link {
 
 .j-tip {
   margin-bottom: 1rem;
+}
+
+.j-tip .tip-content p {
+  margin: 0;
 }
 
 .j-code-editor .code-header {

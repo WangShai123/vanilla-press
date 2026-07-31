@@ -42,12 +42,13 @@ export function renderHtml({
   const runtimeHref = relativeAsset(rel, "runtime.js");
   const searchHref = relativeAsset(rel, "search.js");
   const themeEnabled = isThemeEnabled(config);
+  const themeDefault = runtimeOption(config, "theme")?.default;
   const htmlLang = resolveHtmlLang(rel, config, languages);
   const htmlTitle = documentTitle(seo?.title || title, config);
 
   return `<!doctype html>
 <html lang="${htmlLang}">
-${renderHead({ title: htmlTitle, seo, themeEnabled, cssHref })}
+${renderHead({ title: htmlTitle, seo, themeEnabled, themeDefault, cssHref })}
 <body class="doc-layout-${pageLayout?.name || "default"}">
   ${pageLayout?.html || body}
   ${renderRuntimeScript({
