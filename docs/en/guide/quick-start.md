@@ -84,9 +84,9 @@ vanilla-press/
 │ ├── render/
 │ ├── runtime/
 │ ├── utilities/
-│ ├── build.js
-│ ├── runtime.js
-│ └── style.css
+│ ├── build.ts
+│ ├── runtime.ts
+│ └── style.ts
 ├── package.json
 └── README.md
 :::

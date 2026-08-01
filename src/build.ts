@@ -303,7 +303,7 @@ async function writeRuntimeEntry(
   data: RuntimeBundleData = {}
 ): Promise<string> {
   const runtimeHref = pathToFileURL(
-    path.join(projectRoot, 'src/runtime.js')
+    path.join(projectRoot, 'src/runtime.ts')
   ).href;
   const code = `import { initDocPage, isMobile } from ${JSON.stringify(runtimeHref)};
 export { initDocPage, isMobile };

@@ -18,6 +18,7 @@
 git clone https://github.com/WangShai123/vanilla-press.git
 cd vanilla-press
 npm install
+npm run dev
 ```
 
 @tab npm
@@ -26,6 +27,7 @@ npm install
 npm create vanilla-press@latest vanilla-press
 cd vanilla-press
 npm install
+npm run dev
 ```
 
 :::
@@ -36,6 +38,7 @@ npm install
 npx vanilla-press@latest init vanilla-press
 cd vanilla-press
 npm install
+npm run dev
 ```
 
 ## 构建
@@ -84,9 +87,9 @@ vanilla-press/
 │ ├── render/
 │ ├── runtime/
 │ ├── utilities/
-│ ├── build.js
-│ ├── runtime.js
-│ └── style.css
+│ ├── build.ts
+│ ├── runtime.ts
+│ └── style.ts
 ├── package.json
 └── README.md
 :::
