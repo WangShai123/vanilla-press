@@ -6,103 +6,67 @@ Enable multilingual documentation so users can browse the site in different lang
 
 In `docs/config.js`, configure whether internationalization is enabled.
 
+- Configuration property: `i18n`
+- Configuration type: `boolean` || `object`
+
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     i18n: {
       enabled: true,
-      defaultLocale: "zh-CN", // Default language
-      redirectToDefault: true, // Whether to redirect to the default locale
+      locale: 'zh-CN',
+      fallbackLocale: 'en',
+      locales: [
+        { code: 'zh-CN', label: 'Simplified Chinese', path: 'zh' },
+        { code: 'en', label: 'English', path: 'en' },
+      ],
+      redirectToDefault: true,
     },
   },
 };
 ```
 
-## Configuration
+## Metadata
 
-In `docs/languages.js`, configure the site's i18n languages as needed.
+In `docs/config.js`, configure the site's i18n language metadata:
 
-- `locale`: default language
-- `fallbackLocale`: fallback language
-- `locales`: array of language options
+- `runtime.i18n.locale`: default language
+- `runtime.i18n.fallbackLocale`: fallback language
+- `runtime.i18n.locales`: array of language options
   - `code`: locale code
   - `label`: language name
   - `path`: locale route directory
-- `messages`: locale message object containing translated UI strings for each language
+- `runtime.i18n.redirectToDefault`: whether to redirect
+
+## Language Pack
+
+In `docs/languages.js`, export the locale message data:
 
 ```javascript
-export const languages = {
-  locale: "zh-CN",
-  fallbackLocale: "en",
-  locales: [
-    { code: "zh-CN", label: "Simplified Chinese", path: "zh" },
-    { code: "en", label: "English", path: "en" },
-  ],
-  messages: {
-    "zh-CN": {
-      menu: {
-        home: "首页",
-        guide: "指南",
-        components: "组件",
-        api: "API",
-      },
-      sidebar: {
-        home: "首页",
-        components: "组件",
-        api: "API",
-        runtime: "运行时",
-        locale: "国际化",
-      },
-      mobile: {
-        navigation: "导航",
-        toc: "目录",
-      },
-      search: {
-        button: "搜索",
-        title: "搜索文档",
-        placeholder: "输入关键词...",
-        empty: "没有找到匹配内容",
-        hint: "输入关键词搜索标题和正文",
-      },
-      footer: {
-        text: "Built with markdown-it and vanilla-jui.",
-      },
-      theme: {
-        button: "主题",
-      },
+export default {
+  'zh-CN': {
+    menu: {
+      home: '首页',
+      guide: '指南',
+      components: '组件',
+      api: 'API',
     },
-    en: {
-      menu: {
-        home: "Home",
-        guide: "Guide",
-        components: "Components",
-        api: "API",
-      },
-      sidebar: {
-        home: "Home",
-        components: "Components",
-        api: "API",
-        runtime: "Runtime",
-        locale: "Locale",
-      },
-      mobile: {
-        navigation: "Navigation",
-        toc: "Contents",
-      },
-      search: {
-        button: "Search",
-        title: "Search Docs",
-        placeholder: "Type keywords...",
-        empty: "No results found",
-        hint: "Search titles and page content",
-      },
-      footer: {
-        text: "Built with markdown-it and vanilla-jui.",
-      },
-      theme: {
-        button: "Theme",
-      },
+  },
+  en: {
+    menu: {
+      home: 'Home',
+      guide: 'Guide',
+      components: 'Components',
+      api: 'API',
     },
   },
 };
 ```
+
+## Redirect
+
+Automatically redirect users to the corresponding language page based on their language preference or the site's language preference.
+
+- Priority: user language preference > site language preference
+- Bound data: `locale` field in cookies
+- Disabled: when `runtime.i18n.redirectToDefault` is `false` or `runtime.i18n.enabled` is `false`.

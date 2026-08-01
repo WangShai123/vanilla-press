@@ -7,16 +7,17 @@ Help search engines crawl site content more effectively.
 In `docs/config.js`, configure whether sitemap generation is enabled.
 
 ```javascript
-export const docConfig = {
-  siteUrl: "https://example.com",
+export default {
+  siteUrl: 'https://example.com',
   runtime: {
     sitemap: true,
   },
 };
 ```
 
-Sitemap URL: `https://example.com/sitemap.xml`
-
 ## URL
 
-In the sitemap, the `loc` URL is generated based on the `siteUrl` configuration.
+Based on the `siteUrl` configuration, the corresponding URL addresses are generated.
+
+- Sitemap URL: `https://example.com/sitemap.xml`
+- loc URL: `https://example.com/**/*.html`

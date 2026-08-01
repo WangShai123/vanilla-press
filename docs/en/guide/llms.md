@@ -4,48 +4,61 @@ Generate `llms.txt` and matching Markdown route files for every page so LLMs can
 
 ## Runtime
 
-`runtime.llms` is enabled by default. Set it to `false`, or set `enabled: false` in object form, to disable it. When disabled, the build skips `docs/llms.js` and does not output `dist/llms.txt` or per-page `.md` files.
+`runtime.llms` is enabled by default.
 
 ```javascript
-export const docConfig = {
+export default {
+  runtime: {
+    llms: true,
+  },
+};
+```
+
+## Metadata
+
+`runtime.llms: true` is equivalent to using the default configuration.
+
+```javascript
+export default {
   runtime: {
     llms: {
-      enabled: true,
-      link: true,
-      copy: true,
-      chatgpt: true,
-      claude: true,
+      enabled: true, // whether to enable llms feature
+      link: true, // whether to enable llms toolbar: View Markdown
+      copy: true, // whether to enable llms toolbar: Copy Markdown link
+      chatgpt: true, // whether to enable llms toolbar: Open in ChatGPT
+      claude: true, // whether to enable llms toolbar: Open in Claude
     },
   },
 };
 ```
 
-`link`, `copy`, `chatgpt`, and `claude` are enabled by default. If any of them is enabled, the page renders `.llms-container` below the main content `h1`.
+- When `enabled: false`, the build skips `docs/llms.js` and does not output `dist/llms.txt` or per-page `.md` files.
+- `link`, `copy`, `chatgpt`, and `claude`. If any of them is enabled, the page renders LLMS toolbar below the title of the page.
 
 ## Configuration
 
-Configure the title, description, section title and container labels for `llms.txt` in `docs/llms.js`.
+In `docs/llms.js`, configure the title, description, section title and container labels for `llms.txt`.
 
 ```javascript
-export const llms = {
-  title: "VanillaPress",
-  description: "Markdown source routes for VanillaPress documentation.",
-  sectionTitle: "Docs",
+export default {
+  title: 'VanillaPress',
+  description: 'Markdown source routes for VanillaPress documentation.',
+  sectionTitle: 'Docs',
   container: {
     labels: {
-      "zh-CN": {
-        link: "查看 Markdown",
-        copy: "复制 Markdown 链接",
-        chatgpt: "在 ChatGPT 中打开",
-        claude: "在 Claude 中打开",
-        options: "LLMs",
+      'zh-CN': {
+        link: '查看 Markdown',
+        copy: '复制 Markdown 链接',
+        chatgpt: '在 ChatGPT 中打开',
+        claude: '在 Claude 中打开',
+        options: 'LLMs',
       },
       en: {
-        link: "View Markdown",
-        copy: "Copy Markdown link",
-        chatgpt: "Open in ChatGPT",
-        claude: "Open in Claude",
-        options: "LLMs",
+        link: 'View Markdown',
+        copy: 'Copy Markdown link',
+        chatgpt: 'Open in ChatGPT',
+        claude: 'Open in Claude',
+        options: 'LLMs',
       },
     },
   },
@@ -54,16 +67,16 @@ export const llms = {
 
 ## Output
 
-LLMS URL: `https://example.com/llms.txt`
+Based on the address configured in `siteUrl`, generate the corresponding URL and the absolute path to the Markdown file.
 
-The build writes a Markdown file beside each HTML page:
+1. LLMS URL: `https://example.com/llms.txt`
+2. During the build process, a Markdown file at the same path will be output for each HTML page.
+3. Generate the absolute path to the Markdown file in `llms.txt` based on `siteUrl`.
 
 | HTML file                        | Markdown file                  |
 | -------------------------------- | ------------------------------ |
 | `dist/zh/guide/quick-start.html` | `dist/zh/guide/quick-start.md` |
 | `dist/en/guide/runtime.html`     | `dist/en/guide/runtime.md`     |
-
-`llms.txt` lists absolute Markdown route URLs based on `siteUrl`:
 
 ```text
 # VanillaPress
@@ -87,18 +100,6 @@ Markdown source routes for VanillaPress documentation.
 | claude  | Claude menu text                         |
 | options | Accessible label for the dropdown button |
 
-## Toolbar
-
-When `link` is enabled, the page shows a LLMS toolbar below the title. It contains two kinds of action:
-
-Button "View Markdown", it opens the current page's `.md` URL in a new tab.
-
-When `copy`, `chatgpt`, or `claude` is enabled, the page shows an LLMs dropdown button. The menu contains the enabled actions:
-
-- Copy Markdown link
-- Open in ChatGPT
-- Open in Claude
-
 ## Robots
 
-`docs/robots.js` can output the `llms.txt` URL in `robots.txt` with `llms: true`.
+`llms.txt` can be exposed to `robots.txt`.

@@ -4,7 +4,7 @@
 
 ## Configuration Object
 
-The `docConfig` object in `docs/config.js` is used to configure site runtime data.
+The default export in `docs/config.js` is used to configure site runtime data.
 
 | Option                              | Type              | Default        | Description                                                                                   |
 | ----------------------------------- | ----------------- | -------------- | --------------------------------------------------------------------------------------------- |
@@ -34,7 +34,9 @@ The `docConfig` object in `docs/config.js` is used to configure site runtime dat
 | `runtime.llms.claude`               | boolean           | true           | Whether to render the Claude action in the LLMs menu.                                         |
 | `runtime.i18n`                      | object            | Enabled        | Internationalization configuration object.                                                    |
 | `runtime.i18n.enabled`              | boolean           | true           | Whether to enable i18n.                                                                       |
-| `runtime.i18n.defaultLocale`        | string            | "zh-CN"        | Default language.                                                                             |
+| `runtime.i18n.locale`               | string            | "zh-CN"        | Default language.                                                                             |
+| `runtime.i18n.fallbackLocale`       | string            | "en"           | Fallback language.                                                                            |
+| `runtime.i18n.locales`              | array             | -              | Locale options. Each item contains `code`, `label`, and `path`.                               |
 | `runtime.i18n.redirectToDefault`    | boolean           | true           | Whether to redirect to the default locale.                                                    |
 | `runtime.theme`                     | boolean \| object | Enabled        | Theme configuration.                                                                          |
 | `runtime.theme.enabled`             | boolean           | true           | Whether to enable the theme feature.                                                          |
@@ -62,7 +64,7 @@ The `docConfig` object in `docs/config.js` is used to configure site runtime dat
 Set it to `false` to disable this behavior:
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     externalLink: false,
   },
@@ -72,7 +74,7 @@ export const docConfig = {
 ## Default Configuration
 
 ```javascript
-export const docConfig = {
+export default {
   siteName: "VanillaPress",
   siteUrl: "https://example.com",
   runtime: {
@@ -123,7 +125,12 @@ export const docConfig = {
     },
     i18n: {
       enabled: true,
-      defaultLocale: "zh-CN",
+      locale: "zh-CN",
+      fallbackLocale: "en",
+      locales: [
+        { code: "zh-CN", label: "简体中文", path: "zh" },
+        { code: "en", label: "English", path: "en" },
+      ],
       redirectToDefault: true,
     },
     theme: {

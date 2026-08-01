@@ -7,7 +7,7 @@ ${DEFAULT_HIGHLIGHT_LANGUAGES.map(
 ).join("\n")}
       ]`;
 
-export const DEFAULT_CONFIG_JS = `export const docConfig = {
+export const DEFAULT_CONFIG_JS = `export default {
   siteName: "VanillaPress",
   siteUrl: "https://example.com",
   runtime: {
@@ -33,7 +33,12 @@ export const DEFAULT_CONFIG_JS = `export const docConfig = {
     },
     i18n: {
       enabled: true,
-      defaultLocale: "zh-CN",
+      locale: "zh-CN",
+      fallbackLocale: "en",
+      locales: [
+        { code: "zh-CN", label: "简体中文", path: "zh" },
+        { code: "en", label: "English", path: "en" }
+      ],
       redirectToDefault: true
     },
     theme: {
@@ -68,7 +73,7 @@ export const DEFAULT_ROBOTS_CONFIG = {
   llms: false,
 };
 
-export const DEFAULT_ROBOTS_JS = `export const robots = {
+export const DEFAULT_ROBOTS_JS = `export default {
   rules: [
     {
       userAgent: "*",
@@ -105,7 +110,7 @@ export const DEFAULT_LLMS_CONFIG = {
   },
 };
 
-export const DEFAULT_LLMS_JS = `export const llms = {
+export const DEFAULT_LLMS_JS = `export default {
   title: "VanillaPress",
   description: "Markdown source routes for LLMs.",
   sectionTitle: "Docs",
@@ -130,7 +135,7 @@ export const DEFAULT_LLMS_JS = `export const llms = {
 };
 `;
 
-export const DEFAULT_MENU_JS = `export const menuItems = [
+export const DEFAULT_MENU_JS = `export default [
   { label: "menu.home", path: "index" },
   {
     label: "menu.guide",
@@ -142,95 +147,87 @@ export const DEFAULT_MENU_JS = `export const menuItems = [
 ];
 `;
 
-export const DEFAULT_LANGUAGES_JS = `export const languages = {
-  locale: "zh-CN",
-  fallbackLocale: "en",
-  locales: [
-    { code: "zh-CN", label: "简体中文", path: "zh" },
-    { code: "en", label: "English", path: "en" }
-  ],
-  messages: {
-    "zh-CN": {
-      menu: {
-        home: "首页",
-        guide: "指南",
-        components: "组件",
-        api: "API"
-      },
-      sidebar: {
-        home: "首页",
-        guide: "指南",
-        components: "组件",
-        api: "API"
-      },
-      mobile: {
-        navigation: "导航",
-        toc: "目录"
-      },
-      search: {
-        button: "搜索",
-        title: "搜索文档",
-        placeholder: "输入关键词...",
-        empty: "没有找到匹配内容",
-        hint: "输入关键词搜索标题和正文"
-      },
-      prevNext: {
-        previous: "上一页",
-        next: "下一页"
-      },
-      footer: {
-        text: "Built with markdown-it and vanilla-jui."
-      },
-      theme: {
-        button: "主题"
-      },
-      auth: {
-        login: "登录"
-      }
+export const DEFAULT_LANGUAGES_JS = `export default {
+  "zh-CN": {
+    menu: {
+      home: "首页",
+      guide: "指南",
+      components: "组件",
+      api: "API"
     },
-    en: {
-      menu: {
-        home: "Home",
-        guide: "Guide",
-        components: "Components",
-        api: "API"
-      },
-      sidebar: {
-        home: "Home",
-        guide: "Guide",
-        components: "Components",
-        api: "API"
-      },
-      mobile: {
-        navigation: "Navigation",
-        toc: "Contents"
-      },
-      search: {
-        button: "Search",
-        title: "Search Docs",
-        placeholder: "Type keywords...",
-        empty: "No results found",
-        hint: "Search titles and page content"
-      },
-      prevNext: {
-        previous: "Previous",
-        next: "Next"
-      },
-      footer: {
-        text: "Built with markdown-it and vanilla-jui."
-      },
-      theme: {
-        button: "Theme"
-      },
-      auth: {
-        login: "Login"
-      }
+    sidebar: {
+      home: "首页",
+      guide: "指南",
+      components: "组件",
+      api: "API"
+    },
+    mobile: {
+      navigation: "导航",
+      toc: "目录"
+    },
+    search: {
+      button: "搜索",
+      title: "搜索文档",
+      placeholder: "输入关键词...",
+      empty: "没有找到匹配内容",
+      hint: "输入关键词搜索标题和正文"
+    },
+    prevNext: {
+      previous: "上一页",
+      next: "下一页"
+    },
+    footer: {
+      text: "Built with markdown-it and vanilla-jui."
+    },
+    theme: {
+      button: "主题"
+    },
+    auth: {
+      login: "登录"
+    }
+  },
+  en: {
+    menu: {
+      home: "Home",
+      guide: "Guide",
+      components: "Components",
+      api: "API"
+    },
+    sidebar: {
+      home: "Home",
+      guide: "Guide",
+      components: "Components",
+      api: "API"
+    },
+    mobile: {
+      navigation: "Navigation",
+      toc: "Contents"
+    },
+    search: {
+      button: "Search",
+      title: "Search Docs",
+      placeholder: "Type keywords...",
+      empty: "No results found",
+      hint: "Search titles and page content"
+    },
+    prevNext: {
+      previous: "Previous",
+      next: "Next"
+    },
+    footer: {
+      text: "Built with markdown-it and vanilla-jui."
+    },
+    theme: {
+      button: "Theme"
+    },
+    auth: {
+      login: "Login"
     }
   }
 };
 `;
 
-export const DEFAULT_SIDEBAR_JS = `export const sidebarItems = [
+export const DEFAULT_SIDEBAR_JS = `export default [
   { label: "sidebar.home", path: "index" },
   {
     label: "sidebar.guide",

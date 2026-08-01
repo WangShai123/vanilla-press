@@ -1,4 +1,4 @@
-export const llms = {
+export default {
   title: "VanillaPress",
   description: "Markdown source routes for VanillaPress documentation.",
   sectionTitle: "Docs",

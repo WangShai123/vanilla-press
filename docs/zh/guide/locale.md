@@ -6,93 +6,65 @@
 
 在 `docs/config.js` 中，按需配置是否启用国际化功能。
 
+- 配置属性：`i18n`
+- 配置类型：`boolean` || `object`
+
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     i18n: {
       enabled: true,
-      defaultLocale: "zh-CN", // 默认语言
-      redirectToDefault: true, // 是否重定向到默认语言
+      locale: 'zh-CN',
+      fallbackLocale: 'en',
+      locales: [
+        { code: 'zh-CN', label: '简体中文', path: 'zh' },
+        { code: 'en', label: 'English', path: 'en' },
+      ],
+      redirectToDefault: true,
     },
   },
 };
 ```
 
-## 配置
+## 元数据
 
-在 `docs/languages.js` 中，按需配置站点的国际化语言。
+`docs/config.js` 中的国际化功能元信息配置：
 
-- `locale`: 默认语言
-- `fallbackLocale`: 备用语言
-- `locales`: 语言选项数组
+- `runtime.i18n.locale`: 默认语言
+- `runtime.i18n.fallbackLocale`: 备用语言
+- `runtime.i18n.locales`: 语言选项数组
   - `code`: 语言别名
   - `label`: 语言名称
   - `path`: 语言路由目录
-- `messages`: 国际化语言包对象，包含不同语言的翻译内容
+- `runtime.i18n.redirectToDefault`: 是否重定向到默认语言
+
+## 语言包
+
+在 `docs/languages.js` 中导出语言包数据：
 
 ```javascript
-export const languages = {
-  locale: "zh-CN",
-  fallbackLocale: "en",
-  locales: [
-    { code: "zh-CN", label: "简体中文", path: "zh" },
-    { code: "en", label: "English", path: "en" },
-  ],
-  messages: {
-    "zh-CN": {
-      menu: {
-        home: "首页",
-        guide: "指南",
-        components: "组件",
-      },
-      sidebar: {
-        home: "首页",
-        components: "组件",
-        runtime: "运行时",
-        locale: "国际化",
-      },
-      mobile: {
-        navigation: "导航",
-        toc: "目录",
-      },
-      search: {
-        button: "搜索",
-        title: "搜索文档",
-        placeholder: "输入关键词...",
-        empty: "没有找到匹配内容",
-        hint: "输入关键词搜索标题和正文",
-      },
-      theme: {
-        button: "主题",
-      },
+export default {
+  'zh-CN': {
+    menu: {
+      home: '首页',
+      guide: '指南',
+      components: '组件',
     },
-    en: {
-      menu: {
-        home: "Home",
-        guide: "Guide",
-        components: "Components",
-      },
-      sidebar: {
-        home: "Home",
-        components: "Components",
-        runtime: "Runtime",
-        locale: "Locale",
-      },
-      mobile: {
-        navigation: "Navigation",
-        toc: "Contents",
-      },
-      search: {
-        button: "Search",
-        title: "Search Docs",
-        placeholder: "Type keywords...",
-        empty: "No results found",
-        hint: "Search titles and page content",
-      },
-      theme: {
-        button: "Theme",
-      },
+  },
+  en: {
+    menu: {
+      home: 'Home',
+      guide: 'Guide',
+      components: 'Components',
     },
   },
 };
 ```
+
+## 重定向
+
+用户访问时，根据用户语言偏好或站点语言偏好，自动重定向到对应语言页面。
+
+- 优先级：用户语言偏好 > 站点语言偏好
+- 绑定数据：cookie 中的 `locale` 字段
+- 禁用：当 `runtime.i18n.redirectToDefault` 为 `false` 或 `runtime.i18n.enabled` 为 `false` 时。

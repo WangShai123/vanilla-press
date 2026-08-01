@@ -14,7 +14,14 @@ function renderSeoMeta(seo = {}) {
     .join("\n");
 }
 
-export function renderHead({ title, seo, themeEnabled, themeDefault, cssHref }) {
+export function renderHead({
+  title,
+  seo,
+  themeEnabled,
+  themeDefault,
+  i18nRedirectScript,
+  cssHref,
+}) {
   const seoMeta = renderSeoMeta(seo);
 
   return `<head>
@@ -23,7 +30,8 @@ export function renderHead({ title, seo, themeEnabled, themeDefault, cssHref }) 
   <title>${escapeHtml(title)}</title>
   ${seoMeta ? `${seoMeta}\n` : ""}
   <script>${MOBILE_CLASS_BOOT_SCRIPT}
-  ${themeEnabled ? `${themeBootScript(themeDefault)}` : ""}</script>
+  ${themeEnabled ? `${themeBootScript(themeDefault)}` : ""}
+  ${i18nRedirectScript || ""}</script>
   <link rel="stylesheet" href="${cssHref}">
 </head>`;
 }

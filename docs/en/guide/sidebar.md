@@ -7,7 +7,7 @@ The sidebar navigation displayed along the side of the page.
 In `docs/config.js`, configure whether the sidebar is enabled.
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     sidebar: true,
   },
@@ -24,22 +24,22 @@ In `docs/sidebar.js`, configure the site's sidebar data as needed.
 - `collapse`: whether the group is collapsed by default when `children` is present
 
 ```javascript
-export const sidebarItems = [
-  { label: "sidebar.home", path: "index" },
+export default [
+  { label: 'sidebar.home', path: 'index' },
   {
-    label: "sidebar.config",
+    label: 'sidebar.config',
     collapse: true,
     children: [
-      { label: "sidebar.runtime", path: "guide/runtime" },
-      { label: "sidebar.locale", path: "guide/locale" },
-      { label: "sidebar.menu", path: "guide/menu" },
-      { label: "sidebar.sidebar", path: "guide/sidebar" },
+      { label: 'sidebar.runtime', path: 'guide/runtime' },
+      { label: 'sidebar.locale', path: 'guide/locale' },
+      { label: 'sidebar.menu', path: 'guide/menu' },
+      { label: 'sidebar.sidebar', path: 'guide/sidebar' },
     ],
   },
 ];
 ```
 
-When `path` is empty, no link is generated. This works well for group labels that only expand or collapse child items.
+When `path` is empty, no link is generated.
 
 ## Initialization
 

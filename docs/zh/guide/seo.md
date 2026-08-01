@@ -7,7 +7,7 @@
 在 `docs/config.js` 中，按需配置是否启用 SEO 功能。
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     seo: true,
   },

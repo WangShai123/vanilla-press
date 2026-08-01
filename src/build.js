@@ -90,7 +90,7 @@ async function ensureSourceConfig(inputDir) {
 async function loadDocConfig(inputDir) {
   const file = path.join(inputDir, 'config.js');
   const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
-  return mod.docConfig || {};
+  return mod.default || {};
 }
 
 async function loadRobotsConfig(inputDir) {
@@ -98,7 +98,7 @@ async function loadRobotsConfig(inputDir) {
   if (!(await pathExists(file))) return DEFAULT_ROBOTS_CONFIG;
 
   const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
-  return mod.robots || mod.default || DEFAULT_ROBOTS_CONFIG;
+  return mod.default || DEFAULT_ROBOTS_CONFIG;
 }
 
 async function loadLlmsConfig(inputDir) {
@@ -106,7 +106,7 @@ async function loadLlmsConfig(inputDir) {
   if (!(await pathExists(file))) return DEFAULT_LLMS_CONFIG;
 
   const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
-  return mod.llms || mod.default || DEFAULT_LLMS_CONFIG;
+  return mod.default || DEFAULT_LLMS_CONFIG;
 }
 
 function validateDocConfig(config = {}) {
@@ -114,7 +114,7 @@ function validateDocConfig(config = {}) {
 
   if (!siteUrl) {
     throw new Error(
-      'docConfig.siteUrl is required. Add siteUrl: "https://your-domain.com" to docs/config.js.'
+      'siteUrl is required. Add siteUrl: "https://your-domain.com" to docs/config.js.'
     );
   }
 
@@ -123,13 +123,13 @@ function validateDocConfig(config = {}) {
     url = new URL(siteUrl);
   } catch {
     throw new Error(
-      'docConfig.siteUrl must be an absolute URL, for example: "https://example.com".'
+      'siteUrl must be an absolute URL, for example: "https://example.com".'
     );
   }
 
   if (!['http:', 'https:'].includes(url.protocol)) {
     throw new Error(
-      'docConfig.siteUrl must be an http(s) URL, for example: "https://example.com".'
+      'siteUrl must be an http(s) URL, for example: "https://example.com".'
     );
   }
 }
@@ -139,7 +139,19 @@ async function loadLanguages(inputDir) {
   if (!(await pathExists(file))) return {};
 
   const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
-  return mod.languages || {};
+  return mod.default || {};
+}
+
+function resolveI18nData(config = {}, messages = {}) {
+  const i18n = runtimeOption(config, 'i18n') || {};
+  const i18nMessages = messages && typeof messages === 'object' ? messages : {};
+
+  return {
+    locale: i18n.locale || 'zh-CN',
+    fallbackLocale: i18n.fallbackLocale || 'en',
+    locales: Array.isArray(i18n.locales) ? i18n.locales : [],
+    messages: i18nMessages,
+  };
 }
 
 async function loadMenuItems(inputDir) {
@@ -147,7 +159,7 @@ async function loadMenuItems(inputDir) {
   if (!(await pathExists(file))) return [];
 
   const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
-  return mod.menuItems || mod.default || [];
+  return mod.default || [];
 }
 
 async function loadSidebarItems(inputDir) {
@@ -155,7 +167,7 @@ async function loadSidebarItems(inputDir) {
   if (!(await pathExists(file))) return [];
 
   const mod = await import(`${pathToFileURL(file).href}?t=${Date.now()}`);
-  return mod.sidebarItems || mod.default || [];
+  return mod.default || [];
 }
 
 function resolveDefaultLocale(config = {}, languages = {}) {
@@ -163,7 +175,7 @@ function resolveDefaultLocale(config = {}, languages = {}) {
   if (!locales.length) return null;
 
   const i18n = runtimeOption(config, 'i18n');
-  const preferred = String(i18n?.defaultLocale || languages.locale || '')
+  const preferred = String(i18n?.locale || languages.locale || '')
     .trim()
     .toLowerCase();
   return (
@@ -185,21 +197,25 @@ async function writeDefaultLocaleEntrypoint(
   if (!isI18nEnabled(config)) return;
   const i18n = runtimeOption(config, 'i18n');
   if (i18n?.redirectToDefault === false) return;
+  if (pages.some((page) => page.rel === 'index.html')) return;
 
   const locale = resolveDefaultLocale(config, languages);
   const prefix = normalizePath(locale?.path);
-  if (!prefix) return;
-
-  const target = `${prefix}/index.html`;
-  const hasTarget = pages.some((page) => page.rel === target);
-  if (!hasTarget) return;
+  if (prefix) {
+    const target = `${prefix}/index.html`;
+    const hasTarget = pages.some((page) => page.rel === target);
+    if (!hasTarget) return;
+  }
 
   const rootIndexFile = path.join(outputDir, 'index.html');
   const rootLang =
-    String(
-      locale?.code || i18n?.defaultLocale || languages.locale || 'en'
-    ).trim() || 'en';
-  const html = renderDefaultLocaleEntrypoint(target, rootLang);
+    String(locale?.code || i18n?.locale || languages.locale || 'en').trim() ||
+    'en';
+  const html = renderDefaultLocaleEntrypoint({
+    i18n,
+    languages,
+    lang: rootLang,
+  });
 
   await fs.writeFile(rootIndexFile, html, 'utf8');
   console.log(`built ${toPosix(path.relative(projectRoot, rootIndexFile))}`);
@@ -505,7 +521,9 @@ export async function build({
   await fs.rm(outputDir, { force: true, recursive: true });
   await fs.mkdir(outputDir, { recursive: true });
 
-  const languages = isI18nEnabled(config) ? await loadLanguages(inputDir) : {};
+  const languages = isI18nEnabled(config)
+    ? resolveI18nData(config, await loadLanguages(inputDir))
+    : {};
   const menuItems = isMenuEnabled(config) ? await loadMenuItems(inputDir) : [];
   const sidebarItems = isSidebarEnabled(config)
     ? await loadSidebarItems(inputDir)

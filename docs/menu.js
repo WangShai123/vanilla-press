@@ -1,4 +1,4 @@
-export const menuItems = [
+export default [
   { label: "menu.home", path: "index" },
   {
     label: "menu.guide",

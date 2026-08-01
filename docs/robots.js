@@ -1,4 +1,4 @@
-export const robots = {
+export default {
   rules: [
     {
       userAgent: "*",

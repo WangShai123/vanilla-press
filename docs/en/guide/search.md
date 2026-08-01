@@ -7,7 +7,7 @@ A static search feature with search assets isolated by language.
 In `docs/config.js`, configure whether search is enabled.
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     search: true,
   },

@@ -7,13 +7,14 @@ import {
 import { escapeHtml } from "../utilities/html.js";
 import { documentTitle } from "../utilities/page.js";
 import { normalizePath, relativeAsset } from "../utilities/path.js";
+import { i18nRedirectBootScript } from "../utilities/i18n-routes.js";
 import { renderHead } from "./template/head.js";
 import { renderRuntimeScript } from "./template/runtime.js";
 
 function resolveHtmlLang(rel, config = {}, languages = {}) {
   const i18n = runtimeOption(config, "i18n");
   const fallback =
-    String(i18n?.defaultLocale || languages.locale || "zh-CN").trim() || "zh-CN";
+    String(i18n?.locale || languages.locale || "zh-CN").trim() || "zh-CN";
   if (!isI18nEnabled(config)) return fallback;
 
   const locales = Array.isArray(languages.locales) ? languages.locales : [];
@@ -43,12 +44,26 @@ export function renderHtml({
   const searchHref = relativeAsset(rel, "search.js");
   const themeEnabled = isThemeEnabled(config);
   const themeDefault = runtimeOption(config, "theme")?.default;
+  const i18n = runtimeOption(config, "i18n") || {};
+  const i18nRedirectScript =
+    isI18nEnabled(config) &&
+    i18n.redirectToDefault !== false &&
+    normalizePath(rel) === "index.html"
+      ? i18nRedirectBootScript(i18n, languages)
+      : "";
   const htmlLang = resolveHtmlLang(rel, config, languages);
   const htmlTitle = documentTitle(seo?.title || title, config);
 
   return `<!doctype html>
 <html lang="${htmlLang}">
-${renderHead({ title: htmlTitle, seo, themeEnabled, themeDefault, cssHref })}
+${renderHead({
+  title: htmlTitle,
+  seo,
+  themeEnabled,
+  themeDefault,
+  i18nRedirectScript,
+  cssHref,
+})}
 <body class="doc-layout-${pageLayout?.name || "default"}">
   ${pageLayout?.html || body}
   ${renderRuntimeScript({
@@ -65,8 +80,12 @@ ${renderHead({ title: htmlTitle, seo, themeEnabled, themeDefault, cssHref })}
 `;
 }
 
-export function renderDefaultLocaleEntrypoint(target, lang = "en") {
-  const safeTarget = JSON.stringify(`./${target}`);
+export function renderDefaultLocaleEntrypoint({
+  i18n = {},
+  languages = {},
+  lang = "en",
+} = {}) {
+  const i18nRedirectScript = i18nRedirectBootScript(i18n, languages);
 
   return `<!doctype html>
 <html lang="${escapeHtml(lang)}">
@@ -74,17 +93,10 @@ export function renderDefaultLocaleEntrypoint(target, lang = "en") {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Redirecting...</title>
-  <meta http-equiv="refresh" content="0; url=./${escapeHtml(target)}">
+  <script>${i18nRedirectScript}</script>
 </head>
 <body>
-  <script>
-    (function () {
-      var target = ${safeTarget};
-      var suffix = window.location.search + window.location.hash;
-      window.location.replace(target + suffix);
-    })();
-  </script>
-  <p>Redirecting to <a href="./${escapeHtml(target)}">./${escapeHtml(target)}</a> ...</p>
+  <p>Redirecting...</p>
 </body>
 </html>
 `;

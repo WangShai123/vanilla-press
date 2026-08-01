@@ -7,7 +7,7 @@
 在 `docs/config.js` 中，按需配置是否启用侧边栏功能。
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     sidebar: true,
   },
@@ -24,22 +24,22 @@ export const docConfig = {
 - `collapse`: 包含 `children` 时是否默认收起
 
 ```javascript
-export const sidebarItems = [
-  { label: "sidebar.home", path: "index" },
+export default [
+  { label: 'sidebar.home', path: 'index' },
   {
-    label: "sidebar.config",
+    label: 'sidebar.config',
     collapse: true,
     children: [
-      { label: "sidebar.runtime", path: "guide/runtime" },
-      { label: "sidebar.locale", path: "guide/locale" },
-      { label: "sidebar.menu", path: "guide/menu" },
-      { label: "sidebar.sidebar", path: "guide/sidebar" },
+      { label: 'sidebar.runtime', path: 'guide/runtime' },
+      { label: 'sidebar.locale', path: 'guide/locale' },
+      { label: 'sidebar.menu', path: 'guide/menu' },
+      { label: 'sidebar.sidebar', path: 'guide/sidebar' },
     ],
   },
 ];
 ```
 
-`path` 为空时不会生成链接地址，适合作为只负责展开/收起的分组标题。
+`path` 为空时不会生成链接地址。
 
 ## 初始化
 

@@ -7,17 +7,19 @@
 在 `docs/config.js` 中，按需配置是否启用目录功能。
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     toc: true,
   },
 };
 ```
 
+## 配置
+
 `runtime.toc: true` 会使用默认配置，等价于：
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     toc: {
       enabled: true,
@@ -28,6 +30,6 @@ export const docConfig = {
 };
 ```
 
-需要关闭目录时，可以设置为 `false`，或设置 `runtime.toc.enabled: false`。
-
-`runtime.toc.offset` 会传给 `createToc()`，用于设置滚动定位偏移量，默认值为 `100`。
+- `runtime.toc.enabled`: 是否启用目录功能，默认值为 `true`。
+- `runtime.toc.headings`: 目录支持的标题级别，默认值为 `h2, h3`。
+- `runtime.toc.offset`: 滚动定位偏移量，默认值为 `100`。

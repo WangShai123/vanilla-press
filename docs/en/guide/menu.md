@@ -7,7 +7,7 @@ The main navigation menu displayed at the top of the page.
 In `docs/config.js`, configure whether the main menu is enabled.
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     menu: true,
   },
@@ -23,16 +23,16 @@ In `docs/menu.js`, configure the site's menu data as needed.
 - `children`: array of submenu items
 
 ```javascript
-export const menuItems = [
-  { label: "menu.home", path: "index" },
+export default [
+  { label: 'menu.home', path: 'index' },
   {
-    label: "menu.guide",
+    label: 'menu.guide',
     children: [
-      { label: "menu.components", path: "guide/components" },
-      { label: "menu.api", path: "guide/api" },
+      { label: 'menu.components', path: 'guide/components' },
+      { label: 'menu.api', path: 'guide/api' },
     ],
   },
 ];
 ```
 
-When `path` is empty, no link is generated. This is useful for parent items that only expand child menus.
+When `path` is empty, no link is generated.

@@ -1,4 +1,4 @@
-export const docConfig = {
+export default {
   siteName: 'VanillaPress',
   siteUrl: 'https://vanilla-press.jealer.com',
   runtime: {
@@ -53,7 +53,12 @@ export const docConfig = {
     },
     i18n: {
       enabled: true,
-      defaultLocale: 'zh-CN',
+      locale: 'zh-CN',
+      fallbackLocale: 'en',
+      locales: [
+        { code: 'zh-CN', label: '简体中文', path: 'zh' },
+        { code: 'en', label: 'English', path: 'en' },
+      ],
       redirectToDefault: true,
     },
     theme: {

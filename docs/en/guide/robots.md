@@ -2,29 +2,31 @@
 
 Generate `robots.txt` to tell search engines which paths they can crawl.
 
-## Runtime Switch
+## Runtime
 
-`runtime.robots` is enabled by default. Only `false` disables it. When disabled, the build skips `docs/robots.js` and does not output `dist/robots.txt`.
+`runtime.robots` is enabled by default.
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     robots: false,
   },
 };
 ```
 
-## Configuration File
+When `runtime.robots` is `false`, the build does not output `dist/robots.txt`.
 
-Configure the generated content in `docs/robots.js`. Project configuration replaces the default configuration.
+## Configuration
+
+Configure the generated content in `docs/robots.js`.
 
 ```javascript
-export const robots = {
+export default {
   rules: [
     {
-      userAgent: "*",
-      allow: ["/"],
-      disallow: ["/private/"],
+      userAgent: '*',
+      allow: ['/'],
+      disallow: ['/private/'],
     },
   ],
   sitemap: true,
@@ -34,18 +36,18 @@ export const robots = {
 
 ## Fields
 
-| Field      | Type                      | Description                                                     |
-| ---------- | ------------------------- | --------------------------------------------------------------- |
-| rules      | array                     | Rule groups for `robots.txt`. Each item outputs a `User-agent` block. |
-| userAgent  | string \| array           | Crawler name. Defaults to `*`.                                  |
-| allow      | string \| array           | Outputs `Allow` rules.                                          |
-| disallow   | string \| array           | Outputs `Disallow` rules.                                       |
-| crawlDelay | string \| number          | Outputs a `Crawl-delay` rule.                                   |
-| sitemap    | boolean \| string \| array | `true` outputs `${siteUrl}/sitemap.xml`; strings define custom URLs. |
-| llms       | boolean \| string \| array | `true` outputs `${siteUrl}/llms.txt`; strings define custom URLs. |
+| Field      | Type                       | Description                                                           |
+| ---------- | -------------------------- | --------------------------------------------------------------------- |
+| rules      | array                      | Rule groups for `robots.txt`. Each item outputs a `User-agent` block. |
+| userAgent  | string \| array            | Crawler name. Defaults to `*`.                                        |
+| allow      | string \| array            | Outputs `Allow` rules.                                                |
+| disallow   | string \| array            | Outputs `Disallow` rules.                                             |
+| crawlDelay | string \| number           | Outputs a `Crawl-delay` rule.                                         |
+| sitemap    | boolean \| string \| array | `true` outputs `${siteUrl}/sitemap.xml`; strings define custom URLs.  |
+| llms       | boolean \| string \| array | `true` outputs `${siteUrl}/llms.txt`; strings define custom URLs.     |
 
 ## Output
 
-After build, visit:
+Based on the `siteUrl` configuration, the corresponding URL addresses are generated.
 
-`https://example.com/robots.txt`
+- Robots URL:`https://example.com/robots.txt`

@@ -7,17 +7,19 @@ Automatically generate a table of contents from the page content. By default it 
 In `docs/config.js`, configure whether the table of contents is enabled.
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     toc: true,
   },
 };
 ```
 
+## Configuration
+
 `runtime.toc: true` uses the default configuration, which is equivalent to:
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     toc: {
       enabled: true,
@@ -28,6 +30,6 @@ export const docConfig = {
 };
 ```
 
-To disable the table of contents, set it to `false`, or set `runtime.toc.enabled: false`.
-
-`runtime.toc.offset` is passed to `createToc()` as the scroll positioning offset. The default value is `100`.
+- `runtime.toc.enabled`: Whether the table of contents is enabled, default is `true`.
+- `runtime.toc.headings`: The heading levels supported in the table of contents, default is `h2, h3`.
+- `runtime.toc.offset`: The scroll offset for positioning, default is `100`.

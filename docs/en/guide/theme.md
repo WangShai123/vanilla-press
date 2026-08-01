@@ -7,7 +7,7 @@ Support different user preferences for color, font size, corner radius, shadow, 
 In `docs/config.js`, configure whether the theme feature is enabled.
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     theme: {
       enabled: true,

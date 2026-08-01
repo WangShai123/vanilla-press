@@ -7,7 +7,7 @@ Make the documentation site easier to discover in search engines.
 In `docs/config.js`, configure whether SEO is enabled.
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     seo: true,
   },

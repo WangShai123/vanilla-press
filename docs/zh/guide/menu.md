@@ -7,7 +7,7 @@
 在 `docs/config.js` 中，按需配置是否启用主菜单功能。
 
 ```javascript
-export const docConfig = {
+export default {
   runtime: {
     menu: true,
   },
@@ -23,16 +23,16 @@ export const docConfig = {
 - `children`: 子菜单项数组
 
 ```javascript
-export const menuItems = [
-  { label: "menu.home", path: "index" },
+export default [
+  { label: 'menu.home', path: 'index' },
   {
-    label: "menu.guide",
+    label: 'menu.guide',
     children: [
-      { label: "menu.components", path: "guide/components" },
-      { label: "menu.api", path: "guide/api" },
+      { label: 'menu.components', path: 'guide/components' },
+      { label: 'menu.api', path: 'guide/api' },
     ],
   },
 ];
 ```
 
-`path` 为空时不会生成链接地址，可用于只展开子菜单的父项。
+`path` 为空时不会生成链接地址。
