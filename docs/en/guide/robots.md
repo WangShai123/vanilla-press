@@ -18,7 +18,7 @@ When `runtime.robots` is `false`, the build does not output `dist/robots.txt`.
 
 ## Configuration
 
-Configure the generated content in `docs/robots.js`.
+Configure the generated content in `docs/robots.ts`.
 
 ```javascript
 export default {

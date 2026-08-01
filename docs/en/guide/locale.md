@@ -4,7 +4,7 @@ Enable multilingual documentation so users can browse the site in different lang
 
 ## Runtime
 
-In `docs/config.js`, configure whether internationalization is enabled.
+In `docs/config.ts`, configure whether internationalization is enabled.
 
 - Configuration property: `i18n`
 - Configuration type: `boolean` || `object`
@@ -28,7 +28,7 @@ export default {
 
 ## Metadata
 
-In `docs/config.js`, configure the site's i18n language metadata:
+In `docs/config.ts`, configure the site's i18n language metadata:
 
 - `runtime.i18n.locale`: default language
 - `runtime.i18n.fallbackLocale`: fallback language
@@ -40,7 +40,7 @@ In `docs/config.js`, configure the site's i18n language metadata:
 
 ## Language Pack
 
-In `docs/languages.js`, export the locale message data:
+In `docs/languages.ts`, export the locale message data:
 
 ```javascript
 export default {

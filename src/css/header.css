@@ -1,134 +1,134 @@
 .doc-header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    min-height: var(--doc-header-height);
-    border-bottom: 1px solid var(--doc-line);
-    background: var(--doc-panel-overlay);
-    backdrop-filter: blur(2px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: var(--doc-header-height);
+  border-bottom: 1px solid var(--doc-line);
+  background: var(--doc-panel-overlay);
+  backdrop-filter: blur(2px);
 }
 
 .doc-header-inner {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    min-height: var(--doc-header-height);
-    padding-block: 0;
-    padding-inline: clamp(18px, 4vw, 48px);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: var(--doc-header-height);
+  padding-block: 0;
+  padding-inline: clamp(18px, 4vw, 48px);
 }
 
 .doc-brand {
-    display: inline-flex;
-    flex: 0 0 auto;
-    align-items: center;
-    min-height: 36px;
-    color: var(--ui-fg);
-    font-size: var(--font-size-xl);
-    font-weight: 700;
-    text-decoration: none;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 36px;
+  color: var(--ui-fg);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  text-decoration: none;
 }
 
 .doc-menu {
-    flex: 1 1 auto;
-    min-width: 0;
-    width: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
 }
 
 .doc-menu.j-menu .menu {
-    gap: 4px;
+  gap: 4px;
 }
 
-.doc-menu.j-menu .menu .menu-item.current-menu-item>a,
+.doc-menu.j-menu .menu .menu-item.current-menu-item > a,
 .doc-menu.j-menu .menu .menu-item a:hover,
-.doc-menu.j-menu .menu .menu-item.menu-item-has-children:hover>a {
-    color: var(--doc-accent);
-    background: var(--doc-accent-bg);
+.doc-menu.j-menu .menu .menu-item.menu-item-has-children:hover > a {
+  color: var(--doc-accent);
+  background: var(--doc-accent-bg);
 }
 
 .j-menu .menu .menu-item .sub-menu .menu-item.current-menu-item a,
 .j-menu .menu .menu-item .sub-menu .menu-item:hover a {
-    outline: 0;
+  outline: 0;
 }
 
 .doc-header-actions {
-    display: inline-flex;
-    flex: 0 0 auto;
-    align-items: center;
-    gap: 8px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
 }
 
 .doc-header-actions,
 .doc-locale,
 .doc-theme-button,
 .doc-auth-button {
-    color: var(--tone-caption);
+  color: var(--tone-caption);
 }
 
 .doc-theme-button,
 .doc-auth-button {
-    background: transparent;
+  background: transparent;
 }
 
 .doc-mobile-header,
 .doc-mobile-secondary {
-    display: none;
+  display: none;
 }
 
 .doc-mobile-header {
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    min-height: var(--doc-header-height);
-    padding: 0 12px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: var(--doc-header-height);
+  padding: 0 12px;
 }
 
 .doc-mobile-header-main,
 .doc-mobile-header-actions {
-    display: inline-flex;
-    align-items: center;
-    min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
 }
 
 .doc-mobile-header-main,
 .doc-mobile-header-actions {
-    gap: 4px;
+  gap: 4px;
 }
 
 .doc-locale {
-    appearance: none;
-    padding: 0 8px;
+  appearance: none;
+  padding: 0 8px;
 }
 
 .is-desktop .doc-theme-button,
 .is-desktop .doc-auth-button {
-    padding: 0 8px;
+  padding: 0 8px;
 }
 
 .doc-mobile-icon-button {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 
 .doc-mobile-secondary {
-    align-items: center;
-    justify-content: space-between;
-    min-height: 40px;
-    padding: 0 4px;
-    border-top: 1px solid var(--doc-line);
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 0 4px;
+  border-top: 1px solid var(--doc-line);
 }
 
 .doc-mobile-secondary-button {
-    gap: 6px;
-    min-height: 32px;
-    color: var(--doc-muted);
+  gap: 6px;
+  min-height: 32px;
+  color: var(--doc-muted);
 }
 
 .doc-mobile-menu-panel,
 .doc-mobile-sidebar-panel,
 .doc-mobile-toc-panel {
-    min-width: min(78vw, 320px);
-    padding: 16px;
+  min-width: min(78vw, 320px);
+  padding: 16px;
 }
 
 .doc-mobile-menu-panel .j-mobile-menu {
-    width: 100%;
+  width: 100%;
 }

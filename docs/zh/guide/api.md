@@ -42,14 +42,14 @@
 
 ### 1. 组件模块约定
 
-每个组件建议放在 `src/components/<name>.js`，并导出两个核心函数：
+每个组件建议放在 `src/components/<name>.ts`，并导出两个核心函数：
 
 - `install<Name>(md)`：注册 Markdown 容器语法与渲染规则。
 - `init<Name>(root = document)`：在运行时扫描并初始化页面节点。
 
 推荐结构：
 
-```javascript
+```typescript
 export function installXxx(md) {
   // 注册 block 规则
   // 写入 renderer 规则
@@ -65,7 +65,7 @@ export function initXxx(root = document) {
 
 ### 2. Markdown 解析层 API
 
-可复用工具函数（`src/utilities/markdown.js`）：
+可复用工具函数（`src/utilities/markdown.ts`）：
 
 - `readContainer(state, startLine, endLine)`：读取 `:::` 容器内容，支持嵌套容器与代码围栏。
 - `parseBracketTitle(info)`：解析方括号标题，如 `[打开抽屉]`。
@@ -111,7 +111,7 @@ export function initXxx(root = document) {
 
 ## 新增组件流程
 
-1. 在 `src/components/` 新建组件模块，完成 `install<Name>` 与 `init<Name>`。
+1. 在 `src/components/` 新建 `.ts` 组件模块，完成 `install<Name>` 与 `init<Name>`。
 2. 在 Markdown 创建器中安装 `install<Name>`。
 3. 在运行时注册表中注册组件及依赖关系。
 4. 在文档中新增组件页面内容：示例、语法、参数说明。

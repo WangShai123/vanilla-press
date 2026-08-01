@@ -4,7 +4,7 @@ The main navigation menu displayed at the top of the page.
 
 ## Runtime
 
-In `docs/config.js`, configure whether the main menu is enabled.
+In `docs/config.ts`, configure whether the main menu is enabled.
 
 ```javascript
 export default {
@@ -16,7 +16,7 @@ export default {
 
 ## Configuration
 
-In `docs/menu.js`, configure the site's menu data as needed.
+In `docs/menu.ts`, configure the site's menu data as needed.
 
 - `label`: i18n message key for the menu item
 - `path`: page path for the menu item, without `.html`

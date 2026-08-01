@@ -1,45 +1,45 @@
 :root {
-    --doc-header-height: 58px;
-    --doc-panel: var(--ui-surface);
-    --doc-panel-overlay: var(--ui-surface-overlay);
-    --doc-ink: var(--tone-heading);
-    --doc-muted: var(--tone-caption);
-    --doc-line: var(--ui-border-subtle);
-    --doc-accent: var(--tone-text);
-    --doc-accent-bg: var(--tone-soft);
+  --doc-header-height: 58px;
+  --doc-panel: var(--ui-surface);
+  --doc-panel-overlay: var(--ui-surface-overlay);
+  --doc-ink: var(--tone-heading);
+  --doc-muted: var(--tone-caption);
+  --doc-line: var(--ui-border-subtle);
+  --doc-accent: var(--tone-text);
+  --doc-accent-bg: var(--tone-soft);
 }
 
 .aurora {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-    pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .aurora::before,
 .aurora::after {
-    position: absolute;
-    border-radius: 999px;
-    filter: blur(54px);
-    opacity: 0.42;
-    animation: doc-home-float 9s ease-in-out infinite;
-    content: "";
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(54px);
+  opacity: 0.42;
+  animation: doc-home-float 9s ease-in-out infinite;
+  content: '';
 }
 
 .aurora::before {
-    top: 6%;
-    left: 4%;
-    width: 18rem;
-    height: 18rem;
-    background: color-mix(in srgb, var(--tone-solid) 22%, transparent);
+  top: 6%;
+  left: 4%;
+  width: 18rem;
+  height: 18rem;
+  background: color-mix(in srgb, var(--tone-solid) 22%, transparent);
 }
 
 .aurora::after {
-    right: 8%;
-    bottom: 7%;
-    width: 20rem;
-    height: 20rem;
-    background: color-mix(in srgb, var(--state-warning) 18%, transparent);
-    animation-delay: -3.6s;
+  right: 8%;
+  bottom: 7%;
+  width: 20rem;
+  height: 20rem;
+  background: color-mix(in srgb, var(--state-warning) 18%, transparent);
+  animation-delay: -3.6s;
 }

@@ -1,18 +1,23 @@
 body.doc-layout-home {
   background:
-    radial-gradient(circle at 12% -8%,
+    radial-gradient(
+      circle at 12% -8%,
       color-mix(in srgb, var(--tone-soft) 66%, transparent),
-      transparent 42%),
-    radial-gradient(circle at 86% 0%,
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 86% 0%,
       color-mix(in srgb, var(--state-info-soft) 64%, transparent),
-      transparent 40%),
-    radial-gradient(circle at 20% 96%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 20% 96%,
       color-mix(in srgb, var(--state-success-soft) 56%, transparent),
-      transparent 36%),
+      transparent 36%
+    ),
     linear-gradient(180deg, var(--ui-bg), var(--ui-bg-subtle));
   font-family:
-    "Avenir Next", "SF Pro Display", "PingFang SC", "Helvetica Neue",
-    sans-serif;
+    'Avenir Next', 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', sans-serif;
 }
 
 .doc-layout-home .doc-header,
@@ -29,7 +34,7 @@ body.doc-layout-home {
 
 .doc-home-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
   gap: 20px;
   align-items: stretch;
   margin: 0 0 18px;
@@ -113,9 +118,11 @@ body.doc-layout-home {
 
 .doc-home-button.is-primary {
   color: var(--tone-fg);
-  background: linear-gradient(135deg,
-      var(--tone-solid),
-      color-mix(in srgb, var(--tone-solid) 76%, #fff));
+  background: linear-gradient(
+    135deg,
+    var(--tone-solid),
+    color-mix(in srgb, var(--tone-solid) 76%, #fff)
+  );
   box-shadow: 0 14px 28px color-mix(in srgb, var(--tone-solid) 30%, transparent);
 }
 
@@ -127,7 +134,11 @@ body.doc-layout-home {
 
 .doc-home-button.is-secondary:hover {
   border-color: color-mix(in srgb, var(--tone-solid) 36%, var(--ui-border));
-  background: color-mix(in srgb, var(--tone-soft) 40%, var(--ui-surface-raised));
+  background: color-mix(
+    in srgb,
+    var(--tone-soft) 40%,
+    var(--ui-surface-raised)
+  );
 }
 
 .doc-home-hint {
@@ -172,7 +183,7 @@ body.doc-layout-home {
     28px 0 0 var(--state-danger);
 }
 
-.doc-home-command-group+.doc-home-command-group {
+.doc-home-command-group + .doc-home-command-group {
   margin-top: 16px;
 }
 
@@ -285,9 +296,11 @@ body.doc-layout-home {
   padding: 28px;
   border-color: color-mix(in srgb, var(--tone-solid) 22%, var(--ui-border));
   background:
-    linear-gradient(120deg,
+    linear-gradient(
+      120deg,
       color-mix(in srgb, var(--tone-subtle) 88%, transparent),
-      color-mix(in srgb, var(--state-info-subtle) 70%, transparent)),
+      color-mix(in srgb, var(--state-info-subtle) 70%, transparent)
+    ),
     var(--ui-surface-raised);
 }
 
@@ -314,15 +327,15 @@ body.doc-layout-home {
   transform: translateY(12px);
 }
 
-.doc-layout-home [data-reveal="2"] {
+.doc-layout-home [data-reveal='2'] {
   animation-delay: 0.08s;
 }
 
-.doc-layout-home [data-reveal="3"] {
+.doc-layout-home [data-reveal='3'] {
   animation-delay: 0.14s;
 }
 
-.doc-layout-home [data-reveal="4"] {
+.doc-layout-home [data-reveal='4'] {
   animation-delay: 0.2s;
 }
 
@@ -334,7 +347,6 @@ body.doc-layout-home {
 }
 
 @keyframes doc-home-float {
-
   0%,
   100% {
     transform: translateY(0);

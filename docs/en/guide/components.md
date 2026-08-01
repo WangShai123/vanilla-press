@@ -8,10 +8,10 @@
 @tab JavaScript
 
 ```javascript
-const pages = ["index.md", "guide/components.md"];
+const pages = ['index.md', 'guide/components.md'];
 
 export function toHtml(file) {
-  return file.replace(/\.md$/, ".html");
+  return file.replace(/\.md$/, '.html');
 }
 ```
 
@@ -100,10 +100,10 @@ Markdown syntax is supported inside the panel content.
 
 ```javascript
 // javascript
-const pages = ["index.md", "guide/components.md"];
+const pages = ['index.md', 'guide/components.md'];
 
 export function toHtml(file) {
-  return file.replace(/\.md$/, ".html");
+  return file.replace(/\.md$/, '.html');
 }
 ```
 
@@ -122,10 +122,10 @@ Markdown syntax is supported inside the panel content.
 
 ```javascript
 // javascript
-const pages = ["index.md", "guide/components.md"];
+const pages = ['index.md', 'guide/components.md'];
 
 export function toHtml(file) {
-  return file.replace(/\.md$/, ".html");
+  return file.replace(/\.md$/, '.html');
 }
 ```
 
@@ -246,12 +246,13 @@ my-project/
 
 #### Extend Icons
 
-Add or remove svg icons as needed in `src/config/icons.js`.
+Add or remove svg icons as needed in `src/config/icons.ts`.
 
 ```javascript
 export default {
-  "align-left": '<path d="M3 4H21V6H3V4ZM3 19H17V21H3V19ZM3 14H21V16H3V14ZM3 9H17V11H3V9Z"></path>',
-  "align-right":
+  'align-left':
+    '<path d="M3 4H21V6H3V4ZM3 19H17V21H3V19ZM3 14H21V16H3V14ZM3 9H17V11H3V9Z"></path>',
+  'align-right':
     '<path d="M3 4H21V6H3V4ZM7 19H21V21H7V19ZM3 14H21V16H3V14ZM7 9H21V11H7V9Z"></path>',
   copy: '<path d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path>',
 };

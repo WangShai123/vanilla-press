@@ -1,6 +1,4 @@
-<header class="doc-header">
-{{{ slots.header }}}
-</header>
+<header class="doc-header">{{{ slots.header }}}</header>
 <div class="aurora" aria-hidden="true"></div>
 
 <main class="doc-home">
@@ -11,13 +9,19 @@
       <p class="doc-home-lead">{{ layout.hero.description }}</p>
       <div class="doc-home-actions">
         {{#layout.hero.actions}}
-        <a class="doc-home-button {{ variant }}" href="{{ link }}">{{ text }}</a>
+        <a class="doc-home-button {{ variant }}" href="{{ link }}"
+          >{{ text }}</a
+        >
         {{/layout.hero.actions}}
       </div>
       <p class="doc-home-hint">{{ layout.hero.hint }}</p>
     </article>
 
-    <aside class="doc-home-visual" data-reveal="3" aria-label="{{ layout.quickStart.title }}">
+    <aside
+      class="doc-home-visual"
+      data-reveal="3"
+      aria-label="{{ layout.quickStart.title }}"
+    >
       <div class="doc-home-code-card">
         <div class="doc-home-code-head">
           <span class="doc-home-code-dots" aria-hidden="true"></span>
@@ -62,8 +66,6 @@
     </div>
   </section>
 
-  <section class="doc-home-content j-content is-sm">
-    {{{ content }}}
-  </section>
+  <section class="doc-home-content j-content is-sm">{{{ content }}}</section>
 </main>
 <footer class="doc-footer" data-doc-footer></footer>

@@ -1,0 +1,98 @@
+import type { LanguageMessages } from '../src/types.ts';
+
+export default {
+  'zh-CN': {
+    menu: {
+      home: '首页',
+      guide: '指南',
+      components: '组件',
+      api: 'API',
+    },
+    sidebar: {
+      home: '首页',
+      components: '组件',
+      config: '配置',
+      runtime: '运行时',
+      highlight: '代码高亮',
+      locale: '国际化',
+      menu: '菜单',
+      sidebar: '侧边栏',
+      toc: '目录',
+      prevNext: '分页导航',
+      sitemap: '站点地图',
+      robots: 'Robots',
+      llms: 'LLMs',
+      quickStart: '快速开始',
+      layout: '布局',
+      externalLink: '外部链接',
+    },
+    mobile: {
+      navigation: '导航',
+      toc: '目录',
+    },
+    search: {
+      button: '搜索',
+      title: '搜索文档',
+      placeholder: '输入关键词...',
+      empty: '没有找到匹配内容',
+      hint: '输入关键词搜索标题和正文',
+    },
+    prevNext: {
+      previous: '上一页',
+      next: '下一页',
+    },
+    theme: {
+      button: '主题',
+    },
+    auth: {
+      login: '登录',
+    },
+  },
+  en: {
+    menu: {
+      home: 'Home',
+      guide: 'Guide',
+      components: 'Components',
+      api: 'API',
+    },
+    sidebar: {
+      home: 'Home',
+      components: 'Components',
+      config: 'Config',
+      runtime: 'Runtime',
+      highlight: 'Highlight',
+      locale: 'Locale',
+      menu: 'Menu',
+      sidebar: 'Sidebar',
+      toc: 'Contents',
+      prevNext: 'Prev/Next',
+      sitemap: 'Sitemap',
+      robots: 'Robots',
+      llms: 'LLMs',
+      quickStart: 'Quick Start',
+      layout: 'Layout',
+      externalLink: 'External Link',
+    },
+    mobile: {
+      navigation: 'Navigation',
+      toc: 'Contents',
+    },
+    search: {
+      button: 'Search',
+      title: 'Search Docs',
+      placeholder: 'Type keywords...',
+      empty: 'No results found',
+      hint: 'Search titles and page content',
+    },
+    prevNext: {
+      previous: 'Previous',
+      next: 'Next',
+    },
+    theme: {
+      button: 'Theme',
+    },
+    auth: {
+      login: 'Login',
+    },
+  },
+} satisfies LanguageMessages;

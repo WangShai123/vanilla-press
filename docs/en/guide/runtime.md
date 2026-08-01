@@ -1,10 +1,10 @@
 # Runtime
 
-`vanilla-press` builds and renders runtime features on demand based on the configuration in `docs/config.js`.
+`vanilla-press` builds and renders runtime features on demand based on the configuration in `docs/config.ts`.
 
 ## Configuration Object
 
-The default export in `docs/config.js` is used to configure site runtime data.
+The default export in `docs/config.ts` is used to configure site runtime data.
 
 | Option                              | Type              | Default        | Description                                                                                   |
 | ----------------------------------- | ----------------- | -------------- | --------------------------------------------------------------------------------------------- |

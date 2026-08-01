@@ -4,7 +4,7 @@
 
 ## 运行时
 
-在 `docs/config.js` 中，按需配置是否启用主菜单功能。
+在 `docs/config.ts` 中，按需配置是否启用主菜单功能。
 
 ```javascript
 export default {
@@ -16,7 +16,7 @@ export default {
 
 ## 配置
 
-在 `docs/menu.js` 中，按需配置站点的菜单数据。
+在 `docs/menu.ts` 中，按需配置站点的菜单数据。
 
 - `label`: 菜单项的国际化语言包的 key
 - `path`: 菜单项的页面路径，不需要写 `.html`

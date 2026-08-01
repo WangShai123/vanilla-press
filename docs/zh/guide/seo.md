@@ -4,7 +4,7 @@
 
 ## 运行时
 
-在 `docs/config.js` 中，按需配置是否启用 SEO 功能。
+在 `docs/config.ts` 中，按需配置是否启用 SEO 功能。
 
 ```javascript
 export default {

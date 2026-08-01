@@ -40,7 +40,7 @@ class Test
 
 ## 运行时
 
-在 `docs/config.js` 中，按需配置是否启用代码高亮功能，以及允许构建的语言列表。`vanilla-press` 基于 `highlight.js` core，只会注册 `runtime.highlight.languages` 中配置的语言模块。
+在 `docs/config.ts` 中，按需配置是否启用代码高亮功能，以及允许构建的语言列表。`vanilla-press` 基于 `highlight.js` core，只会注册 `runtime.highlight.languages` 中配置的语言模块。
 
 ```javascript
 export default {

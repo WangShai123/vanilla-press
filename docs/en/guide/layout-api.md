@@ -94,7 +94,7 @@ Layout templates can read the context injected by the builder.
 | `{{ keywords }}`          | Current page keywords from frontmatter                          |
 | `{{ page.title }}`        | Markdown page title                                             |
 | `{{ page.rel }}`          | Current page output path                                        |
-| `{{ site.siteName }}`     | Site config from `docs/config.js`                               |
+| `{{ site.siteName }}`     | Site config from `docs/config.ts`                               |
 | `{{ layout.* }}`          | Data scoped to the current layout                               |
 | `{{ layouts.* }}`         | Data for all layout scopes                                      |
 | `{{{ content }}}`         | HTML rendered from Markdown                                     |

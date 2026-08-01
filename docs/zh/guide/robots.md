@@ -18,7 +18,7 @@ export default {
 
 ## 配置
 
-在 `docs/robots.js` 中配置输出内容。
+在 `docs/robots.ts` 中配置输出内容。
 
 ```javascript
 export default {

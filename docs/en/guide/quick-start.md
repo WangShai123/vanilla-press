@@ -63,9 +63,9 @@ npm run dev
 
 The runtime separates `desktop` and `mobile` strategies. `vanilla-press` detects the device type and loads the matching runtime behavior and rendering styles.
 
-`vanilla-press` provides only basic styles, with the style `preset source` set in `src/config/externalStyle.js`.
+`vanilla-press` provides only basic styles, with the style `preset source` set in `src/config/externalStyle.ts`.
 
-You can 100% customize the styles by overriding `style.css` and changing the `preset source` in `src/config/externalStyle.js`.
+You can 100% customize the styles by overriding `style.css` and changing the `preset source` in `src/config/externalStyle.ts`.
 
 ## Project Structure
 

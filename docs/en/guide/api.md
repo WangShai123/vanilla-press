@@ -42,14 +42,14 @@ Runtime observes DOM insertions and reruns initialization when new `data-doc-com
 
 ### 1. Component module contract
 
-Each component should live in `src/components/<name>.js` and export two core functions:
+Each component should live in `src/components/<name>.ts` and export two core functions:
 
 - `install<Name>(md)`: register Markdown block parsing and renderer rules.
 - `init<Name>(root = document)`: scan and initialize matching nodes at runtime.
 
 Recommended skeleton:
 
-```javascript
+```typescript
 export function installXxx(md) {
   // register block rule
   // register renderer rule
@@ -65,7 +65,7 @@ export function initXxx(root = document) {
 
 ### 2. Markdown parsing utilities
 
-Reusable helpers in `src/utilities/markdown.js`:
+Reusable helpers in `src/utilities/markdown.ts`:
 
 - `readContainer(state, startLine, endLine)`: parse `:::` containers with nested blocks and fenced code support.
 - `parseBracketTitle(info)`: parse bracket title text, e.g. `[Open Drawer]`.
@@ -111,7 +111,7 @@ Each `init<Name>` must:
 
 ## New Component Checklist
 
-1. Create `src/components/<name>.js` with `install<Name>` and `init<Name>`.
+1. Create `src/components/<name>.ts` with `install<Name>` and `init<Name>`.
 2. Register `install<Name>` in Markdown creator.
 3. Register runtime initializer and dependencies in runtime registry.
 4. Add docs page content: demo, syntax, and parameter notes.

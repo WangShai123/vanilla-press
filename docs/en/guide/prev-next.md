@@ -4,7 +4,7 @@ Pagination helps users move through documentation pages more efficiently.
 
 ## Runtime
 
-In `docs/config.js`, configure whether pagination is enabled.
+In `docs/config.ts`, configure whether pagination is enabled.
 
 ```javascript
 export default {

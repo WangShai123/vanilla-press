@@ -4,7 +4,7 @@ The sidebar navigation displayed along the side of the page.
 
 ## Runtime
 
-In `docs/config.js`, configure whether the sidebar is enabled.
+In `docs/config.ts`, configure whether the sidebar is enabled.
 
 ```javascript
 export default {
@@ -16,7 +16,7 @@ export default {
 
 ## Configuration
 
-In `docs/sidebar.js`, configure the site's sidebar data as needed.
+In `docs/sidebar.ts`, configure the site's sidebar data as needed.
 
 - `label`: i18n message key for the sidebar item
 - `path`: page path for the sidebar item, without `.html`

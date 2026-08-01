@@ -37,7 +37,7 @@ export default {
 
 ## 配置
 
-在 `docs/llms.js` 中配置 `llms.txt` 中 标题、说明、次标题、工具栏 的提示文本。
+在 `docs/llms.ts` 中配置 `llms.txt` 中 标题、说明、次标题、工具栏 的提示文本。
 
 ```javascript
 export default {
@@ -90,7 +90,7 @@ Markdown source routes for VanillaPress documentation.
 
 ## 多语言
 
-`container.labels` 用于配置页面标题下方 `.llms-container` 的多语言文案。key 需要对应 `docs/languages.js` 中的 locale code，例如 `zh-CN`、`en`。
+`container.labels` 用于配置页面标题下方 `.llms-container` 的多语言文案。key 需要对应 `docs/languages.ts` 中的 locale code，例如 `zh-CN`、`en`。
 
 | 字段    | 说明                       |
 | ------- | -------------------------- |

@@ -4,7 +4,7 @@
 
 ## 运行时
 
-在 `docs/config.js` 中，按需配置是否启用侧边栏功能。
+在 `docs/config.ts` 中，按需配置是否启用侧边栏功能。
 
 ```javascript
 export default {
@@ -16,7 +16,7 @@ export default {
 
 ## 配置
 
-在 `docs/sidebar.js` 中，按需配置站点的侧边栏数据。
+在 `docs/sidebar.ts` 中，按需配置站点的侧边栏数据。
 
 - `label`: 侧边栏项的国际化语言包的 key
 - `path`: 侧边栏项的页面路径，不需要写 `.html`

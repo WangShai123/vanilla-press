@@ -8,7 +8,7 @@ Indicate external links to users.
 
 ## Runtime
 
-In `docs/config.js`, you can configure whether to enable the external link feature. The default is true.
+In `docs/config.ts`, you can configure whether to enable the external link feature. The default is true.
 
 ```javascript
 export default {

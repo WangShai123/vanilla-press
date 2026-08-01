@@ -1,75 +1,75 @@
 @media (max-width: 960px) {
-    .doc-header-inner {
-        flex-wrap: wrap;
-        gap: 8px 12px;
-        padding-block: 10px;
-    }
+  .doc-header-inner {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    padding-block: 10px;
+  }
 
-    .doc-menu {
-        order: 3;
-        flex-basis: 100%;
-        overflow-x: auto;
-    }
+  .doc-menu {
+    order: 3;
+    flex-basis: 100%;
+    overflow-x: auto;
+  }
 
-    .doc-shell {
-        display: block;
-    }
+  .doc-shell {
+    display: block;
+  }
 
-    .doc-main {
-        display: block;
-        padding: 18px;
-    }
+  .doc-main {
+    display: block;
+    padding: 18px;
+  }
 
-    .doc-main .j-content.is-sm {
-        padding: 22px 18px;
-    }
+  .doc-main .j-content.is-sm {
+    padding: 22px 18px;
+  }
 
-    .doc-aside,
-    .doc-sidebar {
-        display: none;
-    }
+  .doc-aside,
+  .doc-sidebar {
+    display: none;
+  }
 }
 
 html.is-mobile [data-doc-desktop-header],
 html.is-mobile .doc-sidebar,
 html.is-mobile .doc-aside {
-    display: none;
+  display: none;
 }
 
 html.is-mobile .doc-mobile-header,
 html.is-mobile .doc-mobile-secondary {
-    display: flex;
+  display: flex;
 }
 
 html.is-mobile .doc-shell {
-    display: block;
-    min-height: auto;
+  display: block;
+  min-height: auto;
 }
 
 html.is-mobile .doc-main {
-    display: block;
-    padding: 18px;
+  display: block;
+  padding: 18px;
 }
 
 html.is-mobile .doc-main .j-content {
-    padding: 22px 18px;
+  padding: 22px 18px;
 }
 
 html.is-mobile .doc-prev-next {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 html.is-desktop .doc-mobile-header,
 html.is-desktop .doc-mobile-secondary {
-    display: none !important;
+  display: none !important;
 }
 
 html.is-mobile .j-mobile-menu .menu .menu-item,
 html.is-mobile .doc-nav-title {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 html.is-mobile .j-toc .toc-link {
-    font-size: 1rem;
-    padding-block: .75rem;
+  font-size: 1rem;
+  padding-block: 0.75rem;
 }

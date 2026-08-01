@@ -1,6 +1,6 @@
 {
   "name": "create-vanilla-press",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "private": false,
   "description": "Create a vanilla-press documentation project.",
   "keywords": [
@@ -35,15 +35,18 @@
   ],
   "type": "module",
   "exports": {
-    ".": "./src/build.js",
+    ".": "./src/build.ts",
     "./scaffold": "./bin/scaffold.js"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "node src/build.js",
-    "dev": "nodemon --watch src --watch docs --ext js,md,css --ignore dist --ignore output src/build.js"
+    "build": "node src/build.ts",
+    "dev": "nodemon --watch src --watch docs --ext ts,js,md,css --ignore dist --ignore output --exec node src/build.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "vp fmt --check src && vp lint src && tsc --noEmit",
+    "test": "vp test run --dir src --passWithNoTests"
   },
   "dependencies": {
     "dompurify": "^3.4.12",
@@ -59,17 +62,20 @@
     "vanilla-signal-i18n": "^1.1.2"
   },
   "devDependencies": {
+    "@types/node": "^26.1.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "esbuild": "^0.28.1",
     "nodemon": "^3.1.14",
+    "typescript": "^7.0.2",
     "vite": "8.2.0",
     "vite-plus": "latest"
-  },
-  "registry": {
-    "type": "git",
-    "url": "git+https://github.com/WangShai123/vanilla-press.git"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
     "fsevents@2.3.3": true
+  },
+  "registry": {
+    "type": "git",
+    "url": "git+https://github.com/WangShai123/vanilla-press.git"
   }
 }

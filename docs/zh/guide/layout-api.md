@@ -94,7 +94,7 @@ layouts:
 | `{{ keywords }}`          | 当前页面关键词，来自 frontmatter |
 | `{{ page.title }}`        | Markdown 页面标题                |
 | `{{ page.rel }}`          | 当前页面输出路径                 |
-| `{{ site.siteName }}`     | `docs/config.js` 中的站点配置    |
+| `{{ site.siteName }}`     | `docs/config.ts` 中的站点配置    |
 | `{{ layout.* }}`          | 当前布局作用域下的数据           |
 | `{{ layouts.* }}`         | 所有布局作用域数据               |
 | `{{{ content }}}`         | Markdown 渲染后的 HTML           |

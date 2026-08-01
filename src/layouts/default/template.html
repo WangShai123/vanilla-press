@@ -1,17 +1,12 @@
-<header class="doc-header">
-{{{ slots.header }}}
-{{{ slots.secondary }}}
-</header>
+<header class="doc-header">{{{ slots.header }}} {{{ slots.secondary }}}</header>
 <main class="{{ shell.className }}">
-{{{ slots.sidebar }}}
+  {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">
     <div>
-      <article class="j-content is-sm">
-        {{{ content }}}
-      </article>
+      <article class="j-content is-sm">{{{ content }}}</article>
       {{{ slots.prevNext }}}
     </div>
-{{{ slots.aside }}}
+    {{{ slots.aside }}}
   </section>
 </main>
 <footer class="doc-footer" data-doc-footer></footer>
