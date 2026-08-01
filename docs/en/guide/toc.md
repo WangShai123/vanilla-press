@@ -21,8 +21,8 @@ export const docConfig = {
   runtime: {
     toc: {
       enabled: true,
-      headings: "h2, h3",
-      offset: 80,
+      headings: 'h2, h3',
+      offset: 100,
     },
   },
 };
@@ -30,4 +30,4 @@ export const docConfig = {
 
 To disable the table of contents, set it to `false`, or set `runtime.toc.enabled: false`.
 
-`runtime.toc.offset` is passed to `createToc()` as the scroll positioning offset. The default value is `80`.
+`runtime.toc.offset` is passed to `createToc()` as the scroll positioning offset. The default value is `100`.

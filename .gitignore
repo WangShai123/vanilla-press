@@ -1,12 +1,8 @@
 .DS_Store
 .vscode
+.github
 node_modules
-
-.vite-hooks
-vite.config.ts
+dist
 
 bin
-
-dist
 AGENTS.md
-.github
