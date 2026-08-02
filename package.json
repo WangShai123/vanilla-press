@@ -1,6 +1,6 @@
 {
   "name": "create-vanilla-press",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "private": false,
   "description": "Create a vanilla-press documentation project.",
   "keywords": [
@@ -58,7 +58,7 @@
     "markdown-it-attrs": "^5.0.1",
     "markdown-it-front-matter": "^0.2.4",
     "markdown-it-link-attributes": "^4.0.1",
-    "vanilla-jui": "^1.4.2",
+    "vanilla-jui": "^1.4.3",
     "vanilla-signal-i18n": "^1.1.2"
   },
   "devDependencies": {
