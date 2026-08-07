@@ -1,4 +1,4 @@
-import { hasOwn, isPlainObject } from 'vanilla-jui';
+import { isPlainObject } from 'vanilla-jui';
 
 import type { DocConfig, UnknownRecord } from '../types.ts';
 
@@ -33,7 +33,7 @@ export function runtimeOption(config: DocConfig = {}, key: string): unknown {
   const runtime = isPlainObject(config.runtime)
     ? (config.runtime as UnknownRecord)
     : {};
-  return hasOwn(runtime, key) ? runtime[key] : config[key];
+  return Object.hasOwn(runtime, key) ? runtime[key] : config[key];
 }
 
 export function isThemeEnabled(config: DocConfig = {}): boolean {

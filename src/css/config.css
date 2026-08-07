@@ -23,7 +23,7 @@
   border-radius: 999px;
   filter: blur(54px);
   opacity: 0.42;
-  animation: doc-home-float 9s ease-in-out infinite;
+  animation: element-float 9s ease-in-out infinite;
   content: '';
 }
 
@@ -42,4 +42,16 @@
   height: 20rem;
   background: color-mix(in srgb, var(--state-warning) 18%, transparent);
   animation-delay: -3.6s;
+}
+
+@keyframes element-float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }

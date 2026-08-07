@@ -8,6 +8,7 @@ import type {
   LocaleEntry,
   NavItem,
   RuntimePage,
+  UnknownRecord,
 } from '../types.ts';
 import {
   isI18nEnabled,
@@ -47,7 +48,9 @@ function renderFooter(
   const brand = jsx('div', { children: `${siteName} © ${year}` });
   const social = jsx('div', { className: 'footer-social' });
 
-  const socialConfig = isPlainObject(config.social) ? config.social : {};
+  const socialConfig = isPlainObject(config.social)
+    ? (config.social as UnknownRecord)
+    : {};
 
   Object.entries(socialConfig).forEach(([name, href]) => {
     const url = toText(href).trim();

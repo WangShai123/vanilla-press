@@ -45,4 +45,4 @@ npm install
 
 ## Demo
 
-[Demo Online](https://vanilla-press.jealer.com)
+[Demo Online](https://app.jealer.com/vanilla-press)

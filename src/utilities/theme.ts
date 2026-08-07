@@ -12,38 +12,14 @@ export const DEFAULT_THEME_DEFAULT: ThemeDefaultConfig = {
   font: 'sm',
 };
 
-const THEME_DEFAULT_OPTIONS: Record<ThemeDefaultKey, Set<string>> = {
-  mode: new Set(['dark', 'light']),
-  theme: new Set([
-    'gray',
-    'olive',
-    'tomato',
-    'ruby',
-    'pink',
-    'violet',
-    'indigo',
-    'blue',
-    'teal',
-    'grass',
-    'mint',
-    'lime',
-    'yellow',
-    'orange',
-    'gold',
-  ]),
-  radius: new Set(['sm', 'md', 'lg', 'xl', 'round']),
-  shadow: new Set(['none', 'sm', 'md', 'lg']),
-  font: new Set(['sm', 'md']),
-};
+const THEME_STORAGE_KEY = 'vanilla-storage::ui-theme';
 
 function normalizeThemeDefaultValue(
   defaults: ThemeDefaultInput,
   key: ThemeDefaultKey
 ): string {
   const value = typeof defaults?.[key] === 'string' ? defaults[key].trim() : '';
-  return THEME_DEFAULT_OPTIONS[key].has(value)
-    ? value
-    : DEFAULT_THEME_DEFAULT[key];
+  return value || DEFAULT_THEME_DEFAULT[key];
 }
 
 export function normalizeThemeDefault(
@@ -62,5 +38,5 @@ export function normalizeThemeDefault(
 
 export function themeBootScript(defaults: unknown = {}): string {
   const themeDefault = normalizeThemeDefault(defaults);
-  return `(function(d,k){var v=${JSON.stringify(themeDefault)},m=d.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)')),o=v;if(m){try{o=Object.assign({},v,JSON.parse(decodeURIComponent(m[1])))}catch(e){o=v}}else{d.cookie=k+'='+JSON.stringify(v)+'; expires='+new Date(Date.now()+864e5).toUTCString()+'; path=/; sameSite=Lax'}try{var r=o.mode==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):o.mode,h=d.documentElement;h.classList.add(r||'dark','j-theme-'+(o.theme||v.theme),'j-radius-'+(o.radius||v.radius),'j-shadow-'+(o.shadow||v.shadow),'j-font-'+(o.font||v.font))}catch(e){}})(document,'ui-theme');`;
+  return `(function(d,k){var v=${JSON.stringify(themeDefault)},e=encodeURIComponent(k),m=d.cookie.match(new RegExp('(?:^|; )'+e+'=([^;]*)')),o=v;function r(x){return x.mode==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):x.mode}function p(s){try{var a=JSON.parse(decodeURIComponent(s)),b=JSON.parse(a.value);return b&&b.value?b.value:null}catch(e){return null}}function w(x){var t=Date.now()+864e5,a=Object.assign({},x,{render:r(x)}),b={v:1,codec:'json',expiresAt:t,value:JSON.stringify({type:'json',value:a})};d.cookie=e+'='+encodeURIComponent(JSON.stringify(b))+'; expires='+new Date(t).toUTCString()+'; path=/; SameSite=Lax'+(location.protocol==='https:'?'; Secure':'')}if(m){o=Object.assign({},v,p(m[1])||{})}else{w(o)}try{var c=o.render||r(o),h=d.documentElement;h.classList.add(c||'dark','j-theme-'+(o.theme||v.theme),'j-radius-'+(o.radius||v.radius),'j-shadow-'+(o.shadow||v.shadow),'j-font-'+(o.font||v.font))}catch(e){}})(document,${JSON.stringify(THEME_STORAGE_KEY)});`;
 }

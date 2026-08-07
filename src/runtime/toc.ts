@@ -14,11 +14,12 @@ export function initToc(config: DocConfig = {}): void {
     return;
   }
 
-  createToc({
-    container: toc,
+  toc.textContent = '';
+  const instance = createToc({
     target: article,
     headings,
     offset,
   }).build();
+  if (instance.dom.root) toc.append(instance.dom.root);
   toc.dataset.docReady = 'true';
 }

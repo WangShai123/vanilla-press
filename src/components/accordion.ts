@@ -86,11 +86,12 @@ export function initAccordion(root: Document | Element = document): void {
       }));
 
       container.textContent = '';
-      createAccordion(container, {
+      const accordion = createAccordion({
         collapsible: container.dataset.collapsible === 'true',
         multiple: container.dataset.multiple === 'true',
         items,
       }).build();
+      if (accordion.dom.root) container.append(accordion.dom.root);
 
       container.dataset.docReady = 'true';
     }

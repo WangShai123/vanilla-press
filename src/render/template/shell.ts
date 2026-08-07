@@ -1,4 +1,4 @@
-import type { DocConfig } from '../../types.ts';
+import type { DocConfig } from "../../types.ts";
 
 interface ShellOptions {
   body: string;
@@ -25,22 +25,20 @@ function renderSidebar(sidebarEnabled: boolean): string {
     ? `    <aside class="doc-sidebar">
       <nav class="doc-nav" data-doc-sidebar aria-label="文档导航"></nav>
     </aside>`
-    : '';
+    : "";
 }
 
 function renderToc(tocEnabled: boolean): string {
-  return tocEnabled
-    ? '        <div class="doc-toc" data-doc-toc aria-label="页面目录"></div>'
-    : '';
+  return tocEnabled ? '        <div class="doc-toc" data-doc-toc aria-label="页面目录"></div>' : "";
 }
 
 function renderAside({ config, toc }: AsideOptions): string {
   return toc || config.aside?.html
-    ? `      <aside class="doc-aside">
+    ? `      <aside class="doc-aside" data-reveal="2">
 ${toc}
         <div class="doc-aside-custom" data-doc-aside-custom></div>
       </aside>`
-    : '';
+    : "";
 }
 
 export function renderPageShell({
@@ -54,10 +52,10 @@ export function renderPageShell({
   const aside = renderAside({ config, toc });
   const hasAside = Boolean(aside);
 
-  return `<main class="doc-shell${sidebarEnabled ? ' has-sidebar' : ''}">
+  return `<main class="doc-shell${sidebarEnabled ? " has-sidebar" : ""}">
 ${sidebar}
-    <section class="doc-main${hasAside ? ' has-aside' : ''}">
-      <div>
+    <section class="doc-main${hasAside ? " has-aside" : ""}">
+      <div data-reveal>
         <article class="j-content is-sm">
           ${body}
         </article>
@@ -72,8 +70,8 @@ export function createPageShellContext({
   config,
   sidebarEnabled,
   tocEnabled,
-  header = '',
-  secondary = '',
+  header = "",
+  secondary = "",
 }: ShellContextOptions) {
   const sidebar = renderSidebar(sidebarEnabled);
   const toc = renderToc(tocEnabled);
@@ -82,8 +80,8 @@ export function createPageShellContext({
 
   return {
     shell: {
-      className: `doc-shell${sidebarEnabled ? ' has-sidebar' : ''}`,
-      mainClassName: `doc-main${hasAside ? ' has-aside' : ''}`,
+      className: `doc-shell${sidebarEnabled ? " has-sidebar" : ""}`,
+      mainClassName: `doc-main${hasAside ? " has-aside" : ""}`,
     },
     slots: {
       header,
@@ -91,7 +89,7 @@ export function createPageShellContext({
       sidebar,
       toc,
       aside,
-      prevNext: '<div data-doc-prev-next></div>',
+      prevNext: "<div data-doc-prev-next></div>",
     },
   };
 }

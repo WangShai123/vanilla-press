@@ -79,9 +79,10 @@ export function initTabs(root: Document | Element = document): void {
     }));
 
     container.textContent = '';
-    createTabs(container, {
-      tabs,
+    const instance = createTabs({
+      data: tabs,
     }).build();
+    if (instance.dom.root) container.append(instance.dom.root);
 
     container.dataset.docReady = 'true';
   });

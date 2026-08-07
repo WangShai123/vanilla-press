@@ -45,4 +45,4 @@ npm install
 
 ## 预览
 
-[在线预览](https://vanilla-press.jealer.com)
+[在线预览](https://app.jealer.com/vanilla-press)

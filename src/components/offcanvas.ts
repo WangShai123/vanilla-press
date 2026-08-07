@@ -81,7 +81,7 @@ export function initOffcanvas(root: Document | Element = document): void {
       const panel = createOffcanvas({
         direction: parseDirection(container.dataset.direction),
         content: contentBody,
-      });
+      }).build();
 
       content.remove();
       trigger.addEventListener('click', () => panel.show());

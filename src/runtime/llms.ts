@@ -1,4 +1,4 @@
-import { Drop, all, copy, icon, q } from 'vanilla-jui';
+import { all, copy, createDrop, icon, q } from 'vanilla-jui';
 import { jsx } from 'vanilla-signal';
 
 const PROMPT = 'I want to ask questions about it.';
@@ -104,18 +104,21 @@ function bindDrop(
   trigger: HTMLElement,
   mdUrl: string
 ): void {
-  const drop = new Drop(trigger, {
-    className: { root: 'j-drop llms-drop' },
-    containerClassName: 'llms-drop-container',
+  const drop = createDrop(trigger, {
+    className: {
+      root: 'j-drop llms-drop',
+      container: 'llms-drop-container',
+    },
     content: createDropContent(container),
     mode: 'click',
     position: 'bottom-left',
     onShown: () => trigger.classList.add('is-active'),
     onHidden: () => trigger.classList.remove('is-active'),
   });
-  if (!drop.root) return;
+  const root = drop.dom.root;
+  if (!root) return;
 
-  drop.root.addEventListener('click', async (event) => {
+  root.addEventListener('click', async (event) => {
     if (!(event.target instanceof Element)) return;
     const item = event.target.closest<HTMLElement>('[data-llms-action]');
     if (!item) return;
@@ -124,7 +127,7 @@ function bindDrop(
     drop.hide(false);
   });
 
-  drop.root.addEventListener('keydown', async (event) => {
+  root.addEventListener('keydown', async (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     if (!(event.target instanceof Element)) return;
     const item = event.target.closest<HTMLElement>('[data-llms-action]');

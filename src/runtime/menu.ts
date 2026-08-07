@@ -1,9 +1,10 @@
 import {
-  Menu,
+  createMenu,
   createOffcanvas,
   createToc,
   icon,
   q,
+  type Menu,
   type MenuItem,
 } from 'vanilla-jui';
 import { createEffect, jsx } from 'vanilla-signal';
@@ -210,15 +211,16 @@ export function initMobileHeader(
     content: panel,
     onShow: () => {
       destroyMenu();
-      menu = new Menu({
+      const nextMenu = createMenu({
         backText: t('Back'),
         type: 'mobile',
-        items: toMenuItems(menuItems, page, i18n, locale),
+        data: toMenuItems(menuItems, page, i18n, locale),
       }).build();
-      if (menu.dom.root) panel.append(menu.dom.root);
+      menu = nextMenu;
+      if (nextMenu.dom.root) panel.append(nextMenu.dom.root);
     },
     onHidden: destroyMenu,
-  });
+  }).build();
 
   menuButton.addEventListener('click', () => drawer.show());
   header.dataset.docReady = 'true';
@@ -353,7 +355,7 @@ export function initMobileSecondary(
     const sidebarDrawer = createOffcanvas({
       direction: 'left',
       content: sidebarPanel,
-    });
+    }).build();
 
     sidebarButton.addEventListener('click', () => sidebarDrawer.show());
   }
@@ -368,12 +370,12 @@ export function initMobileSecondary(
     const article = q<HTMLElement>('.j-content');
     const { headings, offset } = tocOptions(config);
     if (article && q(headings, article)) {
-      createToc({
-        container: tocPanel,
+      const toc = createToc({
         target: article,
         headings,
         offset,
       }).build();
+      if (toc.dom.root) tocPanel.append(toc.dom.root);
     } else {
       tocButton.hidden = true;
     }
@@ -381,7 +383,7 @@ export function initMobileSecondary(
     const tocDrawer = createOffcanvas({
       direction: 'right',
       content: tocPanel,
-    });
+    }).build();
     tocPanel.addEventListener('click', (event) => {
       if (!(event.target instanceof Element)) return;
       const link = event.target.closest('a[href^="#"]');
