@@ -29,8 +29,6 @@ export default {
       disallow: ['/private/'],
     },
   ],
-  sitemap: true,
-  llms: true,
 };
 ```
 
@@ -43,8 +41,6 @@ export default {
 | allow      | string \| array            | 输出 `Allow` 规则                                             |
 | disallow   | string \| array            | 输出 `Disallow` 规则                                          |
 | crawlDelay | string \| number           | 输出 `Crawl-delay` 规则                                       |
-| sitemap    | boolean \| string \| array | 为 `true` 时输出 `${siteUrl}/sitemap.xml`，也可指定自定义地址 |
-| llms       | boolean \| string \| array | 为 `true` 时输出 `${siteUrl}/llms.txt`，也可指定自定义地址    |
 
 ## 输出
 

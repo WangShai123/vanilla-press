@@ -8,6 +8,4 @@ export default {
       disallow: [],
     },
   ],
-  sitemap: true,
-  llms: true,
 } satisfies RobotsConfig;

@@ -1,5 +1,4 @@
-import type { DocConfig, UnknownRecord } from '../types.ts';
-import { isLlmsEnabled } from './features.ts';
+import type { UnknownRecord } from '../types.ts';
 import { toText } from './string.ts';
 
 interface RobotsRule extends UnknownRecord {
@@ -12,8 +11,6 @@ interface RobotsRule extends UnknownRecord {
 
 interface RobotsConfig extends RobotsRule {
   rules?: unknown;
-  sitemap?: unknown;
-  llms?: unknown;
 }
 
 function asArray(value: unknown): unknown[] {
@@ -64,73 +61,9 @@ function renderRule(rawRule: unknown = {}): string {
   return lines.join('\n');
 }
 
-function baseUrl(siteUrl: unknown): string {
-  const value = cleanValue(siteUrl);
-  return value ? value.replace(/\/+$/g, '') : '';
-}
-
-function sitemapUrl(value: unknown, siteUrl: unknown): string | null {
-  const base = baseUrl(siteUrl);
-
-  if (value === true) {
-    return base ? `${base}/sitemap.xml` : null;
-  }
-
-  const text = cleanValue(value);
-  if (!text) return null;
-  if (/^https?:\/\//i.test(text)) return text;
-  if (!base) return text;
-
-  return `${base}/${text.replace(/^\/+/, '')}`;
-}
-
-function llmsUrl(value: unknown, siteUrl: unknown): string | null {
-  const base = baseUrl(siteUrl);
-
-  if (value === true) {
-    return base ? `${base}/llms.txt` : null;
-  }
-
-  const text = cleanValue(value);
-  if (!text) return null;
-  if (/^https?:\/\//i.test(text)) return text;
-  if (!base) return text;
-
-  return `${base}/${text.replace(/^\/+/, '')}`;
-}
-
-function renderSitemaps(config: RobotsConfig = {}, siteUrl: unknown): string {
-  return asArray(config.sitemap)
-    .map((value) => sitemapUrl(value, siteUrl))
-    .filter(Boolean)
-    .map((url) => `Sitemap: ${url}`)
-    .join('\n');
-}
-
-function renderLlms(
-  config: RobotsConfig = {},
-  siteConfig: DocConfig = {}
-): string {
-  if (!isLlmsEnabled(siteConfig)) return '';
-
-  return asArray(config.llms)
-    .map((value) => llmsUrl(value, siteConfig.siteUrl))
-    .filter(Boolean)
-    .map((url) => `LLMs: ${url}`)
-    .join('\n');
-}
-
-export function renderRobotsTxt(
-  config: RobotsConfig = {},
-  siteConfig: DocConfig = {}
-): string {
+export function renderRobotsTxt(config: RobotsConfig = {}): string {
   const rules = Array.isArray(config.rules) ? config.rules : [config];
   const blocks = rules.map(renderRule).filter(Boolean);
-  const sitemaps = renderSitemaps(config, siteConfig.siteUrl);
-  const llms = renderLlms(config, siteConfig);
-
-  if (sitemaps) blocks.push(sitemaps);
-  if (llms) blocks.push(llms);
 
   return `${blocks.join('\n\n').trim()}\n`;
 }

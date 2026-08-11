@@ -99,7 +99,3 @@ Markdown source routes for VanillaPress documentation.
 | chatgpt | ChatGPT 打开菜单文本       |
 | claude  | Claude 打开菜单文本        |
 | options | 下拉按钮的无障碍标签       |
-
-## Robots
-
-`llms.txt` 支持暴露给 `robots.txt`。

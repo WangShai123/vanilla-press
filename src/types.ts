@@ -180,8 +180,6 @@ export interface RobotsRule extends UnknownRecord {
 
 export interface RobotsConfig extends UnknownRecord {
   rules?: RobotsRule[];
-  sitemap?: boolean | string;
-  llms?: boolean | string;
 }
 
 export interface LlmsLocaleLabels extends UnknownRecord {

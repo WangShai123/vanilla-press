@@ -99,7 +99,3 @@ Markdown source routes for VanillaPress documentation.
 | chatgpt | ChatGPT menu text                        |
 | claude  | Claude menu text                         |
 | options | Accessible label for the dropdown button |
-
-## Robots
-
-`llms.txt` can be exposed to `robots.txt`.

@@ -29,8 +29,6 @@ export default {
       disallow: ['/private/'],
     },
   ],
-  sitemap: true,
-  llms: true,
 };
 ```
 
@@ -43,8 +41,6 @@ export default {
 | allow      | string \| array            | Outputs `Allow` rules.                                                |
 | disallow   | string \| array            | Outputs `Disallow` rules.                                             |
 | crawlDelay | string \| number           | Outputs a `Crawl-delay` rule.                                         |
-| sitemap    | boolean \| string \| array | `true` outputs `${siteUrl}/sitemap.xml`; strings define custom URLs.  |
-| llms       | boolean \| string \| array | `true` outputs `${siteUrl}/llms.txt`; strings define custom URLs.     |
 
 ## Output
 

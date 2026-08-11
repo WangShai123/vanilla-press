@@ -77,8 +77,6 @@ export const DEFAULT_ROBOTS_CONFIG = {
       disallow: [],
     },
   ],
-  sitemap: false,
-  llms: false,
 };
 
 export const DEFAULT_ROBOTS_TS = `import type { RobotsConfig } from '../src/types.ts';
@@ -90,9 +88,7 @@ export default {
       allow: ["/"],
       disallow: []
     }
-  ],
-  sitemap: false,
-  llms: false
+  ]
 } satisfies RobotsConfig;
 `;
 

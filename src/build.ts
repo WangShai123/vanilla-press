@@ -846,10 +846,9 @@ async function writeSitemap(
 
 async function writeRobots(
   outputDir: string,
-  config: DocConfig = {},
   robotsConfig: UnknownRecord = {}
 ): Promise<void> {
-  const text = renderRobotsTxt(robotsConfig, config);
+  const text = renderRobotsTxt(robotsConfig);
   await fs.writeFile(path.join(outputDir, 'robots.txt'), text, 'utf8');
 }
 
@@ -939,7 +938,7 @@ export async function build({
     await writeLlms(outputDir, pages, config, llmsConfig);
   }
   if (isRobotsEnabled(config)) {
-    await writeRobots(outputDir, config, await loadRobotsConfig(inputDir));
+    await writeRobots(outputDir, await loadRobotsConfig(inputDir));
   }
   await writePageScripts(outputDir, pages);
 
