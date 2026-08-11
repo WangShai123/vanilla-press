@@ -1,15 +1,18 @@
+import { createHash } from 'crypto';
 import fs from 'fs/promises';
+import { createRequire } from 'module';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 
-import { transform as esbuildTransform } from 'esbuild';
+import { build as esbuildBuild, transform as esbuildTransform } from 'esbuild';
 import { glob } from 'glob';
 import { randomId } from 'vanilla-jui';
 import { build as viteBuild } from 'vite';
 
 import {
   DEFAULT_CONFIG_TS,
+  DEFAULT_FOOTER_SCRIPT_TS,
   DEFAULT_LANGUAGES_TS,
   DEFAULT_LLMS_CONFIG,
   DEFAULT_LLMS_TS,
@@ -24,19 +27,23 @@ import { layoutStyles, loadLayouts, renderLayout } from './render/layout.ts';
 import type {
   BuildOptions,
   DocConfig,
+  FooterScriptConfig,
   FrontmatterData,
   LanguagesConfig,
   LayoutMap,
+  PageScriptAsset,
   RenderedPage,
   RuntimeBundleData,
   RuntimeI18nConfig,
   SeoData,
+  SharedInlineScriptModule,
   SourcePage,
   UnknownRecord,
 } from './types.ts';
 import {
   isAuthEnabled,
   isI18nEnabled,
+  isInlineScriptEnabled,
   isLlmsEnabled,
   isMenuEnabled,
   isRobotsEnabled,
@@ -72,6 +79,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const defaultInputDir = path.join(projectRoot, 'docs');
 const defaultOutputDir = path.join(projectRoot, 'dist');
+const require = createRequire(import.meta.url);
 
 interface DefaultModule<T> {
   default?: T;
@@ -87,6 +95,16 @@ interface SearchIndexItem {
 }
 
 type MarkdownItInstance = ReturnType<typeof createMarkdown>;
+
+const SHARED_INLINE_SCRIPT_MODULES = [
+  'vanilla-jui',
+  'vanilla-signal',
+  'vanilla-create-storage',
+  'vanilla-signal-i18n',
+] as const satisfies SharedInlineScriptModule[];
+const SHARED_INLINE_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime';
+const IMPORT_STATEMENT_RE =
+  /^(\s*)import\s+(?:(.*?)\s+from\s+)?(['"])([^'"]+)\3\s*;?/gms;
 
 async function pathExists(file: string): Promise<boolean> {
   try {
@@ -120,6 +138,7 @@ async function resolveSourceModule(
 async function ensureSourceConfig(inputDir: string): Promise<void> {
   const files = [
     ['config', DEFAULT_CONFIG_TS],
+    ['footerScript', DEFAULT_FOOTER_SCRIPT_TS],
     ['languages', DEFAULT_LANGUAGES_TS],
     ['llms', DEFAULT_LLMS_TS],
     ['menu', DEFAULT_MENU_TS],
@@ -143,6 +162,13 @@ async function loadDocConfig(inputDir: string): Promise<DocConfig> {
   if (!file) return {};
 
   return importDefault<DocConfig>(file, {});
+}
+
+async function loadFooterScript(inputDir: string): Promise<FooterScriptConfig> {
+  const file = await resolveSourceModule(inputDir, 'footerScript');
+  if (!file) return '';
+
+  return importDefault<FooterScriptConfig>(file, '');
 }
 
 async function loadRobotsConfig(inputDir: string): Promise<UnknownRecord> {
@@ -251,7 +277,8 @@ async function writeDefaultLocaleEntrypoint(
   outputDir: string,
   config: DocConfig = {},
   languages: LanguagesConfig = {},
-  pages: RenderedPage[] = []
+  pages: RenderedPage[] = [],
+  footerScript: FooterScriptConfig = ''
 ): Promise<void> {
   if (!isI18nEnabled(config)) return;
   const i18n = runtimeOption(config, 'i18n') as RuntimeI18nConfig | undefined;
@@ -274,6 +301,8 @@ async function writeDefaultLocaleEntrypoint(
     i18n,
     languages,
     lang: rootLang,
+    config,
+    footerScript,
   });
 
   await fs.writeFile(rootIndexFile, html, 'utf8');
@@ -298,6 +327,18 @@ function serializeRuntimeValue(value: unknown): string {
   return serialized === undefined ? 'undefined' : serialized;
 }
 
+function runtimeSharedInlineExports(
+  modules: SharedInlineScriptModule[] = []
+): string {
+  return Array.from(new Set(modules))
+    .sort()
+    .map(
+      (moduleName) =>
+        `export * as ${sharedInlineExportName(moduleName)} from ${JSON.stringify(pathToFileURL(require.resolve(moduleName)).href)};`
+    )
+    .join('\n');
+}
+
 async function writeRuntimeEntry(
   dir: string,
   data: RuntimeBundleData = {}
@@ -305,12 +346,14 @@ async function writeRuntimeEntry(
   const runtimeHref = pathToFileURL(
     path.join(projectRoot, 'src/runtime.ts')
   ).href;
+  const sharedExports = runtimeSharedInlineExports(data.sharedInlineModules);
   const code = `import { initDocPage, isMobile } from ${JSON.stringify(runtimeHref)};
 export { initDocPage, isMobile };
 export const docConfig = ${serializeRuntimeValue(data.config)};
 export const languages = ${serializeRuntimeValue(data.languages || {})};
 export const menuItems = ${serializeRuntimeValue(data.menuItems || [])};
 export const sidebarItems = ${serializeRuntimeValue(data.sidebarItems || [])};
+${sharedExports ? `${sharedExports}\n` : ''}
 `;
   const file = path.join(dir, 'runtime-entry.js');
   await fs.writeFile(file, code, 'utf8');
@@ -361,6 +404,181 @@ function hashFileName(fileName: string): string {
   const ext = path.extname(fileName);
   const baseName = path.basename(fileName, ext);
   return `${baseName}.${randomId(8)}${ext}`;
+}
+
+function contentHash(value: string): string {
+  return createHash('sha256').update(value).digest('hex').slice(0, 8);
+}
+
+function pageScriptRel(pageRel: string, code: string): string {
+  const ext = path.extname(pageRel);
+  const base = ext ? pageRel.slice(0, -ext.length) : pageRel;
+  return `${base}.${contentHash(code)}.js`;
+}
+
+function isSharedInlineScriptModule(
+  value: string
+): value is SharedInlineScriptModule {
+  return SHARED_INLINE_SCRIPT_MODULES.includes(
+    value as SharedInlineScriptModule
+  );
+}
+
+function sharedInlineExportName(moduleName: SharedInlineScriptModule): string {
+  return `__vp_${moduleName.replace(/[^a-zA-Z0-9_$]/g, '_')}`;
+}
+
+interface InlineImportBinding {
+  imported: string;
+  local: string;
+}
+
+interface ParsedInlineImportClause {
+  defaultName: string;
+  namespaceName: string;
+  named: InlineImportBinding[];
+}
+
+function splitImportClause(value: string): string[] {
+  const parts: string[] = [];
+  let buffer = '';
+  let depth = 0;
+
+  for (const char of value) {
+    if (char === '{') depth += 1;
+    else if (char === '}') depth = Math.max(0, depth - 1);
+
+    if (char === ',' && depth === 0) {
+      parts.push(buffer.trim());
+      buffer = '';
+      continue;
+    }
+
+    buffer += char;
+  }
+
+  if (buffer.trim()) parts.push(buffer.trim());
+  return parts;
+}
+
+function parseNamedImportBindings(value: string): InlineImportBinding[] {
+  const body = value.trim().replace(/^\{/, '').replace(/\}$/, '');
+  if (!body.trim()) return [];
+
+  return body
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => item.replace(/^type\s+/, '').trim())
+    .map((item) => {
+      const parts = item.split(/\s+as\s+/);
+      const imported = String(parts[0] || '').trim();
+      const local = String(parts[1] || imported).trim();
+      return { imported, local };
+    })
+    .filter((item) => item.imported && item.local);
+}
+
+function parseInlineImportClause(clause: string): ParsedInlineImportClause {
+  const result: ParsedInlineImportClause = {
+    defaultName: '',
+    namespaceName: '',
+    named: [],
+  };
+  const parts = splitImportClause(clause);
+
+  for (const part of parts) {
+    if (part.startsWith('{')) {
+      result.named.push(...parseNamedImportBindings(part));
+      continue;
+    }
+
+    if (part.startsWith('*')) {
+      const match = part.match(/^\*\s+as\s+([A-Za-z_$][\w$]*)$/);
+      result.namespaceName = match?.[1] || '';
+      continue;
+    }
+
+    result.defaultName = part.trim();
+  }
+
+  return result;
+}
+
+function rewriteSharedInlineScriptImports(code: string): {
+  code: string;
+  sharedModules: SharedInlineScriptModule[];
+} {
+  const sharedModules = new Set<SharedInlineScriptModule>();
+  let index = 0;
+
+  const rewritten = code.replace(
+    IMPORT_STATEMENT_RE,
+    (statement, indent, rawClause, _quote, source) => {
+      if (!isSharedInlineScriptModule(source)) return statement;
+      sharedModules.add(source);
+
+      const exportName = sharedInlineExportName(source);
+      const tempName = `__vp_shared_${index++}`;
+      const clause = String(rawClause || '').trim();
+
+      if (!clause) {
+        return `${indent}import { ${exportName} as ${tempName} } from '${SHARED_INLINE_SCRIPT_RUNTIME_ID}';`;
+      }
+
+      const parsed = parseInlineImportClause(clause);
+      if (parsed.namespaceName) {
+        return `${indent}import { ${exportName} as ${parsed.namespaceName} } from '${SHARED_INLINE_SCRIPT_RUNTIME_ID}';`;
+      }
+
+      const lines = [
+        `${indent}import { ${exportName} as ${tempName} } from '${SHARED_INLINE_SCRIPT_RUNTIME_ID}';`,
+      ];
+
+      if (parsed.defaultName) {
+        lines.push(
+          `${indent}const ${parsed.defaultName} = ${tempName}.default;`
+        );
+      }
+
+      if (parsed.named.length) {
+        const names = parsed.named
+          .map(({ imported, local }) =>
+            imported === local ? imported : `${imported}: ${local}`
+          )
+          .join(', ');
+        lines.push(`${indent}const { ${names} } = ${tempName};`);
+      }
+
+      return lines.join('\n');
+    }
+  );
+
+  return {
+    code: rewritten,
+    sharedModules: Array.from(sharedModules).sort(),
+  };
+}
+
+function createPageScripts(
+  source: SourcePage,
+  scripts: string[] = []
+): PageScriptAsset[] {
+  const blocks = scripts.map((script) => script.trim()).filter(Boolean);
+  if (!blocks.length) return [];
+
+  const code = `${blocks
+    .map((script, index) => `// vp-script ${index + 1}\n${script}`)
+    .join('\n\n')}\n`;
+  const rewritten = rewriteSharedInlineScriptImports(code);
+
+  return [
+    {
+      rel: pageScriptRel(source.rel, rewritten.code),
+      code: rewritten.code,
+      sharedModules: rewritten.sharedModules,
+    },
+  ];
 }
 
 function rewriteAssetReferences(
@@ -445,6 +663,50 @@ async function minifyJsAssets(outputDir: string): Promise<void> {
   console.warn(`minified js: ${files.length} file(s)`);
 }
 
+async function writePageScripts(
+  outputDir: string,
+  pages: RenderedPage[] = []
+): Promise<void> {
+  const scripts = pages.flatMap((page) => page.scripts || []);
+
+  await Promise.all(
+    scripts.map(async (script) => {
+      const outputFile = path.join(outputDir, script.rel);
+      const result = await esbuildBuild({
+        bundle: true,
+        format: 'esm',
+        legalComments: 'none',
+        minify: false,
+        platform: 'browser',
+        target: 'es2020',
+        write: false,
+        external: [SHARED_INLINE_SCRIPT_RUNTIME_ID],
+        stdin: {
+          contents: script.code,
+          loader: 'js',
+          resolveDir: projectRoot,
+          sourcefile: script.rel,
+        },
+      });
+      const output = result.outputFiles?.[0]?.text || script.code;
+      await fs.mkdir(path.dirname(outputFile), { recursive: true });
+      await fs.writeFile(outputFile, output, 'utf8');
+    })
+  );
+}
+
+function pageSharedInlineModules(
+  pages: RenderedPage[] = []
+): SharedInlineScriptModule[] {
+  return Array.from(
+    new Set(
+      pages.flatMap((page) =>
+        (page.scripts || []).flatMap((script) => script.sharedModules || [])
+      )
+    )
+  ).sort();
+}
+
 function readSource(file: string, markdown: string): SourcePage {
   const frontmatter = parseFrontmatter(markdown) as FrontmatterData;
 
@@ -464,10 +726,19 @@ function renderSource(
   config: DocConfig,
   languages: LanguagesConfig,
   layouts: LayoutMap,
-  llmsConfig: UnknownRecord
+  llmsConfig: UnknownRecord,
+  footerScript: FooterScriptConfig
 ): RenderedPage {
-  const env = { file: source.file, components: new Set<string>(), config };
+  const env = {
+    file: source.file,
+    components: new Set<string>(),
+    inlineScripts: [] as string[],
+    config,
+  };
   const rendered = md.render(source.markdown, env);
+  const scripts = isInlineScriptEnabled()
+    ? createPageScripts(source, env.inlineScripts)
+    : [];
   const body = injectLlmsControls(
     cleanHtml(rendered),
     source,
@@ -499,6 +770,7 @@ function renderSource(
     body,
     content: htmlText(body),
     components: Array.from(env.components).sort(),
+    scripts,
     html: renderHtml({
       title: source.title,
       seo: isSeoEnabled(config) ? source.seo : {},
@@ -509,6 +781,9 @@ function renderSource(
       languages,
       pageLayout,
       searchEnabled: isSearchEnabled(config),
+      runtimeImportMap: scripts.some((script) => script.sharedModules.length),
+      scripts: scripts.map((script) => script.rel),
+      footerScript,
     }),
   };
 }
@@ -608,6 +883,7 @@ export async function build({
   await ensureSourceConfig(inputDir);
   const config = await loadDocConfig(inputDir);
   validateDocConfig(config);
+  const footerScript = await loadFooterScript(inputDir);
   const md = createMarkdown(config);
   const layouts = await loadLayouts({ projectRoot, inputDir });
 
@@ -638,11 +914,25 @@ export async function build({
   );
 
   await buildCss(outputDir, layouts);
-  await buildRuntime(outputDir, { config, languages, menuItems, sidebarItems });
 
   const pages = sources.map((source) =>
-    renderSource(source, md, config, languages, layouts, llmsConfig)
+    renderSource(
+      source,
+      md,
+      config,
+      languages,
+      layouts,
+      llmsConfig,
+      footerScript
+    )
   );
+  await buildRuntime(outputDir, {
+    config,
+    languages,
+    menuItems,
+    sidebarItems,
+    sharedInlineModules: pageSharedInlineModules(pages),
+  });
   if (isSearchEnabled(config)) await writeSearchIndex(outputDir, pages);
   if (isSitemapEnabled(config)) await writeSitemap(outputDir, pages, config);
   if (isLlmsEnabled(config)) {
@@ -651,6 +941,7 @@ export async function build({
   if (isRobotsEnabled(config)) {
     await writeRobots(outputDir, config, await loadRobotsConfig(inputDir));
   }
+  await writePageScripts(outputDir, pages);
 
   for (const page of pages) {
     const outputFile = path.join(outputDir, page.rel);
@@ -659,7 +950,13 @@ export async function build({
     console.warn(`built: ${toPosix(path.relative(projectRoot, outputFile))}`);
   }
 
-  await writeDefaultLocaleEntrypoint(outputDir, config, languages, pages);
+  await writeDefaultLocaleEntrypoint(
+    outputDir,
+    config,
+    languages,
+    pages,
+    footerScript
+  );
   await minifyJsAssets(outputDir);
   const assetMap = await hashRootAssets(outputDir);
   await rewriteHtmlAssets(outputDir, assetMap);

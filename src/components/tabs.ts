@@ -26,6 +26,10 @@ function parseTabs(content: string, info: unknown): MarkedBlock[] {
   return splitMarkedBlocks(content, /^@tab\s+(.+)$/i, 'Tab');
 }
 
+function clonePanelContent(panel: HTMLElement): Node[] {
+  return Array.from(panel.childNodes, (node) => node.cloneNode(true));
+}
+
 export function installTabs(md: MarkdownRuntime): void {
   md.block.ruler.before(
     'fence',
@@ -75,14 +79,14 @@ export function initTabs(root: Document | Element = document): void {
     const tabs: TabItem[] = panels.map((panel, index) => ({
       name: `tab-${index}`,
       title: panel.dataset.title || `Tab ${index + 1}`,
-      panel: panel.innerHTML,
+      content: clonePanelContent(panel),
     }));
 
     container.textContent = '';
     const instance = createTabs({
       data: tabs,
-    }).build();
-    if (instance.dom.root) container.append(instance.dom.root);
+    });
+    instance.mount(container);
 
     container.dataset.docReady = 'true';
   });

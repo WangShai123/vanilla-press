@@ -69,7 +69,17 @@ function renderFooter(
     );
   });
 
-  const builtBy = jsx`<div>BuiltBy <a href="https://github.com/WangShai123/vanilla-press" target="_blank" rel="noreferrer noopener">VanillaPress</a></div>`;
+  const builtBy = jsx('div', {
+    children: [
+      'BuiltBy ',
+      jsx('a', {
+        href: 'https://github.com/WangShai123/vanilla-press',
+        target: '_blank',
+        rel: 'noreferrer noopener',
+        children: 'VanillaPress',
+      }),
+    ],
+  });
 
   footer.append(brand, social, builtBy);
 }

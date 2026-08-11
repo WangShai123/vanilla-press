@@ -10,6 +10,7 @@ import { installTabs } from '../components/tabs.ts';
 import { installTip } from '../components/tip.ts';
 import { installTree } from '../components/tree.ts';
 import { createHighlighter } from '../runtime/highlight.ts';
+import { installInlineScript } from '../runtime/inlineScript.ts';
 import type { DocConfig } from '../types.ts';
 import { isHighlightEnabled } from '../utilities/features.ts';
 import { escapeHtml } from '../utilities/html.ts';
@@ -48,6 +49,7 @@ export function createMarkdown(config: DocConfig = {}): MarkdownItType {
   installOffcanvas(md);
   installTip(md);
   installTree(md);
+  installInlineScript(md);
 
   return md;
 }

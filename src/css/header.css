@@ -38,9 +38,9 @@
   gap: 4px;
 }
 
-.doc-menu.j-menu .menu .menu-item.current-menu-item > a,
+.doc-menu.j-menu .menu .menu-item.current-menu-item>a,
 .doc-menu.j-menu .menu .menu-item a:hover,
-.doc-menu.j-menu .menu .menu-item.menu-item-has-children:hover > a {
+.doc-menu.j-menu .menu .menu-item.menu-item-has-children:hover>a {
   color: var(--doc-accent);
   background: var(--doc-accent-bg);
 }
@@ -102,6 +102,7 @@
 .is-desktop .doc-theme-button,
 .is-desktop .doc-auth-button {
   padding: 0 8px;
+  --btn-font-weight: 400;
 }
 
 .doc-mobile-icon-button {

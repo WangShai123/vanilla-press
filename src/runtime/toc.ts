@@ -19,7 +19,7 @@ export function initToc(config: DocConfig = {}): void {
     target: article,
     headings,
     offset,
-  }).build();
-  if (instance.dom.root) toc.append(instance.dom.root);
+  });
+  instance.mount(toc);
   toc.dataset.docReady = 'true';
 }

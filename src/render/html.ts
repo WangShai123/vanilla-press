@@ -1,5 +1,6 @@
 import type {
   DocConfig,
+  FooterScriptConfig,
   LanguagesConfig,
   PageLayout,
   RuntimeI18nConfig,
@@ -29,12 +30,17 @@ interface RenderHtmlOptions {
   languages: LanguagesConfig;
   pageLayout: PageLayout;
   searchEnabled?: boolean;
+  runtimeImportMap?: boolean;
+  scripts?: string[];
+  footerScript?: FooterScriptConfig;
 }
 
 interface DefaultLocaleEntrypointOptions {
   i18n?: RuntimeI18nConfig;
   languages?: LanguagesConfig;
   lang?: string;
+  config?: DocConfig;
+  footerScript?: FooterScriptConfig;
 }
 
 function resolveHtmlLang(
@@ -58,6 +64,47 @@ function resolveHtmlLang(
   return String(matched?.code || fallback).trim() || fallback;
 }
 
+function renderPageScripts(rel: string, scripts: string[] = []): string {
+  return scripts
+    .map(
+      (script) =>
+        `  <script type="module" src="${relativeAsset(rel, script)}"></script>`
+    )
+    .join('\n');
+}
+
+function renderRuntimeImportMap(rel: string, enabled: boolean): string {
+  if (!enabled) return '';
+
+  return `  <script type="importmap">${JSON.stringify({
+    imports: {
+      'vanilla-press/runtime': relativeAsset(rel, 'runtime.js'),
+    },
+  })}</script>`;
+}
+
+function footerScriptType(config: DocConfig = {}): 'script' | 'module' {
+  return runtimeOption(config, 'footerScript') === 'module'
+    ? 'module'
+    : 'script';
+}
+
+function escapeScriptContent(value: FooterScriptConfig = ''): string {
+  return String(value).replace(/<\/script/gi, '<\\/script');
+}
+
+function renderFooterScript(
+  config: DocConfig = {},
+  footerScript: FooterScriptConfig = ''
+): string {
+  const code = String(footerScript || '').trim();
+  if (!code) return '';
+
+  const type = footerScriptType(config);
+  const attr = type === 'module' ? ' type="module"' : '';
+  return `  <script${attr}>\n${escapeScriptContent(code)}\n  </script>`;
+}
+
 export function renderHtml({
   title,
   seo,
@@ -68,6 +115,9 @@ export function renderHtml({
   languages,
   pageLayout,
   searchEnabled = isSearchEnabled(config),
+  runtimeImportMap = false,
+  scripts = [],
+  footerScript = '',
 }: RenderHtmlOptions): string {
   const cssHref = relativeAsset(rel, 'styles.css');
   const runtimeHref = relativeAsset(rel, 'runtime.js');
@@ -84,6 +134,9 @@ export function renderHtml({
       : '';
   const htmlLang = resolveHtmlLang(rel, config, languages);
   const htmlTitle = documentTitle(seo?.title || title, config);
+  const importMap = renderRuntimeImportMap(rel, runtimeImportMap);
+  const pageScripts = renderPageScripts(rel, scripts);
+  const footerScriptHtml = renderFooterScript(config, footerScript);
 
   return `<!doctype html>
 <html lang="${htmlLang}">
@@ -97,6 +150,7 @@ ${renderHead({
 })}
 <body class="doc-layout-${pageLayout?.name || 'default'}">
   ${pageLayout?.html || body}
+${importMap ? `${importMap}\n` : ''}
   ${renderRuntimeScript({
     runtimeHref,
     searchHref,
@@ -106,6 +160,8 @@ ${renderHead({
     rel,
     seo,
   })}
+${pageScripts ? `${pageScripts}\n` : ''}
+${footerScriptHtml ? `${footerScriptHtml}\n` : ''}
 </body>
 </html>
 `;
@@ -115,8 +171,11 @@ export function renderDefaultLocaleEntrypoint({
   i18n = {},
   languages = {},
   lang = 'en',
+  config = {},
+  footerScript = '',
 }: DefaultLocaleEntrypointOptions = {}): string {
   const i18nRedirectScript = i18nRedirectBootScript(i18n, languages);
+  const footerScriptHtml = renderFooterScript(config, footerScript);
 
   return `<!doctype html>
 <html lang="${escapeHtml(lang)}">
@@ -128,6 +187,7 @@ export function renderDefaultLocaleEntrypoint({
 </head>
 <body>
   <p>Redirecting...</p>
+${footerScriptHtml ? `${footerScriptHtml}\n` : ''}
 </body>
 </html>
 `;

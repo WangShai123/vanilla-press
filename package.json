@@ -1,6 +1,6 @@
 {
   "name": "create-vanilla-press",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "private": false,
   "description": "Create a vanilla-press documentation project.",
   "keywords": [
@@ -52,18 +52,21 @@
     "dompurify": "^3.4.12",
     "glob": "^13.0.6",
     "highlight.js": "^11.11.1",
-    "jsdom": "^30.0.1",
     "markdown-it": "^15.0.0",
     "markdown-it-anchor": "^9.2.1",
     "markdown-it-attrs": "^5.0.1",
     "markdown-it-front-matter": "^0.2.4",
     "markdown-it-link-attributes": "^4.0.1",
-    "vanilla-jui": "^1.4.7"
+    "vanilla-create-storage": "^1.0.4",
+    "vanilla-jui": "^1.5.6",
+    "vanilla-signal": "^1.1.14",
+    "vanilla-signal-i18n": "^1.1.2"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "esbuild": "^0.28.1",
+    "jsdom": "^30.0.1",
     "nodemon": "^3.1.14",
     "typescript": "^7.0.2",
     "vite": "8.2.0",

@@ -84,6 +84,8 @@ export interface RuntimeThemeConfig extends RuntimeFeatureConfig {
 }
 
 export type RuntimeFeatureSwitch = boolean | RuntimeFeatureConfig;
+export type FooterScriptType = 'script' | 'module';
+export type FooterScriptConfig = string;
 
 export interface RuntimeConfig extends UnknownRecord {
   seo?: RuntimeFeatureSwitch;
@@ -100,6 +102,7 @@ export interface RuntimeConfig extends UnknownRecord {
   i18n?: boolean | RuntimeI18nConfig;
   theme?: boolean | RuntimeThemeConfig;
   auth?: RuntimeFeatureSwitch;
+  footerScript?: FooterScriptType;
 }
 
 export interface DocConfig extends UnknownRecord {
@@ -125,6 +128,18 @@ export interface SourcePage {
   rel: string;
   title: string;
 }
+
+export interface PageScriptAsset {
+  rel: string;
+  code: string;
+  sharedModules: SharedInlineScriptModule[];
+}
+
+export type SharedInlineScriptModule =
+  | 'vanilla-jui'
+  | 'vanilla-signal'
+  | 'vanilla-create-storage'
+  | 'vanilla-signal-i18n';
 
 export interface RuntimePage extends UnknownRecord {
   rel?: string;
@@ -211,6 +226,7 @@ export interface RenderedPage extends SourcePage {
   body: string;
   content: string;
   components: string[];
+  scripts: PageScriptAsset[];
   html: string;
 }
 
@@ -247,6 +263,7 @@ export interface RuntimeBundleData {
   languages?: LanguagesConfig | UnknownRecord;
   menuItems?: unknown[];
   sidebarItems?: unknown[];
+  sharedInlineModules?: SharedInlineScriptModule[];
 }
 
 export interface BuildOptions {

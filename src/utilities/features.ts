@@ -118,6 +118,10 @@ export function isLlmsEnabled(config: DocConfig = {}): boolean {
   return featureObject(llms).enabled !== false;
 }
 
+export function isInlineScriptEnabled(): boolean {
+  return true;
+}
+
 export function llmsOptions(config: DocConfig = {}): LlmsRuntimeOptions {
   const llms = featureObject(runtimeOption(config, 'llms'));
   const enabled = isLlmsEnabled(config);

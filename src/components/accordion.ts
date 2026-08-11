@@ -13,6 +13,10 @@ function parseAccordion(content: string) {
   return splitMarkedBlocks(content, /^@item\s+(.+)$/i, '面板');
 }
 
+function clonePanelContent(panel: HTMLElement): Node[] {
+  return Array.from(panel.childNodes, (node) => node.cloneNode(true));
+}
+
 export function installAccordion(md: MarkdownRuntime): void {
   md.block.ruler.before(
     'fence',
@@ -82,16 +86,16 @@ export function initAccordion(root: Document | Element = document): void {
       const items = panels.map((panel, index) => ({
         name: `item-${index}`,
         title: panel.dataset.title || `面板 ${index + 1}`,
-        content: panel.innerHTML,
+        content: clonePanelContent(panel),
       }));
 
       container.textContent = '';
       const accordion = createAccordion({
         collapsible: container.dataset.collapsible === 'true',
         multiple: container.dataset.multiple === 'true',
-        items,
-      }).build();
-      if (accordion.dom.root) container.append(accordion.dom.root);
+        data: items,
+      });
+      accordion.mount(container);
 
       container.dataset.docReady = 'true';
     }

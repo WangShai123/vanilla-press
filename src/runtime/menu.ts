@@ -215,9 +215,9 @@ export function initMobileHeader(
         backText: t('Back'),
         type: 'mobile',
         data: toMenuItems(menuItems, page, i18n, locale),
-      }).build();
+      });
       menu = nextMenu;
-      if (nextMenu.dom.root) panel.append(nextMenu.dom.root);
+      nextMenu.mount(panel);
     },
     onHidden: destroyMenu,
   }).build();
@@ -374,8 +374,8 @@ export function initMobileSecondary(
         target: article,
         headings,
         offset,
-      }).build();
-      if (toc.dom.root) tocPanel.append(toc.dom.root);
+      });
+      toc.mount(tocPanel);
     } else {
       tocButton.hidden = true;
     }

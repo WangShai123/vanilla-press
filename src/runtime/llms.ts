@@ -115,26 +115,26 @@ function bindDrop(
     onShown: () => trigger.classList.add('is-active'),
     onHidden: () => trigger.classList.remove('is-active'),
   });
-  const root = drop.dom.root;
+  const root = drop.element;
   if (!root) return;
 
-  root.addEventListener('click', async (event) => {
+  root.addEventListener('click', async (event: MouseEvent) => {
     if (!(event.target instanceof Element)) return;
-    const item = event.target.closest<HTMLElement>('[data-llms-action]');
+    const item = event.target.closest('[data-llms-action]');
     if (!item) return;
 
-    await runAction(item.dataset.llmsAction, mdUrl);
+    await runAction((item as HTMLElement).dataset.llmsAction, mdUrl);
     drop.hide(false);
   });
 
-  root.addEventListener('keydown', async (event) => {
+  root.addEventListener('keydown', async (event: KeyboardEvent) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     if (!(event.target instanceof Element)) return;
-    const item = event.target.closest<HTMLElement>('[data-llms-action]');
+    const item = event.target.closest('[data-llms-action]');
     if (!item) return;
 
     event.preventDefault();
-    await runAction(item.dataset.llmsAction, mdUrl);
+    await runAction((item as HTMLElement).dataset.llmsAction, mdUrl);
     drop.hide(false);
   });
 }

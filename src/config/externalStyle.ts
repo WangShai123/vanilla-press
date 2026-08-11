@@ -28,6 +28,8 @@ import tipTheme from "vanilla-jui/src/css/themes/default/tip.css";
 import tip from "vanilla-jui/src/css/tip.css";
 import toc from "vanilla-jui/src/css/toc.css";
 import tokens from "vanilla-jui/src/css/tokens.css";
+import toast from "vanilla-jui/src/css/toast.css";
+import toastTheme from "vanilla-jui/src/css/themes/default/toast.css";
 
 export default [
   tokens,
@@ -60,4 +62,6 @@ export default [
   toc,
   themePalette,
   themePaletteTheme,
+  toast,
+  toastTheme,
 ];

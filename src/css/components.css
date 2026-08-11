@@ -58,7 +58,7 @@ a[data-doc-external-link] span.external-link svg {
 }
 
 /* Prev/Next */
-.doc-main.has-aside > .doc-prev-next {
+.doc-main.has-aside>.doc-prev-next {
   grid-column: 1;
 }
 
@@ -170,7 +170,7 @@ a[data-doc-external-link] span.external-link svg {
   position: relative;
 }
 
-.j-tree-list .j-tree-list > .j-tree-item::before {
+.j-tree-list .j-tree-list>.j-tree-item::before {
   position: absolute;
   top: 13px;
   left: -11px;
@@ -206,7 +206,7 @@ a[data-doc-external-link] span.external-link svg {
   outline: 0;
 }
 
-.j-tree-item.is-directory > .j-tree-node {
+.j-tree-item.is-directory>.j-tree-node {
   color: var(--doc-ink);
   font-weight: 600;
 }
@@ -221,7 +221,7 @@ a[data-doc-external-link] span.external-link svg {
   color: var(--doc-muted);
 }
 
-.j-tree-item.is-directory > .j-tree-node .j-tree-icon {
+.j-tree-item.is-directory>.j-tree-node .j-tree-icon {
   color: var(--doc-accent);
 }
 
@@ -236,12 +236,12 @@ a[data-doc-external-link] span.external-link svg {
 }
 
 /* highlight */
-.j-tabs .tab-panel .panel-item pre.hljs {
+.j-tabs .panel-list .panel-item pre.hljs {
   margin: 0;
 }
 
-.j-tabs .tab-panel .panel-item pre.hljs + p,
-.j-tabs .tab-panel .panel-item pre.hljs + div {
+.j-tabs .panel-list .panel-item pre.hljs+p,
+.j-tabs .panel-list .panel-item pre.hljs+div {
   margin-top: 14px;
 }
 

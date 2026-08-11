@@ -26,6 +26,7 @@ export default {
     prevNext: false,
     sitemap: false,
     robots: true,
+    footerScript: "script",
     llms: {
       enabled: true,
       link: true,
@@ -61,6 +62,11 @@ export default {
     github: "https://github.com/WangShai123/vanilla-press"
   }
 } satisfies DocConfig;
+`;
+
+export const DEFAULT_FOOTER_SCRIPT_TS = `import type { FooterScriptConfig } from '../src/types.ts';
+
+export default \`\` satisfies FooterScriptConfig;
 `;
 
 export const DEFAULT_ROBOTS_CONFIG = {
