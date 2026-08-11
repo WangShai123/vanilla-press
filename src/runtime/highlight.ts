@@ -1,19 +1,19 @@
-import { createRequire } from 'module';
+import { createRequire } from "module";
 
-import DEFAULT_HIGHLIGHT_LANGUAGES from '../config/highlight.ts';
-import type { DocConfig } from '../types.ts';
-import { isRecord } from '../types.ts';
-import { runtimeOption } from '../utilities/features.ts';
-import { toText } from '../utilities/string.ts';
+import DEFAULT_HIGHLIGHT_LANGUAGES from "../config/highlight.ts";
+import type { DocConfig } from "../types.ts";
+import { isRecord } from "../types.ts";
+import { runtimeOption } from "../utilities/features.ts";
+import { toText } from "../utilities/string.ts";
 
 const require = createRequire(import.meta.url);
-const hljs = require('highlight.js/lib/core') as HighlightJsCore;
+const hljs = require("highlight.js/lib/core") as HighlightJsCore;
 
 interface HighlightJsCore {
   registerLanguage(name: string, languageFactory: unknown): void;
   highlight(
     code: string,
-    options: { language: string; ignoreIllegals: boolean }
+    options: { language: string; ignoreIllegals: boolean },
   ): { value: string };
 }
 
@@ -33,14 +33,14 @@ interface LanguageExtra {
 }
 
 const LANGUAGE_EXTRAS: Record<string, LanguageExtra> = {
-  plaintext: { aliases: ['plain', 'text', 'txt'] },
-  bash: { aliases: ['shell', 'sh', 'zsh'] },
-  cpp: { aliases: ['c++', 'cxx', 'cc', 'hpp'] },
-  html: { module: 'xml' },
-  javascript: { aliases: ['js', 'jsx'] },
-  markdown: { aliases: ['md'] },
-  typescript: { aliases: ['ts', 'tsx'] },
-  yaml: { aliases: ['yml'] },
+  plaintext: { aliases: ["plain", "text", "txt"] },
+  bash: { aliases: ["shell", "sh", "zsh"] },
+  cpp: { aliases: ["c++", "cxx", "cc", "hpp"] },
+  html: { module: "xml" },
+  javascript: { aliases: ["js", "jsx"] },
+  markdown: { aliases: ["md"] },
+  typescript: { aliases: ["ts", "tsx"] },
+  yaml: { aliases: ["yml"] },
 };
 
 const languageRegistry = new Map<string, RegisteredLanguage>(
@@ -52,7 +52,7 @@ const languageRegistry = new Map<string, RegisteredLanguage>(
       module: LANGUAGE_EXTRAS[value]?.module || value,
       aliases: LANGUAGE_EXTRAS[value]?.aliases || [],
     },
-  ])
+  ]),
 );
 const languageAliases = new Map<string, string>();
 const registeredModules = new Set<string>();
@@ -66,31 +66,31 @@ for (const language of languageRegistry.values()) {
 
 function escapeHtml(value: unknown): string {
   return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function normalizeLanguage(value: unknown): string {
   const language = toText(value)
     .trim()
     .toLowerCase()
-    .replace(/^language-/, '');
+    .replace(/^language-/, "");
 
-  if (!language) return 'plaintext';
+  if (!language) return "plaintext";
   return languageAliases.get(language) || language;
 }
 
 function normalizeLanguageEntry(entry: unknown): string {
   const value =
-    typeof entry === 'string'
+    typeof entry === "string"
       ? entry
-      : isRecord(entry) && typeof entry.value === 'string'
+      : isRecord(entry) && typeof entry.value === "string"
         ? entry.value
-        : '';
+        : "";
   const language = normalizeLanguage(value);
-  return languageRegistry.has(language) ? language : '';
+  return languageRegistry.has(language) ? language : "";
 }
 
 function defaultLanguageLabel(language: string): string {
@@ -98,7 +98,7 @@ function defaultLanguageLabel(language: string): string {
 }
 
 function configuredLanguages(config: DocConfig = {}): Map<string, string> {
-  const highlight = runtimeOption(config, 'highlight');
+  const highlight = runtimeOption(config, "highlight");
   const highlightConfig = isRecord(highlight) ? highlight : {};
   const languages: unknown[] = Array.isArray(highlightConfig.languages)
     ? highlightConfig.languages
@@ -110,7 +110,7 @@ function configuredLanguages(config: DocConfig = {}): Map<string, string> {
     if (!language) continue;
 
     const label =
-      isRecord(entry) && typeof entry.label === 'string' && entry.label.trim()
+      isRecord(entry) && typeof entry.label === "string" && entry.label.trim()
         ? entry.label.trim()
         : defaultLanguageLabel(language);
     supported.set(language, label);
@@ -121,7 +121,7 @@ function configuredLanguages(config: DocConfig = {}): Map<string, string> {
 
 function ensureLanguage(language: string): string {
   const moduleName = languageRegistry.get(language)?.module;
-  if (!moduleName) return '';
+  if (!moduleName) return "";
   if (registeredModules.has(moduleName)) return moduleName;
 
   try {
@@ -130,16 +130,16 @@ function ensureLanguage(language: string): string {
     registeredModules.add(moduleName);
     return moduleName;
   } catch {
-    return '';
+    return "";
   }
 }
 
 function languageClass(language: unknown): string {
-  return toText(language, 'plaintext').replace(/[^\w-]/g, '-');
+  return toText(language, "plaintext").replace(/[^\w-]/g, "-");
 }
 
 function renderCode(language: string, label: string, value: string): string {
-  return `<pre class="j-code-editor hljs"><div class="code-header"><span class="code-header-dots"></span><span class="code-header-language">${escapeHtml(label)}</span></div><code class="language-${languageClass(language)}">${value}</code></pre>`;
+  return `<pre class="j-code-editor hljs"><div class="code-header"><span class="code-dots"></span><span class="code-language">${escapeHtml(label)}</span></div><code class="language-${languageClass(language)}">${value}</code></pre>`;
 }
 
 export function createHighlighter(config: DocConfig = {}) {
@@ -147,11 +147,8 @@ export function createHighlighter(config: DocConfig = {}) {
 
   return (code: string, lang: string): string => {
     const language = normalizeLanguage(lang);
-    const label =
-      supportedLanguages.get(language) || defaultLanguageLabel(language);
-    const moduleName = supportedLanguages.has(language)
-      ? ensureLanguage(language)
-      : '';
+    const label = supportedLanguages.get(language) || defaultLanguageLabel(language);
+    const moduleName = supportedLanguages.has(language) ? ensureLanguage(language) : "";
     const value = moduleName
       ? hljs.highlight(String(code), {
           language: moduleName,

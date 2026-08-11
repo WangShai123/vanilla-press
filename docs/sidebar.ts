@@ -6,7 +6,7 @@ export default [
     label: "sidebar.layout",
     children: [
       { label: "API", path: "guide/layout-api" },
-      { label: "sidebar.home", path: "guide/layout-home" },
+      { label: "sidebar.homeLayout", path: "guide/layout-home" },
     ],
   },
   {

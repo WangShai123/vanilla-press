@@ -197,10 +197,6 @@ body.doc-layout-home {
   scrollbar-color: var(--ui-border) transparent;
 }
 
-.doc-home-command-group code {
-  white-space: pre;
-  overflow-wrap: anywhere;
-}
 
 .doc-home-section {
   margin-top: 16px;

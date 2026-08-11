@@ -5,6 +5,7 @@
 
 .doc-main {
   width: 100%;
+  min-width: 0;
   padding: 36px 56px;
   display: flex;
 }
@@ -20,10 +21,13 @@
 
 .doc-main>div {
   flex: 1;
+  min-width: 0;
 }
 
 .doc-main .j-content {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin: 0 0 0 auto;
   padding: 36px;
   border: 1px solid var(--doc-line);
