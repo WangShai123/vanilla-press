@@ -91,20 +91,12 @@ vanilla-press/
 └── README.md
 :::
 
-## Built-in Runtime Features
+## Configuration Directory
 
-- Menu
-- Code highlighting
-- Pagination
-- Internationalization
-- Table of contents
-- SEO
-- Search
-- Theme
+All custom configuration lives under the `docs/` directory:
 
-## Built-in Components
+- Configuration files
+- Custom layouts and styles
+- Custom components and styles
 
-- accordion
-- offcanvas
-- tabs
-- tree
+Goal: ready to use, easy to move.

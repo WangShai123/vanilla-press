@@ -27,6 +27,7 @@
 | `runtime.sitemap`                   | boolean \| object    | false          | 是否在 `dist/` 中输出 `sitemap.xml`                                                                            |
 | `runtime.robots`                    | boolean              | true           | 是否在 `dist/` 中输出 `robots.txt`，设置为 `false` 时关闭                                                      |
 | `runtime.footerScript`              | "script" \| "module" | "script"       | 页脚脚本标签类型；脚本内容来自 `docs/footerScript.ts`                                                          |
+| `runtime.inlineScript.shared`       | array                | []             | 额外打包进 `runtime.js` 的 npm 依赖，供页面 `vp-script` 模块复用                                               |
 | `runtime.llms`                      | boolean \| object    | true           | 是否在 `dist/` 中输出 `llms.txt`、每个页面对应的 Markdown 路由和页面 Markdown 操作入口                         |
 | `runtime.llms.enabled`              | boolean              | true           | 是否启用 LLMs 功能，设置为 `false` 时关闭                                                                      |
 | `runtime.llms.link`                 | boolean              | true           | 是否在正文标题下输出“查看 Markdown”按钮                                                                        |

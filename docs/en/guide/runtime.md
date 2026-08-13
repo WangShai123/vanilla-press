@@ -27,6 +27,7 @@ The default export in `docs/config.ts` is used to configure site runtime data.
 | `runtime.sitemap`                   | boolean \| object    | false          | Whether to output `sitemap.xml` into `dist/`.                                                                          |
 | `runtime.robots`                    | boolean              | true           | Whether to output `robots.txt` into `dist/`. Set to `false` to disable it.                                             |
 | `runtime.footerScript`              | "script" \| "module" | "script"       | Footer script tag type. The script content comes from `docs/footerScript.ts`.                                          |
+| `runtime.inlineScript.shared`       | array                | []             | Extra npm dependencies to bundle into `runtime.js` for reuse by page `vp-script` modules.                             |
 | `runtime.llms`                      | boolean \| object    | true           | Whether to output `llms.txt`, per-page Markdown routes, and page Markdown actions.                                     |
 | `runtime.llms.enabled`              | boolean              | true           | Whether to enable LLMs. Set to `false` to disable it.                                                                  |
 | `runtime.llms.link`                 | boolean              | true           | Whether to render the "View Markdown" button below the content title.                                                  |

@@ -47,6 +47,9 @@ export default {
     sitemap: true,
     robots: true,
     footerScript: 'script',
+    inlineScript: {
+      shared: [],
+    },
     llms: {
       enabled: true,
       link: true,

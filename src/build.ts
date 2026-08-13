@@ -101,7 +101,7 @@ const SHARED_INLINE_SCRIPT_MODULES = [
   'vanilla-signal',
   'vanilla-create-storage',
   'vanilla-signal-i18n',
-] as const satisfies SharedInlineScriptModule[];
+] satisfies SharedInlineScriptModule[];
 const SHARED_INLINE_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime';
 const IMPORT_STATEMENT_RE =
   /^(\s*)import\s+(?:(.*?)\s+from\s+)?(['"])([^'"]+)\3\s*;?/gms;
@@ -416,16 +416,35 @@ function pageScriptRel(pageRel: string, code: string): string {
   return `${base}.${contentHash(code)}.js`;
 }
 
+function inlineScriptSharedModules(
+  config: DocConfig = {}
+): SharedInlineScriptModule[] {
+  const inlineScript = runtimeOption(config, 'inlineScript');
+  const shared =
+    inlineScript && typeof inlineScript === 'object'
+      ? (inlineScript as UnknownRecord).shared
+      : [];
+  const configured = Array.isArray(shared)
+    ? shared
+        .filter((item): item is string => typeof item === 'string')
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : [];
+
+  return Array.from(
+    new Set([...SHARED_INLINE_SCRIPT_MODULES, ...configured])
+  ).sort();
+}
+
 function isSharedInlineScriptModule(
-  value: string
+  value: string,
+  sharedModules: SharedInlineScriptModule[] = SHARED_INLINE_SCRIPT_MODULES
 ): value is SharedInlineScriptModule {
-  return SHARED_INLINE_SCRIPT_MODULES.includes(
-    value as SharedInlineScriptModule
-  );
+  return sharedModules.includes(value);
 }
 
 function sharedInlineExportName(moduleName: SharedInlineScriptModule): string {
-  return `__vp_${moduleName.replace(/[^a-zA-Z0-9_$]/g, '_')}`;
+  return `__vp_${moduleName.replace(/[^a-zA-Z0-9_$]/g, '_')}_${contentHash(moduleName)}`;
 }
 
 interface InlineImportBinding {
@@ -505,7 +524,10 @@ function parseInlineImportClause(clause: string): ParsedInlineImportClause {
   return result;
 }
 
-function rewriteSharedInlineScriptImports(code: string): {
+function rewriteSharedInlineScriptImports(
+  code: string,
+  sharedInlineModules: SharedInlineScriptModule[] = SHARED_INLINE_SCRIPT_MODULES
+): {
   code: string;
   sharedModules: SharedInlineScriptModule[];
 } {
@@ -515,7 +537,9 @@ function rewriteSharedInlineScriptImports(code: string): {
   const rewritten = code.replace(
     IMPORT_STATEMENT_RE,
     (statement, indent, rawClause, _quote, source) => {
-      if (!isSharedInlineScriptModule(source)) return statement;
+      if (!isSharedInlineScriptModule(source, sharedInlineModules)) {
+        return statement;
+      }
       sharedModules.add(source);
 
       const exportName = sharedInlineExportName(source);
@@ -562,7 +586,8 @@ function rewriteSharedInlineScriptImports(code: string): {
 
 function createPageScripts(
   source: SourcePage,
-  scripts: string[] = []
+  scripts: string[] = [],
+  sharedInlineModules: SharedInlineScriptModule[] = SHARED_INLINE_SCRIPT_MODULES
 ): PageScriptAsset[] {
   const blocks = scripts.map((script) => script.trim()).filter(Boolean);
   if (!blocks.length) return [];
@@ -570,7 +595,7 @@ function createPageScripts(
   const code = `${blocks
     .map((script, index) => `// vp-script ${index + 1}\n${script}`)
     .join('\n\n')}\n`;
-  const rewritten = rewriteSharedInlineScriptImports(code);
+  const rewritten = rewriteSharedInlineScriptImports(code, sharedInlineModules);
 
   return [
     {
@@ -736,8 +761,9 @@ function renderSource(
     config,
   };
   const rendered = md.render(source.markdown, env);
+  const sharedInlineModules = inlineScriptSharedModules(config);
   const scripts = isInlineScriptEnabled()
-    ? createPageScripts(source, env.inlineScripts)
+    ? createPageScripts(source, env.inlineScripts, sharedInlineModules)
     : [];
   const body = injectLlmsControls(
     cleanHtml(rendered),

@@ -87,6 +87,10 @@ export type RuntimeFeatureSwitch = boolean | RuntimeFeatureConfig;
 export type FooterScriptType = 'script' | 'module';
 export type FooterScriptConfig = string;
 
+export interface RuntimeInlineScriptConfig extends UnknownRecord {
+  shared?: string[];
+}
+
 export interface RuntimeConfig extends UnknownRecord {
   seo?: RuntimeFeatureSwitch;
   externalLink?: RuntimeFeatureSwitch;
@@ -103,6 +107,7 @@ export interface RuntimeConfig extends UnknownRecord {
   theme?: boolean | RuntimeThemeConfig;
   auth?: RuntimeFeatureSwitch;
   footerScript?: FooterScriptType;
+  inlineScript?: RuntimeInlineScriptConfig;
 }
 
 export interface DocConfig extends UnknownRecord {
@@ -135,11 +140,7 @@ export interface PageScriptAsset {
   sharedModules: SharedInlineScriptModule[];
 }
 
-export type SharedInlineScriptModule =
-  | 'vanilla-jui'
-  | 'vanilla-signal'
-  | 'vanilla-create-storage'
-  | 'vanilla-signal-i18n';
+export type SharedInlineScriptModule = string;
 
 export interface RuntimePage extends UnknownRecord {
   rel?: string;
