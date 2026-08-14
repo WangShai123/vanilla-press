@@ -41,15 +41,16 @@ npm publish --workspace create-vanilla-press
 
 ## 忽略规则
 
-根目录 `vp/` 不能加入 `.gitignore`。它是官网和 starter 模板的源数据，忽略后仓库无法复现脚手架模板。
-
-根目录 `assets/` 也不能加入 `.gitignore`。它保存默认 favicon 和官网静态资源，也是 starter 模板的资源源目录。
-
-适合忽略的是生成物：
-
 - `dist/`
 - `packages/*/dist/`
 - `packages/create-vanilla-press/template/`
 - `coverage/`
 - `output/`
 - `*.tgz`
+
+## TODO
+
+- 独立的脚手架 template
+- 自定义样式支持方案：不使用 vanilla-press 提供的默认样式，而是使用用户自定义的样式（包括 className 类名、属性、层叠样式表等）
+  - vanilla-jui css themes 方案
+  - vanilla-jui tailwindcss 方案
