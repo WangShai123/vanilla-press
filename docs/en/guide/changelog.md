@@ -30,3 +30,11 @@
 ## 1.2.16
 
 - refactor: Refactored user project side architecture.
+
+## 1.2.17
+
+- fix: Fixed type stripping issue.
+
+## 1.2.18
+
+- chore: Added `jsdom` dependency

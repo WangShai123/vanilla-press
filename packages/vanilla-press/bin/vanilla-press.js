@@ -13,12 +13,19 @@ const require = createRequire(import.meta.url);
 
 async function loadBuild() {
   const distEntry = path.join(packageRoot, 'dist', 'build.js');
+  const sourceEntry = path.join(packageRoot, 'src', 'build.ts');
+  const isInstalledPackage = packageRoot
+    .split(path.sep)
+    .includes('node_modules');
+
+  if (isInstalledPackage) {
+    return import(pathToFileURL(distEntry).href);
+  }
+
   try {
-    return await import(pathToFileURL(distEntry).href);
+    return await import(pathToFileURL(sourceEntry).href);
   } catch {
-    return import(
-      pathToFileURL(path.join(packageRoot, 'src', 'build.ts')).href
-    );
+    return import(pathToFileURL(distEntry).href);
   }
 }
 

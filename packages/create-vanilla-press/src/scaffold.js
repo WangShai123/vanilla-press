@@ -125,6 +125,9 @@ function createProjectPackage(sourcePackage, projectName) {
     devDependencies: {
       'vanilla-press': `^${sourcePackage.version}`,
     },
+    allowScripts: {
+      esbuild: true,
+    },
   };
 }
 
