@@ -20,8 +20,15 @@ export default {
 
 ## Info
 
-When enabled, it will match `href` attributes starting with `http://` or `https://` within the **content area** and append:
+When enabled, it matches links whose `href` starts with `http://` or `https://` inside these areas:
+
+- `[data-doc-editor]`
+- `[data-doc-menu]`
+- `[data-doc-sidebar]`
+
+Matched links receive:
 
 - `target="_blank"`
 - `rel="noopener noreferrer"`
+- `data-doc-external-link`
 - `external-link` icon

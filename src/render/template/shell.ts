@@ -56,7 +56,7 @@ export function renderPageShell({
 ${sidebar}
     <section class="doc-main${hasAside ? " has-aside" : ""}">
       <div data-reveal>
-        <article class="j-content is-sm">
+        <article class="j-content is-sm" data-doc-editor>
           ${body}
         </article>
       </div>

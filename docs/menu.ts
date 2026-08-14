@@ -1,12 +1,14 @@
-import type { MenuConfig } from '../src/types.ts';
+import type { MenuConfig } from "../src/types.ts";
 
 export default [
-  { label: 'menu.home', path: 'index' },
+  { label: "Home", path: "index" },
   {
-    label: 'menu.guide',
+    label: "Guide",
     children: [
-      { label: 'menu.components', path: 'guide/components' },
-      { label: 'API', path: 'guide/api' },
+      { label: "Quick Start", path: "guide/quick-start" },
+      { label: "Layout", path: "guide/layout-api" },
+      { label: "Components", path: "guide/component-api" },
     ],
   },
+  { label: "Documentation", path: "https://www.jealer.com/docs/", target: "_blank" },
 ] satisfies MenuConfig;

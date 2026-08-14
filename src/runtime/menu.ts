@@ -164,7 +164,7 @@ export function initHeaderMenu(
   i18n: DocI18n,
   locale: LocaleEntry | null = null
 ): void {
-  const nav = q<HTMLElement>('[data-doc-menu]');
+  const nav = q<HTMLElement>('.doc-menu[data-doc-menu]');
   if (!nav || nav.dataset.docReady === 'true') return;
 
   nav.classList.add('j-menu');
@@ -197,7 +197,10 @@ export function initMobileHeader(
   menuButton.textContent = '';
   menuButton.append(icon('menu', { className: 'el-icon' }));
 
-  const panel = jsx('div', { className: 'doc-mobile-menu-panel' });
+  const panel = jsx('div', {
+    className: 'doc-mobile-menu-panel',
+    'data-doc-menu': '',
+  });
   let menu: Menu | null = null;
 
   const destroyMenu = (): void => {
@@ -296,6 +299,7 @@ function renderSidebar(
 ): HTMLElement {
   return jsx('nav', {
     className: 'doc-nav',
+    'data-doc-sidebar': '',
     'aria-label': '文档导航',
     children: sidebarItems.map((item) =>
       renderSidebarItem(item, page, i18n, locale)

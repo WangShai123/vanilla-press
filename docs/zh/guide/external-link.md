@@ -20,8 +20,15 @@ export default {
 
 ## 说明
 
-启用后会匹配 **正文区域** 内的 `href` 以 `http://` 或 `https://` 开头的链接，并追加：
+启用后会匹配以下区域内 `href` 以 `http://` 或 `https://` 开头的链接：
+
+- `[data-doc-editor]`
+- `[data-doc-menu]`
+- `[data-doc-sidebar]`
+
+匹配到的链接会追加：
 
 - `target="_blank"`
 - `rel="noopener noreferrer"`
+- `data-doc-external-link`
 - `external-link` 图标

@@ -2,16 +2,16 @@ import type { LanguageMessages } from "../src/types.ts";
 
 export default {
   "zh-CN": {
-    menu: {
-      home: "首页",
-      guide: "指南",
-      components: "组件",
-      api: "API",
-    },
+    Home: "首页",
+    Guide: "指南",
+    "Quick Start": "快速开始",
+    Layout: "布局",
+    Components: "组件",
+    "Components List": "组件列表",
+    Documentation: "文档中心",
+    Contributors: "贡献者",
     sidebar: {
-      home: "首页",
       homeLayout: "首页布局",
-      components: "组件",
       config: "配置",
       runtime: "运行时",
       inlineScript: "内联脚本",
@@ -25,8 +25,6 @@ export default {
       sitemap: "站点地图",
       robots: "Robots",
       llms: "LLMs",
-      quickStart: "快速开始",
-      layout: "布局",
       externalLink: "外部链接",
       others: "其他",
       changelog: "变更日志",
@@ -54,16 +52,8 @@ export default {
     },
   },
   en: {
-    menu: {
-      home: "Home",
-      guide: "Guide",
-      components: "Components",
-      api: "API",
-    },
     sidebar: {
-      home: "Home",
       homeLayout: "Home Layout",
-      components: "Components",
       config: "Config",
       runtime: "Runtime",
       inlineScript: "Inline Script",

@@ -13,7 +13,7 @@ The default export in `docs/config.ts` is used to configure site runtime data.
 | runtime                             | object               | -              | Runtime feature configuration object.                                                                                  |
 | `runtime.seo`                       | boolean              | true           | Whether to enable SEO. Set to `false` to disable it.                                                                   |
 | `runtime.search`                    | boolean              | true           | Whether to enable search. Set to `false` to disable it.                                                                |
-| `runtime.externalLink`              | boolean              | true           | Whether to enhance external links in the content area. Set to `false` to disable it.                                   |
+| `runtime.externalLink`              | boolean              | true           | Whether to enhance external links in content, menu, and sidebar areas. Set to `false` to disable it.                   |
 | `runtime.highlight`                 | boolean \| object    | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                     |
 | `runtime.highlight.enabled`         | boolean              | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                     |
 | `runtime.highlight.languages`       | array                | Default list   | Supported highlight languages. Only listed `highlight.js` language modules are registered.                             |
@@ -57,7 +57,7 @@ The default export in `docs/config.ts` is used to configure site runtime data.
 
 ## External Links
 
-`runtime.externalLink` is enabled by default. When enabled, links inside `.j-content` whose `href` starts with `http://` or `https://` receive:
+`runtime.externalLink` is enabled by default. When enabled, links inside `[data-doc-editor]`, `[data-doc-menu]`, or `[data-doc-sidebar]` whose `href` starts with `http://` or `https://` receive:
 
 - `target="_blank"`
 - `rel="noopener noreferrer"`

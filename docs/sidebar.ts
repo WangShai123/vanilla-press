@@ -1,19 +1,19 @@
 import type { SidebarConfig } from "../src/types.ts";
 
 export default [
-  { label: "sidebar.quickStart", path: "guide/quick-start" },
+  { label: "Quick Start", path: "guide/quick-start" },
   {
-    label: "sidebar.layout",
+    label: "Layout",
     children: [
       { label: "API", path: "guide/layout-api" },
       { label: "sidebar.homeLayout", path: "guide/layout-home" },
     ],
   },
   {
-    label: "sidebar.components",
+    label: "Components",
     children: [
-      { label: "sidebar.components", path: "guide/components" },
-      { label: "API", path: "guide/api" },
+      { label: "API", path: "guide/component-api" },
+      { label: "Components List", path: "guide/component-list" },
     ],
   },
   {
@@ -40,6 +40,9 @@ export default [
   },
   {
     label: "sidebar.others",
-    children: [{ label: "sidebar.changelog", path: "guide/changelog" }],
+    children: [
+      { label: "sidebar.changelog", path: "guide/changelog" },
+      { label: "Contributors", path: "https://www.jealer.com/contributors/", target: "_blank" },
+    ],
   },
 ] satisfies SidebarConfig;

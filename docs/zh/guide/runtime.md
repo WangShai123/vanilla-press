@@ -13,7 +13,7 @@
 | runtime                             | object               | -              | 运行时功能配置对象                                                                                             |
 | `runtime.seo`                       | boolean              | true           | 是否启用 SEO 功能，设置为 `false` 时关闭                                                                       |
 | `runtime.search`                    | boolean              | true           | 是否启用搜索功能，设置为 `false` 时关闭                                                                        |
-| `runtime.externalLink`              | boolean              | true           | 是否增强正文区域的站外链接，设置为 `false` 时关闭                                                              |
+| `runtime.externalLink`              | boolean              | true           | 是否增强正文、菜单、侧边栏区域的站外链接，设置为 `false` 时关闭                                                |
 | `runtime.highlight`                 | boolean \| object    | true           | 是否启用代码高亮，设置为 `false` 时关闭                                                                        |
 | `runtime.highlight.enabled`         | boolean              | true           | 是否启用代码高亮，设置为 `false` 时关闭                                                                        |
 | `runtime.highlight.languages`       | array                | 默认语言列表   | 支持高亮的语言列表，仅会注册列表中的 `highlight.js` 语言模块                                                   |

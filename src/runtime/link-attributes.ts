@@ -4,7 +4,8 @@ import { jsx } from 'vanilla-signal';
 import './icons.ts';
 
 const EXTERNAL_LINK_SELECTOR = 'a[href^="http://"], a[href^="https://"]';
-const CONTENT_SELECTOR = '.j-content';
+const LINK_SCOPE_SELECTOR =
+  '[data-doc-editor], .j-content, [data-doc-menu], [data-doc-sidebar]';
 const EXTERNAL_LINK_READY_ATTR = 'data-doc-external-link';
 const EXTERNAL_LINK_ICON_ATTR = 'data-doc-external-link-icon';
 
@@ -52,23 +53,23 @@ function applyLinkAttributesIn(root: Document | Element = document): void {
   });
 }
 
-function applyContentLinkAttributes(root: Document | Element = document): void {
+function applyScopedLinkAttributes(root: Document | Element = document): void {
   if (root === document) {
-    all<Element>(CONTENT_SELECTOR).forEach((content) => {
-      applyLinkAttributesIn(content);
+    all<Element>(LINK_SCOPE_SELECTOR).forEach((scope) => {
+      applyLinkAttributesIn(scope);
     });
     return;
   }
 
   if (!isElement(root)) return;
 
-  if (root.closest(CONTENT_SELECTOR)) {
+  if (root.closest(LINK_SCOPE_SELECTOR)) {
     applyLinkAttributesIn(root);
     return;
   }
 
-  all<Element>(CONTENT_SELECTOR, root).forEach((content) => {
-    applyLinkAttributesIn(content);
+  all<Element>(LINK_SCOPE_SELECTOR, root).forEach((scope) => {
+    applyLinkAttributesIn(scope);
   });
 }
 
@@ -81,7 +82,7 @@ function watchExternalLinks(): void {
   const observer = new MutationObserver((records) => {
     for (const record of records) {
       for (const node of record.addedNodes) {
-        if (isElement(node)) applyContentLinkAttributes(node);
+        if (isElement(node)) applyScopedLinkAttributes(node);
       }
     }
   });
@@ -90,6 +91,6 @@ function watchExternalLinks(): void {
 }
 
 export function initLinkAttributes(root: Document | Element = document): void {
-  applyContentLinkAttributes(root);
+  applyScopedLinkAttributes(root);
   if (root === document) watchExternalLinks();
 }
