@@ -27,3 +27,7 @@
 .doc-aside-custom {
   margin-top: 18px;
 }
+
+.doc-mobile-toc-panel .j-toc {
+  padding-bottom: 48px;
+}

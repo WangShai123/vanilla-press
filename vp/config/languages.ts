@@ -7,13 +7,13 @@ export default {
     'Quick Start': '快速开始',
     Layout: '布局',
     Components: '组件',
+    Runtime: '运行时',
     'Components List': '组件列表',
     Documentation: '文档中心',
     Contributors: '贡献者',
     sidebar: {
       homeLayout: '首页布局',
       config: '配置',
-      runtime: '运行时',
       inlineScript: '内联脚本',
       footerScript: '页脚脚本',
       highlight: '代码高亮',
@@ -55,7 +55,6 @@ export default {
     sidebar: {
       homeLayout: 'Home Layout',
       config: 'Config',
-      runtime: 'Runtime',
       inlineScript: 'Inline Script',
       footerScript: 'Footer Script',
       highlight: 'Highlight',

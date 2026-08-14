@@ -128,8 +128,11 @@
 .doc-mobile-toc-panel {
   min-width: min(78vw, 320px);
   padding: 16px;
+  height: 100%;
 }
 
-.doc-mobile-menu-panel .j-mobile-menu {
-  width: 100%;
+.doc-mobile-menu-panel .j-menu[data-menu-type='mobile'] {
+  height: 100%;
+  --sub-menu-box-shadow: none;
+  padding-bottom: 48px;
 }

@@ -17,10 +17,10 @@ export default [
     ],
   },
   {
-    label: 'sidebar.runtime',
-    collapse: true,
+    label: 'Runtime',
+    // collapse: true,
     children: [
-      { label: 'sidebar.runtime', path: 'guide/runtime' },
+      { label: 'Runtime', path: 'guide/runtime' },
       { label: 'sidebar.highlight', path: 'guide/highlight' },
       { label: 'sidebar.locale', path: 'guide/locale' },
       { label: 'sidebar.menu', path: 'guide/menu' },

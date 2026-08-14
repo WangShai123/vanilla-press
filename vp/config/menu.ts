@@ -8,6 +8,7 @@ export default [
       { label: 'Quick Start', path: 'guide/quick-start' },
       { label: 'Layout', path: 'guide/layout-api' },
       { label: 'Components', path: 'guide/component-api' },
+      { label: 'Runtime', path: 'guide/runtime' },
     ],
   },
   {
