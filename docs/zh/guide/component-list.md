@@ -1,6 +1,6 @@
 # 组件
 
-`vanilla-press` 组件是基于 `vanilla-jui` 的一套 Markdown 容器组件，主要用于文档页面排版与交互增强。
+`vanilla-press` 内置组件是基于 `vanilla-jui` 的一套 Markdown 容器组件，主要用于文档页面排版与交互增强。
 
 ## Tabs
 

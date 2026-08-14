@@ -8,32 +8,21 @@ Pages use the built-in `default` layout by default. When a page needs a differen
 
 Each layout has its own directory, and the directory name is the layout name.
 
+Built-in layouts are shipped by the installed `vanilla-press` package. Project documentation can add or override layouts under `vp/layouts/`:
+
 :::tree
-src/
+vp/
 ├── layouts/
-│ ├── default/
-│ │ ├── template.html
-│ │ └── style.css
-│ └── home/
-│ │ ├── template.html
-│ │ └── style.css
-:::
-
-Project documentation can also add or override layouts:
-
-:::tree
-docs/
-├── _layouts/
 │ └── landing/
 │ │ ├── template.html
 │ │ └── style.css
 :::
 
-During build, VanillaPress reads built-in layouts from `src/layouts/` first, then reads project layouts from `docs/_layouts/`. A project layout with the same name overrides the built-in layout.
+During build, VanillaPress reads built-in layouts first, then reads project layouts from `vp/layouts/`. A project layout with the same name overrides the built-in layout.
 
 ## Add a Layout
 
-Create `docs/_layouts/landing/template.html`, and define template variables from the `layout` object:
+Create `vp/layouts/landing/template.html`, and define template variables from the `layout` object:
 
 ```html
 <main class="landing-layout">
@@ -47,7 +36,7 @@ Create `docs/_layouts/landing/template.html`, and define template variables from
 </main>
 ```
 
-Create `docs/_layouts/landing/style.css`:
+Create `vp/layouts/landing/style.css`:
 
 ```css
 .landing-layout {
@@ -63,6 +52,20 @@ Create `docs/_layouts/landing/style.css`:
   background: var(--ui-surface-raised);
 }
 ```
+
+To add browser behavior for the layout, create `vp/layouts/landing/script.ts` or `vp/layouts/landing/script.js`:
+
+```typescript
+export default function initLandingLayout(root: Document) {
+  root
+    .querySelectorAll('.landing-layout:not([data-layout-ready="true"])')
+    .forEach((node) => {
+      node.setAttribute('data-layout-ready', 'true');
+    });
+}
+```
+
+The layout script is bundled as `dist/public/layout-name.hash.js` and loaded only by HTML pages that use that layout. Static npm imports used by the script are bundled into the layout script file. They are not bundled into the global `runtime.js`.
 
 Then use it in a Markdown page:
 
@@ -94,7 +97,7 @@ Layout templates can read the context injected by the builder.
 | `{{ keywords }}`          | Current page keywords from frontmatter                          |
 | `{{ page.title }}`        | Markdown page title                                             |
 | `{{ page.rel }}`          | Current page output path                                        |
-| `{{ site.siteName }}`     | Site config from `docs/config.ts`                               |
+| `{{ site.siteName }}`     | Site config from `vp/config/config.ts`                          |
 | `{{ layout.* }}`          | Data scoped to the current layout                               |
 | `{{ layouts.* }}`         | Data for all layout scopes                                      |
 | `{{{ content }}}`         | HTML rendered from Markdown                                     |

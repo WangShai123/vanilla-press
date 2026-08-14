@@ -4,7 +4,7 @@ Support different user preferences for color, font size, corner radius, shadow, 
 
 ## Runtime
 
-In `docs/config.ts`, configure whether the theme feature is enabled.
+In `vp/config/config.ts`, configure whether the theme feature is enabled.
 
 ```javascript
 export default {
@@ -12,14 +12,14 @@ export default {
     theme: {
       enabled: true,
       default: {
-        mode: "dark",
-        theme: "indigo",
-        radius: "sm",
-        shadow: "sm",
-        font: "sm",
+        mode: 'dark',
+        theme: 'indigo',
+        radius: 'sm',
+        shadow: 'sm',
+        font: 'sm',
       },
       offcanvas: {
-        direction: "right",
+        direction: 'right',
       },
     },
   },

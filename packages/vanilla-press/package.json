@@ -1,0 +1,74 @@
+{
+  "name": "vanilla-press",
+  "version": "1.2.16",
+  "private": false,
+  "description": "A static documentation generator built on markdown-it.",
+  "keywords": [
+    "docs",
+    "document",
+    "generator",
+    "html",
+    "markdown-it",
+    "md",
+    "static",
+    "vanilla"
+  ],
+  "homepage": "https://github.com/WangShai123/vanilla-press",
+  "bugs": {
+    "url": "https://github.com/WangShai123/vanilla-press/issues"
+  },
+  "license": "ISC",
+  "author": "Wang Shai <hiwangshai@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WangShai123/vanilla-press.git"
+  },
+  "bin": {
+    "vanilla-press": "bin/vanilla-press.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "src",
+    "README.md",
+    "README_zh.md"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./runtime": {
+      "types": "./src/runtime.ts",
+      "default": "./dist/runtime.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "dompurify": "^3.4.12",
+    "esbuild": "^0.28.1",
+    "glob": "^13.0.6",
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^15.0.0",
+    "markdown-it-anchor": "^9.2.1",
+    "markdown-it-attrs": "^5.0.1",
+    "markdown-it-front-matter": "^0.2.4",
+    "markdown-it-link-attributes": "^4.0.1",
+    "nodemon": "^3.1.14",
+    "vanilla-create-storage": "^1.0.4",
+    "vanilla-jui": "^1.5.11",
+    "vanilla-signal": "^1.1.15",
+    "vanilla-signal-i18n": "^1.1.2",
+    "vite": "8.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

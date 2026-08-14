@@ -106,13 +106,13 @@ During build, `vanilla-press` uses the shared dependency whitelist to decide whi
 
 ## Shared Dependency Whitelist
 
-Users can extend the shared dependency whitelist in `docs/config.ts`:
+Users can extend the shared dependency whitelist in `vp/config/config.ts`:
 
 ```javascript
 export default {
   runtime: {
     inlineScript: {
-      shared: ["lodash-es"],
+      shared: ['lodash-es'],
     },
   },
 };

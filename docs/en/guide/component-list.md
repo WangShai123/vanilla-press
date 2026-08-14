@@ -1,6 +1,6 @@
 # Components
 
-`vanilla-press` components are a set of Markdown container components built on top of `vanilla-jui` for document layout and interactions.
+`vanilla-press` builtin components are a set of Markdown container components built on top of `vanilla-jui` for document layout and interactions.
 
 ## Tabs
 

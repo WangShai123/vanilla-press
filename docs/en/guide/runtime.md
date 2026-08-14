@@ -1,10 +1,10 @@
 # Runtime
 
-`vanilla-press` builds and renders runtime features on demand based on the configuration in `docs/config.ts`.
+`vanilla-press` builds and renders runtime features on demand based on the configuration in `vp/config/config.ts`.
 
 ## Configuration Object
 
-The default export in `docs/config.ts` is used to configure site runtime data.
+The default export in `vp/config/config.ts` is used to configure site runtime data.
 
 | Option                              | Type                 | Default        | Description                                                                                                            |
 | ----------------------------------- | -------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------- |
@@ -26,8 +26,8 @@ The default export in `docs/config.ts` is used to configure site runtime data.
 | `runtime.prevNext`                  | boolean \| object    | false          | Whether to enable previous/next page navigation.                                                                       |
 | `runtime.sitemap`                   | boolean \| object    | false          | Whether to output `sitemap.xml` into `dist/`.                                                                          |
 | `runtime.robots`                    | boolean              | true           | Whether to output `robots.txt` into `dist/`. Set to `false` to disable it.                                             |
-| `runtime.footerScript`              | "script" \| "module" | "script"       | Footer script tag type. The script content comes from `docs/footerScript.ts`.                                          |
-| `runtime.inlineScript.shared`       | array                | []             | Extra npm dependencies to bundle into `runtime.js` for reuse by page `vp-script` modules.                             |
+| `runtime.footerScript`              | "script" \| "module" | "script"       | Footer script tag type. The script content comes from `vp/config/footerScript.ts`.                                     |
+| `runtime.inlineScript.shared`       | array                | []             | Extra npm dependencies to bundle into `runtime.js` for reuse by page `vp-script` modules.                              |
 | `runtime.llms`                      | boolean \| object    | true           | Whether to output `llms.txt`, per-page Markdown routes, and page Markdown actions.                                     |
 | `runtime.llms.enabled`              | boolean              | true           | Whether to enable LLMs. Set to `false` to disable it.                                                                  |
 | `runtime.llms.link`                 | boolean              | true           | Whether to render the "View Markdown" button below the content title.                                                  |

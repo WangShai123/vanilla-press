@@ -1,39 +1,38 @@
 ---
 layout: home
 title: Home
-keywords: vanilla-press, markdown-it, static docs
-description: VanillaPress is a lightweight static documentation generator built with markdown-it and vanilla-jui.
+keywords: vanilla-press, markdown-it, static documentation generator
+description: vanilla-press is a lightweight, elegant, and highly customizable static documentation generator built with markdown-it.
 layouts:
   home:
     hero:
       badge: vanilla press
-      title: Lightweight, elegant static documentation generator
-      description: A markdown-it based static documentation scaffold that loads features and components on demand and keeps the generated JavaScript runtime small.
-      hint: Built-in multilingual support, search, SEO, theme modes, and other common documentation features.
+      title: Lightweight, elegant & highly customizable SSG
+      description: Built on markdown-it, with custom layouts and components, on-demand loading, lazy loading, and a minimized JavaScript runtime.
+      hint: Built-in multilingual support, search, SEO, theme modes, and common runtime features and components.
       actions:
         - text: Quick Start
           link: ./guide/quick-start.html
           variant: is-primary
         - text: View Components
-          link: ./guide/components.html
+          link: ./guide/component-api.html
           variant: is-secondary
     quickStart:
       title: Quick Start
       groups:
-        - title: Create with NPM
+        - title: Install vanilla-press
           lines:
             - npm create vanilla-press@latest my-docs
             - cd my-docs
-            - npm install
-            - npm run dev
-        - title: Clone with Git
+        - title: Install dependencies and start the project
           lines:
-            - git clone https://github.com/WangShai123/vanilla-press.git
-            - cd vanilla-press
             - npm install
             - npm run dev
+        - title: Build documentation
+          lines:
+            - npm run build
     features:
-      title: Why VanillaPress
+      title: Why vanilla-press
       description: Keep static deployment simple while adding the runtime enhancements a documentation site needs.
       items:
         - index: 1
@@ -62,6 +61,6 @@ layouts:
           link: ./guide/quick-start.html
           variant: is-primary
         - text: View API
-          link: ./guide/api.html
+          link: ./guide/layout-api.html
           variant: is-secondary
 ---

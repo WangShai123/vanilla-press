@@ -1,0 +1,44 @@
+.doc-shell {
+  min-height: calc(100vh - var(--doc-header-height));
+  display: flex;
+}
+
+.doc-main {
+  width: 100%;
+  min-width: 0;
+  padding: 36px 56px;
+  display: flex;
+}
+
+.doc-main.has-aside {
+  gap: 36px;
+}
+
+.doc-main.has-aside > .j-content {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.doc-main > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.doc-main .j-content {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0 0 0 auto;
+  padding: 36px;
+  border: 1px solid var(--doc-line);
+  border-radius: var(--radius-md);
+  background: var(--doc-panel);
+}
+
+html.j-radius-round .doc-main .j-content {
+  border-radius: 1.25rem;
+}
+
+.is-desktop #global-search {
+  width: 500px;
+}

@@ -4,7 +4,7 @@ A static search feature with search assets isolated by language.
 
 ## Runtime
 
-In `docs/config.ts`, configure whether search is enabled.
+In `vp/config/config.ts`, configure whether search is enabled.
 
 ```javascript
 export default {

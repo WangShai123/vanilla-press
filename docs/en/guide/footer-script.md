@@ -2,11 +2,11 @@
 
 Footer script lets a site inject one shared JavaScript snippet into every generated page.
 
-During build, `vanilla-press` reads the default export from `docs/footerScript.ts` and writes it at the bottom of each HTML page body.
+During build, `vanilla-press` reads the default export from `vp/config/footerScript.ts` and writes it at the bottom of each HTML page body.
 
 ## Configuration
 
-Configure the script tag type in `docs/config.ts`:
+Configure the script tag type in `vp/config/config.ts`:
 
 ```typescript
 export default {
@@ -25,10 +25,10 @@ export default {
 
 ## Script Content
 
-Write the script content in `docs/footerScript.ts`:
+Write the script content in `vp/config/footerScript.ts`:
 
 ```typescript
-import type { FooterScriptConfig } from '../src/types.ts';
+import type { FooterScriptConfig } from 'vanilla-press';
 
 export default `
 console.log('site footer script loaded');
@@ -43,7 +43,7 @@ After build, every page includes:
 </script>
 ```
 
-If `docs/footerScript.ts` exports an empty string, no script tag is emitted.
+If `vp/config/footerScript.ts` exports an empty string, no script tag is emitted.
 
 ## Use Cases
 
@@ -52,7 +52,7 @@ Footer script is useful for site-wide code such as analytics, tracking, conversi
 For example, Google Analytics:
 
 ```typescript
-import type { FooterScriptConfig } from '../src/types.ts';
+import type { FooterScriptConfig } from 'vanilla-press';
 
 export default `
 window.dataLayer = window.dataLayer || [];

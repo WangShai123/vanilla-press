@@ -1,9 +1,18 @@
+import type { OxfmtConfig } from 'oxfmt';
 import { defineConfig } from 'vite-plus';
 
-export default defineConfig({
+import fmtConfig from './.oxfmtrc.json' with { type: 'json' };
 
+export default defineConfig({
   lint: {
-    ignorePatterns: ['dist/**', 'node_modules/**'],
+    ignorePatterns: [
+      'dist/**',
+      'node_modules/**',
+      'coverage/**',
+      'output/**',
+      'packages/*/dist/**',
+      'packages/create-vanilla-press/template/**',
+    ],
     options: {
       typeAware: true,
       typeCheck: true,
@@ -13,23 +22,5 @@ export default defineConfig({
     },
   },
 
-  fmt: {
-    ignorePatterns: ['dist/**'],
-    sortPackageJson: true,
-    sortImports: true,
-    sortTailwindcss: true,
-    semi: true,
-    singleQuote: true,
-    tabWidth: 2,
-    useTabs: false,
-    printWidth: 80,
-    trailingComma: 'es5',
-    arrowParens: 'always',
-    bracketSameLine: false,
-    bracketSpacing: true,
-    embeddedLanguageFormatting: 'auto',
-    endOfLine: 'lf',
-    htmlWhitespaceSensitivity: 'css',
-    insertFinalNewline: true,
-  },
+  fmt: fmtConfig as OxfmtConfig,
 });

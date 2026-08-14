@@ -18,7 +18,7 @@ export default {
 
 ## 配置
 
-在 `docs/robots.ts` 中配置输出内容。
+在 `vp/config/robots.ts` 中配置输出内容。
 
 ```javascript
 export default {
@@ -34,13 +34,13 @@ export default {
 
 ## 字段
 
-| 字段       | 类型                       | 说明                                                          |
-| ---------- | -------------------------- | ------------------------------------------------------------- |
-| rules      | array                      | `robots.txt` 的规则组，每一项会输出一个 `User-agent` 块       |
-| userAgent  | string \| array            | 抓取器名称，默认 `*`                                          |
-| allow      | string \| array            | 输出 `Allow` 规则                                             |
-| disallow   | string \| array            | 输出 `Disallow` 规则                                          |
-| crawlDelay | string \| number           | 输出 `Crawl-delay` 规则                                       |
+| 字段       | 类型             | 说明                                                    |
+| ---------- | ---------------- | ------------------------------------------------------- |
+| rules      | array            | `robots.txt` 的规则组，每一项会输出一个 `User-agent` 块 |
+| userAgent  | string \| array  | 抓取器名称，默认 `*`                                    |
+| allow      | string \| array  | 输出 `Allow` 规则                                       |
+| disallow   | string \| array  | 输出 `Disallow` 规则                                    |
+| crawlDelay | string \| number | 输出 `Crawl-delay` 规则                                 |
 
 ## 输出
 

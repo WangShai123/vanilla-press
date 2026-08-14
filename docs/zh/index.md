@@ -1,39 +1,38 @@
 ---
 layout: home
 title: 首页
-keywords: vanilla-press, markdown-it, 静态文档
-description: VanillaPress 是基于 markdown-it 和 vanilla-jui 的轻量静态文档生成器。
+keywords: vanilla-press, markdown-it, 静态文档生成器
+description: vanilla-press 是基于 markdown-it 的轻量、优雅且高可定制的静态文档生成器。
 layouts:
   home:
     hero:
       badge: vanilla press
-      title: 轻量、优雅的静态文档生成器
-      description: 基于 markdown-it 的静态文档脚手架，按需引用功能和组件，构建最小化 JavaScript 运行时。
-      hint: 内置多语言、搜索、SEO、主题模式等常用功能。
+      title: 轻量 优雅 高可定制的静态文档生成器
+      description: 基于 markdown-it，支持自定义布局和组件，按需引用和延迟加载，构建最小化 JavaScript 运行时。
+      hint: 内置多语言、搜索、SEO、主题模式等常用运行时和组件。
       actions:
         - text: 快速开始
           link: ./guide/quick-start.html
           variant: is-primary
         - text: 查看组件
-          link: ./guide/components.html
+          link: ./guide/component-api.html
           variant: is-secondary
     quickStart:
       title: 快速开始
       groups:
-        - title: NPM 创建
+        - title: 安装 vanilla-press
           lines:
             - npm create vanilla-press@latest my-docs
             - cd my-docs
-            - npm install
-            - npm run dev
-        - title: Git 克隆
+        - title: 安装依赖并启动项目
           lines:
-            - git clone https://github.com/WangShai123/vanilla-press.git
-            - cd vanilla-press
             - npm install
             - npm run dev
+        - title: 构建文档
+          lines:
+            - npm run build
     features:
-      title: 为什么选择 VanillaPress
+      title: 为什么选择 vanilla-press
       description: 保留静态部署的简单性，提供必要的运行时增强。
       items:
         - index: 1

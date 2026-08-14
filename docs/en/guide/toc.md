@@ -4,7 +4,7 @@ Automatically generate a table of contents from the page content. By default it 
 
 ## Runtime
 
-In `docs/config.ts`, configure whether the table of contents is enabled.
+In `vp/config/config.ts`, configure whether the table of contents is enabled.
 
 ```javascript
 export default {

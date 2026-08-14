@@ -3,6 +3,7 @@
 .github
 node_modules
 dist
-
-bin
-AGENTS.md
+coverage
+output
+*.tgz
+packages/create-vanilla-press/template

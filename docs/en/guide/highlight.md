@@ -40,7 +40,7 @@ class Test
 
 ## Runtime
 
-In `docs/config.ts`, configure whether code highlighting is enabled and which languages can be built. `vanilla-press` uses `highlight.js` core and only registers the language modules listed in `runtime.highlight.languages`.
+In `vp/config/config.ts`, configure whether code highlighting is enabled and which languages can be built. `vanilla-press` uses `highlight.js` core and only registers the language modules listed in `runtime.highlight.languages`.
 
 ```javascript
 export default {

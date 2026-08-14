@@ -32,12 +32,12 @@ export default {
 };
 ```
 
-- When `enabled: false`, the build skips `docs/llms.ts` and does not output `dist/llms.txt` or per-page `.md` files.
+- When `enabled: false`, the build skips `vp/config/llms.ts` and does not output `dist/llms.txt` or per-page `.md` files.
 - `link`, `copy`, `chatgpt`, and `claude`. If any of them is enabled, the page renders LLMS toolbar below the title of the page.
 
 ## Configuration
 
-In `docs/llms.ts`, configure the title, description, section title and container labels for `llms.txt`.
+In `vp/config/llms.ts`, configure the title, description, section title and container labels for `llms.txt`.
 
 ```javascript
 export default {
@@ -90,7 +90,7 @@ Markdown source routes for VanillaPress documentation.
 
 ## Localized
 
-`container.labels` configures localized text for the `.llms-container` rendered below the page title. Keys should match locale codes from `docs/languages.ts`, such as `zh-CN` or `en`.
+`container.labels` configures localized text for the `.llms-container` rendered below the page title. Keys should match locale codes from `vp/config/languages.ts`, such as `zh-CN` or `en`.
 
 | Field   | Description                              |
 | ------- | ---------------------------------------- |

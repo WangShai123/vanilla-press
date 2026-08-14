@@ -1,83 +1,25 @@
 {
-  "name": "create-vanilla-press",
-  "version": "1.2.15",
-  "private": false,
-  "description": "Create a vanilla-press documentation project.",
-  "keywords": [
-    "docs",
-    "document",
-    "generator",
-    "html",
-    "markdown-it",
-    "md",
-    "static",
-    "vanilla"
-  ],
-  "homepage": "https://github.com/WangShai123/vanilla-press",
-  "bugs": {
-    "url": "https://github.com/WangShai123/vanilla-press/issues"
-  },
-  "license": "ISC",
-  "author": "Wang Shai <hiwangshai@gmail.com>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/WangShai123/vanilla-press.git"
-  },
-  "bin": {
-    "create-vanilla-press": "bin/create.js"
-  },
-  "files": [
-    "bin",
-    "docs",
-    "src",
-    "README.md",
-    "README_zh.md"
+  "name": "vanilla-press-repo",
+  "version": "1.2.16",
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
   "type": "module",
-  "exports": {
-    ".": "./src/build.ts",
-    "./scaffold": "./bin/scaffold.js"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "build": "node src/build.ts",
-    "dev": "nodemon --watch src --watch docs --ext ts,js,md,css --ignore dist --ignore output --exec node src/build.ts",
-    "typecheck": "tsc --noEmit",
-    "check": "vp fmt --check src && vp lint src && tsc --noEmit",
-    "test": "vp test run --dir src --passWithNoTests"
-  },
-  "dependencies": {
-    "dompurify": "^3.4.12",
-    "glob": "^13.0.6",
-    "highlight.js": "^11.11.1",
-    "markdown-it": "^15.0.0",
-    "markdown-it-anchor": "^9.2.1",
-    "markdown-it-attrs": "^5.0.1",
-    "markdown-it-front-matter": "^0.2.4",
-    "markdown-it-link-attributes": "^4.0.1",
-    "vanilla-create-storage": "^1.0.4",
-    "vanilla-jui": "^1.5.11",
-    "vanilla-signal": "^1.1.15",
-    "vanilla-signal-i18n": "^1.1.2"
+    "build": "node packages/vanilla-press/bin/vanilla-press.js build",
+    "build:packages": "npm --workspace vanilla-press run build",
+    "check": "vp fmt --check packages/vanilla-press/src packages/create-vanilla-press/bin packages/create-vanilla-press/src scripts && vp lint packages/vanilla-press/src && tsc --noEmit",
+    "dev": "node packages/vanilla-press/bin/vanilla-press.js dev",
+    "sync:create-template": "node scripts/sync-create-template.js",
+    "test": "vp test run --dir packages/vanilla-press/src --passWithNoTests"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
-    "esbuild": "^0.28.1",
     "jsdom": "^30.0.1",
-    "nodemon": "^3.1.14",
     "typescript": "^7.0.2",
-    "vite": "8.2.0",
+    "vanilla-press": "workspace:*",
     "vite-plus": "latest"
-  },
-  "allowScripts": {
-    "esbuild@0.28.1": true,
-    "fsevents@2.3.3": true
-  },
-  "registry": {
-    "type": "git",
-    "url": "git+https://github.com/WangShai123/vanilla-press.git"
   }
 }

@@ -4,7 +4,7 @@
 
 ## 运行时
 
-在 `docs/config.ts` 中，按需配置是否启用国际化功能。
+在 `vp/config/config.ts` 中，按需配置是否启用国际化功能。
 
 - 配置属性：`i18n`
 - 配置类型：`boolean` || `object`
@@ -28,7 +28,7 @@ export default {
 
 ## 元数据
 
-`docs/config.ts` 中的国际化功能元信息配置：
+`vp/config/config.ts` 中的国际化功能元信息配置：
 
 - `runtime.i18n.locale`: 默认语言
 - `runtime.i18n.fallbackLocale`: 备用语言
@@ -40,7 +40,7 @@ export default {
 
 ## 语言包
 
-在 `docs/languages.ts` 中导出语言包数据：
+在 `vp/config/languages.ts` 中导出语言包数据：
 
 ```javascript
 export default {

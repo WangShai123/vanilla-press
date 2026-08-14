@@ -106,13 +106,13 @@ button?.addEventListener('click', () => {
 
 ## 共享依赖白名单
 
-用户可以在 `docs/config.ts` 中扩展共享依赖白名单列表：
+用户可以在 `vp/config/config.ts` 中扩展共享依赖白名单列表：
 
 ```javascript
 export default {
   runtime: {
     inlineScript: {
-      shared: ["lodash-es"],
+      shared: ['lodash-es'],
     },
   },
 };

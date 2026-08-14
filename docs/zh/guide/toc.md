@@ -4,7 +4,7 @@
 
 ## 运行时
 
-在 `docs/config.ts` 中，按需配置是否启用目录功能。
+在 `vp/config/config.ts` 中，按需配置是否启用目录功能。
 
 ```javascript
 export default {

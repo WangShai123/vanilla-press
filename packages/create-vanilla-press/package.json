@@ -1,0 +1,46 @@
+{
+  "name": "create-vanilla-press",
+  "version": "1.2.16",
+  "private": false,
+  "description": "Create a vanilla-press documentation project.",
+  "keywords": [
+    "docs",
+    "document",
+    "generator",
+    "html",
+    "markdown-it",
+    "md",
+    "static",
+    "vanilla"
+  ],
+  "homepage": "https://github.com/WangShai123/vanilla-press",
+  "bugs": {
+    "url": "https://github.com/WangShai123/vanilla-press/issues"
+  },
+  "license": "ISC",
+  "author": "Wang Shai <hiwangshai@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WangShai123/vanilla-press.git"
+  },
+  "bin": {
+    "create-vanilla-press": "bin/create.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "template",
+    "README.md",
+    "README_zh.md"
+  ],
+  "type": "module",
+  "exports": {
+    "./scaffold": "./src/scaffold.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepack": "node ../../scripts/sync-create-template.js"
+  }
+}

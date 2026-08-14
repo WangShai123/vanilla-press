@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "dist/**",
+    "coverage/**",
+    "output/**",
+    "packages/*/dist/**",
+    "packages/create-vanilla-press/template/**"
+  ],
+  "sortPackageJson": true,
+  "sortImports": true,
+  "sortTailwindcss": true,
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 80,
+  "trailingComma": "es5",
+  "arrowParens": "always",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "embeddedLanguageFormatting": "auto",
+  "endOfLine": "lf",
+  "htmlWhitespaceSensitivity": "css",
+  "insertFinalNewline": true
+}

@@ -18,7 +18,7 @@ When `runtime.robots` is `false`, the build does not output `dist/robots.txt`.
 
 ## Configuration
 
-Configure the generated content in `docs/robots.ts`.
+Configure the generated content in `vp/config/robots.ts`.
 
 ```javascript
 export default {
@@ -34,13 +34,13 @@ export default {
 
 ## Fields
 
-| Field      | Type                       | Description                                                           |
-| ---------- | -------------------------- | --------------------------------------------------------------------- |
-| rules      | array                      | Rule groups for `robots.txt`. Each item outputs a `User-agent` block. |
-| userAgent  | string \| array            | Crawler name. Defaults to `*`.                                        |
-| allow      | string \| array            | Outputs `Allow` rules.                                                |
-| disallow   | string \| array            | Outputs `Disallow` rules.                                             |
-| crawlDelay | string \| number           | Outputs a `Crawl-delay` rule.                                         |
+| Field      | Type             | Description                                                           |
+| ---------- | ---------------- | --------------------------------------------------------------------- |
+| rules      | array            | Rule groups for `robots.txt`. Each item outputs a `User-agent` block. |
+| userAgent  | string \| array  | Crawler name. Defaults to `*`.                                        |
+| allow      | string \| array  | Outputs `Allow` rules.                                                |
+| disallow   | string \| array  | Outputs `Disallow` rules.                                             |
+| crawlDelay | string \| number | Outputs a `Crawl-delay` rule.                                         |
 
 ## Output
 

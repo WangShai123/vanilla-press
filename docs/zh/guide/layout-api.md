@@ -8,32 +8,21 @@
 
 每个布局对应一个独立目录，目录名就是布局名。
 
+内置布局由已安装的 `vanilla-press` 依赖包提供。项目侧可以在 `vp/layouts/` 下新增或覆盖布局：
+
 :::tree
-src/
+vp/
 ├── layouts/
-│ ├── default/
-│ │ ├── template.html
-│ │ └── style.css
-│ └── home/
-│ │ ├── template.html
-│ │ └── style.css
-:::
-
-项目文档侧也可以新增或覆盖布局：
-
-:::tree
-docs/
-├── _layouts/
 │ └── landing/
 │ │ ├── template.html
 │ │ └── style.css
 :::
 
-构建时会先读取 `src/layouts/` 中的内置布局，再读取 `docs/_layouts/` 中的项目布局。相同名称的项目布局会覆盖内置布局。
+构建时会先读取内置布局，再读取 `vp/layouts/` 中的项目布局。相同名称的项目布局会覆盖内置布局。
 
 ## 新增一个布局
 
-创建 `docs/_layouts/landing/template.html`，基于 `layout` 对象定义模板变量：
+创建 `vp/layouts/landing/template.html`，基于 `layout` 对象定义模板变量：
 
 ```html
 <main class="landing-layout">
@@ -47,7 +36,7 @@ docs/
 </main>
 ```
 
-创建 `docs/_layouts/landing/style.css`：
+创建 `vp/layouts/landing/style.css`：
 
 ```css
 .landing-layout {
@@ -63,6 +52,20 @@ docs/
   background: var(--ui-surface-raised);
 }
 ```
+
+如需为该布局添加浏览器脚本，可以创建 `vp/layouts/landing/script.ts` 或 `vp/layouts/landing/script.js`：
+
+```typescript
+export default function initLandingLayout(root: Document) {
+  root
+    .querySelectorAll('.landing-layout:not([data-layout-ready="true"])')
+    .forEach((node) => {
+      node.setAttribute('data-layout-ready', 'true');
+    });
+}
+```
+
+布局脚本会被打包为 `dist/public/布局名.hash.js`，只在使用该布局的 HTML 页面中加载。脚本中的静态 npm 依赖会打包进该布局脚本文件，不会进入全局 `runtime.js`。
 
 然后在 Markdown 页面中使用它：
 
@@ -87,22 +90,22 @@ layouts:
 
 布局模板可以读取构建器注入的上下文。
 
-| 变量                      | 说明                             |
-| ------------------------- | -------------------------------- |
-| `{{ title }}`             | 当前页面标题，优先使用 SEO 标题  |
-| `{{ description }}`       | 当前页面描述，来自 frontmatter   |
-| `{{ keywords }}`          | 当前页面关键词，来自 frontmatter |
-| `{{ page.title }}`        | Markdown 页面标题                |
-| `{{ page.rel }}`          | 当前页面输出路径                 |
-| `{{ site.siteName }}`     | `docs/config.ts` 中的站点配置    |
-| `{{ layout.* }}`          | 当前布局作用域下的数据           |
-| `{{ layouts.* }}`         | 所有布局作用域数据               |
-| `{{{ content }}}`         | Markdown 渲染后的 HTML           |
-| `{{{ slots.header }}}`    | 桌面主菜单和手机主菜单模板       |
-| `{{{ slots.secondary }}}` | 手机次级菜单模板                 |
-| `{{{ slots.sidebar }}}`   | 默认侧边栏插槽                   |
-| `{{{ slots.aside }}}`     | 默认右侧区域插槽，包含目录       |
-| `{{{ slots.prevNext }}}`  | 分页导航插槽                     |
+| 变量                      | 说明                               |
+| ------------------------- | ---------------------------------- |
+| `{{ title }}`             | 当前页面标题，优先使用 SEO 标题    |
+| `{{ description }}`       | 当前页面描述，来自 frontmatter     |
+| `{{ keywords }}`          | 当前页面关键词，来自 frontmatter   |
+| `{{ page.title }}`        | Markdown 页面标题                  |
+| `{{ page.rel }}`          | 当前页面输出路径                   |
+| `{{ site.siteName }}`     | `vp/config/config.ts` 中的站点配置 |
+| `{{ layout.* }}`          | 当前布局作用域下的数据             |
+| `{{ layouts.* }}`         | 所有布局作用域数据                 |
+| `{{{ content }}}`         | Markdown 渲染后的 HTML             |
+| `{{{ slots.header }}}`    | 桌面主菜单和手机主菜单模板         |
+| `{{{ slots.secondary }}}` | 手机次级菜单模板                   |
+| `{{{ slots.sidebar }}}`   | 默认侧边栏插槽                     |
+| `{{{ slots.aside }}}`     | 默认右侧区域插槽，包含目录         |
+| `{{{ slots.prevNext }}}`  | 分页导航插槽                       |
 
 普通双花括号会进行 HTML 转义，适合输出 frontmatter 中的文本。
 

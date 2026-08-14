@@ -2,11 +2,11 @@
 
 页脚脚本用于为站点所有页面统一注入一段 JavaScript。
 
-构建时，`vanilla-press` 会读取 `docs/footerScript.ts` 的默认导出内容，并把它写入每个 HTML 页面的 `body` 最下方。
+构建时，`vanilla-press` 会读取 `vp/config/footerScript.ts` 的默认导出内容，并把它写入每个 HTML 页面的 `body` 最下方。
 
 ## 配置
 
-在 `docs/config.ts` 中配置脚本标签类型：
+在 `vp/config/config.ts` 中配置脚本标签类型：
 
 ```typescript
 export default {
@@ -25,10 +25,10 @@ export default {
 
 ## 脚本内容
 
-在 `docs/footerScript.ts` 中编写脚本内容：
+在 `vp/config/footerScript.ts` 中编写脚本内容：
 
 ```typescript
-import type { FooterScriptConfig } from '../src/types.ts';
+import type { FooterScriptConfig } from 'vanilla-press';
 
 export default `
 console.log('site footer script loaded');
@@ -43,7 +43,7 @@ console.log('site footer script loaded');
 </script>
 ```
 
-如果 `docs/footerScript.ts` 导出空字符串，则不会输出脚本标签。
+如果 `vp/config/footerScript.ts` 导出空字符串，则不会输出脚本标签。
 
 ## 应用场景
 
@@ -52,7 +52,7 @@ console.log('site footer script loaded');
 例如接入 Google Analytics：
 
 ```typescript
-import type { FooterScriptConfig } from '../src/types.ts';
+import type { FooterScriptConfig } from 'vanilla-press';
 
 export default `
 window.dataLayer = window.dataLayer || [];

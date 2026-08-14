@@ -4,7 +4,7 @@
 
 ## 运行时
 
-在 `docs/config.ts` 中，按需配置是否启用主题功能。
+在 `vp/config/config.ts` 中，按需配置是否启用主题功能。
 
 ```javascript
 export default {
@@ -12,14 +12,14 @@ export default {
     theme: {
       enabled: true,
       default: {
-        mode: "dark",
-        theme: "indigo",
-        radius: "sm",
-        shadow: "sm",
-        font: "sm",
+        mode: 'dark',
+        theme: 'indigo',
+        radius: 'sm',
+        shadow: 'sm',
+        font: 'sm',
       },
       offcanvas: {
-        direction: "right",
+        direction: 'right',
       },
     },
   },

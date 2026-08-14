@@ -1,10 +1,10 @@
 # 运行时
 
-`vanilla-press` 会根据 `docs/config.ts` 中的配置，按需构建和渲染站点的运行时功能。
+`vanilla-press` 会根据 `vp/config/config.ts` 中的配置，按需构建和渲染站点的运行时功能。
 
 ## 配置对象
 
-配置文件 `docs/config.ts` 的默认导出对象用于配置站点的运行时数据。
+配置文件 `vp/config/config.ts` 的默认导出对象用于配置站点的运行时数据。
 
 | 配置项                              | 类型                 | 默认值         | 说明                                                                                                           |
 | ----------------------------------- | -------------------- | -------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -26,7 +26,7 @@
 | `runtime.prevNext`                  | boolean \| object    | false          | 是否启用上一页/下一页分页导航                                                                                  |
 | `runtime.sitemap`                   | boolean \| object    | false          | 是否在 `dist/` 中输出 `sitemap.xml`                                                                            |
 | `runtime.robots`                    | boolean              | true           | 是否在 `dist/` 中输出 `robots.txt`，设置为 `false` 时关闭                                                      |
-| `runtime.footerScript`              | "script" \| "module" | "script"       | 页脚脚本标签类型；脚本内容来自 `docs/footerScript.ts`                                                          |
+| `runtime.footerScript`              | "script" \| "module" | "script"       | 页脚脚本标签类型；脚本内容来自 `vp/config/footerScript.ts`                                                     |
 | `runtime.inlineScript.shared`       | array                | []             | 额外打包进 `runtime.js` 的 npm 依赖，供页面 `vp-script` 模块复用                                               |
 | `runtime.llms`                      | boolean \| object    | true           | 是否在 `dist/` 中输出 `llms.txt`、每个页面对应的 Markdown 路由和页面 Markdown 操作入口                         |
 | `runtime.llms.enabled`              | boolean              | true           | 是否启用 LLMs 功能，设置为 `false` 时关闭                                                                      |

@@ -1,6 +1,6 @@
 # Home Layout
 
-`home` is the homepage layout example provided by VanillaPress. It shows how to drive a freer page structure from frontmatter. It reuses the shared site header through `{{{ slots.header }}}` inside `.doc-header`, but does not use the mobile secondary menu `{{{ slots.secondary }}}`. The page body is controlled by `src/layouts/home/template.html` and `src/layouts/home/style.css`.
+`home` is the homepage layout example provided by VanillaPress. It shows how to drive a freer page structure from frontmatter. It reuses the shared site header through `{{{ slots.header }}}` inside `.doc-header`, but does not use the mobile secondary menu `{{{ slots.secondary }}}`. The built-in template and styles are shipped by the installed `vanilla-press` package.
 
 ## Enable It
 
@@ -42,7 +42,7 @@ layouts:
     quickStart:
       title: Quick Start
       groups:
-        - title: Create with NPM
+        - title: Create and Install
           lines:
             - npm create vanilla-press@latest my-docs
             - cd my-docs
@@ -95,7 +95,7 @@ Common fields in `actions`:
 quickStart:
   title: Quick Start
   groups:
-    - title: Create with NPM
+    - title: Create and Install
       lines:
         - npm create vanilla-press@latest my-docs
         - cd my-docs
@@ -149,7 +149,7 @@ If you want the homepage to show Markdown content, override the `home` layout st
 
 ## Difference from the Default Layout
 
-The `home` layout only uses the main menu slot `{{{ slots.header }}}` inside `.doc-header`. It does not use the mobile secondary menu `{{{ slots.secondary }}}`, the default documentation sidebar, the right-side table of contents, or previous/next navigation. Even if `runtime.prevNext` is enabled in `docs/config.ts`, the homepage will not render previous/next navigation because the `home` template does not declare a `<div data-doc-prev-next></div>` slot.
+The `home` layout only uses the main menu slot `{{{ slots.header }}}` inside `.doc-header`. It does not use the mobile secondary menu `{{{ slots.secondary }}}`, the default documentation sidebar, the right-side table of contents, or previous/next navigation. Even if `runtime.prevNext` is enabled in `vp/config/config.ts`, the homepage will not render previous/next navigation because the `home` template does not declare a `<div data-doc-prev-next></div>` slot.
 
 If you copy `home` into a new landing-page layout and want to show previous/next navigation, add the slot manually:
 
@@ -159,11 +159,11 @@ If you copy `home` into a new landing-page layout and want to show previous/next
 
 ## Custom Styles
 
-The built-in `home` styles include background light effects, glass cards, button motion, code cards, feature card hover effects, and a CTA gradient. You can copy `src/layouts/home/` to `docs/_layouts/home/` and customize it for your project:
+The built-in `home` styles include background light effects, glass cards, button motion, code cards, feature card hover effects, and a CTA gradient. You can add `vp/layouts/home/` and customize it for your project:
 
 :::tree
-docs/
-├── _layouts/
+vp/
+├── layouts/
 │ └── home/
 │ │ ├── template.html
 │ │ └── style.css
