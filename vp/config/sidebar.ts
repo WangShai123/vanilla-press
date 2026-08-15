@@ -3,17 +3,13 @@ import type { SidebarConfig } from 'vanilla-press';
 export default [
   { label: 'Quick Start', path: 'guide/quick-start' },
   {
-    label: 'Layout',
+    label: 'Features',
     children: [
-      { label: 'API', path: 'guide/layout-api' },
+      { label: 'sidebar.layoutApi', path: 'guide/layout-api' },
       { label: 'sidebar.homeLayout', path: 'guide/layout-home' },
-    ],
-  },
-  {
-    label: 'Components',
-    children: [
-      { label: 'API', path: 'guide/component-api' },
+      { label: 'sidebar.componentApi', path: 'guide/component-api' },
       { label: 'Components List', path: 'guide/component-list' },
+      { label: 'sidebar.vpScript', path: 'guide/vp-script' },
     ],
   },
   {
@@ -34,12 +30,12 @@ export default [
       { label: 'sidebar.llms', path: 'guide/llms' },
       { label: 'theme.button', path: 'guide/theme' },
       { label: 'sidebar.externalLink', path: 'guide/external-link' },
-      { label: 'sidebar.inlineScript', path: 'guide/inline-script' },
       { label: 'sidebar.footerScript', path: 'guide/footer-script' },
     ],
   },
   {
     label: 'sidebar.others',
+    collapse: true,
     children: [
       { label: 'sidebar.changelog', path: 'guide/changelog' },
       {

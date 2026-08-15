@@ -15,10 +15,17 @@ vp/
 ├── layouts/
 │ └── landing/
 │ │ ├── template.html
-│ │ └── style.css
+│ │ ├── style.css
+│ │ └── script.ts
 :::
 
 During build, VanillaPress reads built-in layouts first, then reads project layouts from `vp/layouts/`. A project layout with the same name overrides the built-in layout.
+
+Layout file names are fixed conventions:
+
+- `template.html`: required. Without this file, the directory is not recognized as a layout.
+- `style.css`: optional. When present, it is merged into the site-wide CSS.
+- `script.ts` / `script.js`: optional. When present, it is bundled as an independent browser script for the layout. If both files exist, `script.ts` takes priority.
 
 ## Add a Layout
 
@@ -56,7 +63,7 @@ Create `vp/layouts/landing/style.css`:
 To add browser behavior for the layout, create `vp/layouts/landing/script.ts` or `vp/layouts/landing/script.js`:
 
 ```typescript
-export default function initLandingLayout(root: Document) {
+export default function initLandingLayout(root: Document, config: unknown) {
   root
     .querySelectorAll('.landing-layout:not([data-layout-ready="true"])')
     .forEach((node) => {
@@ -65,7 +72,7 @@ export default function initLandingLayout(root: Document) {
 }
 ```
 
-The layout script is bundled as `dist/public/layout-name.hash.js` and loaded only by HTML pages that use that layout. Static npm imports used by the script are bundled into the layout script file. They are not bundled into the global `runtime.js`.
+The default exported function is called at page runtime with `(document, docConfig)`. The layout script is bundled as `dist/public/layout-name.hash.js` and loaded only by HTML pages that use that layout. Static npm imports used by the script are bundled into the layout script file. They are not bundled into the global `runtime.js`.
 
 Then use it in a Markdown page:
 
@@ -173,8 +180,8 @@ The built-in `default` layout reuses the common documentation structure: left si
 <main class="{{ shell.className }}">
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">
-    <div>
-      <article class="j-content is-sm">{{{ content }}}</article>
+    <div data-reveal>
+      <article class="j-content is-sm" data-doc-editor>{{{ content }}}</article>
       {{{ slots.prevNext }}}
     </div>
     {{{ slots.aside }}}

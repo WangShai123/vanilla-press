@@ -91,7 +91,7 @@ export type RuntimeFeatureSwitch = boolean | RuntimeFeatureConfig;
 export type FooterScriptType = 'script' | 'module';
 export type FooterScriptConfig = string;
 
-export interface RuntimeInlineScriptConfig extends UnknownRecord {
+export interface RuntimeVpScriptConfig extends UnknownRecord {
   shared?: string[];
 }
 
@@ -111,7 +111,7 @@ export interface RuntimeConfig extends UnknownRecord {
   theme?: boolean | RuntimeThemeConfig;
   auth?: RuntimeFeatureSwitch;
   footerScript?: FooterScriptType;
-  inlineScript?: RuntimeInlineScriptConfig;
+  vpScript?: RuntimeVpScriptConfig;
 }
 
 export interface DocConfig extends UnknownRecord {
@@ -141,7 +141,7 @@ export interface SourcePage {
 export interface PageScriptAsset {
   rel: string;
   code: string;
-  sharedModules: SharedInlineScriptModule[];
+  sharedVpModules: SharedVpScriptModule[];
 }
 
 export interface ModuleScriptAsset {
@@ -151,7 +151,7 @@ export interface ModuleScriptAsset {
   dependsOn?: string[];
 }
 
-export type SharedInlineScriptModule = string;
+export type SharedVpScriptModule = string;
 
 export interface RuntimePage extends UnknownRecord {
   rel?: string;
@@ -276,7 +276,7 @@ export interface RuntimeBundleData {
   languages?: LanguagesConfig | UnknownRecord;
   menuItems?: unknown[];
   sidebarItems?: unknown[];
-  sharedInlineModules?: SharedInlineScriptModule[];
+  sharedVpModules?: SharedVpScriptModule[];
 }
 
 export interface BuildOptions {

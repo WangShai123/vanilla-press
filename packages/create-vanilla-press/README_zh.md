@@ -1,24 +1,24 @@
 # create-vanilla-press
 
-一个基于现有 vanilla-press 模板生成项目的 npm create 脚手架。
+一个基于 [vanilla-press](https://npmjs.com/package/vanilla-press) 项目的 npm create 脚手架。
 
-- [README](README.md)
+- [English](README.md)
 
 ## 项目简介
 
-`create-vanilla-press` 会生成一个 vanilla-press 项目，该项目会将 `docs/` 目录下的 Markdown 文档构建为可部署的静态 HTML，并输出到 `dist/`。
+`create-vanilla-press` 会生成一个 vanilla-press 项目。
 
-整体采用“编译期 + 运行期”分层设计：
+这是一个轻量、自由、高可定制的静态文档生成器。
 
-- 编译期负责 Markdown 解析与页面生成。
-- 运行期负责组件交互与页面增强。
+> 只构建需要的，只使用想要的，把最终控制权留给开发者。
 
 ## 特点
 
 - 纯原生：无框架运行时依赖。
 - 轻量级：输出资源简单、体积小。
 - 个性化：轻松定制布局、样式和组件。
-- 可扩展：支持容器组件与运行时增强。
+- 自由：按需选择运行时，只构建你需要的。
+- 可扩展：支持依赖管理、内联脚本与运行时增强。
 
 ## 安装
 

@@ -10,7 +10,7 @@ import { installTabs } from '../components/tabs.ts';
 import { installTip } from '../components/tip.ts';
 import { installTree } from '../components/tree.ts';
 import { createHighlighter } from '../runtime/highlight.ts';
-import { installInlineScript } from '../runtime/inlineScript.ts';
+import { installVpScript } from '../runtime/vpScript.ts';
 import type { DocConfig, LoadedMarkdownComponent } from '../types.ts';
 import { isHighlightEnabled } from '../utilities/features.ts';
 import { escapeHtml } from '../utilities/html.ts';
@@ -67,7 +67,7 @@ export function createMarkdown(
   installTip(md);
   installTree(md);
   installCustomComponents(md, components);
-  installInlineScript(md);
+  installVpScript(md);
 
   return md;
 }

@@ -15,10 +15,17 @@ vp/
 ├── layouts/
 │ └── landing/
 │ │ ├── template.html
-│ │ └── style.css
+│ │ ├── style.css
+│ │ └── script.ts
 :::
 
 构建时会先读取内置布局，再读取 `vp/layouts/` 中的项目布局。相同名称的项目布局会覆盖内置布局。
+
+布局文件名是固定约定：
+
+- `template.html`：必填。没有该文件时，该目录不会被识别为布局。
+- `style.css`：可选。存在时会合并进全站 CSS。
+- `script.ts` / `script.js`：可选。存在时会打包为该布局的独立浏览器脚本；同时存在时优先使用 `script.ts`。
 
 ## 新增一个布局
 
@@ -56,7 +63,7 @@ vp/
 如需为该布局添加浏览器脚本，可以创建 `vp/layouts/landing/script.ts` 或 `vp/layouts/landing/script.js`：
 
 ```typescript
-export default function initLandingLayout(root: Document) {
+export default function initLandingLayout(root: Document, config: unknown) {
   root
     .querySelectorAll('.landing-layout:not([data-layout-ready="true"])')
     .forEach((node) => {
@@ -65,7 +72,7 @@ export default function initLandingLayout(root: Document) {
 }
 ```
 
-布局脚本会被打包为 `dist/public/布局名.hash.js`，只在使用该布局的 HTML 页面中加载。脚本中的静态 npm 依赖会打包进该布局脚本文件，不会进入全局 `runtime.js`。
+布局脚本默认导出函数会在页面运行时调用，参数为 `(document, docConfig)`。布局脚本会被打包为 `dist/public/布局名.hash.js`，只在使用该布局的 HTML 页面中加载。脚本中的静态 npm 依赖会打包进该布局脚本文件，不会进入全局 `runtime.js`。
 
 然后在 Markdown 页面中使用它：
 
@@ -173,8 +180,8 @@ layouts:
 <main class="{{ shell.className }}">
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">
-    <div>
-      <article class="j-content is-sm">{{{ content }}}</article>
+    <div data-reveal>
+      <article class="j-content is-sm" data-doc-editor>{{{ content }}}</article>
       {{{ slots.prevNext }}}
     </div>
     {{{ slots.aside }}}

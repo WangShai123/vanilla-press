@@ -47,7 +47,7 @@ export default {
     sitemap: true,
     robots: true,
     footerScript: 'script',
-    inlineScript: {
+    vpScript: {
       shared: [],
     },
     llms: {

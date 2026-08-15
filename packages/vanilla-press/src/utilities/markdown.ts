@@ -5,7 +5,7 @@ import { toText } from './string.ts';
 
 export interface MarkdownEnv extends UnknownRecord {
   components?: Set<string>;
-  inlineScripts?: string[];
+  vpScripts?: string[];
 }
 
 export type MarkdownBlockState = StateBlock;

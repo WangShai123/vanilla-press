@@ -118,7 +118,7 @@ export function isLlmsEnabled(config: DocConfig = {}): boolean {
   return featureObject(llms).enabled !== false;
 }
 
-export function isInlineScriptEnabled(): boolean {
+export function isVpScriptEnabled(): boolean {
   return true;
 }
 

@@ -38,7 +38,7 @@ import type {
   RuntimeBundleData,
   RuntimeI18nConfig,
   SeoData,
-  SharedInlineScriptModule,
+  SharedVpScriptModule,
   SourcePage,
   UnknownRecord,
 } from './types.ts';
@@ -46,7 +46,7 @@ import { loadCustomComponents } from './utilities/components.ts';
 import {
   isAuthEnabled,
   isI18nEnabled,
-  isInlineScriptEnabled,
+  isVpScriptEnabled,
   isLlmsEnabled,
   isMenuEnabled,
   isRobotsEnabled,
@@ -105,13 +105,13 @@ interface SearchIndexItem {
 
 type MarkdownItInstance = ReturnType<typeof createMarkdown>;
 
-const SHARED_INLINE_SCRIPT_MODULES = [
+const SHARED_VP_SCRIPT_MODULES = [
   'vanilla-jui',
   'vanilla-signal',
   'vanilla-create-storage',
   'vanilla-signal-i18n',
-] satisfies SharedInlineScriptModule[];
-const SHARED_INLINE_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime';
+] satisfies SharedVpScriptModule[];
+const SHARED_VP_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime';
 const IMPORT_STATEMENT_RE =
   /^(\s*)import\s+(?:(.*?)\s+from\s+)?(['"])([^'"]+)\3\s*;?/gms;
 
@@ -352,14 +352,12 @@ function serializeRuntimeValue(value: unknown): string {
   return serialized === undefined ? 'undefined' : serialized;
 }
 
-function runtimeSharedInlineExports(
-  modules: SharedInlineScriptModule[] = []
-): string {
+function runtimeSharedVpExports(modules: SharedVpScriptModule[] = []): string {
   return Array.from(new Set(modules))
     .sort()
     .map(
       (moduleName) =>
-        `export * as ${sharedInlineExportName(moduleName)} from ${JSON.stringify(pathToFileURL(require.resolve(moduleName)).href)};`
+        `export * as ${sharedVpExportName(moduleName)} from ${JSON.stringify(pathToFileURL(require.resolve(moduleName)).href)};`
     )
     .join('\n');
 }
@@ -371,7 +369,7 @@ async function writeRuntimeEntry(
   const runtimeHref = pathToFileURL(
     path.join(packageRoot, 'src/runtime.ts')
   ).href;
-  const sharedExports = runtimeSharedInlineExports(data.sharedInlineModules);
+  const sharedExports = runtimeSharedVpExports(data.sharedVpModules);
   const code = `import { initDocPage, isMobile } from ${JSON.stringify(runtimeHref)};
 export { initDocPage, isMobile };
 export const docConfig = ${serializeRuntimeValue(data.config)};
@@ -479,13 +477,11 @@ export default { name, dependsOn, init };
 `;
 }
 
-function inlineScriptSharedModules(
-  config: DocConfig = {}
-): SharedInlineScriptModule[] {
-  const inlineScript = runtimeOption(config, 'inlineScript');
+function vpScriptSharedModules(config: DocConfig = {}): SharedVpScriptModule[] {
+  const vpScript = runtimeOption(config, 'vpScript');
   const shared =
-    inlineScript && typeof inlineScript === 'object'
-      ? (inlineScript as UnknownRecord).shared
+    vpScript && typeof vpScript === 'object'
+      ? (vpScript as UnknownRecord).shared
       : [];
   const configured = Array.isArray(shared)
     ? shared
@@ -495,30 +491,30 @@ function inlineScriptSharedModules(
     : [];
 
   return Array.from(
-    new Set([...SHARED_INLINE_SCRIPT_MODULES, ...configured])
+    new Set([...SHARED_VP_SCRIPT_MODULES, ...configured])
   ).sort();
 }
 
-function isSharedInlineScriptModule(
+function isSharedVpScriptModule(
   value: string,
-  sharedModules: SharedInlineScriptModule[] = SHARED_INLINE_SCRIPT_MODULES
-): value is SharedInlineScriptModule {
+  sharedModules: SharedVpScriptModule[] = SHARED_VP_SCRIPT_MODULES
+): value is SharedVpScriptModule {
   return sharedModules.includes(value);
 }
 
-function sharedInlineExportName(moduleName: SharedInlineScriptModule): string {
+function sharedVpExportName(moduleName: SharedVpScriptModule): string {
   return `__vp_${moduleName.replace(/[^a-zA-Z0-9_$]/g, '_')}_${contentHash(moduleName)}`;
 }
 
-interface InlineImportBinding {
+interface VpImportBinding {
   imported: string;
   local: string;
 }
 
-interface ParsedInlineImportClause {
+interface ParsedVpImportClause {
   defaultName: string;
   namespaceName: string;
-  named: InlineImportBinding[];
+  named: VpImportBinding[];
 }
 
 function splitImportClause(value: string): string[] {
@@ -543,7 +539,7 @@ function splitImportClause(value: string): string[] {
   return parts;
 }
 
-function parseNamedImportBindings(value: string): InlineImportBinding[] {
+function parseNamedImportBindings(value: string): VpImportBinding[] {
   const body = value.trim().replace(/^\{/, '').replace(/\}$/, '');
   if (!body.trim()) return [];
 
@@ -561,8 +557,8 @@ function parseNamedImportBindings(value: string): InlineImportBinding[] {
     .filter((item) => item.imported && item.local);
 }
 
-function parseInlineImportClause(clause: string): ParsedInlineImportClause {
-  const result: ParsedInlineImportClause = {
+function parseVpImportClause(clause: string): ParsedVpImportClause {
+  const result: ParsedVpImportClause = {
     defaultName: '',
     namespaceName: '',
     named: [],
@@ -587,39 +583,39 @@ function parseInlineImportClause(clause: string): ParsedInlineImportClause {
   return result;
 }
 
-function rewriteSharedInlineScriptImports(
+function rewriteSharedVpScriptImports(
   code: string,
-  sharedInlineModules: SharedInlineScriptModule[] = SHARED_INLINE_SCRIPT_MODULES
+  sharedVpModules: SharedVpScriptModule[] = SHARED_VP_SCRIPT_MODULES
 ): {
   code: string;
-  sharedModules: SharedInlineScriptModule[];
+  sharedVpModules: SharedVpScriptModule[];
 } {
-  const sharedModules = new Set<SharedInlineScriptModule>();
+  const sharedVpModuleSet = new Set<SharedVpScriptModule>();
   let index = 0;
 
   const rewritten = code.replace(
     IMPORT_STATEMENT_RE,
     (statement, indent, rawClause, _quote, source) => {
-      if (!isSharedInlineScriptModule(source, sharedInlineModules)) {
+      if (!isSharedVpScriptModule(source, sharedVpModules)) {
         return statement;
       }
-      sharedModules.add(source);
+      sharedVpModuleSet.add(source);
 
-      const exportName = sharedInlineExportName(source);
+      const exportName = sharedVpExportName(source);
       const tempName = `__vp_shared_${index++}`;
       const clause = String(rawClause || '').trim();
 
       if (!clause) {
-        return `${indent}import { ${exportName} as ${tempName} } from '${SHARED_INLINE_SCRIPT_RUNTIME_ID}';`;
+        return `${indent}import { ${exportName} as ${tempName} } from '${SHARED_VP_SCRIPT_RUNTIME_ID}';`;
       }
 
-      const parsed = parseInlineImportClause(clause);
+      const parsed = parseVpImportClause(clause);
       if (parsed.namespaceName) {
-        return `${indent}import { ${exportName} as ${parsed.namespaceName} } from '${SHARED_INLINE_SCRIPT_RUNTIME_ID}';`;
+        return `${indent}import { ${exportName} as ${parsed.namespaceName} } from '${SHARED_VP_SCRIPT_RUNTIME_ID}';`;
       }
 
       const lines = [
-        `${indent}import { ${exportName} as ${tempName} } from '${SHARED_INLINE_SCRIPT_RUNTIME_ID}';`,
+        `${indent}import { ${exportName} as ${tempName} } from '${SHARED_VP_SCRIPT_RUNTIME_ID}';`,
       ];
 
       if (parsed.defaultName) {
@@ -643,14 +639,14 @@ function rewriteSharedInlineScriptImports(
 
   return {
     code: rewritten,
-    sharedModules: Array.from(sharedModules).sort(),
+    sharedVpModules: Array.from(sharedVpModuleSet).sort(),
   };
 }
 
 function createPageScripts(
   source: SourcePage,
   scripts: string[] = [],
-  sharedInlineModules: SharedInlineScriptModule[] = SHARED_INLINE_SCRIPT_MODULES
+  sharedVpModules: SharedVpScriptModule[] = SHARED_VP_SCRIPT_MODULES
 ): PageScriptAsset[] {
   const blocks = scripts.map((script) => script.trim()).filter(Boolean);
   if (!blocks.length) return [];
@@ -658,13 +654,13 @@ function createPageScripts(
   const code = `${blocks
     .map((script, index) => `// vp-script ${index + 1}\n${script}`)
     .join('\n\n')}\n`;
-  const rewritten = rewriteSharedInlineScriptImports(code, sharedInlineModules);
+  const rewritten = rewriteSharedVpScriptImports(code, sharedVpModules);
 
   return [
     {
       rel: pageScriptRel(source.rel, rewritten.code),
       code: rewritten.code,
-      sharedModules: rewritten.sharedModules,
+      sharedVpModules: rewritten.sharedVpModules,
     },
   ];
 }
@@ -769,7 +765,7 @@ async function writePageScripts(
         platform: 'browser',
         target: 'es2020',
         write: false,
-        external: [SHARED_INLINE_SCRIPT_RUNTIME_ID],
+        external: [SHARED_VP_SCRIPT_RUNTIME_ID],
         stdin: {
           contents: script.code,
           loader: 'js',
@@ -898,13 +894,13 @@ function pageComponentScripts(
   );
 }
 
-function pageSharedInlineModules(
+function pageSharedVpModules(
   pages: RenderedPage[] = []
-): SharedInlineScriptModule[] {
+): SharedVpScriptModule[] {
   return Array.from(
     new Set(
       pages.flatMap((page) =>
-        (page.scripts || []).flatMap((script) => script.sharedModules || [])
+        (page.scripts || []).flatMap((script) => script.sharedVpModules || [])
       )
     )
   ).sort();
@@ -937,13 +933,13 @@ function renderSource(
   const env = {
     file: source.file,
     components: new Set<string>(),
-    inlineScripts: [] as string[],
+    vpScripts: [] as string[],
     config,
   };
   const rendered = md.render(source.markdown, env);
-  const sharedInlineModules = inlineScriptSharedModules(config);
-  const scripts = isInlineScriptEnabled()
-    ? createPageScripts(source, env.inlineScripts, sharedInlineModules)
+  const sharedVpModules = vpScriptSharedModules(config);
+  const scripts = isVpScriptEnabled()
+    ? createPageScripts(source, env.vpScripts, sharedVpModules)
     : [];
   const body = injectLlmsControls(
     cleanHtml(rendered),
@@ -997,7 +993,7 @@ function renderSource(
       languages,
       pageLayout,
       searchEnabled: isSearchEnabled(config),
-      runtimeImportMap: scripts.some((script) => script.sharedModules.length),
+      runtimeImportMap: scripts.some((script) => script.sharedVpModules.length),
       scripts: scripts.map((script) => script.rel),
       footerScript,
     }),
@@ -1164,7 +1160,7 @@ export async function build({
     languages,
     menuItems,
     sidebarItems,
-    sharedInlineModules: pageSharedInlineModules(pages),
+    sharedVpModules: pageSharedVpModules(pages),
   });
   if (isSearchEnabled(config)) await writeSearchIndex(publicDir, pages);
   if (isSitemapEnabled(config)) await writeSitemap(outputDir, pages, config);

@@ -1,24 +1,24 @@
 # create-vanilla-press
 
-A lightweight npm create scaffold for vanilla-press, built from the existing documentation project template.
+A lightweight npm create scaffold for [vanilla-press](https://npmjs.com/package/vanilla-press), built from the vanilla-press project.
 
-- [README 中文](README_zh.md)
+- [中文](README_zh.md)
 
 ## Overview
 
-`create-vanilla-press` scaffolds a vanilla-press project that converts Markdown files under `docs/` into deployable static HTML pages in `dist/`.
+`create-vanilla-press` scaffolds a vanilla-press project.
 
-It uses a split architecture:
+It is a lightweight, flexible, and highly customizable static documentation generator.
 
-- Build-time rendering for markdown parsing and page generation.
-- Runtime enhancement for interactive UI components.
+> Build what you need. Use what you want. Control what you ship.
 
 ## Features
 
-- Native only: no framework runtime dependency.
-- Lightweight: small and simple static output.
-- Personalized: easily customize layouts, styles, and components.
-- Extensible: container components with runtime enhancement.
+- Purely vanilla, no framework lock-in.
+- Lightweight, with a small output size.
+- Customizable, with support for custom layouts, styles, and components.
+- Flexible, with support for custom runtime features.
+- Extensible with dependency management, vp-script, and runtime enhancements.
 
 ## Installation
 

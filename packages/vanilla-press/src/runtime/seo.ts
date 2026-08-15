@@ -3,14 +3,11 @@ import { jsx } from 'vanilla-signal';
 
 import type { DocConfig, RuntimePage } from '../types.ts';
 import { isSeoEnabled } from '../utilities/features.ts';
-import { normalizeSiteName } from '../utilities/page.ts';
+import { documentTitle } from '../utilities/page.ts';
 import { toText } from '../utilities/string.ts';
 
 function pageTitle(config: DocConfig = {}, page: RuntimePage = {}): string {
-  const title = String(page.seo?.title || page.title || '').trim();
-  return title
-    ? `${title} - ${normalizeSiteName(config)}`
-    : normalizeSiteName(config);
+  return documentTitle(page.seo?.title || page.title, config, page.rel);
 }
 
 function syncMeta(name: string, content: unknown): void {

@@ -60,6 +60,32 @@ export default {
 } satisfies MarkdownComponentDefinition;
 ```
 
+Named exports are also supported. VanillaPress resolves component modules in this order:
+
+```typescript
+// Option 1: default component object
+export default {
+  name: 'badge',
+  install() {},
+  init() {},
+} satisfies MarkdownComponentDefinition;
+
+// Option 2: exported component object
+export const component = {
+  name: 'badge',
+  install() {},
+  init() {},
+} satisfies MarkdownComponentDefinition;
+
+// Option 3: named component fields
+export const name = 'badge';
+export const dependsOn = ['tabs'];
+export function install(md, context) {}
+export function init(root, config) {}
+```
+
+Component names must match `/^[A-Za-z][\w-]*$/` and must be unique within `vp/components/`.
+
 ## Markdown Usage
 
 ```markdown
@@ -70,13 +96,17 @@ The build-time `install` function registers Markdown syntax and calls `markCompo
 
 Static npm imports used by the component `init` code are bundled into that component script. They are not bundled into the global `runtime.js`.
 
+If a component does not provide `init`, it only participates in Markdown rendering and does not generate a browser script.
+
 ## Runtime Rules
 
 - The rendered root element must include `data-doc-component="<name>"`.
-- Runtime code must only scan inside the provided `root`.
+- `init(root, config)` receives the current document root and the site config.
+- Runtime code must only scan inside the provided `root` and should not globally mutate unrelated nodes.
 - Runtime code must skip elements already marked with `data-doc-ready="true"`.
 - After initialization, mark the element with `data-doc-ready="true"`.
 - Use `dependsOn` when a component needs another component initialized first.
+- If a component module provides `init`, that same module is bundled for the browser. Keep top-level code and top-level static imports browser-compatible.
 
 Example with dependency:
 

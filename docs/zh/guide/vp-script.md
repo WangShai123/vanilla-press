@@ -1,6 +1,6 @@
 # 内联脚本
 
-`inline-script` 用于在某个 Markdown 页面内编写当前页面专用的 JavaScript。
+`vp-script` 用于在某个 Markdown 页面内编写当前页面专用的 JavaScript。
 
 构建时，`vanilla-press` 会把 `vp-script` 代码块从正文中移除，合并为一个独立的页面脚本文件，并只在当前页面 HTML 中引用。
 
@@ -59,13 +59,13 @@ docs/zh/guide/api.md
 构建后会输出当前页面专用脚本：
 
 ```text
-dist/zh/guide/xx.hash.js
+public/zh/guide/api.hash.js
 ```
 
 当前页面 HTML 会自动引用它：
 
 ```html
-<script type="module" src="./xx.hash.js"></script>
+<script type="module" src="../../public/zh/guide/api.hash.js"></script>
 ```
 
 其他页面不会引用这份脚本。
@@ -111,14 +111,14 @@ button?.addEventListener('click', () => {
 ```javascript
 export default {
   runtime: {
-    inlineScript: {
+    vpScript: {
       shared: ['lodash-es'],
     },
   },
 };
 ```
 
-`runtime.inlineScript.shared` 会和默认列表合并，不会替换默认值。
+`runtime.vpScript.shared` 会和默认列表合并，不会替换默认值。
 
 默认共享依赖白名单列表：
 
@@ -129,4 +129,4 @@ export default {
 
 ## 配置
 
-`runtime.inlineScript` 默认开启，不能关闭。公开配置只控制 `shared`，用于决定哪些本地 npm 依赖需要打包进 `runtime.js`，供页面脚本复用。
+`runtime.vpScript` 默认开启，不能关闭。公开配置只控制 `shared`，用于决定哪些本地 npm 依赖需要打包进 `runtime.js`，供页面脚本复用。

@@ -138,7 +138,7 @@ export function renderHtml({
       ? i18nRedirectBootScript(i18n, languages)
       : '';
   const htmlLang = resolveHtmlLang(rel, config, languages);
-  const htmlTitle = documentTitle(seo?.title || title, config);
+  const htmlTitle = documentTitle(seo?.title || title, config, rel);
   const importMap = renderRuntimeImportMap(rel, runtimeImportMap);
   const pageScripts = renderPageScripts(rel, scripts);
   const footerScriptHtml = renderFooterScript(config, footerScript);

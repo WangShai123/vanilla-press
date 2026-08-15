@@ -6,7 +6,7 @@ Target: Basic version feature completion.
 
 #### 1.2.10
 
-- feat: Added `inline-script` feature, supporting the use of `vp-script` in Markdown to write page-specific scripts.
+- feat: Added `vp-script` feature, supporting the use of `vp-script` in Markdown to write page-specific scripts.
 - feat: Added `footer-script` feature, supporting unified bottom script injection for all pages through `vp/config/footerScript.ts`.
 - chore: Updated dependency versions
 - fix: Narrowed types based on dependency updates for stricter and more precise type definitions
@@ -50,3 +50,12 @@ Target: Complete basic version architecture, providing more stable and easier-to
 #### 1.3.0
 
 - style: Fixed sidebar scrollbar issue
+
+#### 1.3.1
+
+- docs: Added repo README
+
+#### 1.3.2
+
+- fix: Fixed home title rule
+- docs: Updated layout/component/vp-script documentation.

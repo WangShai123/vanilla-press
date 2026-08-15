@@ -1,13 +1,18 @@
 # vanilla-press
 
-A lightweight, elegant, and highly customizable static documentation generator built on `markdown-it`.
+A lightweight, flexible, and highly customizable static documentation generator.
+
+> Build what you need. Use what you want. Control what you ship.
+
+[中文](README_zh.md)
 
 ## Features
 
-- Purely vanilla JavaScript, no runtime dependencies.
+- Purely vanilla, no framework lock-in.
 - Lightweight, with a small output size.
-- Customizable layouts, styles, and components.
-- Extensible with container components and runtime-time enhancements.
+- Customizable, with support for custom layouts, styles, and components.
+- Flexible, with support for custom runtime features.
+- Extensible with dependency management, vp-script, and runtime enhancements.
 
 ## Installation
 

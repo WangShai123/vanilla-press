@@ -60,6 +60,32 @@ export default {
 } satisfies MarkdownComponentDefinition;
 ```
 
+也可以使用命名导出。VanillaPress 会按下面顺序解析组件模块：
+
+```typescript
+// 方式一：默认导出组件对象
+export default {
+  name: 'badge',
+  install() {},
+  init() {},
+} satisfies MarkdownComponentDefinition;
+
+// 方式二：导出 component 对象
+export const component = {
+  name: 'badge',
+  install() {},
+  init() {},
+} satisfies MarkdownComponentDefinition;
+
+// 方式三：直接命名导出字段
+export const name = 'badge';
+export const dependsOn = ['tabs'];
+export function install(md, context) {}
+export function init(root, config) {}
+```
+
+组件名必须匹配 `/^[A-Za-z][\w-]*$/`，并且在 `vp/components/` 中不能重复。
+
 ## Markdown 使用
 
 ```markdown
@@ -70,13 +96,17 @@ export default {
 
 组件 `init` 中静态导入的本地 npm 依赖，会一起打包进该组件脚本文件，不会进入全局 `runtime.js`。
 
+如果组件没有 `init`，它只参与 Markdown 构建，不会生成浏览器脚本。
+
 ## 运行时规则
 
 - 渲染后的根元素必须包含 `data-doc-component="<name>"`。
-- 运行时代码只扫描传入的 `root` 范围。
+- `init(root, config)` 的 `root` 是当前文档根节点，`config` 是站点配置。
+- 运行时代码只扫描传入的 `root` 范围，不要默认全局操作不相关节点。
 - 已标记 `data-doc-ready="true"` 的元素必须跳过。
 - 初始化完成后，需要写入 `data-doc-ready="true"`。
 - 如果组件依赖其他组件先初始化，通过 `dependsOn` 声明。
+- 组件模块如果提供 `init`，同一个模块会被打包到浏览器侧；模块顶层代码和顶层静态 import 需要保持浏览器可运行。
 
 依赖示例：
 

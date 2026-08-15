@@ -1,6 +1,6 @@
-# Inline Script
+# VP Script
 
-`inline-script` lets a Markdown page define JavaScript that belongs only to that page.
+`vp-script` lets a Markdown page define JavaScript that belongs only to that page.
 
 During build, `vanilla-press` removes `vp-script` code blocks from the rendered content, merges them into a standalone page script file, and references that file only from the current page HTML.
 
@@ -59,13 +59,13 @@ docs/en/guide/api.md
 the build emits a page-only script:
 
 ```text
-dist/en/guide/xx.hash.js
+public/en/guide/api.hash.js
 ```
 
 The current page HTML references it automatically:
 
 ```html
-<script type="module" src="./xx.hash.js"></script>
+<script type="module" src="../../public/en/guide/api.hash.js"></script>
 ```
 
 Other pages do not reference this script.
@@ -111,14 +111,14 @@ Users can extend the shared dependency whitelist in `vp/config/config.ts`:
 ```javascript
 export default {
   runtime: {
-    inlineScript: {
+    vpScript: {
       shared: ['lodash-es'],
     },
   },
 };
 ```
 
-`runtime.inlineScript.shared` is merged with the default list. It does not replace the defaults.
+`runtime.vpScript.shared` is merged with the default list. It does not replace the defaults.
 
 Default shared dependency whitelist:
 
@@ -129,4 +129,4 @@ Default shared dependency whitelist:
 
 ## Configuration
 
-`runtime.inlineScript` is enabled by default and cannot be disabled. The public configuration only controls `shared`, which lets you decide which local npm dependencies should be bundled into `runtime.js` for reuse by page scripts.
+`runtime.vpScript` is enabled by default and cannot be disabled. The public configuration only controls `shared`, which lets you decide which local npm dependencies should be bundled into `runtime.js` for reuse by page scripts.

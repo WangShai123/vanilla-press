@@ -11,10 +11,12 @@ export default {
     'Components List': '组件列表',
     Documentation: '文档中心',
     Contributors: '贡献者',
+    Features: '特性',
     sidebar: {
+      layoutApi: '布局 API',
       homeLayout: '首页布局',
-      config: '配置',
-      inlineScript: '内联脚本',
+      componentApi: '组件 API',
+      vpScript: 'VP 脚本',
       footerScript: '页脚脚本',
       highlight: '代码高亮',
       locale: '国际化',
@@ -53,9 +55,10 @@ export default {
   },
   en: {
     sidebar: {
-      homeLayout: 'Home Layout',
-      config: 'Config',
-      inlineScript: 'Inline Script',
+      layoutApi: '布局 API',
+      homeLayout: '首页布局',
+      componentApi: '组件 API',
+      vpScript: 'VP Script',
       footerScript: 'Footer Script',
       highlight: 'Highlight',
       locale: 'Locale',
