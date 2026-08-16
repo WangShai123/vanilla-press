@@ -23,7 +23,7 @@ vanilla-press-repo/
 
 - `npm install --workspace vanilla-press`：安装开发环境依赖。
 - `npm run build`：在仓库根目录打包官网，读取 `docs/`、`vp/` 和 `assets/`，输出到 `dist/`。
-- `npm run dev`：监听 `docs/` 和 `vp/`，自动重新构建官网。
+- `npm run dev`：启动官网本地预览服务，监听 `docs/`、`vp/` 和 `assets/` 并自动刷新页面。
 - `npm run check`：格式、lint、类型检查。
 - `npm run test`：运行核心包测试。
 - `npm run sync:create-template`：把根目录 `docs/` 和 `vp/` 同步到 `packages/create-vanilla-press/template/`。

@@ -26,7 +26,7 @@ npm run dev
 ## 构建
 
 - `npm run build`: 一次性构建。
-- `npm run dev`: 监听模式，自动重新构建。
+- `npm run dev`: 启动本地预览服务，并在变更后自动刷新页面。
 
 `vanilla-press` 会读取 `docs/` 中的源码文件，并将生成后的站点输出到 `dist/`。
 

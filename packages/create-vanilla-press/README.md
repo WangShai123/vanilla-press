@@ -31,7 +31,7 @@ npm install
 ## Build & Development
 
 - `npm run build`: one-time build.
-- `npm run dev`: watch mode with automatic rebuild.
+- `npm run dev`: start the local preview server with live reload.
 
 ## Demo
 

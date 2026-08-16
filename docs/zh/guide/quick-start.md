@@ -32,9 +32,9 @@ npm run dev
 npm run build
 ```
 
-@tab 自动构建
+@tab 本地预览
 
-基于 `nodemon` 监听 `docs/` 与 `vp/` 目录变化并自动构建。
+启动本地预览服务。`docs/`、`vp/` 和 `assets/` 目录变化后会重新构建，并自动刷新浏览器页面。
 
 ```bash
 npm run dev

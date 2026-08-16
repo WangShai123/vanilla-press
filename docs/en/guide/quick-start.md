@@ -32,9 +32,9 @@ The build command reads `docs/**/*.md`, `vp/`, and `assets/`, outputs pages to `
 npm run build
 ```
 
-@tab Watch Build
+@tab Preview
 
-Use `nodemon` to watch changes under `docs/` and `vp/`, then rebuild automatically.
+Start the local preview server. Changes under `docs/`, `vp/`, and `assets/` rebuild the site and refresh the browser automatically.
 
 ```bash
 npm run dev

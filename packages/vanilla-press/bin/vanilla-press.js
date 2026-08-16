@@ -1,19 +1,15 @@
 #!/usr/bin/env node
 
-import { spawn } from 'child_process';
-import { createRequire } from 'module';
 import path from 'path';
 import process from 'process';
 import { fileURLToPath, pathToFileURL } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(__dirname, '..');
-const currentFile = fileURLToPath(import.meta.url);
-const require = createRequire(import.meta.url);
 
-async function loadBuild() {
-  const distEntry = path.join(packageRoot, 'dist', 'build.js');
-  const sourceEntry = path.join(packageRoot, 'src', 'build.ts');
+async function loadModule(name) {
+  const distEntry = path.join(packageRoot, 'dist', `${name}.js`);
+  const sourceEntry = path.join(packageRoot, 'src', `${name}.ts`);
   const isInstalledPackage = packageRoot
     .split(path.sep)
     .includes('node_modules');
@@ -35,44 +31,17 @@ function printHelp() {
   vanilla-press dev [inputDir] [outputDir]\n`);
 }
 
-function quoteArg(value) {
-  return JSON.stringify(value);
-}
-
-function runDev(args) {
-  const inputDir = args[0] || 'docs';
-  const outputDir = args[1] || 'dist';
-  const nodemonBin = require.resolve('nodemon/bin/nodemon.js');
-  const command = [process.execPath, currentFile, 'build', ...args]
-    .map(quoteArg)
-    .join(' ');
-  const child = spawn(
-    process.execPath,
-    [
-      nodemonBin,
-      '--watch',
-      inputDir,
-      '--watch',
-      'vp',
-      '--ext',
-      'ts,js,md,css',
-      '--ignore',
-      outputDir,
-      '--exec',
-      command,
-    ],
-    { stdio: 'inherit' }
-  );
-
-  child.on('exit', (code, signal) => {
-    if (signal) process.kill(process.pid, signal);
-    else process.exitCode = code || 0;
+async function runBuild(args) {
+  const { build } = await loadModule('build');
+  await build({
+    inputDir: args[0],
+    outputDir: args[1],
   });
 }
 
-async function runBuild(args) {
-  const { build } = await loadBuild();
-  await build({
+async function runDev(args) {
+  const { dev } = await loadModule('dev');
+  await dev({
     inputDir: args[0],
     outputDir: args[1],
   });
@@ -93,7 +62,7 @@ async function main(args) {
   }
 
   if (command === 'dev') {
-    runDev(rest);
+    await runDev(rest);
     return;
   }
 

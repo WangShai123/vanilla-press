@@ -59,3 +59,7 @@ Target: Complete basic version architecture, providing more stable and easier-to
 
 - fix: Fixed home title rule
 - docs: Updated layout/component/vp-script documentation.
+
+#### 1.4.0
+
+- feat: Added built-in preview server and auto-refresh feature, default port is 3333

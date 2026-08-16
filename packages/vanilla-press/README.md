@@ -26,7 +26,7 @@ npm run dev
 ## Build
 
 - `npm run build`: one-time build.
-- `npm run dev`: watch mode with automatic rebuild.
+- `npm run dev`: start the local preview server with live reload.
 
 `vanilla-press` reads source files from `docs/` and writes the generated site to `dist/`.
 

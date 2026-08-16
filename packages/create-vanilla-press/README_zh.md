@@ -31,7 +31,7 @@ npm install
 ## 构建命令
 
 - `npm run build`：一次性构建。
-- `npm run dev`：监听变更并自动构建。
+- `npm run dev`：启动本地预览服务，并在变更后自动刷新页面。
 
 ## 预览
 
