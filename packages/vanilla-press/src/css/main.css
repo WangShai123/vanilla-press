@@ -14,12 +14,12 @@
   gap: 36px;
 }
 
-.doc-main.has-aside > .j-content {
+.doc-main.has-aside>.j-content {
   grid-column: 1;
   grid-row: 1;
 }
 
-.doc-main > div {
+.doc-main>div {
   flex: 1;
   min-width: 0;
 }
@@ -41,4 +41,8 @@ html.j-radius-round .doc-main .j-content {
 
 .is-desktop #global-search {
   width: 500px;
+}
+
+.j-content table {
+  margin: 0 0 var(--content-block-space);
 }

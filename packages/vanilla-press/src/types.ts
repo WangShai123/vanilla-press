@@ -262,6 +262,7 @@ export interface PageLayout {
 
 export interface ChromeOptions {
   rel: string;
+  brandHref: string;
   menuEnabled: boolean;
   searchEnabled: boolean;
   i18nEnabled: boolean;

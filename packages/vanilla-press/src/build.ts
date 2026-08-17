@@ -64,6 +64,11 @@ import {
 } from './utilities/frontmatter.ts';
 import { cleanHtml, htmlText } from './utilities/html.ts';
 import {
+  defaultLocaleRoute,
+  localeRouteEntries,
+  normalizeLocaleRoute,
+} from './utilities/i18n-routes.ts';
+import {
   injectLlmsControls,
   markdownRouteRel,
   renderLlmsTxt,
@@ -71,6 +76,7 @@ import {
 import { excerptText, pageTitle } from './utilities/page.ts';
 import {
   normalizePath,
+  relativeAsset,
   resolveDir,
   stripMdExt,
   toPosix,
@@ -919,6 +925,44 @@ function readSource(file: string, markdown: string): SourcePage {
   };
 }
 
+function rootIndexExists(sources: SourcePage[] = []): boolean {
+  return sources.some((source) => source.rel === 'index.html');
+}
+
+function localeHomeRel(
+  source: SourcePage,
+  config: DocConfig = {},
+  languages: LanguagesConfig = {},
+  hasRootIndex = false
+): string {
+  if (hasRootIndex || !isI18nEnabled(config)) return 'index.html';
+
+  const rel = normalizeLocaleRoute(source.rel);
+  const entries = localeRouteEntries(languages).sort(
+    (a, b) => b.route.length - a.route.length
+  );
+  const matched = entries.find(
+    (entry) =>
+      rel === `${entry.route}/index.html` || rel.startsWith(`${entry.route}/`)
+  );
+  const i18n = (runtimeOption(config, 'i18n') || {}) as RuntimeI18nConfig;
+  const route = matched?.route || defaultLocaleRoute(i18n, languages);
+
+  return route && route !== 'auto' ? `${route}/index.html` : 'index.html';
+}
+
+function brandHref(
+  source: SourcePage,
+  config: DocConfig = {},
+  languages: LanguagesConfig = {},
+  hasRootIndex = false
+): string {
+  return relativeAsset(
+    source.rel,
+    localeHomeRel(source, config, languages, hasRootIndex)
+  );
+}
+
 function renderSource(
   source: SourcePage,
   md: MarkdownItInstance,
@@ -928,7 +972,8 @@ function renderSource(
   componentScriptAssets: Map<string, ModuleScriptAsset>,
   layoutScriptAssets: Map<string, ModuleScriptAsset>,
   llmsConfig: UnknownRecord,
-  footerScript: FooterScriptConfig
+  footerScript: FooterScriptConfig,
+  hasRootIndex = false
 ): RenderedPage {
   const env = {
     file: source.file,
@@ -956,6 +1001,7 @@ function renderSource(
     tocEnabled: isTocEnabled(config),
     chrome: {
       rel: source.rel,
+      brandHref: brandHref(source, config, languages, hasRootIndex),
       menuEnabled: isMenuEnabled(config),
       searchEnabled: isSearchEnabled(config),
       i18nEnabled: isI18nEnabled(config),
@@ -1134,6 +1180,7 @@ export async function build({
       readSource(file, await fs.readFile(path.join(inputDir, file), 'utf8'))
     )
   );
+  const hasRootIndex = rootIndexExists(sources);
 
   await buildCss(publicDir, layouts);
   const componentScriptAssets = await buildComponentScripts(
@@ -1152,7 +1199,8 @@ export async function build({
       componentScriptAssets,
       layoutScriptAssets,
       llmsConfig,
-      footerScript
+      footerScript,
+      hasRootIndex
     )
   );
   await buildRuntime(publicDir, {

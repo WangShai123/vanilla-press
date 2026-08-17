@@ -63,3 +63,7 @@ Target: Complete basic version architecture, providing more stable and easier-to
 #### 1.4.0
 
 - feat: Added built-in preview server and auto-refresh feature, default port is 3333
+
+#### 1.4.1
+
+- fix: Fixed logo link parsing issue in multi-language environment

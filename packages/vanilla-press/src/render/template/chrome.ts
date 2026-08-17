@@ -1,5 +1,4 @@
 import type { ChromeOptions } from '../../types.ts';
-import { relativeAsset } from '../../utilities/path.ts';
 
 function renderHeaderMenu(menuEnabled: boolean): string {
   return menuEnabled
@@ -32,7 +31,7 @@ function renderDesktopAuth(authEnabled: boolean): string {
 }
 
 function renderDesktopHeader({
-  rel,
+  brandHref,
   menuEnabled,
   searchEnabled,
   i18nEnabled,
@@ -46,7 +45,7 @@ function renderDesktopHeader({
   const desktopAuth = renderDesktopAuth(authEnabled);
 
   return `<div class="doc-header-inner" data-doc-desktop-header>
-      <a class="doc-brand" data-doc-brand href="${relativeAsset(rel, 'index.html')}">Docs</a>
+      <a class="doc-brand" data-doc-brand href="${brandHref}">Docs</a>
 ${headerMenu}
       <div class="doc-header-actions">
 ${desktopSearch}
@@ -88,7 +87,7 @@ function renderMobileAuth(authEnabled: boolean): string {
 }
 
 function renderMobileHeader({
-  rel,
+  brandHref,
   menuEnabled,
   searchEnabled,
   i18nEnabled,
@@ -104,7 +103,7 @@ function renderMobileHeader({
   return `<div class="doc-mobile-header" data-doc-mobile-header hidden>
       <div class="doc-mobile-header-main">
 ${mobileMenu}
-        <a class="doc-brand" data-doc-brand href="${relativeAsset(rel, 'index.html')}">Docs</a>
+        <a class="doc-brand" data-doc-brand href="${brandHref}">Docs</a>
       </div>
       <div class="doc-mobile-header-actions">
 ${mobileSearch}

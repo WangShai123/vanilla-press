@@ -15,7 +15,7 @@ import {
 } from '../utilities/features.ts';
 import { escapeHtml } from '../utilities/html.ts';
 import { i18nRedirectBootScript } from '../utilities/i18n-routes.ts';
-import { documentTitle } from '../utilities/page.ts';
+import { documentTitle, normalizeSiteName } from '../utilities/page.ts';
 import { normalizePath, relativeAsset } from '../utilities/path.ts';
 import { renderHead } from './template/head.ts';
 import { renderRuntimeScript } from './template/runtime.ts';
@@ -107,6 +107,10 @@ function renderFooterScript(
   return `  <script${attr}>\n${escapeScriptContent(code)}\n  </script>`;
 }
 
+function delayScript(code: string, delay = 500): string {
+  return code ? `setTimeout(function(){${code}},${delay});` : '';
+}
+
 export function renderHtml({
   title,
   seo,
@@ -185,20 +189,24 @@ export function renderDefaultLocaleEntrypoint({
   footerScript = '',
 }: DefaultLocaleEntrypointOptions = {}): string {
   const i18nRedirectScript = i18nRedirectBootScript(i18n, languages);
+  const theme = runtimeOption(config, 'theme');
+  const themeDefault = isRecord(theme) ? theme.default : undefined;
+  const siteName = normalizeSiteName(config);
   const footerScriptHtml = renderFooterScript(config, footerScript);
 
   return `<!doctype html>
 <html lang="${escapeHtml(lang)}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="generator" content="vanilla-press">
-  <title>Redirecting...</title>
-  <link rel="icon" href="./public/favicon.ico">
-  <script>${i18nRedirectScript}</script>
-</head>
+${renderHead({
+  title: siteName,
+  seo: {},
+  themeEnabled: isThemeEnabled(config),
+  themeDefault,
+  i18nRedirectScript: delayScript(i18nRedirectScript),
+  cssHref: './public/styles.css',
+  faviconHref: './public/favicon.ico',
+})}
 <body>
-  <p>Redirecting...</p>
+  <div class="j-loader"><span class="loader" style="--loader-width:4px;--loader-size:4rem;"></span></div>
 ${footerScriptHtml ? `${footerScriptHtml}\n` : ''}
 </body>
 </html>
