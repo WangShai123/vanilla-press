@@ -10,7 +10,7 @@
   font-size: var(--font-size-sm);
 }
 
-.is-mobile .doc-footer {
+.mobile .doc-footer {
   justify-content: flex-start;
 }
 

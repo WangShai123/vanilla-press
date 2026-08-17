@@ -31,14 +31,10 @@ vanilla-press-repo/
 
 ## 发布
 
-发布时，在根目录按顺序执行：
-
 ```bash
 npm publish --workspace vanilla-press
 npm publish --workspace create-vanilla-press
 ```
-
-先发布 `vanilla-press`，再发布 `create-vanilla-press`。这样脚手架生成项目时写入的 `vanilla-press@^版本号` 已经存在于 npm。
 
 ## 忽略规则
 

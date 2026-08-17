@@ -30,46 +30,46 @@
   }
 }
 
-html.is-mobile [data-doc-desktop-header],
-html.is-mobile .doc-sidebar,
-html.is-mobile .doc-aside {
+html.mobile [data-doc-desktop-header],
+html.mobile .doc-sidebar,
+html.mobile .doc-aside {
   display: none;
 }
 
-html.is-mobile .doc-mobile-header,
-html.is-mobile .doc-mobile-secondary {
+html.mobile .doc-mobile-header,
+html.mobile .doc-mobile-secondary {
   display: flex;
 }
 
-html.is-mobile .doc-shell {
+html.mobile .doc-shell {
   display: block;
   min-height: auto;
 }
 
-html.is-mobile .doc-main {
+html.mobile .doc-main {
   display: block;
   padding: 18px;
 }
 
-html.is-mobile .doc-main .j-content {
+html.mobile .doc-main .j-content {
   padding: 22px 18px;
 }
 
-html.is-mobile .doc-prev-next {
+html.mobile .doc-prev-next {
   flex-direction: column;
 }
 
-html.is-desktop .doc-mobile-header,
-html.is-desktop .doc-mobile-secondary {
+html.desktop .doc-mobile-header,
+html.desktop .doc-mobile-secondary {
   display: none !important;
 }
 
-html.is-mobile .j-mobile-menu .menu .menu-item,
-html.is-mobile .doc-nav-title {
+html.mobile .j-mobile-menu .menu .menu-item,
+html.mobile .doc-nav-title {
   font-size: 1rem;
 }
 
-html.is-mobile .j-toc .toc-link {
+html.mobile .j-toc .toc-link {
   font-size: 1rem;
   padding-block: 0.75rem;
 }

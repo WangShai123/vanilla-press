@@ -254,8 +254,8 @@ function watchDynamicComponents(
 
 function syncViewportClasses(mobile: boolean): void {
   const html = document.documentElement;
-  html.classList.toggle('is-mobile', mobile);
-  html.classList.toggle('is-desktop', !mobile);
+  html.classList.toggle('mobile', mobile);
+  html.classList.toggle('desktop', !mobile);
 }
 
 export function initDocPage(options: DocPageOptions = {}): void {

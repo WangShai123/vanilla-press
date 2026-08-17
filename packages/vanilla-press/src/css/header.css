@@ -99,8 +99,8 @@
   padding: 0 8px;
 }
 
-.is-desktop .doc-theme-button,
-.is-desktop .doc-auth-button {
+.desktop .doc-theme-button,
+.desktop .doc-auth-button {
   padding: 0 8px;
   --btn-font-weight: 400;
 }

@@ -67,3 +67,7 @@ Target: Complete basic version architecture, providing more stable and easier-to
 #### 1.4.1
 
 - fix: Fixed logo link parsing issue in multi-language environment
+
+#### 1.4.2
+
+- fix: Fixed device mode issue
