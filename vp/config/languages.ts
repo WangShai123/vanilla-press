@@ -55,9 +55,9 @@ export default {
   },
   en: {
     sidebar: {
-      layoutApi: '布局 API',
-      homeLayout: '首页布局',
-      componentApi: '组件 API',
+      layoutApi: 'Layout API',
+      homeLayout: 'Home Layout',
+      componentApi: 'Component API',
       vpScript: 'VP Script',
       footerScript: 'Footer Script',
       highlight: 'Highlight',

@@ -4,8 +4,6 @@
 
 ## Tabs
 
-内置组件，默认启用。
-
 :::tabs
 @tab JavaScript
 
@@ -44,8 +42,6 @@ export function toHtml(file) {
 :::
 
 ## Accordion
-
-内置组件，默认启用。
 
 :::tabs
 @tab 示例
@@ -90,8 +86,6 @@ export function toHtml(file) {
 - `collapsible` 是否允许折叠所有面板，不写即为 false
 
 ## Offcanvas
-
-内置组件，默认启用。
 
 :::tabs
 @tab 示例
@@ -146,8 +140,6 @@ export function toHtml(file) {
 - `direction` 面板方向，写法 `:::offcanvas [按钮文本] direction`，支持 `left`、`right`、`top`、`bottom`，默认值 `right`
 
 ## Tip
-
-内置组件，默认启用。
 
 :::tabs
 @tab 示例
@@ -263,3 +255,84 @@ export default {
   copy: '<path d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path>',
 };
 ```
+
+## Badge
+
+:::tabs
+@tab 示例
+
+<p class="flex-container">
+
+::: badge
+1.0
+:::
+
+::: badge reverse
+1.0
+:::
+
+::: badge primary
+1.0
+:::
+
+::: badge success
+1.0
+:::
+
+::: badge warning
+1.0
+:::
+
+::: badge danger
+1.0
+:::
+
+::: badge error
+1.0
+:::
+</p>
+
+<div class="flex-container">
+
+::: badge default sm
+1.0
+:::
+
+::: badge reverse sm
+1.0
+:::
+
+::: badge primary sm
+1.0
+:::
+
+::: badge success sm
+1.0
+:::
+
+::: badge warning sm
+1.0
+:::
+
+::: badge danger sm
+1.0
+:::
+
+::: badge error sm
+1.0
+:::
+</div>
+
+@tab 语法
+
+```markdown
+::: badge [theme] [size]
+text
+:::
+```
+
+:::
+
+`theme` 默认值 `default`，可选：`reverse`、`primary`、`success`、`warning`、`danger`、`error`
+
+`size` 默认值 `md`，可选：`sm`、`lg`

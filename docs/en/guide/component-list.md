@@ -141,8 +141,6 @@ export function toHtml(file) {
 
 ## Tip
 
-内置组件，默认启用。
-
 :::tabs
 @tab Demo
 
@@ -257,3 +255,84 @@ export default {
   copy: '<path d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path>',
 };
 ```
+
+## Badge
+
+:::tabs
+@tab Demo
+
+<p class="flex-container">
+
+::: badge
+1.0
+:::
+
+::: badge reverse
+1.0
+:::
+
+::: badge primary
+1.0
+:::
+
+::: badge success
+1.0
+:::
+
+::: badge warning
+1.0
+:::
+
+::: badge danger
+1.0
+:::
+
+::: badge error
+1.0
+:::
+</p>
+
+<div class="flex-container">
+
+::: badge default sm
+1.0
+:::
+
+::: badge reverse sm
+1.0
+:::
+
+::: badge primary sm
+1.0
+:::
+
+::: badge success sm
+1.0
+:::
+
+::: badge warning sm
+1.0
+:::
+
+::: badge danger sm
+1.0
+:::
+
+::: badge error sm
+1.0
+:::
+</div>
+
+@tab Syntax
+
+```markdown
+::: badge [theme] [size]
+text
+:::
+```
+
+:::
+
+`theme` default `default`，optional：`reverse`、`primary`、`success`、`warning`、`danger`、`error`
+
+`size` default `md`，optional：`sm`、`lg`

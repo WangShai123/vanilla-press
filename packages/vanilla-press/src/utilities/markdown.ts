@@ -49,6 +49,7 @@ export interface MarkdownRuntime {
     rules: Renderer['rules'];
   };
   render(content: string, env?: MarkdownEnv): string;
+  renderInline(content: string, env?: MarkdownEnv): string;
 }
 
 export function markComponent(

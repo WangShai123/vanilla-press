@@ -71,3 +71,7 @@ Target: Complete basic version architecture, providing more stable and easier-to
 #### 1.4.2
 
 - fix: Fixed device mode issue
+
+#### 1.4.3
+
+- feat: Added Badge component

@@ -1,5 +1,6 @@
 import accordion from 'vanilla-jui/src/css/accordion.css';
 import animation from 'vanilla-jui/src/css/animation.css';
+import badge from 'vanilla-jui/src/css/badge.css';
 import button from 'vanilla-jui/src/css/button.css';
 import content from 'vanilla-jui/src/css/content.css';
 import drop from 'vanilla-jui/src/css/drop.css';
@@ -17,6 +18,7 @@ import table from 'vanilla-jui/src/css/table.css';
 import tabs from 'vanilla-jui/src/css/tabs.css';
 import themePalette from 'vanilla-jui/src/css/theme-palette.css';
 import accordionTheme from 'vanilla-jui/src/css/themes/default/accordion.css';
+import badgeTheme from 'vanilla-jui/src/css/themes/default/badge.css';
 import buttonTheme from 'vanilla-jui/src/css/themes/default/button.css';
 import contentTheme from 'vanilla-jui/src/css/themes/default/content.css';
 import dropTheme from 'vanilla-jui/src/css/themes/default/drop.css';
@@ -45,6 +47,8 @@ export default [
   contentTheme,
   animation,
   status,
+  badge,
+  badgeTheme,
   button,
   buttonTheme,
   menu,
