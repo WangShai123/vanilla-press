@@ -96,20 +96,20 @@ export function installTip(md: MarkdownRuntime): void {
     const token = tokens[idx];
     const tip = parseTipInfo(token.meta?.name, token.info);
 
-    return `<div class="j-tip is-${typeClass(tip.type)}" data-doc-component="tip" data-tip-icon="${typeIcon(tip.type)}">
-  <div class="tip-icon" data-doc-tip-icon></div>
-  <div class="tip-title" data-doc-tip-title>${escapeAttr(tip.title)}</div>
+    return `<div class="j-tip is-${typeClass(tip.type)}" data-vp-component="tip" data-tip-icon="${typeIcon(tip.type)}">
+  <div class="tip-icon" data-vp-tip-icon></div>
+  <div class="tip-title" data-vp-tip-title>${escapeAttr(tip.title)}</div>
   <div class="tip-content">${md.render(token.content, env)}</div>
 </div>`;
   };
 }
 
 export function initTip(root: Document | Element = document): void {
-  all<HTMLElement>('[data-doc-component="tip"]', root).forEach((container) => {
+  all<HTMLElement>('[data-vp-component="tip"]', root).forEach((container) => {
     if (container.dataset.docReady === 'true') return;
 
-    const iconTarget = q<HTMLElement>('[data-doc-tip-icon]', container);
-    const title = q<HTMLElement>('[data-doc-tip-title]', container);
+    const iconTarget = q<HTMLElement>('[data-vp-tip-icon]', container);
+    const title = q<HTMLElement>('[data-vp-tip-title]', container);
 
     if (iconTarget) {
       iconTarget.textContent = '';

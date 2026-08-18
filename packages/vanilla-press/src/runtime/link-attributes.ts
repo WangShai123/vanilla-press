@@ -5,9 +5,9 @@ import './icons.ts';
 
 const EXTERNAL_LINK_SELECTOR = 'a[href^="http://"], a[href^="https://"]';
 const LINK_SCOPE_SELECTOR =
-  '[data-doc-editor], .j-content, [data-doc-menu], [data-doc-sidebar]';
-const EXTERNAL_LINK_READY_ATTR = 'data-doc-external-link';
-const EXTERNAL_LINK_ICON_ATTR = 'data-doc-external-link-icon';
+  '[data-vp-editor], .j-content, [data-vp-menu], [data-vp-sidebar]';
+const EXTERNAL_LINK_READY_ATTR = 'data-vp-external-link';
+const EXTERNAL_LINK_ICON_ATTR = 'data-vp-external-link-icon';
 
 let observerStarted = false;
 

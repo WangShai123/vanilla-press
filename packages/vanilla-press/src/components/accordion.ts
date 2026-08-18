@@ -52,7 +52,7 @@ export function installAccordion(md: MarkdownRuntime): void {
         : parseAccordion(token.content);
 
     const attrs = [
-      'data-doc-component="accordion"',
+      'data-vp-component="accordion"',
       parseFlag(info, 'multiple') ? 'data-multiple="true"' : '',
       parseFlag(info, 'collapsible') ? 'data-collapsible="true"' : '',
     ]
@@ -62,7 +62,7 @@ export function installAccordion(md: MarkdownRuntime): void {
     const panels = items
       .map(
         (item) => `
-          <div data-doc-accordion-item data-title="${escapeAttr(item.title)}">
+          <div data-vp-accordion-item data-title="${escapeAttr(item.title)}">
             ${md.render(item.content, env)}
           </div>`
       )
@@ -73,12 +73,12 @@ export function installAccordion(md: MarkdownRuntime): void {
 }
 
 export function initAccordion(root: Document | Element = document): void {
-  all<HTMLElement>('[data-doc-component="accordion"]', root).forEach(
+  all<HTMLElement>('[data-vp-component="accordion"]', root).forEach(
     (container) => {
       if (container.dataset.docReady === 'true') return;
 
       const panels = all<HTMLElement>(
-        ':scope > [data-doc-accordion-item]',
+        ':scope > [data-vp-accordion-item]',
         container
       );
       if (!panels.length) return;

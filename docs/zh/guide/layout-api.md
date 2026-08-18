@@ -166,7 +166,7 @@ layouts:
 `runtime.prevNext` 只会渲染到当前布局显式声明的插槽中：
 
 ```html
-<div data-doc-prev-next></div>
+<div data-vp-prev-next></div>
 ```
 
 默认文档布局已经包含该插槽。自定义布局如果不需要分页导航，可以不写这个插槽；如果需要，放在希望出现分页导航的位置即可。
@@ -181,13 +181,13 @@ layouts:
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">
     <div data-reveal>
-      <article class="j-content is-sm" data-doc-editor>{{{ content }}}</article>
+      <article class="j-content is-sm" data-vp-editor>{{{ content }}}</article>
       {{{ slots.prevNext }}}
     </div>
     {{{ slots.aside }}}
   </section>
 </main>
-<footer class="doc-footer" data-doc-footer></footer>
+<footer class="doc-footer" data-vp-footer></footer>
 ```
 
 如果新布局仍然是文档页，可以从这个结构复制后调整。`{{{ slots.header }}}` 和 `{{{ slots.secondary }}}` 都应该放在 `.doc-header` 内部，因为运行时会把 `.doc-mobile-header` 和 `.doc-mobile-secondary` 都挂载为 `.doc-header` 的子元素。如果新布局是首页或营销页，通常只在 `.doc-header` 内保留 `{{{ slots.header }}}`，不使用 `{{{ slots.secondary }}}`，然后自行设计页面主体。

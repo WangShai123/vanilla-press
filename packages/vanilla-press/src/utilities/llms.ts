@@ -191,7 +191,7 @@ function setBooleanData(element: Element, name: string, value: boolean): void {
 function createIconSlot(document: Document, name: string): HTMLSpanElement {
   const slot = document.createElement('span');
   slot.className = 'el-prefix';
-  slot.setAttribute('data-doc-llms-icon', name);
+  slot.setAttribute('data-vp-llms-icon', name);
   return slot;
 }
 
@@ -209,7 +209,7 @@ function createLinkButton(
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'j-button is-default';
-  button.setAttribute('data-doc-llms-link', '');
+  button.setAttribute('data-vp-llms-link', '');
   button.append(
     createIconSlot(document, 'file'),
     createButtonText(document, String(labels.link || ''))
@@ -224,7 +224,7 @@ function createOptionsButton(
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'j-button is-default is-icon llms-options-trigger';
-  button.setAttribute('data-doc-llms-options-trigger', '');
+  button.setAttribute('data-vp-llms-options-trigger', '');
   button.setAttribute('aria-label', String(labels.options || ''));
   button.append(createIconSlot(document, 'arrow-down'));
   return button;
@@ -243,19 +243,19 @@ function createLlmsContainer(
   const labels = llmsContainerLabels(llmsConfig, languages, page);
   const container = document.createElement('div');
   container.className = 'llms-container';
-  container.setAttribute('data-doc-llms', '');
+  container.setAttribute('data-vp-llms', '');
   container.setAttribute(
-    'data-doc-llms-md-url',
+    'data-vp-llms-md-url',
     markdownRouteUrl(page, siteConfig)
   );
-  container.setAttribute('data-doc-llms-label-link', labels.link);
-  container.setAttribute('data-doc-llms-label-copy', labels.copy);
-  container.setAttribute('data-doc-llms-label-chatgpt', labels.chatgpt);
-  container.setAttribute('data-doc-llms-label-claude', labels.claude);
-  container.setAttribute('data-doc-llms-label-options', labels.options);
-  setBooleanData(container, 'data-doc-llms-copy', options.copy);
-  setBooleanData(container, 'data-doc-llms-chatgpt', options.chatgpt);
-  setBooleanData(container, 'data-doc-llms-claude', options.claude);
+  container.setAttribute('data-vp-llms-label-link', labels.link);
+  container.setAttribute('data-vp-llms-label-copy', labels.copy);
+  container.setAttribute('data-vp-llms-label-chatgpt', labels.chatgpt);
+  container.setAttribute('data-vp-llms-label-claude', labels.claude);
+  container.setAttribute('data-vp-llms-label-options', labels.options);
+  setBooleanData(container, 'data-vp-llms-copy', options.copy);
+  setBooleanData(container, 'data-vp-llms-chatgpt', options.chatgpt);
+  setBooleanData(container, 'data-vp-llms-claude', options.claude);
 
   if (options.link) {
     container.appendChild(createLinkButton(document, labels));

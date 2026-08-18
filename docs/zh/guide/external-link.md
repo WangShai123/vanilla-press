@@ -22,13 +22,13 @@ export default {
 
 启用后会匹配以下区域内 `href` 以 `http://` 或 `https://` 开头的链接：
 
-- `[data-doc-editor]`
-- `[data-doc-menu]`
-- `[data-doc-sidebar]`
+- `[data-vp-editor]`
+- `[data-vp-menu]`
+- `[data-vp-sidebar]`
 
 匹配到的链接会追加：
 
 - `target="_blank"`
 - `rel="noopener noreferrer"`
-- `data-doc-external-link`
+- `data-vp-external-link`
 - `external-link` 图标

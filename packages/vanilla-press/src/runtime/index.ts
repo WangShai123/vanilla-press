@@ -179,10 +179,8 @@ function resolveExecutionOrder(
 }
 
 function countPending(root: Document | Element, name: string): number {
-  return all(
-    `[data-doc-component="${name}"]:not([data-doc-ready="true"])`,
-    root
-  ).length;
+  return all(`[data-vp-component="${name}"]:not([data-vp-ready="true"])`, root)
+    .length;
 }
 
 function hasPending(root: Document | Element, names: string[]): boolean {
@@ -191,8 +189,8 @@ function hasPending(root: Document | Element, names: string[]): boolean {
 
 function nodeContainsComponents(node: Node): boolean {
   if (!(node instanceof Element)) return false;
-  if (node.hasAttribute('data-doc-component')) return true;
-  return Boolean(q('[data-doc-component]', node));
+  if (node.hasAttribute('data-vp-component')) return true;
+  return Boolean(q('[data-vp-component]', node));
 }
 
 function initComponents(

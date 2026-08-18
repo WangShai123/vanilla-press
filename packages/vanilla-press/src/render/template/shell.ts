@@ -23,14 +23,14 @@ interface ShellContextOptions {
 function renderSidebar(sidebarEnabled: boolean): string {
   return sidebarEnabled
     ? `    <aside class="doc-sidebar">
-      <nav class="doc-nav" data-doc-sidebar aria-label="文档导航"></nav>
+      <nav class="doc-nav" data-vp-sidebar aria-label="文档导航"></nav>
     </aside>`
     : '';
 }
 
 function renderToc(tocEnabled: boolean): string {
   return tocEnabled
-    ? '        <div class="doc-toc" data-doc-toc aria-label="页面目录"></div>'
+    ? '        <div class="doc-toc" data-vp-toc aria-label="页面目录"></div>'
     : '';
 }
 
@@ -38,7 +38,7 @@ function renderAside({ config, toc }: AsideOptions): string {
   return toc || config.aside?.html
     ? `      <aside class="doc-aside" data-reveal="2">
 ${toc}
-        <div class="doc-aside-custom" data-doc-aside-custom></div>
+        <div class="doc-aside-custom" data-vp-aside-custom></div>
       </aside>`
     : '';
 }
@@ -58,14 +58,14 @@ export function renderPageShell({
 ${sidebar}
     <section class="doc-main${hasAside ? ' has-aside' : ''}">
       <div data-reveal>
-        <article class="j-content is-sm" data-doc-editor>
+        <article class="j-content is-sm" data-vp-editor>
           ${body}
         </article>
       </div>
 ${aside}
     </section>
   </main>
-  <footer class="doc-footer" data-doc-footer></footer>`;
+  <footer class="doc-footer" data-vp-footer></footer>`;
 }
 
 export function createPageShellContext({
@@ -91,7 +91,7 @@ export function createPageShellContext({
       sidebar,
       toc,
       aside,
-      prevNext: '<div data-doc-prev-next></div>',
+      prevNext: '<div data-vp-prev-next></div>',
     },
   };
 }

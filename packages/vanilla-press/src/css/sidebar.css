@@ -1,12 +1,15 @@
 .doc-sidebar {
-  width: 240px;
-  min-width: 120px;
   padding: 24px 18px;
   background: var(--doc-panel);
   border-right: 1px solid var(--doc-line);
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--ui-border) transparent;
+  position: fixed;
+  width: 240px;
+  min-width: 120px;
+  height: 100vh;
+  height: 100dvh;
 }
 
 .doc-nav {
@@ -40,7 +43,7 @@
 
 .doc-nav-title:hover,
 .doc-nav-title.is-active,
-.doc-nav-item.is-active > .doc-nav-title {
+.doc-nav-item.is-active>.doc-nav-title {
   color: var(--doc-accent);
   background: var(--doc-accent-bg);
 }
@@ -60,11 +63,11 @@
   transition: transform 0.18s ease;
 }
 
-.doc-nav-item.has-children > .doc-nav-title {
+.doc-nav-item.has-children>.doc-nav-title {
   padding-right: 36px;
 }
 
-.doc-nav-item.is-collapsed > .doc-nav-toggle svg {
+.doc-nav-item.is-collapsed>.doc-nav-toggle svg {
   transform: rotate(-90deg);
 }
 

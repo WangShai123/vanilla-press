@@ -55,9 +55,9 @@ export function installOffcanvas(md: MarkdownRuntime): void {
     const direction = parseDirection(token.info);
 
     return `
-      <div class="doc-component doc-offcanvas" data-doc-component="offcanvas" data-direction="${escapeAttr(direction)}">
-        <button type="button" class="j-button is-outline" data-doc-offcanvas-trigger>${escapeAttr(title)}</button>
-        <div hidden data-doc-offcanvas-content>
+      <div class="doc-component doc-offcanvas" data-vp-component="offcanvas" data-direction="${escapeAttr(direction)}">
+        <button type="button" class="j-button is-outline" data-vp-offcanvas-trigger>${escapeAttr(title)}</button>
+        <div hidden data-vp-offcanvas-content>
           <div class="doc-offcanvas-content j-content is-sm">
             ${md.render(token.content, env)}
           </div>
@@ -67,12 +67,12 @@ export function installOffcanvas(md: MarkdownRuntime): void {
 }
 
 export function initOffcanvas(root: Document | Element = document): void {
-  all<HTMLElement>('[data-doc-component="offcanvas"]', root).forEach(
+  all<HTMLElement>('[data-vp-component="offcanvas"]', root).forEach(
     (container) => {
       if (container.dataset.docReady === 'true') return;
 
-      const trigger = q<HTMLElement>('[data-doc-offcanvas-trigger]', container);
-      const content = q<HTMLElement>('[data-doc-offcanvas-content]', container);
+      const trigger = q<HTMLElement>('[data-vp-offcanvas-trigger]', container);
+      const content = q<HTMLElement>('[data-vp-offcanvas-content]', container);
       if (!trigger || !content) return;
 
       const contentBody = content.firstElementChild;

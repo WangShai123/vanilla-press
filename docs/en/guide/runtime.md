@@ -57,7 +57,7 @@ The default export in `vp/config/config.ts` is used to configure site runtime da
 
 ## External Links
 
-`runtime.externalLink` is enabled by default. When enabled, links inside `[data-doc-editor]`, `[data-doc-menu]`, or `[data-doc-sidebar]` whose `href` starts with `http://` or `https://` receive:
+`runtime.externalLink` is enabled by default. When enabled, links inside `[data-vp-editor]`, `[data-vp-menu]`, or `[data-vp-sidebar]` whose `href` starts with `http://` or `https://` receive:
 
 - `target="_blank"`
 - `rel="noopener noreferrer"`

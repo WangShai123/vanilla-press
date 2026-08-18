@@ -46,15 +46,15 @@ export default {
     );
 
     md.renderer.rules.badge = (tokens, index) =>
-      `<span class="doc-badge" data-doc-component="badge">${escapeHtml(tokens[index].content)}</span>`;
+      `<span class="doc-badge" data-vp-component="badge">${escapeHtml(tokens[index].content)}</span>`;
   },
   init(root) {
     root
       .querySelectorAll(
-        '[data-doc-component="badge"]:not([data-doc-ready="true"])'
+        '[data-vp-component="badge"]:not([data-vp-ready="true"])'
       )
       .forEach((node) => {
-        node.setAttribute('data-doc-ready', 'true');
+        node.setAttribute('data-vp-ready', 'true');
       });
   },
 } satisfies MarkdownComponentDefinition;
@@ -100,11 +100,11 @@ If a component does not provide `init`, it only participates in Markdown renderi
 
 ## Runtime Rules
 
-- The rendered root element must include `data-doc-component="<name>"`.
+- The rendered root element must include `data-vp-component="<name>"`.
 - `init(root, config)` receives the current document root and the site config.
 - Runtime code must only scan inside the provided `root` and should not globally mutate unrelated nodes.
-- Runtime code must skip elements already marked with `data-doc-ready="true"`.
-- After initialization, mark the element with `data-doc-ready="true"`.
+- Runtime code must skip elements already marked with `data-vp-ready="true"`.
+- After initialization, mark the element with `data-vp-ready="true"`.
 - Use `dependsOn` when a component needs another component initialized first.
 - If a component module provides `init`, that same module is bundled for the browser. Keep top-level code and top-level static imports browser-compatible.
 
@@ -125,6 +125,6 @@ export default {
 
 ## Initialization Model
 
-The browser runtime merges built-in components with project components, expands dependencies, initializes in dependency order, and repeats until no pending component nodes remain. It also watches dynamically inserted DOM and initializes new `data-doc-component` nodes automatically.
+The browser runtime merges built-in components with project components, expands dependencies, initializes in dependency order, and repeats until no pending component nodes remain. It also watches dynamically inserted DOM and initializes new `data-vp-component` nodes automatically.
 
 Project component scripts are page-scoped: each page dynamically imports only the `dist/public/component-name.hash.js` files required by the project components used on that page. If a component declares `dependsOn` and the dependency is also a project component, the dependency script is loaded as well.

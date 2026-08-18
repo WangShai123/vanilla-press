@@ -336,3 +336,22 @@ text
 `theme` 默认值 `default`，可选：`reverse`、`primary`、`success`、`warning`、`danger`、`error`
 
 `size` 默认值 `md`，可选：`sm`、`lg`
+
+## Details
+
+:::tabs
+@tab 示例
+
+::: details 标题
+这是一个详情面板。
+:::
+
+@tab 语法
+
+```markdown
+::: details 标题
+这是一个详情面板。
+:::
+```
+
+:::

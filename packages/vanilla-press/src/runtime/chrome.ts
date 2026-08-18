@@ -100,20 +100,20 @@ export function initDocChrome(
   const locale = i18nEnabled ? currentLocale(languages, page) : null;
   const i18n = createDocI18n(languages, page);
 
-  const desktopHeader = q<HTMLElement>('[data-doc-desktop-header]');
-  const mobileHeader = q<HTMLElement>('[data-doc-mobile-header]');
+  const desktopHeader = q<HTMLElement>('[data-vp-desktop-header]');
+  const mobileHeader = q<HTMLElement>('[data-vp-mobile-header]');
   if (desktopHeader) desktopHeader.hidden = mobile;
   if (mobileHeader) mobileHeader.hidden = !mobile;
   const siteName = normalizeSiteName(config);
 
-  all<HTMLElement>('[data-doc-brand]').forEach((brand) => {
+  all<HTMLElement>('[data-vp-brand]').forEach((brand) => {
     brand.textContent = siteName;
   });
 
-  const footer = q<HTMLElement>('[data-doc-footer]');
+  const footer = q<HTMLElement>('[data-vp-footer]');
   renderFooter(footer, config);
 
-  const asideCustom = q<HTMLElement>('[data-doc-aside-custom]');
+  const asideCustom = q<HTMLElement>('[data-vp-aside-custom]');
   if (asideCustom && config.aside?.html) {
     asideCustom.innerHTML = config.aside.html;
   }

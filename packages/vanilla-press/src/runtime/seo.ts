@@ -12,7 +12,7 @@ function pageTitle(config: DocConfig = {}, page: RuntimePage = {}): string {
 
 function syncMeta(name: string, content: unknown): void {
   const value = toText(content).trim();
-  let meta = q<HTMLMetaElement>(`meta[data-doc-seo="${name}"]`);
+  let meta = q<HTMLMetaElement>(`meta[data-vp-seo="${name}"]`);
 
   if (!value) {
     meta?.remove();
@@ -22,7 +22,7 @@ function syncMeta(name: string, content: unknown): void {
   if (!meta) {
     meta = jsx('meta', {
       name,
-      'data-doc-seo': name,
+      'data-vp-seo': name,
     }) as HTMLMetaElement;
     document.head.append(meta);
   }

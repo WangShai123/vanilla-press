@@ -144,12 +144,12 @@ function initContainer(container: HTMLElement): void {
   const mdUrl = container.dataset.docLlmsMdUrl;
   if (!mdUrl) return;
 
-  all<HTMLElement>('[data-doc-llms-icon]', container).forEach(fillIcon);
+  all<HTMLElement>('[data-vp-llms-icon]', container).forEach(fillIcon);
 
-  const link = q<HTMLElement>('[data-doc-llms-link]', container);
+  const link = q<HTMLElement>('[data-vp-llms-link]', container);
   link?.addEventListener('click', () => openBlank(mdUrl));
 
-  const trigger = q<HTMLElement>('[data-doc-llms-options-trigger]', container);
+  const trigger = q<HTMLElement>('[data-vp-llms-options-trigger]', container);
   if (trigger) {
     bindDrop(container, trigger, mdUrl);
   }
@@ -158,5 +158,5 @@ function initContainer(container: HTMLElement): void {
 }
 
 export function initLlms(): void {
-  all<HTMLElement>('[data-doc-llms]').forEach(initContainer);
+  all<HTMLElement>('[data-vp-llms]').forEach(initContainer);
 }

@@ -8,6 +8,7 @@
   min-width: 0;
   padding: 36px 56px;
   display: flex;
+  margin-left: 240px;
 }
 
 .doc-main.has-aside {

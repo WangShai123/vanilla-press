@@ -336,3 +336,22 @@ text
 `theme` default `default`，optional：`reverse`、`primary`、`success`、`warning`、`danger`、`error`
 
 `size` default `md`，optional：`sm`、`lg`
+
+## Details
+
+:::tabs
+@tab Demo
+
+::: details Title
+This is a details panel.
+:::
+
+@tab Syntax
+
+```markdown
+::: details Title
+This is a details panel.
+:::
+```
+
+:::

@@ -149,12 +149,12 @@ If you want the homepage to show Markdown content, override the `home` layout st
 
 ## Difference from the Default Layout
 
-The `home` layout only uses the main menu slot `{{{ slots.header }}}` inside `.doc-header`. It does not use the mobile secondary menu `{{{ slots.secondary }}}`, the default documentation sidebar, the right-side table of contents, or previous/next navigation. Even if `runtime.prevNext` is enabled in `vp/config/config.ts`, the homepage will not render previous/next navigation because the `home` template does not declare a `<div data-doc-prev-next></div>` slot.
+The `home` layout only uses the main menu slot `{{{ slots.header }}}` inside `.doc-header`. It does not use the mobile secondary menu `{{{ slots.secondary }}}`, the default documentation sidebar, the right-side table of contents, or previous/next navigation. Even if `runtime.prevNext` is enabled in `vp/config/config.ts`, the homepage will not render previous/next navigation because the `home` template does not declare a `<div data-vp-prev-next></div>` slot.
 
 If you copy `home` into a new landing-page layout and want to show previous/next navigation, add the slot manually:
 
 ```html
-<div data-doc-prev-next></div>
+<div data-vp-prev-next></div>
 ```
 
 ## Custom Styles

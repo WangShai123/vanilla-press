@@ -154,14 +154,14 @@ export function initLocale(
   config: DocConfig = {}
 ): void {
   if (!isI18nEnabled(config)) {
-    all<HTMLSelectElement>('[data-doc-locale]').forEach((select) => {
+    all<HTMLSelectElement>('[data-vp-locale]').forEach((select) => {
       select.hidden = true;
       select.dataset.docReady = 'true';
     });
     return;
   }
 
-  const selects = all<HTMLSelectElement>('[data-doc-locale]').filter(
+  const selects = all<HTMLSelectElement>('[data-vp-locale]').filter(
     (select) => select.dataset.docReady !== 'true'
   );
   const locales = Array.isArray(languages.locales) ? languages.locales : [];

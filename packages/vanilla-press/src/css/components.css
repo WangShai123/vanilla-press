@@ -48,17 +48,17 @@
 }
 
 /* external link */
-a[data-doc-external-link] {
+a[data-vp-external-link] {
   display: inline-flex;
   align-items: center;
 }
 
-a[data-doc-external-link] span.external-link svg {
+a[data-vp-external-link] span.external-link svg {
   width: var(--font-size-md);
 }
 
 /* Prev/Next */
-.doc-main.has-aside > .doc-prev-next {
+.doc-main.has-aside>.doc-prev-next {
   grid-column: 1;
 }
 
@@ -170,7 +170,7 @@ a[data-doc-external-link] span.external-link svg {
   position: relative;
 }
 
-.j-tree-list .j-tree-list > .j-tree-item::before {
+.j-tree-list .j-tree-list>.j-tree-item::before {
   position: absolute;
   top: 13px;
   left: -11px;
@@ -206,7 +206,7 @@ a[data-doc-external-link] span.external-link svg {
   outline: 0;
 }
 
-.j-tree-item.is-directory > .j-tree-node {
+.j-tree-item.is-directory>.j-tree-node {
   color: var(--doc-ink);
   font-weight: 600;
 }
@@ -221,7 +221,7 @@ a[data-doc-external-link] span.external-link svg {
   color: var(--doc-muted);
 }
 
-.j-tree-item.is-directory > .j-tree-node .j-tree-icon {
+.j-tree-item.is-directory>.j-tree-node .j-tree-icon {
   color: var(--doc-accent);
 }
 
@@ -235,15 +235,28 @@ a[data-doc-external-link] span.external-link svg {
   overflow-wrap: anywhere;
 }
 
-/* highlight */
-.j-tabs .panel-list .panel-item pre.hljs {
+/* tabs */
+.j-tabs .panel-list .panel-item>[data-vp-component] {
   margin: 0;
 }
 
-.j-tabs .panel-list .panel-item pre.hljs + p,
-.j-tabs .panel-list .panel-item pre.hljs + div {
-  margin-top: 14px;
+.j-tabs .panel-list .panel-item>[data-vp-component]+[data-vp-component],
+.j-tabs .panel-list .panel-item pre.hljs+p,
+.j-tabs .panel-list .panel-item pre.hljs+div {
+  margin-top: 0.875rem;
 }
+
+
+/* .j-tabs .panel-list .panel-item>pre {
+  transform: translate3d(-0.75rem, -0.75rem, 0);
+  border-radius: 0;
+  border: 0;
+  width: calc(100% + 1.5rem);
+}
+
+.j-tabs .panel-list .panel-item>pre:last-child {
+  margin-bottom: -1.5rem;
+} */
 
 /* tabs / accordion / offcanvas */
 .doc-main .j-tabs,
@@ -263,10 +276,6 @@ a[data-doc-external-link] span.external-link svg {
 }
 
 /* tip */
-.j-tip {
-  margin-bottom: 1rem;
-}
-
 .j-tip .tip-content p {
   margin: 0;
 }

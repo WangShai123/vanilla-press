@@ -42,9 +42,9 @@ export function renderRuntimeScript({
       };
     })).then((items) => items.filter((item) => item.name && typeof item.init === 'function'));
     const mobile = isMobile();
-    const desktopChromeTemplate = document.querySelector('[data-doc-desktop-chrome]');
-    const mobileChromeTemplate = document.querySelector('[data-doc-mobile-chrome]');
-    const mobileSecondaryTemplate = document.querySelector('[data-doc-mobile-secondary-chrome]');
+    const desktopChromeTemplate = document.querySelector('[data-vp-desktop-chrome]');
+    const mobileChromeTemplate = document.querySelector('[data-vp-mobile-chrome]');
+    const mobileSecondaryTemplate = document.querySelector('[data-vp-mobile-secondary-chrome]');
     if (mobile && mobileChromeTemplate) {
       mobileChromeTemplate.replaceWith(mobileChromeTemplate.content.cloneNode(true));
       desktopChromeTemplate?.remove();

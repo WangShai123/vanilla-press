@@ -203,7 +203,7 @@ export function initSearch(
   i18n: DocI18n,
   locale: LocaleEntry | null = null
 ): void {
-  const buttons = all<HTMLButtonElement>('[data-doc-search]').filter(
+  const buttons = all<HTMLButtonElement>('[data-vp-search]').filter(
     (button) => button.dataset.docReady !== 'true'
   );
   if (!buttons.length) return;

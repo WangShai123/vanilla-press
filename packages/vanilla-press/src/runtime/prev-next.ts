@@ -114,7 +114,7 @@ export function initPrevNext(
 ): void {
   if (!isPrevNextEnabled(config)) return;
 
-  const slot = q<HTMLElement>('[data-doc-prev-next]');
+  const slot = q<HTMLElement>('[data-vp-prev-next]');
   if (!slot || slot.dataset.docPrevNextReady === 'true') return;
 
   const items = flattenItems(sidebar, i18n);
@@ -128,7 +128,7 @@ export function initPrevNext(
 
   const nav = jsx('nav', {
     className: 'doc-prev-next',
-    'data-doc-prev-next-ready': 'true',
+    'data-vp-prev-next-ready': 'true',
     'aria-label': 'Previous and next pages',
     children: [
       prev ? createLink(prev, page, locale, 'prev', i18n) : null,

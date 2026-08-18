@@ -16,7 +16,7 @@ export default {
 
 ## Slots
 
-Pagination only renders into a `<div data-doc-prev-next></div>` slot provided by the selected layout.
+Pagination only renders into a `<div data-vp-prev-next></div>` slot provided by the selected layout.
 
 - The default documentation layout includes this slot.
 - `layout: home` homepage layout does not render pagination by default.

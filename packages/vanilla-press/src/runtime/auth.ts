@@ -12,7 +12,7 @@ function authOptions(config: DocConfig): RuntimeFeatureConfig {
 
 export function initAuth(config: DocConfig = {}, i18n: DocI18n): void {
   const authConfig = authOptions(config);
-  const buttons = all<HTMLButtonElement>('[data-doc-auth]').filter(
+  const buttons = all<HTMLButtonElement>('[data-vp-auth]').filter(
     (button) => button.dataset.docReady !== 'true'
   );
   if (!buttons.length) return;

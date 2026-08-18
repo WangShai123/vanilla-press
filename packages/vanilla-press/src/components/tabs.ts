@@ -59,21 +59,21 @@ export function installTabs(md: MarkdownRuntime): void {
     const panels = blocks
       .map(
         (block) => `
-          <div data-doc-tab data-title="${escapeAttr(block.title)}">
+          <div data-vp-tab data-title="${escapeAttr(block.title)}">
             ${md.render(block.content, env)}
           </div>`
       )
       .join('');
 
-    return `<div class="doc-component doc-tabs" data-doc-component="tabs">${panels}</div>`;
+    return `<div class="doc-component doc-tabs" data-vp-component="tabs">${panels}</div>`;
   };
 }
 
 export function initTabs(root: Document | Element = document): void {
-  all<HTMLElement>('[data-doc-component="tabs"]', root).forEach((container) => {
+  all<HTMLElement>('[data-vp-component="tabs"]', root).forEach((container) => {
     if (container.dataset.docReady === 'true') return;
 
-    const panels = all<HTMLElement>(':scope > [data-doc-tab]', container);
+    const panels = all<HTMLElement>(':scope > [data-vp-tab]', container);
     if (!panels.length) return;
 
     const tabs: TabItem[] = panels.map((panel, index) => ({

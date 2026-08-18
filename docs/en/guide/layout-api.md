@@ -166,7 +166,7 @@ When a page selects `layout: landing`, `{{ layout.hero.title }}` reads `layouts.
 `runtime.prevNext` only renders into a slot explicitly declared by the current layout:
 
 ```html
-<div data-doc-prev-next></div>
+<div data-vp-prev-next></div>
 ```
 
 The default documentation layout already includes this slot. If a custom layout does not need previous/next navigation, omit the slot. If it needs it, place the slot where the navigation should appear.
@@ -181,13 +181,13 @@ The built-in `default` layout reuses the common documentation structure: left si
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">
     <div data-reveal>
-      <article class="j-content is-sm" data-doc-editor>{{{ content }}}</article>
+      <article class="j-content is-sm" data-vp-editor>{{{ content }}}</article>
       {{{ slots.prevNext }}}
     </div>
     {{{ slots.aside }}}
   </section>
 </main>
-<footer class="doc-footer" data-doc-footer></footer>
+<footer class="doc-footer" data-vp-footer></footer>
 ```
 
 If the new layout is still a documentation page, copy and adjust this structure. Both `{{{ slots.header }}}` and `{{{ slots.secondary }}}` should stay inside `.doc-header`, because the runtime mounts `.doc-mobile-header` and `.doc-mobile-secondary` as children of `.doc-header`. If the new layout is a homepage or marketing page, usually keep only `{{{ slots.header }}}` inside `.doc-header`, omit `{{{ slots.secondary }}}`, and design the page body yourself.

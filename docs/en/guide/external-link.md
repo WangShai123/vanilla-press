@@ -22,13 +22,13 @@ export default {
 
 When enabled, it matches links whose `href` starts with `http://` or `https://` inside these areas:
 
-- `[data-doc-editor]`
-- `[data-doc-menu]`
-- `[data-doc-sidebar]`
+- `[data-vp-editor]`
+- `[data-vp-menu]`
+- `[data-vp-sidebar]`
 
 Matched links receive:
 
 - `target="_blank"`
 - `rel="noopener noreferrer"`
-- `data-doc-external-link`
+- `data-vp-external-link`
 - `external-link` icon

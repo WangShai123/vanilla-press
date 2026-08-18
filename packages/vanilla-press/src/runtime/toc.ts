@@ -4,7 +4,7 @@ import type { DocConfig } from '../types.ts';
 import { tocOptions } from '../utilities/features.ts';
 
 export function initToc(config: DocConfig = {}): void {
-  const toc = q<HTMLElement>('[data-doc-toc]');
+  const toc = q<HTMLElement>('[data-vp-toc]');
   const article = q<HTMLElement>('.j-content');
   if (!toc || !article || toc.dataset.docReady === 'true') return;
 

@@ -2,8 +2,6 @@
 
 ## 1.2.x
 
-目标：基础版本功能完善。
-
 #### 1.2.10
 
 - feat: 新增 `vp-script` 内联脚本功能，支持在 Markdown 中使用 `vp-script` 编写当前页面专用脚本。
@@ -25,7 +23,7 @@
 
 #### 1.2.14
 
-- feat: 新增 `external-link` 功能覆盖范围，目前覆盖区域：`data-doc-editor`, `data-doc-menu`, `data-doc-sidebar`
+- feat: 新增 `external-link` 功能覆盖范围，目前覆盖区域：`data-vp-editor`, `data-vp-menu`, `data-vp-sidebar`
 
 #### 1.2.15
 
@@ -45,8 +43,6 @@
 
 ## 1.3.x
 
-目标：完成基础版本的架构重构，提供更稳定和更易用的 API。
-
 #### 1.3.0
 
 - fix: 完成 `create-vanilla-press` 和 `vanilla-press` 的架构重构。
@@ -60,6 +56,8 @@
 
 - fix: seo 首页标题规则
 - docs: 更新布局/组件/vp-script文档。
+
+## 1.4.x
 
 #### 1.4.0
 
@@ -76,3 +74,7 @@
 #### 1.4.3
 
 - feat: 新增 Badge 组件
+
+#### 1.4.4
+
+- feat: 新增 details 组件

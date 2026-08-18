@@ -6,6 +6,7 @@ import frontMatter from 'markdown-it-front-matter';
 
 import { installAccordion } from '../components/accordion.ts';
 import { installBadge } from '../components/badge.ts';
+import { installDetails } from '../components/details.ts';
 import { installOffcanvas } from '../components/offcanvas.ts';
 import { installTabs } from '../components/tabs.ts';
 import { installTip } from '../components/tip.ts';
@@ -63,6 +64,7 @@ export function createMarkdown(
     permalinkSymbol: '#',
   });
   installBadge(md);
+  installDetails(md);
   installTabs(md);
   installAccordion(md);
   installOffcanvas(md);

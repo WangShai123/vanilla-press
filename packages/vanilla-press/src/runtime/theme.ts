@@ -28,7 +28,7 @@ function themeOptions(config: DocConfig): DocThemeConfig {
 
 export function initTheme(config: DocConfig = {}, i18n: DocI18n): void {
   const themeConfig = themeOptions(config);
-  const buttons = all<HTMLButtonElement>('[data-doc-theme]').filter(
+  const buttons = all<HTMLButtonElement>('[data-vp-theme]').filter(
     (button) => button.dataset.docReady !== 'true'
   );
   if (!buttons.length) return;

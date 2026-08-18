@@ -18,6 +18,7 @@
   .doc-main {
     display: block;
     padding: 18px;
+    margin-left: 0;
   }
 
   .doc-main .j-content.is-sm {
@@ -30,7 +31,7 @@
   }
 }
 
-html.mobile [data-doc-desktop-header],
+html.mobile [data-vp-desktop-header],
 html.mobile .doc-sidebar,
 html.mobile .doc-aside {
   display: none;
@@ -49,6 +50,7 @@ html.mobile .doc-shell {
 html.mobile .doc-main {
   display: block;
   padding: 18px;
+  margin-left: 0;
 }
 
 html.mobile .doc-main .j-content {

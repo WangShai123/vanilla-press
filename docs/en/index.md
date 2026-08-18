@@ -46,7 +46,7 @@ layouts:
           description: Dependency management and vp-script support make it easy to connect with external services for advanced features such as auth and payments.
         - index: 4
           title: Markdown Extensions
-          description: Extend markdown-it with container components and connect build-time output to runtime behavior through stable data-doc markers.
+          description: Extend markdown-it with container components and connect build-time output to runtime behavior through stable data-vp markers.
         - index: 5
           title: Search and SEO
           description: Generate a static search index at build time, and declare titles, descriptions, and keywords directly in frontmatter.

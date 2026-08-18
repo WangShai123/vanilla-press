@@ -10,6 +10,7 @@
 
 .doc-header-inner {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 24px;
   min-height: var(--doc-header-height);
@@ -38,9 +39,9 @@
   gap: 4px;
 }
 
-.doc-menu.j-menu .menu .menu-item.current-menu-item > a,
+.doc-menu.j-menu .menu .menu-item.current-menu-item>a,
 .doc-menu.j-menu .menu .menu-item a:hover,
-.doc-menu.j-menu .menu .menu-item.menu-item-has-children:hover > a {
+.doc-menu.j-menu .menu .menu-item.menu-item-has-children:hover>a {
   color: var(--doc-accent);
   background: var(--doc-accent-bg);
 }
@@ -51,8 +52,7 @@
 }
 
 .doc-header-actions {
-  display: inline-flex;
-  flex: 0 0 auto;
+  display: flex;
   align-items: center;
   gap: 8px;
 }

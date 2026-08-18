@@ -164,7 +164,7 @@ export function initHeaderMenu(
   i18n: DocI18n,
   locale: LocaleEntry | null = null
 ): void {
-  const nav = q<HTMLElement>('.doc-menu[data-doc-menu]');
+  const nav = q<HTMLElement>('.doc-menu[data-vp-menu]');
   if (!nav || nav.dataset.docReady === 'true') return;
 
   nav.classList.add('j-menu');
@@ -189,8 +189,8 @@ export function initMobileHeader(
   i18n: DocI18n,
   locale: LocaleEntry | null = null
 ): void {
-  const header = q<HTMLElement>('[data-doc-mobile-header]');
-  const menuButton = q<HTMLButtonElement>('[data-doc-mobile-menu]');
+  const header = q<HTMLElement>('[data-vp-mobile-header]');
+  const menuButton = q<HTMLButtonElement>('[data-vp-mobile-menu]');
   if (!header || !menuButton || header.dataset.docReady === 'true') return;
 
   header.hidden = false;
@@ -199,7 +199,7 @@ export function initMobileHeader(
 
   const panel = jsx('div', {
     className: 'doc-mobile-menu-panel',
-    'data-doc-menu': '',
+    'data-vp-menu': '',
   });
   let menu: Menu | null = null;
 
@@ -299,7 +299,7 @@ function renderSidebar(
 ): HTMLElement {
   return jsx('nav', {
     className: 'doc-nav',
-    'data-doc-sidebar': '',
+    'data-vp-sidebar': '',
     'aria-label': '文档导航',
     children: sidebarItems.map((item) =>
       renderSidebarItem(item, page, i18n, locale)
@@ -313,7 +313,7 @@ export function initSidebar(
   i18n: DocI18n,
   locale: LocaleEntry | null = null
 ): void {
-  const nav = q<HTMLElement>('[data-doc-sidebar]');
+  const nav = q<HTMLElement>('[data-vp-sidebar]');
   if (!nav || nav.dataset.docReady === 'true') return;
 
   createEffect(() => {
@@ -333,9 +333,9 @@ export function initMobileSecondary(
   locale: LocaleEntry | null = null,
   config: DocConfig = {}
 ): void {
-  const secondary = q<HTMLElement>('[data-doc-mobile-secondary]');
-  const sidebarButton = q<HTMLButtonElement>('[data-doc-mobile-sidebar]');
-  const tocButton = q<HTMLButtonElement>('[data-doc-mobile-toc]');
+  const secondary = q<HTMLElement>('[data-vp-mobile-secondary]');
+  const sidebarButton = q<HTMLButtonElement>('[data-vp-mobile-sidebar]');
+  const tocButton = q<HTMLButtonElement>('[data-vp-mobile-toc]');
   if (!secondary || secondary.dataset.docReady === 'true') {
     return;
   }

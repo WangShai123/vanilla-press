@@ -46,7 +46,7 @@ layouts:
           description: 提供依赖管理和 vp-script 能力，轻松与外部连接，实现授权、支付等高级功能。
         - index: 4
           title: Markdown 扩展
-          description: 基于 markdown-it 扩展容器组件，用稳定的 data-doc 标记连接构建期和运行时。
+          description: 基于 markdown-it 扩展容器组件，用稳定的 data-vp 标记连接构建期和运行时。
         - index: 5
           title: 搜索与 SEO
           description: 构建期生成静态搜索索引，frontmatter 可直接声明标题、描述和关键词。

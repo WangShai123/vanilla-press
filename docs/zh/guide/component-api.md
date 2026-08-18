@@ -46,15 +46,15 @@ export default {
     );
 
     md.renderer.rules.badge = (tokens, index) =>
-      `<span class="doc-badge" data-doc-component="badge">${escapeHtml(tokens[index].content)}</span>`;
+      `<span class="doc-badge" data-vp-component="badge">${escapeHtml(tokens[index].content)}</span>`;
   },
   init(root) {
     root
       .querySelectorAll(
-        '[data-doc-component="badge"]:not([data-doc-ready="true"])'
+        '[data-vp-component="badge"]:not([data-vp-ready="true"])'
       )
       .forEach((node) => {
-        node.setAttribute('data-doc-ready', 'true');
+        node.setAttribute('data-vp-ready', 'true');
       });
   },
 } satisfies MarkdownComponentDefinition;
@@ -100,11 +100,11 @@ export function init(root, config) {}
 
 ## 运行时规则
 
-- 渲染后的根元素必须包含 `data-doc-component="<name>"`。
+- 渲染后的根元素必须包含 `data-vp-component="<name>"`。
 - `init(root, config)` 的 `root` 是当前文档根节点，`config` 是站点配置。
 - 运行时代码只扫描传入的 `root` 范围，不要默认全局操作不相关节点。
-- 已标记 `data-doc-ready="true"` 的元素必须跳过。
-- 初始化完成后，需要写入 `data-doc-ready="true"`。
+- 已标记 `data-vp-ready="true"` 的元素必须跳过。
+- 初始化完成后，需要写入 `data-vp-ready="true"`。
 - 如果组件依赖其他组件先初始化，通过 `dependsOn` 声明。
 - 组件模块如果提供 `init`，同一个模块会被打包到浏览器侧；模块顶层代码和顶层静态 import 需要保持浏览器可运行。
 
@@ -125,6 +125,6 @@ export default {
 
 ## 初始化模型
 
-浏览器运行时会合并内置组件和项目组件，自动展开依赖关系，按依赖顺序初始化，并多轮执行直到没有待初始化节点。运行时也会监听动态插入的 DOM，自动补初始化新增的 `data-doc-component` 节点。
+浏览器运行时会合并内置组件和项目组件，自动展开依赖关系，按依赖顺序初始化，并多轮执行直到没有待初始化节点。运行时也会监听动态插入的 DOM，自动补初始化新增的 `data-vp-component` 节点。
 
 项目组件脚本按页面加载：页面实际使用了哪些项目组件，就动态导入对应的 `dist/public/组件名.hash.js`。如果组件声明了 `dependsOn`，并且依赖项也是项目组件，依赖组件脚本也会被加载。

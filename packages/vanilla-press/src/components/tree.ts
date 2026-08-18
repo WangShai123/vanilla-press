@@ -181,7 +181,7 @@ export function installTree(md: MarkdownRuntime): void {
 
     markComponent(env, 'tree');
 
-    return `<div class="doc-component j-tree" data-doc-component="tree">${renderTreeNodes(parseTree(content))}</div>`;
+    return `<div class="doc-component j-tree" data-vp-component="tree">${renderTreeNodes(parseTree(content))}</div>`;
   };
 }
 
@@ -302,7 +302,7 @@ function toggleTreeEventTarget(target: EventTarget | null, event: Event): void {
   if (!(target instanceof Element)) return;
 
   const node = target.closest<HTMLElement>('.j-tree-node');
-  const tree = node?.closest?.('[data-doc-component="tree"]');
+  const tree = node?.closest?.('[data-vp-component="tree"]');
   if (!node || !tree) return;
 
   const icons = activeTreeIcons || getRegistedIconPath();
@@ -356,7 +356,7 @@ export function initTree(root: Document | Element = document): void {
   activeTreeIcons = icons;
   bindGlobalTreeEvents();
 
-  all<HTMLElement>('[data-doc-component="tree"]', root).forEach((container) => {
+  all<HTMLElement>('[data-vp-component="tree"]', root).forEach((container) => {
     if (container.dataset.docReady === 'true') return;
 
     all<HTMLElement>('.j-tree-item', container).forEach((item) => {
