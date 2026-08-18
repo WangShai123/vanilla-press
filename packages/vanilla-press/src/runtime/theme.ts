@@ -29,7 +29,7 @@ function themeOptions(config: DocConfig): DocThemeConfig {
 export function initTheme(config: DocConfig = {}, i18n: DocI18n): void {
   const themeConfig = themeOptions(config);
   const buttons = all<HTMLButtonElement>('[data-vp-theme]').filter(
-    (button) => button.dataset.docReady !== 'true'
+    (button) => button.dataset.vpReady !== 'true'
   );
   if (!buttons.length) return;
 
@@ -37,7 +37,7 @@ export function initTheme(config: DocConfig = {}, i18n: DocI18n): void {
     buttons.forEach((button) => {
       button.hidden = true;
       button.textContent = '';
-      button.dataset.docReady = 'true';
+      button.dataset.vpReady = 'true';
     });
     return;
   }
@@ -64,6 +64,6 @@ export function initTheme(config: DocConfig = {}, i18n: DocI18n): void {
     }
 
     button.addEventListener('click', () => drawer.show());
-    button.dataset.docReady = 'true';
+    button.dataset.vpReady = 'true';
   });
 }

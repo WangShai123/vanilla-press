@@ -71,7 +71,7 @@ export function installTabs(md: MarkdownRuntime): void {
 
 export function initTabs(root: Document | Element = document): void {
   all<HTMLElement>('[data-vp-component="tabs"]', root).forEach((container) => {
-    if (container.dataset.docReady === 'true') return;
+    if (container.dataset.vpReady === 'true') return;
 
     const panels = all<HTMLElement>(':scope > [data-vp-tab]', container);
     if (!panels.length) return;
@@ -88,6 +88,6 @@ export function initTabs(root: Document | Element = document): void {
     });
     instance.mount(container);
 
-    container.dataset.docReady = 'true';
+    container.dataset.vpReady = 'true';
   });
 }

@@ -28,13 +28,13 @@ function openBlank(url: string): void {
 }
 
 function fillIcon(slot: HTMLElement): void {
-  const name = slot?.dataset?.docLlmsIcon;
+  const name = slot?.dataset?.vpLlmsIcon;
   if (!name) return;
   slot.replaceChildren(icon(name));
 }
 
 function label(container: HTMLElement, key: string, fallback: string): string {
-  return container?.dataset?.[`docLlmsLabel${key}`] || fallback;
+  return container?.dataset?.[`vpLlmsLabel${key}`] || fallback;
 }
 
 function actionIcon(action: LlmsAction): SVGElement | null {
@@ -58,13 +58,13 @@ function createDropItem(text: string, action: LlmsAction): HTMLElement {
 function createDropContent(container: HTMLElement): HTMLElement {
   const items: Array<HTMLElement | null> = [];
 
-  if (boolData(container, 'docLlmsCopy')) {
+  if (boolData(container, 'vpLlmsCopy')) {
     items.push(
       createDropItem(label(container, 'Copy', '复制 Markdown 链接'), 'copy')
     );
   }
 
-  if (boolData(container, 'docLlmsChatgpt')) {
+  if (boolData(container, 'vpLlmsChatgpt')) {
     items.push(
       createDropItem(
         label(container, 'Chatgpt', '在 ChatGPT 中打开'),
@@ -73,7 +73,7 @@ function createDropContent(container: HTMLElement): HTMLElement {
     );
   }
 
-  if (boolData(container, 'docLlmsClaude')) {
+  if (boolData(container, 'vpLlmsClaude')) {
     items.push(
       createDropItem(label(container, 'Claude', '在 Claude 中打开'), 'claude')
     );
@@ -140,8 +140,8 @@ function bindDrop(
 }
 
 function initContainer(container: HTMLElement): void {
-  if (container.dataset.docLlmsReady === 'true') return;
-  const mdUrl = container.dataset.docLlmsMdUrl;
+  if (container.dataset.vpLlmsReady === 'true') return;
+  const mdUrl = container.dataset.vpLlmsMdUrl;
   if (!mdUrl) return;
 
   all<HTMLElement>('[data-vp-llms-icon]', container).forEach(fillIcon);
@@ -154,7 +154,7 @@ function initContainer(container: HTMLElement): void {
     bindDrop(container, trigger, mdUrl);
   }
 
-  container.dataset.docLlmsReady = 'true';
+  container.dataset.vpLlmsReady = 'true';
 }
 
 export function initLlms(): void {

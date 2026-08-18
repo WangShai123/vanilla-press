@@ -106,7 +106,7 @@ export function installTip(md: MarkdownRuntime): void {
 
 export function initTip(root: Document | Element = document): void {
   all<HTMLElement>('[data-vp-component="tip"]', root).forEach((container) => {
-    if (container.dataset.docReady === 'true') return;
+    if (container.dataset.vpReady === 'true') return;
 
     const iconTarget = q<HTMLElement>('[data-vp-tip-icon]', container);
     const title = q<HTMLElement>('[data-vp-tip-title]', container);
@@ -119,6 +119,6 @@ export function initTip(root: Document | Element = document): void {
       title.textContent = defaultTitle();
     }
 
-    container.dataset.docReady = 'true';
+    container.dataset.vpReady = 'true';
   });
 }

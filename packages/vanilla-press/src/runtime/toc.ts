@@ -6,7 +6,7 @@ import { tocOptions } from '../utilities/features.ts';
 export function initToc(config: DocConfig = {}): void {
   const toc = q<HTMLElement>('[data-vp-toc]');
   const article = q<HTMLElement>('.j-content');
-  if (!toc || !article || toc.dataset.docReady === 'true') return;
+  if (!toc || !article || toc.dataset.vpReady === 'true') return;
 
   const { headings, offset } = tocOptions(config);
   if (!q(headings, article)) {
@@ -21,5 +21,5 @@ export function initToc(config: DocConfig = {}): void {
     offset,
   });
   instance.mount(toc);
-  toc.dataset.docReady = 'true';
+  toc.dataset.vpReady = 'true';
 }

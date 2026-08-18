@@ -69,7 +69,7 @@ export function installOffcanvas(md: MarkdownRuntime): void {
 export function initOffcanvas(root: Document | Element = document): void {
   all<HTMLElement>('[data-vp-component="offcanvas"]', root).forEach(
     (container) => {
-      if (container.dataset.docReady === 'true') return;
+      if (container.dataset.vpReady === 'true') return;
 
       const trigger = q<HTMLElement>('[data-vp-offcanvas-trigger]', container);
       const content = q<HTMLElement>('[data-vp-offcanvas-content]', container);
@@ -85,7 +85,7 @@ export function initOffcanvas(root: Document | Element = document): void {
 
       content.remove();
       trigger.addEventListener('click', () => panel.show());
-      container.dataset.docReady = 'true';
+      container.dataset.vpReady = 'true';
     }
   );
 }

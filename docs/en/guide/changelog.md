@@ -73,3 +73,11 @@
 #### 1.4.3
 
 - feat: Added Badge component
+
+#### 1.4.4
+
+- feat: Added details component
+
+#### 1.4.5
+
+- fix: Fixed dataset marker error

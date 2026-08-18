@@ -156,13 +156,13 @@ export function initLocale(
   if (!isI18nEnabled(config)) {
     all<HTMLSelectElement>('[data-vp-locale]').forEach((select) => {
       select.hidden = true;
-      select.dataset.docReady = 'true';
+      select.dataset.vpReady = 'true';
     });
     return;
   }
 
   const selects = all<HTMLSelectElement>('[data-vp-locale]').filter(
-    (select) => select.dataset.docReady !== 'true'
+    (select) => select.dataset.vpReady !== 'true'
   );
   const locales = Array.isArray(languages.locales) ? languages.locales : [];
   if (!selects.length || !locales.length) return;
@@ -202,7 +202,7 @@ export function initLocale(
       window.location.href = relativeAsset(page.rel, nextRel);
     });
 
-    select.dataset.docReady = 'true';
+    select.dataset.vpReady = 'true';
   });
 
   createEffect(() => {

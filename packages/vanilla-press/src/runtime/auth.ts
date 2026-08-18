@@ -13,7 +13,7 @@ function authOptions(config: DocConfig): RuntimeFeatureConfig {
 export function initAuth(config: DocConfig = {}, i18n: DocI18n): void {
   const authConfig = authOptions(config);
   const buttons = all<HTMLButtonElement>('[data-vp-auth]').filter(
-    (button) => button.dataset.docReady !== 'true'
+    (button) => button.dataset.vpReady !== 'true'
   );
   if (!buttons.length) return;
 
@@ -21,7 +21,7 @@ export function initAuth(config: DocConfig = {}, i18n: DocI18n): void {
     buttons.forEach((button) => {
       button.hidden = true;
       button.textContent = '';
-      button.dataset.docReady = 'true';
+      button.dataset.vpReady = 'true';
     });
     return;
   }
@@ -40,6 +40,6 @@ export function initAuth(config: DocConfig = {}, i18n: DocI18n): void {
       });
     }
 
-    button.dataset.docReady = 'true';
+    button.dataset.vpReady = 'true';
   });
 }

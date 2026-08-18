@@ -165,7 +165,7 @@ export function initHeaderMenu(
   locale: LocaleEntry | null = null
 ): void {
   const nav = q<HTMLElement>('.doc-menu[data-vp-menu]');
-  if (!nav || nav.dataset.docReady === 'true') return;
+  if (!nav || nav.dataset.vpReady === 'true') return;
 
   nav.classList.add('j-menu');
   createEffect(() => {
@@ -180,7 +180,7 @@ export function initHeaderMenu(
     );
   });
 
-  nav.dataset.docReady = 'true';
+  nav.dataset.vpReady = 'true';
 }
 
 export function initMobileHeader(
@@ -191,7 +191,7 @@ export function initMobileHeader(
 ): void {
   const header = q<HTMLElement>('[data-vp-mobile-header]');
   const menuButton = q<HTMLButtonElement>('[data-vp-mobile-menu]');
-  if (!header || !menuButton || header.dataset.docReady === 'true') return;
+  if (!header || !menuButton || header.dataset.vpReady === 'true') return;
 
   header.hidden = false;
   menuButton.textContent = '';
@@ -226,7 +226,7 @@ export function initMobileHeader(
   }).build();
 
   menuButton.addEventListener('click', () => drawer.show());
-  header.dataset.docReady = 'true';
+  header.dataset.vpReady = 'true';
 }
 
 function renderSidebarItem(
@@ -314,7 +314,7 @@ export function initSidebar(
   locale: LocaleEntry | null = null
 ): void {
   const nav = q<HTMLElement>('[data-vp-sidebar]');
-  if (!nav || nav.dataset.docReady === 'true') return;
+  if (!nav || nav.dataset.vpReady === 'true') return;
 
   createEffect(() => {
     nav.textContent = '';
@@ -323,7 +323,7 @@ export function initSidebar(
     );
   });
 
-  nav.dataset.docReady = 'true';
+  nav.dataset.vpReady = 'true';
 }
 
 export function initMobileSecondary(
@@ -336,7 +336,7 @@ export function initMobileSecondary(
   const secondary = q<HTMLElement>('[data-vp-mobile-secondary]');
   const sidebarButton = q<HTMLButtonElement>('[data-vp-mobile-sidebar]');
   const tocButton = q<HTMLButtonElement>('[data-vp-mobile-toc]');
-  if (!secondary || secondary.dataset.docReady === 'true') {
+  if (!secondary || secondary.dataset.vpReady === 'true') {
     return;
   }
 
@@ -396,5 +396,5 @@ export function initMobileSecondary(
     tocButton.addEventListener('click', () => tocDrawer.show());
   }
 
-  secondary.dataset.docReady = 'true';
+  secondary.dataset.vpReady = 'true';
 }

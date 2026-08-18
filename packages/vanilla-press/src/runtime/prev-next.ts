@@ -115,7 +115,7 @@ export function initPrevNext(
   if (!isPrevNextEnabled(config)) return;
 
   const slot = q<HTMLElement>('[data-vp-prev-next]');
-  if (!slot || slot.dataset.docPrevNextReady === 'true') return;
+  if (!slot || slot.dataset.vpPrevNextReady === 'true') return;
 
   const items = flattenItems(sidebar, i18n);
   const current = resolveCurrentRel(page, locale);

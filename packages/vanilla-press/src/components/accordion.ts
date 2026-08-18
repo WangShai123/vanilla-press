@@ -75,7 +75,7 @@ export function installAccordion(md: MarkdownRuntime): void {
 export function initAccordion(root: Document | Element = document): void {
   all<HTMLElement>('[data-vp-component="accordion"]', root).forEach(
     (container) => {
-      if (container.dataset.docReady === 'true') return;
+      if (container.dataset.vpReady === 'true') return;
 
       const panels = all<HTMLElement>(
         ':scope > [data-vp-accordion-item]',
@@ -97,7 +97,7 @@ export function initAccordion(root: Document | Element = document): void {
       });
       accordion.mount(container);
 
-      container.dataset.docReady = 'true';
+      container.dataset.vpReady = 'true';
     }
   );
 }

@@ -357,7 +357,7 @@ export function initTree(root: Document | Element = document): void {
   bindGlobalTreeEvents();
 
   all<HTMLElement>('[data-vp-component="tree"]', root).forEach((container) => {
-    if (container.dataset.docReady === 'true') return;
+    if (container.dataset.vpReady === 'true') return;
 
     all<HTMLElement>('.j-tree-item', container).forEach((item) => {
       const target = directTreeIcon(item);
@@ -374,6 +374,6 @@ export function initTree(root: Document | Element = document): void {
     });
 
     bindTreeEvents(container, icons);
-    container.dataset.docReady = 'true';
+    container.dataset.vpReady = 'true';
   });
 }

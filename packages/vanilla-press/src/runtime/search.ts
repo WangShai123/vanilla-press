@@ -204,7 +204,7 @@ export function initSearch(
   locale: LocaleEntry | null = null
 ): void {
   const buttons = all<HTMLButtonElement>('[data-vp-search]').filter(
-    (button) => button.dataset.docReady !== 'true'
+    (button) => button.dataset.vpReady !== 'true'
   );
   if (!buttons.length) return;
 
@@ -212,7 +212,7 @@ export function initSearch(
     buttons.forEach((button) => {
       button.hidden = true;
       button.textContent = '';
-      button.dataset.docReady = 'true';
+      button.dataset.vpReady = 'true';
     });
     return;
   }
@@ -282,6 +282,6 @@ export function initSearch(
         button.disabled = false;
       }
     });
-    button.dataset.docReady = 'true';
+    button.dataset.vpReady = 'true';
   });
 }
