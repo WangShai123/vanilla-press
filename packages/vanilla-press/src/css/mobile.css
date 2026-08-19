@@ -21,10 +21,6 @@
     margin-left: 0;
   }
 
-  .vp-main .j-content.is-sm {
-    padding: 22px 18px;
-  }
-
   .vp-aside,
   .vp-sidebar {
     display: none;
@@ -53,7 +49,7 @@ html.mobile .vp-main {
   margin-left: 0;
 }
 
-html.mobile .vp-main .j-content {
+html.mobile .vp-main .vp-content-wrap {
   padding: 22px 18px;
 }
 

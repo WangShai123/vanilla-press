@@ -92,3 +92,7 @@
 - fix: Runtime configuration is now structured into `runtime` and `browser`
 - style: All `doc` related names are now prefixed with `vp`
 - docs: Updated related documentation
+
+#### 1.4.7
+
+- fix: Fixed style issue

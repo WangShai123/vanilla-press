@@ -90,6 +90,7 @@ a[data-vp-external-link] span.external-link svg {
 
 .vp-edit-time {
   color: var(--ui-fg-muted);
+  text-align: right;
 }
 
 /* Prev/Next */

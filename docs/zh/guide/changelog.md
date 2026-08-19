@@ -93,3 +93,7 @@
 - fix: 运行时配置结构化拆分为 `runtime` 和 `browser`
 - style: 所有 `doc` 关联命名统一前缀为 `vp`
 - docs: 更新关联文档
+
+#### 1.4.7
+
+- fix: 样式修复
