@@ -8,3 +8,4 @@ output
 *.tgz
 packages/create-vanilla-press/template
 backup
+/todo.md
