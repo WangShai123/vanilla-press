@@ -22,26 +22,27 @@ The default export in `vp/config/runtime.ts` describes three layers:
 
 ### build
 
-| Option                   | Type                 | Default               | Description                                                                               |
-| ------------------------ | -------------------- | --------------------- | ----------------------------------------------------------------------------------------- |
-| `build`                  | object               | -                     | Build-time configuration.                                                                 |
-| `build.social`           | object               | -                     | Footer social links object. Keys are icon names and values are URLs.                      |
-| `build.sitemap`          | boolean \| object    | false                 | Whether to output `sitemap.xml` into `dist/`.                                             |
-| `build.robots`           | boolean              | true                  | Whether to output `robots.txt` into `dist/`. Set to `false` to disable it.                |
-| `build.footerScript`     | "script" \| "module" | "script"              | Footer script tag type. The script content comes from `vp/config/footerScript.ts`.        |
-| `build.vpScript.shared`  | array                | []                    | Extra npm dependencies to bundle into `runtime.js` for reuse by page `vp-script` modules. |
-| `build.llms`             | boolean \| object    | true                  | Whether to output `llms.txt`, per-page Markdown routes, and page Markdown actions.        |
-| `build.llms.enabled`     | boolean              | true                  | Whether to enable LLMs. Set to `false` to disable it.                                     |
-| `build.llms.link`        | boolean              | true                  | Whether to render the "View Markdown" button below the content title.                     |
-| `build.llms.copy`        | boolean              | true                  | Whether to render the copy Markdown link action in the LLMs menu.                         |
-| `build.llms.chatgpt`     | boolean              | true                  | Whether to render the ChatGPT action in the LLMs menu.                                    |
-| `build.llms.claude`      | boolean              | true                  | Whether to render the Claude action in the LLMs menu.                                     |
-| `build.editLink`         | boolean \| object    | `{}`                  | Default true. `true` uses the default pattern and label.                                  |
-| `build.editLink.pattern` | string               | -                     | Edit link pattern. Replaces `:path` with the current page's Markdown source path.         |
-| `build.editLink.text`    | string \| object     | `editor.editLink`     | Default text for edit link. Defaults to `editor.editLink` in `languages.ts`.              |
-| `build.lastEdit`         | boolean \| object    | `{}`                  | Default true. `true` uses the default label and format.                                   |
-| `build.lastEdit.text`    | string \| object     | `editor.lastUpdated`  | Default text for last edit time. Defaults to `editor.lastUpdated` in `languages.ts`.      |
-| `build.lastEdit.format`  | string               | `yyyy-MM-dd HH:mm:ss` | Default last edit time format. Defaults to `yyyy-MM-dd HH:mm:ss`.                         |
+| Option                   | Type                 | Default                                                                                                    | Description                                                                               |
+| ------------------------ | -------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `build`                  | object               | -                                                                                                          | Build-time configuration.                                                                 |
+| `build.social`           | object               | -                                                                                                          | Footer social links object. Keys are icon names and values are URLs.                      |
+| `build.sitemap`          | boolean \| object    | false                                                                                                      | Whether to output `sitemap.xml` into `dist/`.                                             |
+| `build.robots`           | boolean              | true                                                                                                       | Whether to output `robots.txt` into `dist/`. Set to `false` to disable it.                |
+| `build.footerScript`     | "script" \| "module" | "script"                                                                                                   | Footer script tag type. The script content comes from `vp/config/footerScript.ts`.        |
+| `build.vpScript.shared`  | array                | []                                                                                                         | Extra npm dependencies to bundle into `runtime.js` for reuse by page `vp-script` modules. |
+| `build.llms`             | boolean \| object    | true                                                                                                       | Whether to output `llms.txt`, per-page Markdown routes, and page Markdown actions.        |
+| `build.llms.enabled`     | boolean              | true                                                                                                       | Whether to enable LLMs. Set to `false` to disable it.                                     |
+| `build.llms.link`        | boolean              | true                                                                                                       | Whether to render the "View Markdown" button below the content title.                     |
+| `build.llms.copy`        | boolean              | true                                                                                                       | Whether to render the copy Markdown link action in the LLMs menu.                         |
+| `build.llms.chatgpt`     | boolean              | true                                                                                                       | Whether to render the ChatGPT action in the LLMs menu.                                    |
+| `build.llms.claude`      | boolean              | true                                                                                                       | Whether to render the Claude action in the LLMs menu.                                     |
+| `build.editLink`         | boolean \| object    | `{"pattern":"https://github.com/WangShai123/vanilla-press/edit/main/docs/:path","text":"editor.editLink"}` | Default true. `true` uses the default pattern and label.                                  |
+| `build.editLink.pattern` | string               | `https://github.com/WangShai123/vanilla-press/edit/main/docs/:path`                                        | Edit link pattern. Replaces `:path` with the current page's Markdown source path.         |
+| `build.editLink.text`    | string \| object     | `editor.editLink`                                                                                          | Default text for edit link. Defaults to `editor.editLink` in `languages.ts`.              |
+| `build.lastEdit`         | boolean \| object    | `{"text":"editor.lastUpdated","format":"yyyy-MM-dd HH:mm:ss","utc":true}`                                  | Default true. `true` uses the default label, format, and timezone marker.                 |
+| `build.lastEdit.text`    | string \| object     | `editor.lastUpdated`                                                                                       | Default text for last edit time. Defaults to `editor.lastUpdated` in `languages.ts`.      |
+| `build.lastEdit.format`  | string               | `yyyy-MM-dd HH:mm:ss`                                                                                      | Default last edit time format. Defaults to `yyyy-MM-dd HH:mm:ss`.                         |
+| `build.lastEdit.utc`     | boolean              | true                                                                                                       | Whether to append the current build timezone label, such as `UTC+8`.                      |
 
 ### runtime
 
@@ -112,6 +113,7 @@ export default {
     lastEdit: {
       text: 'editor.lastUpdated',
       format: 'yyyy-MM-dd HH:mm:ss',
+      utc: true,
     },
   },
   browser: {

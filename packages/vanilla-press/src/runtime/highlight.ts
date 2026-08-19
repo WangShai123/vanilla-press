@@ -1,7 +1,7 @@
 import { createRequire } from 'module'
 
 import DEFAULT_HIGHLIGHT_LANGUAGES from '../config/highlight.ts'
-import type { DocConfig } from '../types.ts'
+import type { RuntimeConfig } from '../types.ts'
 import { isRecord } from '../types.ts'
 import { runtimeOption } from '../utilities/features.ts'
 import { toText } from '../utilities/string.ts'
@@ -97,7 +97,7 @@ function defaultLanguageLabel(language: string): string {
   return languageRegistry.get(language)?.label || language
 }
 
-function configuredLanguages(config: DocConfig = {}): Map<string, string> {
+function configuredLanguages(config: RuntimeConfig = {}): Map<string, string> {
   const highlight = runtimeOption(config, 'highlight')
   const highlightConfig = isRecord(highlight) ? highlight : {}
   const languages: unknown[] = Array.isArray(highlightConfig.languages)
@@ -142,7 +142,7 @@ function renderCode(language: string, label: string, value: string): string {
   return `<pre class="j-code-editor hljs" data-vp-component><div class="code-header"><span class="code-dots"></span><span class="code-language">${escapeHtml(label)}</span></div><code class="language-${languageClass(language)}">${value}</code></pre>`
 }
 
-export function createHighlighter(config: DocConfig = {}) {
+export function createHighlighter(config: RuntimeConfig = {}) {
   const supportedLanguages = configuredLanguages(config)
 
   return (code: string, lang: string): string => {

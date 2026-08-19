@@ -1,6 +1,6 @@
 import { JSDOM } from 'jsdom'
 
-import type { DocConfig, LanguagesConfig, UnknownRecord } from '../types.ts'
+import type { RuntimeConfig, LanguagesConfig, UnknownRecord } from '../types.ts'
 import { isRecord } from '../types.ts'
 import { llmsOptions, type LlmsRuntimeOptions } from './features.ts'
 import { toText } from './string.ts'
@@ -86,7 +86,7 @@ export function markdownRouteRel(page: RoutePage = {}): string {
 
 export function markdownRouteUrl(
   page: RoutePage = {},
-  siteConfig: DocConfig = {}
+  siteConfig: RuntimeConfig = {}
 ): string {
   const base = baseUrl(siteConfig.siteUrl)
   const route = encodeRoute(markdownRouteRel(page))
@@ -95,7 +95,7 @@ export function markdownRouteUrl(
 
 export function renderLlmsTxt(
   config: LlmsConfig = {},
-  siteConfig: DocConfig = {},
+  siteConfig: RuntimeConfig = {},
   pages: RoutePage[] = []
 ): string {
   const title =
@@ -233,7 +233,7 @@ function createOptionsButton(
 function createLlmsContainer(
   document: Document,
   page: RoutePage = {},
-  siteConfig: DocConfig = {},
+  siteConfig: RuntimeConfig = {},
   llmsConfig: LlmsConfig = {},
   languages: LanguagesConfig = {}
 ): HTMLDivElement | null {
@@ -271,7 +271,7 @@ function createLlmsContainer(
 export function injectLlmsControls(
   body = '',
   page: RoutePage = {},
-  siteConfig: DocConfig = {},
+  siteConfig: RuntimeConfig = {},
   llmsConfig: LlmsConfig = {},
   languages: LanguagesConfig = {}
 ): string {

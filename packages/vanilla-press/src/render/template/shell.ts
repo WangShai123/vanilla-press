@@ -1,19 +1,19 @@
-import type { DocConfig } from '../../types.ts'
+import type { RuntimeConfig } from '../../types.ts'
 
 interface ShellOptions {
   body: string
-  config: DocConfig
+  config: RuntimeConfig
   sidebarEnabled: boolean
   tocEnabled: boolean
 }
 
 interface AsideOptions {
-  config: DocConfig
+  config: RuntimeConfig
   toc: string
 }
 
 interface ShellContextOptions {
-  config: DocConfig
+  config: RuntimeConfig
   sidebarEnabled: boolean
   tocEnabled: boolean
   header?: string

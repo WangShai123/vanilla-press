@@ -4,7 +4,7 @@
   border-right: 1px solid var(--vp-line);
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--ui-border) transparent;
+  scrollbar-color: var(--ui-border-subtle) transparent;
   position: fixed;
   width: 240px;
   min-width: 120px;
@@ -85,6 +85,6 @@
 
 .vp-nav-children .vp-nav-title {
   min-height: 32px;
-  padding-block: 7px;
+  padding-block: 6px;
   font-size: var(--font-size-sm);
 }

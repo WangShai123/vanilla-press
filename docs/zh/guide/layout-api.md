@@ -72,7 +72,7 @@ export default function initLandingLayout(root: Document, config: unknown) {
 }
 ```
 
-布局脚本默认导出函数会在页面运行时调用，参数为 `(document, docConfig)`。布局脚本会被打包为 `dist/public/布局名.hash.js`，只在使用该布局的 HTML 页面中加载。脚本中的静态 npm 依赖会打包进该布局脚本文件，不会进入全局 `runtime.js`。
+布局脚本默认导出函数会在页面运行时调用，参数为 `(document, runtimeConfig)`。布局脚本会被打包为 `dist/public/布局名.hash.js`，只在使用该布局的 HTML 页面中加载。脚本中的静态 npm 依赖会打包进该布局脚本文件，不会进入全局 `runtime.js`。
 
 然后在 Markdown 页面中使用它：
 

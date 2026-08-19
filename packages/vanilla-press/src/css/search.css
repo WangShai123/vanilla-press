@@ -2,6 +2,11 @@
   fill: var(--tone-caption);
 }
 
+#global-search .modal-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-border-subtle) transparent;
+}
+
 .vp-search-panel {
   display: flex;
   flex-direction: column;
@@ -26,7 +31,7 @@
   /* max-height: min(58vh, 420px); */
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--ui-border) transparent;
+  scrollbar-color: var(--ui-border-subtle) transparent;
 }
 
 .vp-search-result {

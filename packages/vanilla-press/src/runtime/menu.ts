@@ -11,7 +11,7 @@ import { createEffect, jsx } from 'vanilla-signal'
 import { t as s } from 'vanilla-signal-i18n'
 
 import type {
-  DocConfig,
+  RuntimeConfig,
   DocI18n,
   LocaleEntry,
   NavItem,
@@ -331,7 +331,7 @@ export function initMobileSecondary(
   page: RuntimePage = {},
   i18n: DocI18n,
   locale: LocaleEntry | null = null,
-  config: DocConfig = {}
+  config: RuntimeConfig = {}
 ): void {
   const secondary = q<HTMLElement>('[data-vp-mobile-secondary]')
   const sidebarButton = q<HTMLButtonElement>('[data-vp-mobile-sidebar]')

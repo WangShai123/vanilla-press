@@ -2,7 +2,7 @@ import { all } from 'vanilla-jui'
 import { createEffect, jsx } from 'vanilla-signal'
 
 import type {
-  DocConfig,
+  RuntimeConfig,
   DocI18n,
   LanguagesConfig,
   LocaleEntry,
@@ -27,7 +27,7 @@ import {
   updatePreference,
 } from './preference.ts'
 
-function i18nOptions(config: DocConfig): RuntimeI18nConfig {
+function i18nOptions(config: RuntimeConfig): RuntimeI18nConfig {
   const value = runtimeOption(config, 'i18n')
   return isRecord(value) ? (value as RuntimeI18nConfig) : {}
 }
@@ -45,7 +45,7 @@ function hasLocalePrefix(rel: string, locales: LocaleEntry[]): boolean {
 
 function defaultLocale(
   languages: LanguagesConfig = {},
-  config: DocConfig = {}
+  config: RuntimeConfig = {}
 ): LocaleEntry | null {
   const locales = Array.isArray(languages.locales) ? languages.locales : []
   if (!locales.length) return null
@@ -59,14 +59,14 @@ function defaultLocale(
   )
 }
 
-function redirectEnabled(config: DocConfig = {}): boolean {
+function redirectEnabled(config: RuntimeConfig = {}): boolean {
   return i18nOptions(config).redirectToDefault !== false
 }
 
 function localeForRoute(
   route: unknown,
   languages: LanguagesConfig = {},
-  config: DocConfig = {}
+  config: RuntimeConfig = {}
 ): LocaleEntry | null {
   const i18n = i18nOptions(config)
   const value = toText(route)
@@ -79,7 +79,7 @@ function localeForRoute(
 }
 
 function syncLocalePreference(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   locale: LocaleEntry | null = null
 ): void {
@@ -103,7 +103,7 @@ function syncLocalePreference(
 }
 
 export function maybeRedirectToDefaultLocale(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   page: RuntimePage = {}
 ): boolean {
@@ -151,7 +151,7 @@ export function initLocale(
   languages: LanguagesConfig = {},
   page: RuntimePage = {},
   i18n: DocI18n,
-  config: DocConfig = {}
+  config: RuntimeConfig = {}
 ): void {
   if (!isI18nEnabled(config)) {
     all<HTMLSelectElement>('[data-vp-locale]').forEach((select) => {

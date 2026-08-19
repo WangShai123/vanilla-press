@@ -1,5 +1,5 @@
 import type {
-  DocConfig,
+  RuntimeConfig,
   FooterScriptConfig,
   LanguagesConfig,
   PageLayout,
@@ -27,7 +27,7 @@ interface RenderHtmlOptions {
   body: string
   rel: string
   components: string[]
-  config: DocConfig
+  config: RuntimeConfig
   languages: LanguagesConfig
   pageLayout: PageLayout
   componentScripts?: string[]
@@ -42,13 +42,13 @@ interface DefaultLocaleEntrypointOptions {
   i18n?: RuntimeI18nConfig
   languages?: LanguagesConfig
   lang?: string
-  config?: DocConfig
+  config?: RuntimeConfig
   footerScript?: FooterScriptConfig
 }
 
 function resolveHtmlLang(
   rel: string,
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {}
 ): string {
   const i18n = browserOption(config, 'i18n') as RuntimeI18nConfig | undefined
@@ -86,7 +86,7 @@ function renderRuntimeImportMap(rel: string, enabled: boolean): string {
   })}</script>`
 }
 
-function footerScriptType(config: DocConfig = {}): 'script' | 'module' {
+function footerScriptType(config: RuntimeConfig = {}): 'script' | 'module' {
   return buildOption(config, 'footerScript') === 'module' ? 'module' : 'script'
 }
 
@@ -95,7 +95,7 @@ function escapeScriptContent(value: FooterScriptConfig = ''): string {
 }
 
 function renderFooterScript(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   footerScript: FooterScriptConfig = ''
 ): string {
   const code = String(footerScript || '').trim()

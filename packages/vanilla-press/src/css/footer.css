@@ -3,7 +3,7 @@
   justify-content: space-between;
   gap: 4px;
   flex-wrap: wrap;
-  padding: 12px 24px;
+  padding: 12px 20px;
   border-top: 1px solid var(--vp-line);
   color: var(--vp-muted);
   background: var(--vp-panel-overlay);

@@ -25,6 +25,7 @@ export default {
     lastEdit: {
       text: 'editor.lastUpdated',
       format: 'yyyy-MM-dd HH:mm:ss',
+      utc: true,
     },
   },
 }
@@ -106,6 +107,32 @@ export default {
 需要注意，`date-fns` 推荐使用 `yyyy` 表示日历年份，使用 `dd` 表示月份中的日期。不要沿用旧式的 `YYYY` 和 `DD` 写法，否则可能得到错误含义或触发格式错误。
 
 如果传入的 `format` 无法被 `date-fns` 正常解析，`vanilla-press` 会回退到默认格式 `yyyy-MM-dd HH:mm:ss`。
+
+### UTC 标记
+
+`utc` 控制是否在时间后追加当前构建环境的时区标记。
+
+`utc: true` 时，输出会变成这样：
+
+```text
+最后更新于: 2026-08-19 23:57:03 UTC+8
+```
+
+说明：
+
+- 这里不会把时间转换成 UTC 时间。
+- 追加的是构建时环境的当前时区标记，例如 `UTC+8`、`UTC-5`。
+- 如果你的 `format` 已经包含时区信息，建议把 `utc` 设为 `false`，避免重复输出。
+
+```ts
+export default {
+  build: {
+    lastEdit: {
+      utc: false,
+    },
+  },
+}
+```
 
 ## 缓存规则
 

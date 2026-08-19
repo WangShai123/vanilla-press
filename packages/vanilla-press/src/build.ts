@@ -26,7 +26,7 @@ import { renderDefaultLocaleEntrypoint, renderHtml } from './render/html.ts'
 import { layoutStyles, loadLayouts, renderLayout } from './render/layout.ts'
 import type {
   BuildOptions,
-  DocConfig,
+  RuntimeConfig,
   FooterScriptConfig,
   FrontmatterData,
   LanguagesConfig,
@@ -189,13 +189,13 @@ async function ensureSourceConfig(configDir: string): Promise<void> {
   }
 }
 
-async function loadDocConfig(configDir: string): Promise<DocConfig> {
+async function loadRuntimeConfig(configDir: string): Promise<RuntimeConfig> {
   const file =
     (await resolveSourceModule(configDir, 'runtime')) ||
     (await resolveSourceModule(configDir, 'config'))
   if (!file) return {}
 
-  return importDefault<DocConfig>(file, {})
+  return importDefault<RuntimeConfig>(file, {})
 }
 
 async function loadFooterScript(
@@ -227,7 +227,7 @@ async function loadLlmsConfig(configDir: string): Promise<UnknownRecord> {
   )
 }
 
-function validateDocConfig(config: DocConfig = {}): void {
+function validateRuntimeConfig(config: RuntimeConfig = {}): void {
   const siteUrl = String(config.siteUrl || '').trim()
 
   if (!siteUrl) {
@@ -260,7 +260,7 @@ async function loadLanguages(configDir: string): Promise<LanguagesConfig> {
 }
 
 function resolveI18nData(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   messages: LanguagesConfig = {}
 ): LanguagesConfig {
   const i18n = (browserOption(config, 'i18n') || {}) as RuntimeI18nConfig
@@ -320,23 +320,27 @@ async function writeLastEditCache(
   await fs.writeFile(file, `${JSON.stringify(cache, null, 2)}\n`, 'utf8')
 }
 
-function lastEditFormat(config: DocConfig = {}): string {
+function lastEditSettings(config: RuntimeConfig = {}): {
+  format: string
+  utc: boolean
+} {
   const lastEdit = buildOption(config, 'lastEdit')
   if (!lastEdit || lastEdit === false || lastEdit === true) {
-    return DEFAULT_LAST_EDIT_FORMAT
+    return { format: DEFAULT_LAST_EDIT_FORMAT, utc: true }
   }
 
-  const format = isRecord(lastEdit) ? (lastEdit as UnknownRecord).format : ''
-  const normalized =
-    typeof format === 'string' && format.trim()
-      ? format.trim()
+  const record = isRecord(lastEdit) ? (lastEdit as UnknownRecord) : {}
+  const format =
+    typeof record.format === 'string' && record.format.trim()
+      ? record.format.trim()
       : DEFAULT_LAST_EDIT_FORMAT
-  return normalized
+  const utc = typeof record.utc === 'boolean' ? record.utc : true
+  return { format, utc }
 }
 
 function resolveLastEditText(
   source: SourcePage,
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   cache: LastEditCache = {}
 ): string {
   const lastEdit = buildOption(config, 'lastEdit')
@@ -344,12 +348,13 @@ function resolveLastEditText(
 
   const currentHash = sourceHash(source.markdown)
   const cached = cache[source.rel]
+  const { format, utc } = lastEditSettings(config)
   if (cached && cached.hash === currentHash && cached.at) {
-    return formatLastEditDate(cached.at, lastEditFormat(config))
+    return formatLastEditDate(cached.at, format, utc)
   }
 
   const at = new Date().toISOString()
-  const value = formatLastEditDate(at, lastEditFormat(config))
+  const value = formatLastEditDate(at, format, utc)
   cache[source.rel] = {
     hash: currentHash,
     at,
@@ -358,7 +363,7 @@ function resolveLastEditText(
 }
 
 function resolveDefaultLocale(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {}
 ) {
   const locales = Array.isArray(languages.locales) ? languages.locales : []
@@ -380,7 +385,7 @@ function resolveDefaultLocale(
 
 async function writeDefaultLocaleEntrypoint(
   outputDir: string,
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   pages: RenderedPage[] = [],
   footerScript: FooterScriptConfig = ''
@@ -464,7 +469,7 @@ async function writeRuntimeEntry(
   const sharedExports = runtimeSharedVpExports(data.sharedVpModules)
   const code = `import { initDocPage, isMobile } from ${JSON.stringify(runtimeHref)};
 export { initDocPage, isMobile };
-export const docConfig = ${serializeRuntimeValue(data.config)};
+export const runtimeConfig = ${serializeRuntimeValue(data.config)};
 export const languages = ${serializeRuntimeValue(data.languages || {})};
 export const menuItems = ${serializeRuntimeValue(data.menuItems || [])};
 export const sidebarItems = ${serializeRuntimeValue(data.sidebarItems || [])};
@@ -569,7 +574,9 @@ export default { name, dependsOn, init };
 `
 }
 
-function vpScriptSharedModules(config: DocConfig = {}): SharedVpScriptModule[] {
+function vpScriptSharedModules(
+  config: RuntimeConfig = {}
+): SharedVpScriptModule[] {
   const vpScript = buildOption(config, 'vpScript')
   const shared =
     vpScript && typeof vpScript === 'object'
@@ -1017,7 +1024,7 @@ function rootIndexExists(sources: SourcePage[] = []): boolean {
 
 function localeHomeRel(
   source: SourcePage,
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   hasRootIndex = false
 ): string {
@@ -1039,7 +1046,7 @@ function localeHomeRel(
 
 function brandHref(
   source: SourcePage,
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   hasRootIndex = false
 ): string {
@@ -1052,7 +1059,7 @@ function brandHref(
 function renderSource(
   source: SourcePage,
   md: MarkdownItInstance,
-  config: DocConfig,
+  config: RuntimeConfig,
   languages: LanguagesConfig,
   layouts: LayoutMap,
   componentScriptAssets: Map<string, ModuleScriptAsset>,
@@ -1160,7 +1167,7 @@ async function writeSearchIndex(
   await fs.writeFile(path.join(outputDir, 'search.js'), code, 'utf8')
 }
 
-function siteUrl(config: DocConfig = {}): string {
+function siteUrl(config: RuntimeConfig = {}): string {
   return String(config.siteUrl || '')
     .trim()
     .replace(/\/+$/g, '')
@@ -1183,7 +1190,7 @@ function escapeXml(value: unknown): string {
 async function writeSitemap(
   outputDir: string,
   pages: RenderedPage[] = [],
-  config: DocConfig = {}
+  config: RuntimeConfig = {}
 ): Promise<void> {
   const baseUrl = siteUrl(config)
   const urls = pages
@@ -1208,7 +1215,7 @@ async function writeRobots(
 async function writeLlms(
   outputDir: string,
   pages: RenderedPage[] = [],
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   llmsConfig: UnknownRecord = {}
 ): Promise<void> {
   const text = renderLlmsTxt(llmsConfig, config, pages)
@@ -1243,8 +1250,8 @@ export async function build({
   await ensureSourceConfig(configDir)
   const resolvedCacheDir =
     cacheDir || path.join(path.dirname(configDir), 'cache')
-  const config = await loadDocConfig(configDir)
-  validateDocConfig(config)
+  const config = await loadRuntimeConfig(configDir)
+  validateRuntimeConfig(config)
   const footerScript = await loadFooterScript(configDir)
   const customComponents = await loadCustomComponents(componentsDir)
   const md = createMarkdown(config, customComponents)

@@ -13,7 +13,7 @@ import { installTip } from '../components/tip.ts'
 import { installTree } from '../components/tree.ts'
 import { createHighlighter } from '../runtime/highlight.ts'
 import { installVpScript } from '../runtime/vpScript.ts'
-import type { DocConfig, LoadedMarkdownComponent } from '../types.ts'
+import type { RuntimeConfig, LoadedMarkdownComponent } from '../types.ts'
 import { isHighlightEnabled } from '../utilities/features.ts'
 import { escapeHtml } from '../utilities/html.ts'
 import { markComponent } from '../utilities/markdown.ts'
@@ -40,7 +40,7 @@ function installCustomComponents(
 }
 
 export function createMarkdown(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   components: LoadedMarkdownComponent[] = []
 ): MarkdownItType {
   const highlighter: MarkdownHighlighter = isHighlightEnabled(config)

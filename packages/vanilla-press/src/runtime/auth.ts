@@ -1,16 +1,16 @@
 import { all, icon } from 'vanilla-jui'
 import { createEffect, jsx } from 'vanilla-signal'
 
-import type { DocConfig, DocI18n, RuntimeFeatureConfig } from '../types.ts'
+import type { RuntimeConfig, DocI18n, RuntimeFeatureConfig } from '../types.ts'
 import { isRecord } from '../types.ts'
 import { isAuthEnabled, runtimeOption } from '../utilities/features.ts'
 
-function authOptions(config: DocConfig): RuntimeFeatureConfig {
+function authOptions(config: RuntimeConfig): RuntimeFeatureConfig {
   const value = runtimeOption(config, 'auth')
   return isRecord(value) ? value : {}
 }
 
-export function initAuth(config: DocConfig = {}, i18n: DocI18n): void {
+export function initAuth(config: RuntimeConfig = {}, i18n: DocI18n): void {
   const authConfig = authOptions(config)
   const buttons = all<HTMLButtonElement>('[data-vp-auth]').filter(
     (button) => button.dataset.vpReady !== 'true'

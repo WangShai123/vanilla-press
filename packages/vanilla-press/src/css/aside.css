@@ -1,7 +1,5 @@
 .vp-main.has-aside > .vp-aside {
   width: 160px;
-  grid-column: 2;
-  grid-row: 1 / span 2;
 }
 
 .vp-aside {
@@ -16,16 +14,15 @@
 }
 
 .vp-toc {
-  padding: 16px 0 16px 0;
   border-left: 1px solid var(--vp-line);
 }
 
 .vp-toc .j-toc .toc-link {
-  font-size: 13px;
+  font-size: var(--font-size-sm);
 }
 
 .vp-aside-custom {
-  margin-top: 18px;
+  margin-top: 16px;
 }
 
 .vp-mobile-toc-panel .j-toc {

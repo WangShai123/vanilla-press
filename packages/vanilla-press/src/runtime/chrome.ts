@@ -2,7 +2,7 @@ import { all, icon, isPlainObject, q } from 'vanilla-jui'
 import { jsx } from 'vanilla-signal'
 
 import type {
-  DocConfig,
+  RuntimeConfig,
   DocI18n,
   LanguagesConfig,
   LocaleEntry,
@@ -38,7 +38,7 @@ type DocChromeState =
 
 function renderFooter(
   footer: HTMLElement | null,
-  config: DocConfig = {}
+  config: RuntimeConfig = {}
 ): void {
   if (!footer) return
 
@@ -72,7 +72,7 @@ function renderFooter(
 
   const builtBy = jsx('div', {
     children: [
-      'BuiltBy ',
+      'Powered by ',
       jsx('a', {
         href: 'https://app.jealer.com/vanilla-press/',
         target: '_blank',
@@ -86,7 +86,7 @@ function renderFooter(
 }
 
 export function initDocChrome(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   menu: NavItem[] = [],
   sidebar: NavItem[] = [],
   languages: LanguagesConfig = {},

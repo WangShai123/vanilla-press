@@ -1,12 +1,12 @@
 import { q } from 'vanilla-jui'
 import { jsx } from 'vanilla-signal'
 
-import type { DocConfig, RuntimePage } from '../types.ts'
+import type { RuntimeConfig, RuntimePage } from '../types.ts'
 import { isSeoEnabled } from '../utilities/features.ts'
 import { documentTitle } from '../utilities/page.ts'
 import { toText } from '../utilities/string.ts'
 
-function pageTitle(config: DocConfig = {}, page: RuntimePage = {}): string {
+function pageTitle(config: RuntimeConfig = {}, page: RuntimePage = {}): string {
   return documentTitle(page.seo?.title || page.title, config, page.rel)
 }
 
@@ -30,7 +30,10 @@ function syncMeta(name: string, content: unknown): void {
   meta.content = value
 }
 
-export function initSeo(config: DocConfig = {}, page: RuntimePage = {}): void {
+export function initSeo(
+  config: RuntimeConfig = {},
+  page: RuntimePage = {}
+): void {
   if (!isSeoEnabled(config)) return
 
   document.title = pageTitle(config, page)

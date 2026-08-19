@@ -96,3 +96,7 @@
 #### 1.4.7
 
 - fix: Fixed style issue
+
+#### 1.4.8
+
+- feat: Added timezone marker

@@ -222,7 +222,7 @@ body.vp-layout-home {
   font-size: 0.86rem;
   line-height: 1.6;
   scrollbar-width: thin;
-  scrollbar-color: var(--ui-border) transparent;
+  scrollbar-color: var(--ui-border-subtle) transparent;
 }
 
 .j-radius-xl .vp-home-command-group pre,

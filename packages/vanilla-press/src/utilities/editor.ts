@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom'
 import icons from '../config/icons.ts'
 import { createDocI18n } from '../runtime/i18n.ts'
 import type {
-  DocConfig,
+  RuntimeConfig,
   LanguagesConfig,
   RuntimePage,
   UnknownRecord,
@@ -27,10 +27,21 @@ interface EditorLinkConfig extends UnknownRecord {
 interface EditorLastEditConfig extends UnknownRecord {
   text?: unknown
   format?: string
+  utc?: boolean
 }
 
 const PROTECTED_DATE_FNS_TOKENS =
   /(^|[^A-Za-z])(?:Y{2,4}|D{1,2})(?=$|[^A-Za-z])/
+
+function formatUtcOffset(date: Date): string {
+  const offset = -date.getTimezoneOffset()
+  const sign = offset >= 0 ? '+' : '-'
+  const abs = Math.abs(offset)
+  const hours = Math.floor(abs / 60)
+  const minutes = abs % 60
+  if (minutes === 0) return `UTC${sign}${hours}`
+  return `UTC${sign}${hours}:${String(minutes).padStart(2, '0')}`
+}
 
 function plainObject(value: unknown): UnknownRecord | null {
   return isRecord(value) ? (value as UnknownRecord) : null
@@ -68,20 +79,23 @@ function localizedText(
 
 export function formatLastEditDate(
   value: Date | number | string,
-  format = DEFAULT_LAST_EDIT_FORMAT
+  format = DEFAULT_LAST_EDIT_FORMAT,
+  utc = true
 ): string {
   const date = value instanceof Date ? value : new Date(value)
   if (Number.isNaN(date.getTime())) return ''
   const pattern = String(format || DEFAULT_LAST_EDIT_FORMAT)
-  if (PROTECTED_DATE_FNS_TOKENS.test(pattern)) {
-    return formatDate(date, DEFAULT_LAST_EDIT_FORMAT)
-  }
+  const formatted = PROTECTED_DATE_FNS_TOKENS.test(pattern)
+    ? formatDate(date, DEFAULT_LAST_EDIT_FORMAT)
+    : (() => {
+        try {
+          return formatDate(date, pattern)
+        } catch {
+          return formatDate(date, DEFAULT_LAST_EDIT_FORMAT)
+        }
+      })()
 
-  try {
-    return formatDate(date, pattern)
-  } catch {
-    return formatDate(date, DEFAULT_LAST_EDIT_FORMAT)
-  }
+  return utc ? `${formatted} ${formatUtcOffset(date)}` : formatted
 }
 
 function createIcon(document: Document): SVGSVGElement {
@@ -115,7 +129,7 @@ function resolveEditLinkPattern(
 }
 
 function resolveEditorHelp(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   page: RuntimePage = {}
 ): {
@@ -181,7 +195,7 @@ function createLastEdit(
 
 function createEditorHelpContainer(
   document: Document,
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   page: RuntimePage = {},
   lastEditText = ''
@@ -213,7 +227,7 @@ function createEditorHelpContainer(
 export function injectEditorHelp(
   body = '',
   page: RuntimePage = {},
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   lastEditText = ''
 ): string {
@@ -237,7 +251,7 @@ export function injectEditorHelp(
 
 export function renderEditorHelp(
   page: RuntimePage = {},
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   lastEditText = ''
 ): string {

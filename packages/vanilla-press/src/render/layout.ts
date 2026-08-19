@@ -6,7 +6,7 @@ import { glob } from 'glob'
 import {
   isRecord,
   type ChromeOptions,
-  type DocConfig,
+  type RuntimeConfig,
   type FrontmatterData,
   type LayoutDefinition,
   type LayoutMap,
@@ -33,7 +33,7 @@ interface RenderLayoutOptions {
   body: string
   editorHelp?: string
   source: SourcePage
-  config: DocConfig
+  config: RuntimeConfig
   sidebarEnabled: boolean
   tocEnabled: boolean
   chrome: ChromeOptions

@@ -7,7 +7,7 @@ import { initTabs } from '../components/tabs.ts'
 import { initTip } from '../components/tip.ts'
 import { initTree } from '../components/tree.ts'
 import type {
-  DocConfig,
+  RuntimeConfig,
   LanguagesConfig,
   NavItem,
   RuntimePage,
@@ -30,7 +30,7 @@ import { initSearch } from './search.ts'
 import { initSeo } from './seo.ts'
 import { initToc } from './toc.ts'
 
-type ComponentInit = (root: Document | Element, config?: DocConfig) => void
+type ComponentInit = (root: Document | Element, config?: RuntimeConfig) => void
 
 interface ComponentRegistryEntry {
   init: ComponentInit
@@ -44,7 +44,7 @@ export interface RuntimeCustomComponent {
 }
 
 export interface DocPageOptions {
-  config?: DocConfig
+  config?: RuntimeConfig
   menu?: NavItem[]
   sidebar?: NavItem[]
   languages?: LanguagesConfig
@@ -197,7 +197,7 @@ function initComponents(
   root: Document | Element,
   names: string[],
   registry: Record<string, ComponentRegistryEntry>,
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   maxPasses = 5
 ): void {
   const ordered = resolveExecutionOrder(names, registry)
@@ -225,7 +225,7 @@ function initComponents(
 function watchDynamicComponents(
   names: string[],
   registry: Record<string, ComponentRegistryEntry>,
-  config: DocConfig = {}
+  config: RuntimeConfig = {}
 ): void {
   if (typeof MutationObserver === 'undefined') return
   if (!document.body) return

@@ -31,7 +31,7 @@ export function renderRuntimeScript({
   const layoutScriptSource = JSON.stringify(layoutScript)
 
   return `<script type="module">
-    import { initDocPage, isMobile, docConfig, languages, menuItems, sidebarItems } from '${runtimeHref}';
+    import { initDocPage, isMobile, runtimeConfig, languages, menuItems, sidebarItems } from '${runtimeHref}';
     const customComponents = await Promise.all(${customComponentSources}.map(async (src) => {
       const mod = await import(src);
       const definition = mod.default || mod.component || mod;
@@ -64,7 +64,7 @@ export function renderRuntimeScript({
     }
     initDocPage({
       components: ${JSON.stringify(components)},
-      config: docConfig,
+      config: runtimeConfig,
       customComponents,
       languages,
       menu: menuItems,
@@ -79,7 +79,7 @@ export function renderRuntimeScript({
     if (${layoutScriptSource}) {
       const layoutMod = await import(${layoutScriptSource});
       const initLayout = layoutMod.default || layoutMod.init;
-      if (typeof initLayout === 'function') initLayout(document, docConfig);
+      if (typeof initLayout === 'function') initLayout(document, runtimeConfig);
     }
   </script>`
 }

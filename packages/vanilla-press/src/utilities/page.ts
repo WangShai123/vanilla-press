@@ -1,4 +1,4 @@
-import type { DocConfig } from '../types.ts'
+import type { RuntimeConfig } from '../types.ts'
 import { browserOption } from './features.ts'
 import { toText } from './string.ts'
 
@@ -23,11 +23,14 @@ function normalizeRel(value: unknown): string {
     .replace(/\/$/g, '')
 }
 
-export function normalizeSiteName(config: DocConfig = {}): string {
+export function normalizeSiteName(config: RuntimeConfig = {}): string {
   return toText(config.siteName, 'VanillaPress').trim() || 'VanillaPress'
 }
 
-export function isHomePageRel(rel: unknown, config: DocConfig = {}): boolean {
+export function isHomePageRel(
+  rel: unknown,
+  config: RuntimeConfig = {}
+): boolean {
   const value = normalizeRel(rel) || 'index.html'
   if (value === 'index.html') return true
 
@@ -47,7 +50,7 @@ export function isHomePageRel(rel: unknown, config: DocConfig = {}): boolean {
 
 export function documentTitle(
   title: unknown,
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   rel?: unknown
 ): string {
   const pageTitleValue = toText(title).trim()

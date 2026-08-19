@@ -7,7 +7,7 @@ ${DEFAULT_HIGHLIGHT_LANGUAGES.map(
 ).join('\n')}
       ]`
 
-export const DEFAULT_CONFIG_TS = `import type { VPRuntime } from 'vanilla-press';
+export const DEFAULT_CONFIG_TS = `import type { RuntimeConfig } from 'vanilla-press';
 
 export default {
   siteName: "VanillaPress",
@@ -34,7 +34,8 @@ export default {
     },
     lastEdit: {
       text: "editor.lastUpdated",
-      format: "yyyy-MM-dd HH:mm:ss"
+      format: "yyyy-MM-dd HH:mm:ss",
+      utc: true
     }
   },
   browser: {
@@ -73,7 +74,7 @@ export default {
       }
     }
   }
-} satisfies VPRuntime;
+} satisfies RuntimeConfig;
 `
 
 export const DEFAULT_FOOTER_SCRIPT_TS = `import type { FooterScriptConfig } from 'vanilla-press';

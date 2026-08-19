@@ -1,3 +1,0 @@
-.vp-layout-default .vp-shell {
-  min-height: calc(100vh - var(--vp-header-height));
-}

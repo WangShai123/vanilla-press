@@ -46,7 +46,7 @@ export default {
     },
     editor: {
       editLink: '在 GitHub 上编辑此页面',
-      lastUpdated: '最后更新于:',
+      lastUpdated: '最后更新于',
     },
     prevNext: {
       previous: '上一页',
@@ -96,7 +96,7 @@ export default {
     },
     editor: {
       editLink: 'Edit this page on GitHub',
-      lastUpdated: 'Last updated:',
+      lastUpdated: 'Last updated',
     },
     prevNext: {
       previous: 'Previous',

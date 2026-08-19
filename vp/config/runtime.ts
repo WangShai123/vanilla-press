@@ -1,4 +1,4 @@
-import type { DocConfig } from 'vanilla-press'
+import type { RuntimeConfig } from 'vanilla-press'
 
 export default {
   siteName: 'VanillaPress',
@@ -26,8 +26,9 @@ export default {
       text: 'editor.editLink',
     },
     lastEdit: {
-      format: 'YYYY-MM-DD HH:mm:ss',
+      format: 'yyyy-MM-dd HH:mm:ss',
       text: 'editor.lastUpdated',
+      utc: true,
     },
   },
   browser: {
@@ -95,4 +96,4 @@ export default {
       },
     },
   },
-} satisfies DocConfig
+} satisfies RuntimeConfig

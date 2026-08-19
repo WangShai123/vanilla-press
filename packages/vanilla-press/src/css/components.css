@@ -1,6 +1,6 @@
 /* Component */
 .vp-component {
-  margin-block: 1rem;
+  margin-block: 1.25rem;
 }
 
 /* title */
@@ -33,7 +33,7 @@
 .llms-drop-menu {
   display: flex;
   flex-direction: column;
-  background: var(--ui-bg-subtle);
+  background: var(--ui-bg);
   border: 1px solid var(--ui-border);
   border-radius: var(--radius-md);
 }
@@ -69,23 +69,24 @@ a[data-vp-external-link] span.external-link svg {
 
 /* Editor Help */
 .vp-editor-help {
-  margin-top: 3rem;
+  margin-top: 4rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  font-size: var(--font-size-sm);
 }
 
 .vp-edit-link a {
+  color: var(--ui-fg-muted);
   display: flex;
   gap: 4px;
   text-decoration: none;
-  color: var(--ui-fg-muted);
 }
 
 .vp-edit-link svg {
   fill: currentColor;
-  width: var(--font-size-md);
+  width: var(--font-size-sm);
 }
 
 .vp-edit-time {
@@ -272,6 +273,10 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 /* tabs */
+.dark .j-tabs .tab-list .tab-item[aria-selected='false'] {
+  --tab-fg: var(--ui-fg-muted);
+}
+
 .j-tabs .panel-list .panel-item > [data-vp-component] {
   margin: 0;
 }
@@ -301,10 +306,10 @@ a[data-vp-external-link] span.external-link svg {
   overflow: hidden;
 }
 
-.vp-main .j-tabs .panel-item,
+/* .vp-main .j-tabs .panel-item,
 .vp-main .j-accordion .panel-content {
   background: var(--vp-panel);
-}
+} */
 
 .vp-offcanvas-content {
   padding: 1rem;

@@ -9,7 +9,7 @@ import {
 import { jsx } from 'vanilla-signal'
 
 import type {
-  DocConfig,
+  RuntimeConfig,
   DocI18n,
   LocaleEntry,
   RuntimePage,
@@ -197,7 +197,7 @@ function createSearchPanel({
 }
 
 export function initSearch(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   searchSource: SearchSource = [],
   page: RuntimePage = {},
   i18n: DocI18n,

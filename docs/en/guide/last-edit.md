@@ -25,6 +25,7 @@ export default {
     lastEdit: {
       text: 'editor.lastUpdated',
       format: 'yyyy-MM-dd HH:mm:ss',
+      utc: true,
     },
   },
 }
@@ -106,6 +107,32 @@ Common format examples:
 Note that `date-fns` recommends `yyyy` for the calendar year and `dd` for the day of month. Do not reuse old-style `YYYY` and `DD` tokens, or you may get a different meaning or a formatting error.
 
 If the provided `format` cannot be parsed by `date-fns`, `vanilla-press` falls back to the default format `yyyy-MM-dd HH:mm:ss`.
+
+### UTC Marker
+
+`utc` controls whether the current build timezone label is appended after the time.
+
+When `utc: true`, the output becomes:
+
+```text
+Last updated: 2026-08-19 23:57:03 UTC+8
+```
+
+Notes:
+
+- The time is not converted to UTC.
+- `vanilla-press` appends the timezone label of the build environment, such as `UTC+8` or `UTC-5`.
+- If your custom `format` already includes timezone information, set `utc: false` to avoid duplicate output.
+
+```ts
+export default {
+  build: {
+    lastEdit: {
+      utc: false,
+    },
+  },
+}
+```
 
 ## Cache Rules
 

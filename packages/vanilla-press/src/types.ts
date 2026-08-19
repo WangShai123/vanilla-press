@@ -117,6 +117,7 @@ export interface RuntimeEditorLinkConfig extends UnknownRecord {
 export interface RuntimeLastEditConfig extends UnknownRecord {
   text?: unknown
   format?: string
+  utc?: boolean
 }
 
 export interface BuildRuntimeConfig extends UnknownRecord {
@@ -140,7 +141,7 @@ export interface VPRuntime extends UnknownRecord {
   } & UnknownRecord
 }
 
-export type DocConfig = VPRuntime
+export type RuntimeConfig = VPRuntime
 
 export interface FrontmatterData extends UnknownRecord {
   layout?: string
@@ -291,7 +292,7 @@ export interface ChromeOptions {
 }
 
 export interface RuntimeBundleData {
-  config?: DocConfig
+  config?: RuntimeConfig
   languages?: LanguagesConfig | UnknownRecord
   menuItems?: unknown[]
   sidebarItems?: unknown[]
@@ -320,7 +321,7 @@ export type MarkdownComponentInstall = (
 
 export type RuntimeComponentInit = (
   root: Document | Element,
-  config?: DocConfig
+  config?: RuntimeConfig
 ) => void
 
 export interface MarkdownComponentDefinition extends UnknownRecord {

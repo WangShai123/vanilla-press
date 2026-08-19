@@ -2,7 +2,7 @@ import { icon, q } from 'vanilla-jui'
 import { jsx } from 'vanilla-signal'
 
 import type {
-  DocConfig,
+  RuntimeConfig,
   DocI18n,
   LocaleEntry,
   NavItem,
@@ -106,7 +106,7 @@ function createLink(
 }
 
 export function initPrevNext(
-  config: DocConfig = {},
+  config: RuntimeConfig = {},
   sidebar: NavItem[] = [],
   page: RuntimePage = {},
   i18n: DocI18n,

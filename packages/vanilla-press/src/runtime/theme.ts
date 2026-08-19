@@ -9,7 +9,7 @@ import {
 } from 'vanilla-jui'
 import { createEffect, jsx } from 'vanilla-signal'
 
-import type { DocConfig, DocI18n, RuntimeFeatureConfig } from '../types.ts'
+import type { RuntimeConfig, DocI18n, RuntimeFeatureConfig } from '../types.ts'
 import { isRecord } from '../types.ts'
 import { isThemeEnabled, runtimeOption } from '../utilities/features.ts'
 
@@ -21,12 +21,12 @@ interface DocThemeConfig extends RuntimeFeatureConfig {
   }
 }
 
-function themeOptions(config: DocConfig): DocThemeConfig {
+function themeOptions(config: RuntimeConfig): DocThemeConfig {
   const value = runtimeOption(config, 'theme')
   return isRecord(value) ? (value as DocThemeConfig) : {}
 }
 
-export function initTheme(config: DocConfig = {}, i18n: DocI18n): void {
+export function initTheme(config: RuntimeConfig = {}, i18n: DocI18n): void {
   const themeConfig = themeOptions(config)
   const buttons = all<HTMLButtonElement>('[data-vp-theme]').filter(
     (button) => button.dataset.vpReady !== 'true'
