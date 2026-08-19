@@ -4,14 +4,14 @@
 
 ## 运行时
 
-在 `vp/config/config.ts` 中，按需配置是否启用搜索功能。
+在 `vp/config/runtime.ts` 中，按需配置是否启用搜索功能。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     search: true,
   },
-};
+}
 ```
 
 关闭搜索时，构建过程不会输出 `search.js`，页面也不会渲染搜索入口。

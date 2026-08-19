@@ -1,15 +1,15 @@
-import type { SeoData } from '../../types.ts';
+import type { SeoData } from '../../types.ts'
 
 interface RuntimeScriptOptions {
-  runtimeHref: string;
-  searchHref: string;
-  searchEnabled: boolean;
-  components: string[];
-  componentScripts: string[];
-  layoutScript?: string;
-  title: string;
-  rel: string;
-  seo: SeoData;
+  runtimeHref: string
+  searchHref: string
+  searchEnabled: boolean
+  components: string[]
+  componentScripts: string[]
+  layoutScript?: string
+  title: string
+  rel: string
+  seo: SeoData
 }
 
 export function renderRuntimeScript({
@@ -25,10 +25,10 @@ export function renderRuntimeScript({
 }: RuntimeScriptOptions): string {
   const searchSource = searchEnabled
     ? `() => import('${searchHref}').then((mod) => mod.searchIndex || [])`
-    : '[]';
+    : '[]'
 
-  const customComponentSources = JSON.stringify(componentScripts);
-  const layoutScriptSource = JSON.stringify(layoutScript);
+  const customComponentSources = JSON.stringify(componentScripts)
+  const layoutScriptSource = JSON.stringify(layoutScript)
 
   return `<script type="module">
     import { initDocPage, isMobile, docConfig, languages, menuItems, sidebarItems } from '${runtimeHref}';
@@ -81,5 +81,5 @@ export function renderRuntimeScript({
       const initLayout = layoutMod.default || layoutMod.init;
       if (typeof initLayout === 'function') initLayout(document, docConfig);
     }
-  </script>`;
+  </script>`
 }

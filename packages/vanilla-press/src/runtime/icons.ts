@@ -1,5 +1,5 @@
-import { addIcons } from 'vanilla-jui';
+import { addIcons } from 'vanilla-jui'
 
-import icons from '../config/icons.ts';
+import icons from '../config/icons.ts'
 
-addIcons(icons);
+addIcons(icons)

@@ -6,17 +6,17 @@ During build, `vanilla-press` reads the default export from `vp/config/footerScr
 
 ## Configuration
 
-Configure the script tag type in `vp/config/config.ts`:
+Configure the script tag type in `vp/config/runtime.ts`:
 
 ```typescript
 export default {
-  runtime: {
+  build: {
     footerScript: 'script',
   },
-};
+}
 ```
 
-`runtime.footerScript` accepts two values:
+`build.footerScript` accepts two values:
 
 | Value    | Output                               | Description                   |
 | -------- | ------------------------------------ | ----------------------------- |
@@ -28,18 +28,18 @@ export default {
 Write the script content in `vp/config/footerScript.ts`:
 
 ```typescript
-import type { FooterScriptConfig } from 'vanilla-press';
+import type { FooterScriptConfig } from 'vanilla-press'
 
 export default `
 console.log('site footer script loaded');
-` satisfies FooterScriptConfig;
+` satisfies FooterScriptConfig
 ```
 
 After build, every page includes:
 
 ```html
 <script>
-  console.log('site footer script loaded');
+  console.log('site footer script loaded')
 </script>
 ```
 
@@ -52,14 +52,14 @@ Footer script is useful for site-wide code such as analytics, tracking, conversi
 For example, Google Analytics:
 
 ```typescript
-import type { FooterScriptConfig } from 'vanilla-press';
+import type { FooterScriptConfig } from 'vanilla-press'
 
 export default `
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-XXXXXXXXXX');
-` satisfies FooterScriptConfig;
+` satisfies FooterScriptConfig
 ```
 
-If the analytics provider requires an external SDK, create a `script` element dynamically inside the snippet, or set `runtime.footerScript: 'module'` for module script code.
+If the analytics provider requires an external SDK, create a `script` element dynamically inside the snippet, or set `build.footerScript: 'module'` for module script code.

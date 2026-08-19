@@ -4,14 +4,14 @@ Enable multilingual documentation so users can browse the site in different lang
 
 ## Runtime
 
-In `vp/config/config.ts`, configure whether internationalization is enabled.
+In `vp/config/runtime.ts`, configure whether internationalization is enabled.
 
 - Configuration property: `i18n`
 - Configuration type: `boolean` || `object`
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     i18n: {
       enabled: true,
       locale: 'zh-CN',
@@ -23,26 +23,26 @@ export default {
       redirectToDefault: true,
     },
   },
-};
+}
 ```
 
 ## Metadata
 
-In `vp/config/config.ts`, configure the site's i18n language metadata:
+In `vp/config/runtime.ts`, configure the site's i18n language metadata:
 
-- `runtime.i18n.locale`: default language
-- `runtime.i18n.fallbackLocale`: fallback language
-- `runtime.i18n.locales`: array of language options
+- `browser.i18n.locale`: default language
+- `browser.i18n.fallbackLocale`: fallback language
+- `browser.i18n.locales`: array of language options
   - `code`: locale code
   - `label`: language name
   - `path`: locale route directory
-- `runtime.i18n.redirectToDefault`: whether to redirect
+- `browser.i18n.redirectToDefault`: whether to redirect
 
 ## Language Pack
 
 In `vp/config/languages.ts`, export the locale message data:
 
-```javascript
+```ts
 export default {
   'zh-CN': {
     menu: {
@@ -60,7 +60,7 @@ export default {
       api: 'API',
     },
   },
-};
+}
 ```
 
 ## Redirect
@@ -69,4 +69,4 @@ Automatically redirect users to the corresponding language page based on their l
 
 - Priority: user language preference > site language preference
 - Bound data: `locale` field in cookies
-- Disabled: when `runtime.i18n.redirectToDefault` is `false` or `runtime.i18n.enabled` is `false`.
+- Disabled: when `browser.i18n.redirectToDefault` is `false` or `browser.i18n.enabled` is `false`.

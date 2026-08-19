@@ -4,23 +4,23 @@
 
 ## 运行时
 
-`runtime.robots` 默认启用。
+`build.robots` 默认启用。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  build: {
     robots: false,
   },
-};
+}
 ```
 
-当 `runtime.robots` 为 `false` 时，不会构建 `dist/robots.txt`。
+当 `build.robots` 为 `false` 时，不会构建 `dist/robots.txt`。
 
 ## 配置
 
 在 `vp/config/robots.ts` 中配置输出内容。
 
-```javascript
+```ts
 export default {
   rules: [
     {
@@ -29,7 +29,7 @@ export default {
       disallow: ['/private/'],
     },
   ],
-};
+}
 ```
 
 ## 字段

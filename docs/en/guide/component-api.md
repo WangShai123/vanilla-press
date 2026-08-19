@@ -21,7 +21,7 @@ VanillaPress loads `vp/components/*.ts`, `vp/components/*.js`, `vp/components/*/
 A component module exports a component object:
 
 ```typescript
-import type { MarkdownComponentDefinition } from 'vanilla-press';
+import type { MarkdownComponentDefinition } from 'vanilla-press'
 
 export default {
   name: 'badge',
@@ -30,23 +30,23 @@ export default {
       'paragraph',
       'badge',
       (state, startLine, endLine, silent) => {
-        const start = state.bMarks[startLine];
-        const end = state.eMarks[startLine];
-        const line = state.src.slice(start, end).trim();
-        if (!line.startsWith(':::badge')) return false;
-        if (silent) return true;
+        const start = state.bMarks[startLine]
+        const end = state.eMarks[startLine]
+        const line = state.src.slice(start, end).trim()
+        if (!line.startsWith(':::badge')) return false
+        if (silent) return true
 
-        const content = line.replace(/^:::badge/, '').trim();
-        const token = state.push('badge', 'span', 0);
-        token.content = content;
-        markComponent(state.env, 'badge');
-        state.line = startLine + 1;
-        return true;
+        const content = line.replace(/^:::badge/, '').trim()
+        const token = state.push('badge', 'span', 0)
+        token.content = content
+        markComponent(state.env, 'badge')
+        state.line = startLine + 1
+        return true
       }
-    );
+    )
 
     md.renderer.rules.badge = (tokens, index) =>
-      `<span class="doc-badge" data-vp-component="badge">${escapeHtml(tokens[index].content)}</span>`;
+      `<span class="vp-badge" data-vp-component="badge">${escapeHtml(tokens[index].content)}</span>`
   },
   init(root) {
     root
@@ -54,10 +54,10 @@ export default {
         '[data-vp-component="badge"]:not([data-vp-ready="true"])'
       )
       .forEach((node) => {
-        node.setAttribute('data-vp-ready', 'true');
-      });
+        node.setAttribute('data-vp-ready', 'true')
+      })
   },
-} satisfies MarkdownComponentDefinition;
+} satisfies MarkdownComponentDefinition
 ```
 
 Named exports are also supported. VanillaPress resolves component modules in this order:
@@ -68,18 +68,18 @@ export default {
   name: 'badge',
   install() {},
   init() {},
-} satisfies MarkdownComponentDefinition;
+} satisfies MarkdownComponentDefinition
 
 // Option 2: exported component object
 export const component = {
   name: 'badge',
   install() {},
   init() {},
-} satisfies MarkdownComponentDefinition;
+} satisfies MarkdownComponentDefinition
 
 // Option 3: named component fields
-export const name = 'badge';
-export const dependsOn = ['tabs'];
+export const name = 'badge'
+export const dependsOn = ['tabs']
 export function install(md, context) {}
 export function init(root, config) {}
 ```
@@ -120,7 +120,7 @@ export default {
   init(root) {
     // Runs after tabs.
   },
-} satisfies MarkdownComponentDefinition;
+} satisfies MarkdownComponentDefinition
 ```
 
 ## Initialization Model

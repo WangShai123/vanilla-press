@@ -4,19 +4,19 @@ Make the documentation site easier to discover in search engines.
 
 ## Runtime
 
-In `vp/config/config.ts`, configure whether SEO is enabled.
+In `vp/config/runtime.ts`, configure whether SEO is enabled.
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     seo: true,
   },
-};
+}
 ```
 
 ## Configuration
 
-The `runtime.seo` option is a `boolean` and defaults to `true`.
+The `browser.seo` option is a `boolean` and defaults to `true`.
 
 - `false`: only the HTML title is resolved automatically
 - `true`: supports `title`, `description`, and `keywords` in Markdown frontmatter and resolves them automatically

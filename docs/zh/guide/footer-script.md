@@ -6,17 +6,17 @@
 
 ## 配置
 
-在 `vp/config/config.ts` 中配置脚本标签类型：
+在 `vp/config/runtime.ts` 中配置脚本标签类型：
 
 ```typescript
 export default {
-  runtime: {
+  build: {
     footerScript: 'script',
   },
-};
+}
 ```
 
-`runtime.footerScript` 支持两个值：
+`build.footerScript` 支持两个值：
 
 | 值       | 输出                                 | 说明               |
 | -------- | ------------------------------------ | ------------------ |
@@ -28,18 +28,18 @@ export default {
 在 `vp/config/footerScript.ts` 中编写脚本内容：
 
 ```typescript
-import type { FooterScriptConfig } from 'vanilla-press';
+import type { FooterScriptConfig } from 'vanilla-press'
 
 export default `
 console.log('site footer script loaded');
-` satisfies FooterScriptConfig;
+` satisfies FooterScriptConfig
 ```
 
 构建后，每个页面底部都会输出：
 
 ```html
 <script>
-  console.log('site footer script loaded');
+  console.log('site footer script loaded')
 </script>
 ```
 
@@ -52,14 +52,14 @@ console.log('site footer script loaded');
 例如接入 Google Analytics：
 
 ```typescript
-import type { FooterScriptConfig } from 'vanilla-press';
+import type { FooterScriptConfig } from 'vanilla-press'
 
 export default `
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-XXXXXXXXXX');
-` satisfies FooterScriptConfig;
+` satisfies FooterScriptConfig
 ```
 
-如果统计服务要求加载外部 SDK，可以在脚本内动态创建 `script` 元素，或使用 `runtime.footerScript: 'module'` 编写模块脚本。
+如果统计服务要求加载外部 SDK，可以在脚本内动态创建 `script` 元素，或使用 `build.footerScript: 'module'` 编写模块脚本。

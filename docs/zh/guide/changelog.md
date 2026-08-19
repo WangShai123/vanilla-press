@@ -82,3 +82,14 @@
 #### 1.4.5
 
 - fix: 修复 dataset 标记错误
+
+#### 1.4.6
+
+- feat: 新增 编辑 和 最后更新时间 功能
+- feat: 新增 Group 组件
+- feat: `vp` 目录下新增 `cache` 目录，用于缓存构建结果
+- feat: 脚手架创建项目时，会自动添加 `.gitignore` 文件，自动忽略 `vp/cache`, `node_modules`
+- refactor: 重构 Badge 组件
+- fix: 运行时配置结构化拆分为 `runtime` 和 `browser`
+- style: 所有 `doc` 关联命名统一前缀为 `vp`
+- docs: 更新关联文档

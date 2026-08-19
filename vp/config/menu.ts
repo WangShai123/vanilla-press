@@ -1,4 +1,4 @@
-import type { MenuConfig } from 'vanilla-press';
+import type { MenuConfig } from 'vanilla-press'
 
 export default [
   { label: 'Home', path: 'index' },
@@ -16,4 +16,4 @@ export default [
     path: 'https://www.jealer.com/docs/',
     target: '_blank',
   },
-] satisfies MenuConfig;
+] satisfies MenuConfig

@@ -1,46 +1,46 @@
-import type { DocConfig } from '../../types.ts';
+import type { DocConfig } from '../../types.ts'
 
 interface ShellOptions {
-  body: string;
-  config: DocConfig;
-  sidebarEnabled: boolean;
-  tocEnabled: boolean;
+  body: string
+  config: DocConfig
+  sidebarEnabled: boolean
+  tocEnabled: boolean
 }
 
 interface AsideOptions {
-  config: DocConfig;
-  toc: string;
+  config: DocConfig
+  toc: string
 }
 
 interface ShellContextOptions {
-  config: DocConfig;
-  sidebarEnabled: boolean;
-  tocEnabled: boolean;
-  header?: string;
-  secondary?: string;
+  config: DocConfig
+  sidebarEnabled: boolean
+  tocEnabled: boolean
+  header?: string
+  secondary?: string
 }
 
 function renderSidebar(sidebarEnabled: boolean): string {
   return sidebarEnabled
-    ? `    <aside class="doc-sidebar">
-      <nav class="doc-nav" data-vp-sidebar aria-label="文档导航"></nav>
+    ? `    <aside class="vp-sidebar">
+      <nav class="vp-nav" data-vp-sidebar aria-label="文档导航"></nav>
     </aside>`
-    : '';
+    : ''
 }
 
 function renderToc(tocEnabled: boolean): string {
   return tocEnabled
-    ? '        <div class="doc-toc" data-vp-toc aria-label="页面目录"></div>'
-    : '';
+    ? '        <div class="vp-toc" data-vp-toc aria-label="页面目录"></div>'
+    : ''
 }
 
 function renderAside({ config, toc }: AsideOptions): string {
   return toc || config.aside?.html
-    ? `      <aside class="doc-aside" data-reveal="2">
+    ? `      <aside class="vp-aside" data-reveal="2">
 ${toc}
-        <div class="doc-aside-custom" data-vp-aside-custom></div>
+        <div class="vp-aside-custom" data-vp-aside-custom></div>
       </aside>`
-    : '';
+    : ''
 }
 
 export function renderPageShell({
@@ -49,23 +49,26 @@ export function renderPageShell({
   sidebarEnabled,
   tocEnabled,
 }: ShellOptions): string {
-  const sidebar = renderSidebar(sidebarEnabled);
-  const toc = renderToc(tocEnabled);
-  const aside = renderAside({ config, toc });
-  const hasAside = Boolean(aside);
+  const sidebar = renderSidebar(sidebarEnabled)
+  const toc = renderToc(tocEnabled)
+  const aside = renderAside({ config, toc })
+  const hasAside = Boolean(aside)
 
-  return `<main class="doc-shell${sidebarEnabled ? ' has-sidebar' : ''}">
+  return `<main class="vp-shell${sidebarEnabled ? ' has-sidebar' : ''}">
 ${sidebar}
-    <section class="doc-main${hasAside ? ' has-aside' : ''}">
-      <div data-reveal>
-        <article class="j-content is-sm" data-vp-editor>
-          ${body}
-        </article>
+    <section class="vp-main${hasAside ? ' has-aside' : ''}">
+      <div class="vp-content" data-reveal>
+        <div class="vp-content-wrap">
+          <article class="j-content is-sm" data-vp-editor>
+            ${body}
+          </article>
+        </div>
+        <div data-vp-prev-next></div>
       </div>
 ${aside}
     </section>
   </main>
-  <footer class="doc-footer" data-vp-footer></footer>`;
+  <footer class="vp-footer" data-vp-footer></footer>`
 }
 
 export function createPageShellContext({
@@ -75,15 +78,15 @@ export function createPageShellContext({
   header = '',
   secondary = '',
 }: ShellContextOptions) {
-  const sidebar = renderSidebar(sidebarEnabled);
-  const toc = renderToc(tocEnabled);
-  const aside = renderAside({ config, toc });
-  const hasAside = Boolean(aside);
+  const sidebar = renderSidebar(sidebarEnabled)
+  const toc = renderToc(tocEnabled)
+  const aside = renderAside({ config, toc })
+  const hasAside = Boolean(aside)
 
   return {
     shell: {
-      className: `doc-shell${sidebarEnabled ? ' has-sidebar' : ''}`,
-      mainClassName: `doc-main${hasAside ? ' has-aside' : ''}`,
+      className: `vp-shell${sidebarEnabled ? ' has-sidebar' : ''}`,
+      mainClassName: `vp-main${hasAside ? ' has-aside' : ''}`,
     },
     slots: {
       header,
@@ -93,5 +96,5 @@ export function createPageShellContext({
       aside,
       prevNext: '<div data-vp-prev-next></div>',
     },
-  };
+  }
 }

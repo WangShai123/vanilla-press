@@ -23,7 +23,7 @@ npm run dev
 
 ## Build
 
-The build command reads `docs/**/*.md`, `vp/`, and `assets/`, outputs pages to `dist/**/*.html` following the same directory structure, and emits related CSS files and JS runtime.
+The build command reads `docs/**/*.md`, `vp/`, and `assets/`, outputs pages to `dist/**/*.html` following the same directory structure, and emits related CSS files and JS runtime. Site configuration now lives in `vp/config/runtime.ts`, with build-time options under `build` and browser runtime options under `browser`.
 
 :::tabs
 @tab Manual Build
@@ -48,7 +48,7 @@ npm run dev
 - `dist/public/`: generated static assets, including CSS, JS, favicon, images...
 - `assets/`: static assets input directory.
 - `docs/`: input directory for Markdown pages only.
-- `vp/config/`: site and runtime configuration.
+- `vp/config/runtime.ts`: site configuration, split into `build` and `browser`.
 - `vp/layouts/`: custom layouts.
 - `vp/components/`: custom components.
 

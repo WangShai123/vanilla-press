@@ -1,29 +1,29 @@
-import { MOBILE_CLASS_BOOT_SCRIPT } from '../../config/defaults.ts';
-import type { SeoData } from '../../types.ts';
-import { escapeHtml } from '../../utilities/html.ts';
-import { toText } from '../../utilities/string.ts';
-import { themeBootScript } from '../../utilities/theme.ts';
+import { MOBILE_CLASS_BOOT_SCRIPT } from '../../config/defaults.ts'
+import type { SeoData } from '../../types.ts'
+import { escapeHtml } from '../../utilities/html.ts'
+import { toText } from '../../utilities/string.ts'
+import { themeBootScript } from '../../utilities/theme.ts'
 
 interface HeadOptions {
-  title: string;
-  seo: SeoData;
-  themeEnabled: boolean;
-  themeDefault: unknown;
-  i18nRedirectScript: string;
-  cssHref: string;
-  faviconHref: string;
+  title: string
+  seo: SeoData
+  themeEnabled: boolean
+  themeDefault: unknown
+  i18nRedirectScript: string
+  cssHref: string
+  faviconHref: string
 }
 
 function renderSeoMeta(seo: SeoData = {}): string {
   return ['keywords', 'description']
     .map((name) => {
-      const content = toText(seo[name]).trim();
+      const content = toText(seo[name]).trim()
       return content
         ? `  <meta name="${name}" content="${escapeHtml(content)}" data-vp-seo="${name}">`
-        : '';
+        : ''
     })
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
 }
 
 export function renderHead({
@@ -35,7 +35,7 @@ export function renderHead({
   cssHref,
   faviconHref,
 }: HeadOptions): string {
-  const seoMeta = renderSeoMeta(seo);
+  const seoMeta = renderSeoMeta(seo)
 
   return `<head>
   <meta charset="utf-8">
@@ -48,5 +48,5 @@ export function renderHead({
   ${i18nRedirectScript || ''}</script>
   <link rel="icon" href="${faviconHref}">
   <link rel="stylesheet" href="${cssHref}">
-</head>`;
+</head>`
 }

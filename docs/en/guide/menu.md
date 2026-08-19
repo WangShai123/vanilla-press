@@ -4,14 +4,14 @@ The main navigation menu displayed at the top of the page.
 
 ## Runtime
 
-In `vp/config/config.ts`, configure whether the main menu is enabled.
+In `vp/config/runtime.ts`, configure whether the main menu is enabled.
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     menu: true,
   },
-};
+}
 ```
 
 ## Configuration
@@ -22,7 +22,7 @@ In `vp/config/menu.ts`, configure the site's menu data as needed.
 - `path`: page path for the menu item, without `.html`
 - `children`: array of submenu items
 
-```javascript
+```ts
 export default [
   { label: 'menu.home', path: 'index' },
   {
@@ -32,7 +32,5 @@ export default [
       { label: 'menu.api', path: 'guide/api' },
     ],
   },
-];
+]
 ```
-
-When `path` is empty, no link is generated.

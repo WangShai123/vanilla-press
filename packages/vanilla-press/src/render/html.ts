@@ -5,44 +5,45 @@ import type {
   PageLayout,
   RuntimeI18nConfig,
   SeoData,
-} from '../types.ts';
-import { isRecord } from '../types.ts';
+} from '../types.ts'
+import { isRecord } from '../types.ts'
 import {
   isI18nEnabled,
   isSearchEnabled,
   isThemeEnabled,
-  runtimeOption,
-} from '../utilities/features.ts';
-import { escapeHtml } from '../utilities/html.ts';
-import { i18nRedirectBootScript } from '../utilities/i18n-routes.ts';
-import { documentTitle, normalizeSiteName } from '../utilities/page.ts';
-import { normalizePath, relativeAsset } from '../utilities/path.ts';
-import { renderHead } from './template/head.ts';
-import { renderRuntimeScript } from './template/runtime.ts';
+  browserOption,
+  buildOption,
+} from '../utilities/features.ts'
+import { escapeHtml } from '../utilities/html.ts'
+import { i18nRedirectBootScript } from '../utilities/i18n-routes.ts'
+import { documentTitle, normalizeSiteName } from '../utilities/page.ts'
+import { normalizePath, relativeAsset } from '../utilities/path.ts'
+import { renderHead } from './template/head.ts'
+import { renderRuntimeScript } from './template/runtime.ts'
 
 interface RenderHtmlOptions {
-  title: string;
-  seo: SeoData;
-  body: string;
-  rel: string;
-  components: string[];
-  config: DocConfig;
-  languages: LanguagesConfig;
-  pageLayout: PageLayout;
-  componentScripts?: string[];
-  layoutScript?: string;
-  searchEnabled?: boolean;
-  runtimeImportMap?: boolean;
-  scripts?: string[];
-  footerScript?: FooterScriptConfig;
+  title: string
+  seo: SeoData
+  body: string
+  rel: string
+  components: string[]
+  config: DocConfig
+  languages: LanguagesConfig
+  pageLayout: PageLayout
+  componentScripts?: string[]
+  layoutScript?: string
+  searchEnabled?: boolean
+  runtimeImportMap?: boolean
+  scripts?: string[]
+  footerScript?: FooterScriptConfig
 }
 
 interface DefaultLocaleEntrypointOptions {
-  i18n?: RuntimeI18nConfig;
-  languages?: LanguagesConfig;
-  lang?: string;
-  config?: DocConfig;
-  footerScript?: FooterScriptConfig;
+  i18n?: RuntimeI18nConfig
+  languages?: LanguagesConfig
+  lang?: string
+  config?: DocConfig
+  footerScript?: FooterScriptConfig
 }
 
 function resolveHtmlLang(
@@ -50,20 +51,20 @@ function resolveHtmlLang(
   config: DocConfig = {},
   languages: LanguagesConfig = {}
 ): string {
-  const i18n = runtimeOption(config, 'i18n') as RuntimeI18nConfig | undefined;
+  const i18n = browserOption(config, 'i18n') as RuntimeI18nConfig | undefined
   const fallback =
-    String(i18n?.locale || languages.locale || 'zh-CN').trim() || 'zh-CN';
-  if (!isI18nEnabled(config)) return fallback;
+    String(i18n?.locale || languages.locale || 'zh-CN').trim() || 'zh-CN'
+  if (!isI18nEnabled(config)) return fallback
 
-  const locales = Array.isArray(languages.locales) ? languages.locales : [];
-  if (!locales.length) return fallback;
+  const locales = Array.isArray(languages.locales) ? languages.locales : []
+  if (!locales.length) return fallback
 
-  const firstSegment = normalizePath(rel).split('/')[0]?.toLowerCase();
+  const firstSegment = normalizePath(rel).split('/')[0]?.toLowerCase()
   const matched = locales.find(
     (locale) => normalizePath(locale?.path).toLowerCase() === firstSegment
-  );
+  )
 
-  return String(matched?.code || fallback).trim() || fallback;
+  return String(matched?.code || fallback).trim() || fallback
 }
 
 function renderPageScripts(rel: string, scripts: string[] = []): string {
@@ -72,43 +73,41 @@ function renderPageScripts(rel: string, scripts: string[] = []): string {
       (script) =>
         `  <script type="module" src="${relativeAsset(rel, script)}"></script>`
     )
-    .join('\n');
+    .join('\n')
 }
 
 function renderRuntimeImportMap(rel: string, enabled: boolean): string {
-  if (!enabled) return '';
+  if (!enabled) return ''
 
   return `  <script type="importmap">${JSON.stringify({
     imports: {
       'vanilla-press/runtime': relativeAsset(rel, 'public/runtime.js'),
     },
-  })}</script>`;
+  })}</script>`
 }
 
 function footerScriptType(config: DocConfig = {}): 'script' | 'module' {
-  return runtimeOption(config, 'footerScript') === 'module'
-    ? 'module'
-    : 'script';
+  return buildOption(config, 'footerScript') === 'module' ? 'module' : 'script'
 }
 
 function escapeScriptContent(value: FooterScriptConfig = ''): string {
-  return String(value).replace(/<\/script/gi, '<\\/script');
+  return String(value).replace(/<\/script/gi, '<\\/script')
 }
 
 function renderFooterScript(
   config: DocConfig = {},
   footerScript: FooterScriptConfig = ''
 ): string {
-  const code = String(footerScript || '').trim();
-  if (!code) return '';
+  const code = String(footerScript || '').trim()
+  if (!code) return ''
 
-  const type = footerScriptType(config);
-  const attr = type === 'module' ? ' type="module"' : '';
-  return `  <script${attr}>\n${escapeScriptContent(code)}\n  </script>`;
+  const type = footerScriptType(config)
+  const attr = type === 'module' ? ' type="module"' : ''
+  return `  <script${attr}>\n${escapeScriptContent(code)}\n  </script>`
 }
 
 function delayScript(code: string, delay = 500): string {
-  return code ? `setTimeout(function(){${code}},${delay});` : '';
+  return code ? `setTimeout(function(){${code}},${delay});` : ''
 }
 
 export function renderHtml({
@@ -127,25 +126,25 @@ export function renderHtml({
   scripts = [],
   footerScript = '',
 }: RenderHtmlOptions): string {
-  const cssHref = relativeAsset(rel, 'public/styles.css');
-  const faviconHref = relativeAsset(rel, 'public/favicon.ico');
-  const runtimeHref = relativeAsset(rel, 'public/runtime.js');
-  const searchHref = relativeAsset(rel, 'public/search.js');
-  const themeEnabled = isThemeEnabled(config);
-  const theme = runtimeOption(config, 'theme');
-  const themeDefault = isRecord(theme) ? theme.default : undefined;
-  const i18n = (runtimeOption(config, 'i18n') || {}) as RuntimeI18nConfig;
+  const cssHref = relativeAsset(rel, 'public/styles.css')
+  const faviconHref = relativeAsset(rel, 'public/favicon.ico')
+  const runtimeHref = relativeAsset(rel, 'public/runtime.js')
+  const searchHref = relativeAsset(rel, 'public/search.js')
+  const themeEnabled = isThemeEnabled(config)
+  const theme = browserOption(config, 'theme')
+  const themeDefault = isRecord(theme) ? theme.default : undefined
+  const i18n = (browserOption(config, 'i18n') || {}) as RuntimeI18nConfig
   const i18nRedirectScript =
     isI18nEnabled(config) &&
     i18n.redirectToDefault !== false &&
     normalizePath(rel) === 'index.html'
       ? i18nRedirectBootScript(i18n, languages)
-      : '';
-  const htmlLang = resolveHtmlLang(rel, config, languages);
-  const htmlTitle = documentTitle(seo?.title || title, config, rel);
-  const importMap = renderRuntimeImportMap(rel, runtimeImportMap);
-  const pageScripts = renderPageScripts(rel, scripts);
-  const footerScriptHtml = renderFooterScript(config, footerScript);
+      : ''
+  const htmlLang = resolveHtmlLang(rel, config, languages)
+  const htmlTitle = documentTitle(seo?.title || title, config, rel)
+  const importMap = renderRuntimeImportMap(rel, runtimeImportMap)
+  const pageScripts = renderPageScripts(rel, scripts)
+  const footerScriptHtml = renderFooterScript(config, footerScript)
 
   return `<!doctype html>
 <html lang="${htmlLang}">
@@ -158,7 +157,7 @@ ${renderHead({
   cssHref,
   faviconHref,
 })}
-<body class="doc-layout-${pageLayout?.name || 'default'}">
+<body class="vp-layout-${pageLayout?.name || 'default'}">
   ${pageLayout?.html || body}
 ${importMap ? `${importMap}\n` : ''}
   ${renderRuntimeScript({
@@ -178,7 +177,7 @@ ${pageScripts ? `${pageScripts}\n` : ''}
 ${footerScriptHtml ? `${footerScriptHtml}\n` : ''}
 </body>
 </html>
-`;
+`
 }
 
 export function renderDefaultLocaleEntrypoint({
@@ -188,11 +187,11 @@ export function renderDefaultLocaleEntrypoint({
   config = {},
   footerScript = '',
 }: DefaultLocaleEntrypointOptions = {}): string {
-  const i18nRedirectScript = i18nRedirectBootScript(i18n, languages);
-  const theme = runtimeOption(config, 'theme');
-  const themeDefault = isRecord(theme) ? theme.default : undefined;
-  const siteName = normalizeSiteName(config);
-  const footerScriptHtml = renderFooterScript(config, footerScript);
+  const i18nRedirectScript = i18nRedirectBootScript(i18n, languages)
+  const theme = browserOption(config, 'theme')
+  const themeDefault = isRecord(theme) ? theme.default : undefined
+  const siteName = normalizeSiteName(config)
+  const footerScriptHtml = renderFooterScript(config, footerScript)
 
   return `<!doctype html>
 <html lang="${escapeHtml(lang)}">
@@ -210,5 +209,5 @@ ${renderHead({
 ${footerScriptHtml ? `${footerScriptHtml}\n` : ''}
 </body>
 </html>
-`;
+`
 }

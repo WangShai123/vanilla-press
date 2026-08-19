@@ -1,7 +1,7 @@
-.doc-sidebar {
+.vp-sidebar {
   padding: 24px 18px;
-  background: var(--doc-panel);
-  border-right: 1px solid var(--doc-line);
+  background: var(--vp-panel);
+  border-right: 1px solid var(--vp-line);
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--ui-border) transparent;
@@ -12,24 +12,24 @@
   height: 100dvh;
 }
 
-.doc-nav {
+.vp-nav {
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding-bottom: 48px;
 }
 
-.doc-nav-item {
+.vp-nav-item {
   position: relative;
   display: grid;
   gap: 4px;
 }
 
-.doc-nav-item.has-children {
+.vp-nav-item.has-children {
   padding-block: 2px;
 }
 
-.doc-nav-title {
+.vp-nav-title {
   display: flex;
   align-items: center;
   min-height: 36px;
@@ -41,49 +41,49 @@
   text-decoration: none;
 }
 
-.doc-nav-title:hover,
-.doc-nav-title.is-active,
-.doc-nav-item.is-active>.doc-nav-title {
-  color: var(--doc-accent);
-  background: var(--doc-accent-bg);
+.vp-nav-title:hover,
+.vp-nav-title.is-active,
+.vp-nav-item.is-active > .vp-nav-title {
+  color: var(--vp-accent);
+  background: var(--vp-accent-bg);
 }
 
-.doc-nav-title:not([href]) {
+.vp-nav-title:not([href]) {
   cursor: pointer;
 }
 
-.doc-nav-toggle {
+.vp-nav-toggle {
   position: absolute;
   top: 5px;
   right: 4px;
   color: var(--tone-caption);
 }
 
-.doc-nav-toggle svg {
+.vp-nav-toggle svg {
   transition: transform 0.18s ease;
 }
 
-.doc-nav-item.has-children>.doc-nav-title {
+.vp-nav-item.has-children > .vp-nav-title {
   padding-right: 36px;
 }
 
-.doc-nav-item.is-collapsed>.doc-nav-toggle svg {
+.vp-nav-item.is-collapsed > .vp-nav-toggle svg {
   transform: rotate(-90deg);
 }
 
-.doc-nav-children {
+.vp-nav-children {
   display: grid;
   gap: 4px;
   margin-left: 10px;
   padding-left: 10px;
-  border-left: 1px solid var(--doc-line);
+  border-left: 1px solid var(--vp-line);
 }
 
-.doc-nav-children[hidden] {
+.vp-nav-children[hidden] {
   display: none;
 }
 
-.doc-nav-children .doc-nav-title {
+.vp-nav-children .vp-nav-title {
   min-height: 32px;
   padding-block: 7px;
   font-size: var(--font-size-sm);

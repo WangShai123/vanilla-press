@@ -1,73 +1,73 @@
 @media (max-width: 960px) {
-  .doc-header-inner {
+  .vp-header-inner {
     flex-wrap: wrap;
     gap: 8px 12px;
     padding-block: 10px;
   }
 
-  .doc-menu {
+  .vp-menu {
     order: 3;
     flex-basis: 100%;
     overflow-x: auto;
   }
 
-  .doc-shell {
+  .vp-shell {
     display: block;
   }
 
-  .doc-main {
+  .vp-main {
     display: block;
     padding: 18px;
     margin-left: 0;
   }
 
-  .doc-main .j-content.is-sm {
+  .vp-main .j-content.is-sm {
     padding: 22px 18px;
   }
 
-  .doc-aside,
-  .doc-sidebar {
+  .vp-aside,
+  .vp-sidebar {
     display: none;
   }
 }
 
 html.mobile [data-vp-desktop-header],
-html.mobile .doc-sidebar,
-html.mobile .doc-aside {
+html.mobile .vp-sidebar,
+html.mobile .vp-aside {
   display: none;
 }
 
-html.mobile .doc-mobile-header,
-html.mobile .doc-mobile-secondary {
+html.mobile .vp-mobile-header,
+html.mobile .vp-mobile-secondary {
   display: flex;
 }
 
-html.mobile .doc-shell {
+html.mobile .vp-shell {
   display: block;
   min-height: auto;
 }
 
-html.mobile .doc-main {
+html.mobile .vp-main {
   display: block;
   padding: 18px;
   margin-left: 0;
 }
 
-html.mobile .doc-main .j-content {
+html.mobile .vp-main .j-content {
   padding: 22px 18px;
 }
 
-html.mobile .doc-prev-next {
+html.mobile .vp-prev-next {
   flex-direction: column;
 }
 
-html.desktop .doc-mobile-header,
-html.desktop .doc-mobile-secondary {
+html.desktop .vp-mobile-header,
+html.desktop .vp-mobile-secondary {
   display: none !important;
 }
 
 html.mobile .j-mobile-menu .menu .menu-item,
-html.mobile .doc-nav-title {
+html.mobile .vp-nav-title {
   font-size: 1rem;
 }
 

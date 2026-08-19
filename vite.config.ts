@@ -1,7 +1,7 @@
-import type { OxfmtConfig } from 'oxfmt';
-import { defineConfig } from 'vite-plus';
+import type { OxfmtConfig } from 'oxfmt'
+import { defineConfig } from 'vite-plus'
 
-import fmtConfig from './.oxfmtrc.json' with { type: 'json' };
+import fmtConfig from './.oxfmtrc.json' with { type: 'json' }
 
 export default defineConfig({
   lint: {
@@ -23,4 +23,4 @@ export default defineConfig({
   },
 
   fmt: fmtConfig as OxfmtConfig,
-});
+})

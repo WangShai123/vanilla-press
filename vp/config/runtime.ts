@@ -1,9 +1,36 @@
-import type { DocConfig } from 'vanilla-press';
+import type { DocConfig } from 'vanilla-press'
 
 export default {
   siteName: 'VanillaPress',
   siteUrl: 'https://app.jealer.com/vanilla-press',
-  runtime: {
+  build: {
+    social: {
+      github: 'https://github.com/WangShai123/vanilla-press',
+    },
+    sitemap: true,
+    robots: true,
+    footerScript: 'script',
+    vpScript: {
+      shared: [],
+    },
+    llms: {
+      enabled: true,
+      link: true,
+      copy: true,
+      chatgpt: true,
+      claude: true,
+    },
+    editLink: {
+      pattern:
+        'https://github.com/WangShai123/vanilla-press/edit/main/docs/:path',
+      text: 'editor.editLink',
+    },
+    lastEdit: {
+      format: 'YYYY-MM-DD HH:mm:ss',
+      text: 'editor.lastUpdated',
+    },
+  },
+  browser: {
     seo: true,
     externalLink: true,
     highlight: {
@@ -44,19 +71,6 @@ export default {
     },
     search: true,
     prevNext: true,
-    sitemap: true,
-    robots: true,
-    footerScript: 'script',
-    vpScript: {
-      shared: [],
-    },
-    llms: {
-      enabled: true,
-      link: true,
-      copy: true,
-      chatgpt: true,
-      claude: true,
-    },
     i18n: {
       enabled: true,
       locale: 'zh-CN',
@@ -81,7 +95,4 @@ export default {
       },
     },
   },
-  social: {
-    github: 'https://github.com/WangShai123/vanilla-press',
-  },
-} satisfies DocConfig;
+} satisfies DocConfig

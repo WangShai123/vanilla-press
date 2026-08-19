@@ -4,23 +4,23 @@ Generate `llms.txt` and matching Markdown route files for every page so LLMs can
 
 ## Runtime
 
-`runtime.llms` is enabled by default.
+`build.llms` is enabled by default.
 
-```javascript
+```ts
 export default {
-  runtime: {
+  build: {
     llms: true,
   },
-};
+}
 ```
 
 ## Metadata
 
-`runtime.llms: true` is equivalent to using the default configuration.
+`build.llms: true` is equivalent to using the default configuration.
 
-```javascript
+```ts
 export default {
-  runtime: {
+  build: {
     llms: {
       enabled: true, // whether to enable llms feature
       link: true, // whether to enable llms toolbar: View Markdown
@@ -29,7 +29,7 @@ export default {
       claude: true, // whether to enable llms toolbar: Open in Claude
     },
   },
-};
+}
 ```
 
 - When `enabled: false`, the build skips `vp/config/llms.ts` and does not output `dist/llms.txt` or per-page `.md` files.
@@ -39,7 +39,7 @@ export default {
 
 In `vp/config/llms.ts`, configure the title, description, section title and container labels for `llms.txt`.
 
-```javascript
+```ts
 export default {
   title: 'VanillaPress',
   description: 'Markdown source routes for VanillaPress documentation.',
@@ -62,7 +62,7 @@ export default {
       },
     },
   },
-};
+}
 ```
 
 ## Output

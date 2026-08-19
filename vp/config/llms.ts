@@ -1,4 +1,4 @@
-import type { LlmsConfig } from 'vanilla-press';
+import type { LlmsConfig } from 'vanilla-press'
 
 export default {
   title: 'VanillaPress',
@@ -22,4 +22,4 @@ export default {
       },
     },
   },
-} satisfies LlmsConfig;
+} satisfies LlmsConfig

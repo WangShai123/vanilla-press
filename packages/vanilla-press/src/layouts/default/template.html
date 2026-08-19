@@ -1,12 +1,17 @@
-<header class="doc-header">{{{ slots.header }}} {{{ slots.secondary }}}</header>
+<header class="vp-header">{{{ slots.header }}} {{{ slots.secondary }}}</header>
 <main class="{{ shell.className }}">
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">
-    <div data-reveal>
-      <article class="j-content is-sm" data-doc-editor>{{{ content }}}</article>
+    <div class="vp-content" data-reveal>
+      <div class="vp-content-wrap">
+        <article class="j-content is-sm" data-vp-editor>
+          {{{ content }}}
+        </article>
+        {{{ editorHelp }}}
+      </div>
       {{{ slots.prevNext }}}
     </div>
     {{{ slots.aside }}}
   </section>
 </main>
-<footer class="doc-footer" data-doc-footer></footer>
+<footer class="vp-footer" data-vp-footer></footer>

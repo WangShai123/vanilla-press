@@ -5,10 +5,10 @@ Highlight is powered by `highlight.js` and supports multiple languages.
 ## Example
 
 ```js
-const pages = ['index.md', 'guide/components.md'];
+const pages = ['index.md', 'guide/components.md']
 
 export function toHtml(file) {
-  return file.replace(/\.md$/, '.html');
+  return file.replace(/\.md$/, '.html')
 }
 ```
 
@@ -40,11 +40,11 @@ class Test
 
 ## Runtime
 
-In `vp/config/config.ts`, configure whether code highlighting is enabled and which languages can be built. `vanilla-press` uses `highlight.js` core and only registers the language modules listed in `runtime.highlight.languages`.
+In `vp/config/runtime.ts`, configure whether code highlighting is enabled and which languages can be built. `vanilla-press` uses `highlight.js` core and only registers the language modules listed in `browser.highlight.languages`.
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     highlight: {
       enabled: true,
       languages: [
@@ -59,7 +59,7 @@ export default {
       ],
     },
   },
-};
+}
 ```
 
 `highlight: false` or `highlight: { enabled: false }` disables code highlighting. When `languages` is omitted, the default language list is used. When it is configured, only the listed languages are supported, which keeps language module loading scoped to the project.
@@ -68,8 +68,8 @@ export default {
 
 The default supported languages are:
 
-```javascript
-[
+```ts
+;[
   { value: 'plaintext', label: 'Plain Text' },
   { value: 'bash', label: 'Bash' },
   { value: 'c', label: 'C' },
@@ -94,7 +94,7 @@ The default supported languages are:
   { value: 'typescript', label: 'TypeScript' },
   { value: 'xml', label: 'XML' },
   { value: 'yaml', label: 'YAML' },
-];
+]
 ```
 
 More languages are supported. Please refer to the `highlight.js` [official documentation](https://highlightjs.org/).

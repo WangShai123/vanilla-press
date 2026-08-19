@@ -4,14 +4,14 @@
 
 ## 运行时
 
-在 `vp/config/config.ts` 中，按需配置是否启用国际化功能。
+在 `vp/config/runtime.ts` 中，按需配置是否启用国际化功能。
 
 - 配置属性：`i18n`
 - 配置类型：`boolean` || `object`
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     i18n: {
       enabled: true,
       locale: 'zh-CN',
@@ -23,26 +23,26 @@ export default {
       redirectToDefault: true,
     },
   },
-};
+}
 ```
 
 ## 元数据
 
-`vp/config/config.ts` 中的国际化功能元信息配置：
+`vp/config/runtime.ts` 中的国际化功能元信息配置：
 
-- `runtime.i18n.locale`: 默认语言
-- `runtime.i18n.fallbackLocale`: 备用语言
-- `runtime.i18n.locales`: 语言选项数组
+- `browser.i18n.locale`: 默认语言
+- `browser.i18n.fallbackLocale`: 备用语言
+- `browser.i18n.locales`: 语言选项数组
   - `code`: 语言别名
   - `label`: 语言名称
   - `path`: 语言路由目录
-- `runtime.i18n.redirectToDefault`: 是否重定向到默认语言
+- `browser.i18n.redirectToDefault`: 是否重定向到默认语言
 
 ## 语言包
 
 在 `vp/config/languages.ts` 中导出语言包数据：
 
-```javascript
+```ts
 export default {
   'zh-CN': {
     menu: {
@@ -58,7 +58,7 @@ export default {
       components: 'Components',
     },
   },
-};
+}
 ```
 
 ## 重定向
@@ -67,4 +67,4 @@ export default {
 
 - 优先级：用户语言偏好 > 站点语言偏好
 - 绑定数据：cookie 中的 `locale` 字段
-- 禁用：当 `runtime.i18n.redirectToDefault` 为 `false` 或 `runtime.i18n.enabled` 为 `false` 时。
+- 禁用：当 `browser.i18n.redirectToDefault` 为 `false` 或 `browser.i18n.enabled` 为 `false` 时。

@@ -4,14 +4,14 @@
 
 ## 运行时
 
-在 `vp/config/config.ts` 中，按需配置是否启用主菜单功能。
+在 `vp/config/runtime.ts` 中，按需配置是否启用主菜单功能。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     menu: true,
   },
-};
+}
 ```
 
 ## 配置
@@ -22,7 +22,7 @@ export default {
 - `path`: 菜单项的页面路径，不需要写 `.html`
 - `children`: 子菜单项数组
 
-```javascript
+```ts
 export default [
   { label: 'menu.home', path: 'index' },
   {
@@ -32,7 +32,5 @@ export default [
       { label: 'menu.api', path: 'guide/api' },
     ],
   },
-];
+]
 ```
-
-`path` 为空时不会生成链接地址。

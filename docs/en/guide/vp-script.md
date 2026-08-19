@@ -106,19 +106,19 @@ During build, `vanilla-press` uses the shared dependency whitelist to decide whi
 
 ## Shared Dependency Whitelist
 
-Users can extend the shared dependency whitelist in `vp/config/config.ts`:
+Users can extend the shared dependency whitelist in `vp/config/runtime.ts`:
 
-```javascript
+```ts
 export default {
-  runtime: {
+  build: {
     vpScript: {
       shared: ['lodash-es'],
     },
   },
-};
+}
 ```
 
-`runtime.vpScript.shared` is merged with the default list. It does not replace the defaults.
+`build.vpScript.shared` is merged with the default list. It does not replace the defaults.
 
 Default shared dependency whitelist:
 
@@ -129,4 +129,4 @@ Default shared dependency whitelist:
 
 ## Configuration
 
-`runtime.vpScript` is enabled by default and cannot be disabled. The public configuration only controls `shared`, which lets you decide which local npm dependencies should be bundled into `runtime.js` for reuse by page scripts.
+`build.vpScript` is enabled by default and cannot be disabled. The public configuration only controls `shared`, which lets you decide which local npm dependencies should be bundled into `runtime.js` for reuse by page scripts.

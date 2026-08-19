@@ -1,29 +1,21 @@
-import DEFAULT_HIGHLIGHT_LANGUAGES from './highlight.ts';
+import DEFAULT_HIGHLIGHT_LANGUAGES from './highlight.ts'
 
 const DEFAULT_HIGHLIGHT_LANGUAGES_TS = `[
 ${DEFAULT_HIGHLIGHT_LANGUAGES.map(
   ({ value, label }, index) =>
     `        { value: ${JSON.stringify(value)}, label: ${JSON.stringify(label)} }${index === DEFAULT_HIGHLIGHT_LANGUAGES.length - 1 ? '' : ','}`
 ).join('\n')}
-      ]`;
+      ]`
 
-export const DEFAULT_CONFIG_TS = `import type { DocConfig } from 'vanilla-press';
+export const DEFAULT_CONFIG_TS = `import type { VPRuntime } from 'vanilla-press';
 
 export default {
   siteName: "VanillaPress",
   siteUrl: "https://example.com",
-  runtime: {
-    seo: true,
-    search: true,
-    externalLink: true,
-    highlight: {
-      enabled: true,
-      languages: ${DEFAULT_HIGHLIGHT_LANGUAGES_TS}
+  build: {
+    social: {
+      github: "https://github.com/WangShai123/vanilla-press"
     },
-    menu: true,
-    sidebar: true,
-    toc: true,
-    prevNext: false,
     sitemap: false,
     robots: true,
     footerScript: "script",
@@ -37,6 +29,26 @@ export default {
       chatgpt: true,
       claude: true
     },
+    editLink: {
+      text: "editor.editLink"
+    },
+    lastEdit: {
+      text: "editor.lastUpdated",
+      format: "yyyy-MM-dd HH:mm:ss"
+    }
+  },
+  browser: {
+    seo: true,
+    search: true,
+    externalLink: true,
+    highlight: {
+      enabled: true,
+      languages: ${DEFAULT_HIGHLIGHT_LANGUAGES_TS}
+    },
+    menu: true,
+    sidebar: true,
+    toc: true,
+    prevNext: false,
     i18n: {
       enabled: true,
       locale: "zh-CN",
@@ -60,17 +72,14 @@ export default {
         direction: "right"
       }
     }
-  },
-  social: {
-    github: "https://github.com/WangShai123/vanilla-press"
   }
-} satisfies DocConfig;
-`;
+} satisfies VPRuntime;
+`
 
 export const DEFAULT_FOOTER_SCRIPT_TS = `import type { FooterScriptConfig } from 'vanilla-press';
 
 export default \`\` satisfies FooterScriptConfig;
-`;
+`
 
 export const DEFAULT_ROBOTS_CONFIG = {
   rules: [
@@ -80,7 +89,7 @@ export const DEFAULT_ROBOTS_CONFIG = {
       disallow: [],
     },
   ],
-};
+}
 
 export const DEFAULT_ROBOTS_TS = `import type { RobotsConfig } from 'vanilla-press';
 
@@ -93,7 +102,7 @@ export default {
     }
   ]
 } satisfies RobotsConfig;
-`;
+`
 
 export const DEFAULT_LLMS_CONFIG = {
   title: 'VanillaPress',
@@ -117,7 +126,7 @@ export const DEFAULT_LLMS_CONFIG = {
       },
     },
   },
-};
+}
 
 export const DEFAULT_LLMS_TS = `import type { LlmsConfig } from 'vanilla-press';
 
@@ -144,7 +153,7 @@ export default {
     }
   }
 } satisfies LlmsConfig;
-`;
+`
 
 export const DEFAULT_MENU_TS = `import type { MenuConfig } from 'vanilla-press';
 
@@ -158,7 +167,7 @@ export default [
     ]
   }
 ] satisfies MenuConfig;
-`;
+`
 
 export const DEFAULT_LANGUAGES_TS = `import type { LanguageMessages } from 'vanilla-press';
 
@@ -199,6 +208,10 @@ export default {
     },
     auth: {
       login: "登录"
+    },
+    editor: {
+      editLink: "在 GitHub 上编辑此页面",
+      lastUpdated: "最后更新于:"
     }
   },
   en: {
@@ -237,10 +250,14 @@ export default {
     },
     auth: {
       login: "Login"
+    },
+    editor: {
+      editLink: "Edit this page on GitHub",
+      lastUpdated: "Last updated:"
     }
   }
 } satisfies LanguageMessages;
-`;
+`
 
 export const DEFAULT_SIDEBAR_TS = `import type { SidebarConfig } from 'vanilla-press';
 
@@ -255,7 +272,7 @@ export default [
     ]
   }
 ] satisfies SidebarConfig;
-`;
+`
 
 export const MOBILE_CLASS_BOOT_SCRIPT =
-  "(function(w,n,d){function m(){var u;if(typeof n==='undefined')return!1;if(n.userAgentData&&typeof n.userAgentData.mobile==='boolean')return n.userAgentData.mobile;u=n.userAgent||'';if(/\\b(BlackBerry|webOS|iPhone|IEMobile|Android|Windows Phone|iPad|iPod)\\b/i.test(u))return!0;if(typeof w==='undefined'||typeof w.matchMedia!=='function')return!1;return w.matchMedia('(pointer: coarse)').matches&&w.matchMedia('(max-width: 820px)').matches}var r=d.documentElement,b=m();r.classList.toggle('mobile',b);r.classList.toggle('desktop',!b)})(window,navigator,document);";
+  "(function(w,n,d){function m(){var u;if(typeof n==='undefined')return!1;if(n.userAgentData&&typeof n.userAgentData.mobile==='boolean')return n.userAgentData.mobile;u=n.userAgent||'';if(/\\b(BlackBerry|webOS|iPhone|IEMobile|Android|Windows Phone|iPad|iPod)\\b/i.test(u))return!0;if(typeof w==='undefined'||typeof w.matchMedia!=='function')return!1;return w.matchMedia('(pointer: coarse)').matches&&w.matchMedia('(max-width: 820px)').matches}var r=d.documentElement,b=m();r.classList.toggle('mobile',b);r.classList.toggle('desktop',!b)})(window,navigator,document);"

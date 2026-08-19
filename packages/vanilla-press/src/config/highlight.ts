@@ -23,4 +23,4 @@ export default [
   { value: 'typescript', label: 'TypeScript' },
   { value: 'xml', label: 'XML' },
   { value: 'yaml', label: 'YAML' },
-];
+]

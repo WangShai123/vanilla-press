@@ -106,19 +106,19 @@ button?.addEventListener('click', () => {
 
 ## 共享依赖白名单
 
-用户可以在 `vp/config/config.ts` 中扩展共享依赖白名单列表：
+用户可以在 `vp/config/runtime.ts` 中扩展共享依赖白名单列表：
 
-```javascript
+```ts
 export default {
-  runtime: {
+  build: {
     vpScript: {
       shared: ['lodash-es'],
     },
   },
-};
+}
 ```
 
-`runtime.vpScript.shared` 会和默认列表合并，不会替换默认值。
+`build.vpScript.shared` 会和默认列表合并，不会替换默认值。
 
 默认共享依赖白名单列表：
 
@@ -129,4 +129,4 @@ export default {
 
 ## 配置
 
-`runtime.vpScript` 默认开启，不能关闭。公开配置只控制 `shared`，用于决定哪些本地 npm 依赖需要打包进 `runtime.js`，供页面脚本复用。
+`build.vpScript` 默认开启，不能关闭。公开配置只控制 `shared`，用于决定哪些本地 npm 依赖需要打包进 `runtime.js`，供页面脚本复用。

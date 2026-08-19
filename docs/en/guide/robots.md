@@ -4,23 +4,23 @@ Generate `robots.txt` to tell search engines which paths they can crawl.
 
 ## Runtime
 
-`runtime.robots` is enabled by default.
+`build.robots` is enabled by default.
 
-```javascript
+```ts
 export default {
-  runtime: {
+  build: {
     robots: false,
   },
-};
+}
 ```
 
-When `runtime.robots` is `false`, the build does not output `dist/robots.txt`.
+When `build.robots` is `false`, the build does not output `dist/robots.txt`.
 
 ## Configuration
 
 Configure the generated content in `vp/config/robots.ts`.
 
-```javascript
+```ts
 export default {
   rules: [
     {
@@ -29,7 +29,7 @@ export default {
       disallow: ['/private/'],
     },
   ],
-};
+}
 ```
 
 ## Fields

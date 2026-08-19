@@ -4,14 +4,14 @@
 
 ## 运行时
 
-在 `vp/config/config.ts` 中，按需配置是否启用侧边栏功能。
+在 `vp/config/runtime.ts` 中，按需配置是否启用侧边栏功能。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     sidebar: true,
   },
-};
+}
 ```
 
 ## 配置
@@ -23,7 +23,7 @@ export default {
 - `children`: 二级侧边栏项数组
 - `collapse`: 包含 `children` 时是否默认收起
 
-```javascript
+```ts
 export default [
   { label: 'sidebar.home', path: 'index' },
   {
@@ -36,7 +36,7 @@ export default [
       { label: 'sidebar.sidebar', path: 'guide/sidebar' },
     ],
   },
-];
+]
 ```
 
 `path` 为空时不会生成链接地址。

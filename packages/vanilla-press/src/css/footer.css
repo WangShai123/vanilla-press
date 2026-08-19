@@ -1,44 +1,44 @@
-.doc-footer {
+.vp-footer {
   display: flex;
   justify-content: space-between;
   gap: 4px;
   flex-wrap: wrap;
   padding: 12px 24px;
-  border-top: 1px solid var(--doc-line);
-  color: var(--doc-muted);
-  background: var(--doc-panel-overlay);
+  border-top: 1px solid var(--vp-line);
+  color: var(--vp-muted);
+  background: var(--vp-panel-overlay);
   font-size: var(--font-size-sm);
 }
 
-.mobile .doc-footer {
+.mobile .vp-footer {
   justify-content: flex-start;
 }
 
-.doc-footer > div {
+.vp-footer > div {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.doc-footer a {
+.vp-footer a {
   color: inherit;
 }
 
-.doc-footer .footer-social {
+.vp-footer .footer-social {
   gap: 8px;
 }
 
-.doc-footer .footer-social a {
+.vp-footer .footer-social a {
   text-decoration: none;
 }
 
-.doc-footer .footer-social a:hover {
-  color: var(--doc-accent);
-  border-color: var(--doc-accent);
-  background: var(--doc-accent-bg);
+.vp-footer .footer-social a:hover {
+  color: var(--vp-accent);
+  border-color: var(--vp-accent);
+  background: var(--vp-accent-bg);
 }
 
-.doc-footer .footer-social .el-icon {
+.vp-footer .footer-social .el-icon {
   width: 16px;
   height: 16px;
 }

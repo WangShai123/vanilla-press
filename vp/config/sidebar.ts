@@ -1,4 +1,4 @@
-import type { SidebarConfig } from 'vanilla-press';
+import type { SidebarConfig } from 'vanilla-press'
 
 export default [
   { label: 'Quick Start', path: 'guide/quick-start' },
@@ -31,6 +31,8 @@ export default [
       { label: 'theme.button', path: 'guide/theme' },
       { label: 'sidebar.externalLink', path: 'guide/external-link' },
       { label: 'sidebar.footerScript', path: 'guide/footer-script' },
+      { label: 'sidebar.editLink', path: 'guide/edit-link' },
+      { label: 'sidebar.lastUpdated', path: 'guide/last-edit' },
     ],
   },
   {
@@ -45,4 +47,4 @@ export default [
       },
     ],
   },
-] satisfies SidebarConfig;
+] satisfies SidebarConfig

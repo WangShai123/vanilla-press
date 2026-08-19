@@ -4,11 +4,11 @@
 
 ## 运行时
 
-在 `vp/config/config.ts` 中，按需配置是否启用主题功能。
+在 `vp/config/runtime.ts` 中，按需配置是否启用主题功能。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     theme: {
       enabled: true,
       default: {
@@ -23,7 +23,7 @@ export default {
       },
     },
   },
-};
+}
 ```
 
 ## 配置
@@ -35,16 +35,16 @@ export default {
 
 | 配置项                              | 类型              | 默认值         | 说明                                                                                                           |
 | ----------------------------------- | ----------------- | -------------- | -------------------------------------------------------------------------------------------------------------- |
-| runtime.theme                       | boolean \| object | 启用           | 主题配置                                                                                                       |
-| `runtime.theme.enabled`             | boolean           | true           | 是否启用主题功能                                                                                               |
-| `runtime.theme.default`             | object            | -              | 主题启动内联脚本使用的初始主题值                                                                               |
-| `runtime.theme.default.mode`        | "dark" \| "light" | "dark"         | 初始深浅模式；错误值会回退到 "dark"                                                                            |
-| `runtime.theme.default.theme`       | enum              | "indigo"       | 初始色板：gray、olive、tomato、ruby、pink、violet、indigo、blue、teal、grass、mint、lime、yellow、orange、gold |
-| `runtime.theme.default.radius`      | enum              | "sm"           | 初始圆角：sm、md、lg、xl、round                                                                                |
-| `runtime.theme.default.shadow`      | enum              | "sm"           | 初始阴影：none、sm、md、lg                                                                                     |
-| `runtime.theme.default.font`        | enum              | "sm"           | 初始字号：sm、md                                                                                               |
-| `runtime.theme.label`               | string            | "theme.button" | 主题按钮的 i18n key                                                                                            |
-| `runtime.theme.options`             | object            | -              | 传给 `vanilla-jui` Theme 的配置对象                                                                            |
-| `runtime.theme.panel`               | object \| null    | -              | 传给 `theme.createPanel()` 的面板配置                                                                          |
-| `runtime.theme.offcanvas`           | object            | -              | 主题面板抽屉配置对象                                                                                           |
-| `runtime.theme.offcanvas.direction` | string            | "right"        | 主题面板抽屉方向                                                                                               |
+| browser.theme                       | boolean \| object | 启用           | 主题配置                                                                                                       |
+| `browser.theme.enabled`             | boolean           | true           | 是否启用主题功能                                                                                               |
+| `browser.theme.default`             | object            | -              | 主题启动内联脚本使用的初始主题值                                                                               |
+| `browser.theme.default.mode`        | "dark" \| "light" | "dark"         | 初始深浅模式；错误值会回退到 "dark"                                                                            |
+| `browser.theme.default.theme`       | enum              | "indigo"       | 初始色板：gray、olive、tomato、ruby、pink、violet、indigo、blue、teal、grass、mint、lime、yellow、orange、gold |
+| `browser.theme.default.radius`      | enum              | "sm"           | 初始圆角：sm、md、lg、xl、round                                                                                |
+| `browser.theme.default.shadow`      | enum              | "sm"           | 初始阴影：none、sm、md、lg                                                                                     |
+| `browser.theme.default.font`        | enum              | "sm"           | 初始字号：sm、md                                                                                               |
+| `browser.theme.label`               | string            | "theme.button" | 主题按钮的 i18n key                                                                                            |
+| `browser.theme.options`             | object            | -              | 传给 `vanilla-jui` Theme 的配置对象                                                                            |
+| `browser.theme.panel`               | object \| null    | -              | 传给 `theme.createPanel()` 的面板配置                                                                          |
+| `browser.theme.offcanvas`           | object            | -              | 主题面板抽屉配置对象                                                                                           |
+| `browser.theme.offcanvas.direction` | string            | "right"        | 主题面板抽屉方向                                                                                               |

@@ -1,4 +1,4 @@
-import type { RobotsConfig } from 'vanilla-press';
+import type { RobotsConfig } from 'vanilla-press'
 
 export default {
   rules: [
@@ -8,4 +8,4 @@ export default {
       disallow: [],
     },
   ],
-} satisfies RobotsConfig;
+} satisfies RobotsConfig

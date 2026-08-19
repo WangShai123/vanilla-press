@@ -4,15 +4,15 @@ Help search engines crawl site content more effectively.
 
 ## Runtime
 
-In `vp/config/config.ts`, configure whether sitemap generation is enabled.
+In `vp/config/runtime.ts`, configure whether sitemap generation is enabled.
 
-```javascript
+```ts
 export default {
   siteUrl: 'https://example.com',
-  runtime: {
+  build: {
     sitemap: true,
   },
-};
+}
 ```
 
 ## URL

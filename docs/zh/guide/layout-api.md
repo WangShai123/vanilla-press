@@ -67,8 +67,8 @@ export default function initLandingLayout(root: Document, config: unknown) {
   root
     .querySelectorAll('.landing-layout:not([data-layout-ready="true"])')
     .forEach((node) => {
-      node.setAttribute('data-layout-ready', 'true');
-    });
+      node.setAttribute('data-layout-ready', 'true')
+    })
 }
 ```
 
@@ -97,26 +97,27 @@ layouts:
 
 布局模板可以读取构建器注入的上下文。
 
-| 变量                      | 说明                               |
-| ------------------------- | ---------------------------------- |
-| `{{ title }}`             | 当前页面标题，优先使用 SEO 标题    |
-| `{{ description }}`       | 当前页面描述，来自 frontmatter     |
-| `{{ keywords }}`          | 当前页面关键词，来自 frontmatter   |
-| `{{ page.title }}`        | Markdown 页面标题                  |
-| `{{ page.rel }}`          | 当前页面输出路径                   |
-| `{{ site.siteName }}`     | `vp/config/config.ts` 中的站点配置 |
-| `{{ layout.* }}`          | 当前布局作用域下的数据             |
-| `{{ layouts.* }}`         | 所有布局作用域数据                 |
-| `{{{ content }}}`         | Markdown 渲染后的 HTML             |
-| `{{{ slots.header }}}`    | 桌面主菜单和手机主菜单模板         |
-| `{{{ slots.secondary }}}` | 手机次级菜单模板                   |
-| `{{{ slots.sidebar }}}`   | 默认侧边栏插槽                     |
-| `{{{ slots.aside }}}`     | 默认右侧区域插槽，包含目录         |
-| `{{{ slots.prevNext }}}`  | 分页导航插槽                       |
+| 变量                      | 说明                                   |
+| ------------------------- | -------------------------------------- |
+| `{{ title }}`             | 当前页面标题，优先使用 SEO 标题        |
+| `{{ description }}`       | 当前页面描述，来自 frontmatter         |
+| `{{ keywords }}`          | 当前页面关键词，来自 frontmatter       |
+| `{{ page.title }}`        | Markdown 页面标题                      |
+| `{{ page.rel }}`          | 当前页面输出路径                       |
+| `{{ site.siteName }}`     | `vp/config/runtime.ts` 中的站点配置    |
+| `{{ layout.* }}`          | 当前布局作用域下的数据                 |
+| `{{ layouts.* }}`         | 所有布局作用域数据                     |
+| `{{{ content }}}`         | Markdown 渲染后的 HTML                 |
+| `{{{ editorHelp }}}`      | 编辑辅助块，包含编辑链接和最后编辑时间 |
+| `{{{ slots.header }}}`    | 桌面主菜单和手机主菜单模板             |
+| `{{{ slots.secondary }}}` | 手机次级菜单模板                       |
+| `{{{ slots.sidebar }}}`   | 默认侧边栏插槽                         |
+| `{{{ slots.aside }}}`     | 默认右侧区域插槽，包含目录             |
+| `{{{ slots.prevNext }}}`  | 分页导航插槽                           |
 
 普通双花括号会进行 HTML 转义，适合输出 frontmatter 中的文本。
 
-三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`slots.header`、`slots.secondary`、`slots.sidebar`、`slots.aside` 和 `slots.prevNext`。
+三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`editorHelp`、`slots.header`、`slots.secondary`、`slots.sidebar`、`slots.aside` 和 `slots.prevNext`。
 
 ## 数组循环
 
@@ -163,7 +164,7 @@ layouts:
 
 ## 分页导航插槽
 
-`runtime.prevNext` 只会渲染到当前布局显式声明的插槽中：
+`browser.prevNext` 只会渲染到当前布局显式声明的插槽中：
 
 ```html
 <div data-vp-prev-next></div>
@@ -176,18 +177,23 @@ layouts:
 内置 `default` 布局复用文档站常规结构：左侧侧边栏、正文、右侧目录和页脚。它的模板核心结构如下：
 
 ```html
-<header class="doc-header">{{{ slots.header }}} {{{ slots.secondary }}}</header>
+<header class="vp-header">{{{ slots.header }}} {{{ slots.secondary }}}</header>
 <main class="{{ shell.className }}">
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">
-    <div data-reveal>
-      <article class="j-content is-sm" data-vp-editor>{{{ content }}}</article>
+    <div class="vp-content" data-reveal>
+      <div class="vp-content-wrap">
+        <article class="j-content is-sm" data-vp-editor>
+          {{{ content }}}
+        </article>
+        {{{ editorHelp }}}
+      </div>
       {{{ slots.prevNext }}}
     </div>
     {{{ slots.aside }}}
   </section>
 </main>
-<footer class="doc-footer" data-vp-footer></footer>
+<footer class="vp-footer" data-vp-footer></footer>
 ```
 
-如果新布局仍然是文档页，可以从这个结构复制后调整。`{{{ slots.header }}}` 和 `{{{ slots.secondary }}}` 都应该放在 `.doc-header` 内部，因为运行时会把 `.doc-mobile-header` 和 `.doc-mobile-secondary` 都挂载为 `.doc-header` 的子元素。如果新布局是首页或营销页，通常只在 `.doc-header` 内保留 `{{{ slots.header }}}`，不使用 `{{{ slots.secondary }}}`，然后自行设计页面主体。
+如果新布局仍然是文档页，可以从这个结构复制后调整。`{{{ slots.header }}}` 和 `{{{ slots.secondary }}}` 都应该放在 `.vp-header` 内部，因为运行时会把 `.vp-mobile-header` 和 `.vp-mobile-secondary` 都挂载为 `.vp-header` 的子元素。如果新布局是首页或营销页，通常只在 `.vp-header` 内保留 `{{{ slots.header }}}`，不使用 `{{{ slots.secondary }}}`，然后自行设计页面主体。

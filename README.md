@@ -22,6 +22,7 @@ vanilla-press-repo/
 ## 维护命令
 
 - `npm install --workspace vanilla-press`：安装开发环境依赖。
+- `npm run fix`：格式检查和修复。
 - `npm run build`：在仓库根目录打包官网，读取 `docs/`、`vp/` 和 `assets/`，输出到 `dist/`。
 - `npm run dev`：启动官网本地预览服务，监听 `docs/`、`vp/` 和 `assets/` 并自动刷新页面。
 - `npm run check`：格式、lint、类型检查。

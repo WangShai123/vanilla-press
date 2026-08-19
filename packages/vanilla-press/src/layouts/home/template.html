@@ -1,34 +1,32 @@
-<header class="doc-header">{{{ slots.header }}}</header>
+<header class="vp-header">{{{ slots.header }}}</header>
 <div class="aurora" aria-hidden="true"></div>
 
-<main class="doc-home">
-  <section class="doc-home-hero">
-    <article class="doc-home-hero-copy" data-reveal="2">
-      <span class="doc-home-badge">{{ layout.hero.badge }}</span>
+<main class="vp-home">
+  <section class="vp-home-hero">
+    <article class="vp-home-hero-copy" data-reveal="2">
+      <span class="vp-home-badge">{{ layout.hero.badge }}</span>
       <h1>{{ layout.hero.title }}</h1>
-      <p class="doc-home-lead">{{ layout.hero.description }}</p>
-      <div class="doc-home-actions">
+      <p class="vp-home-lead">{{ layout.hero.description }}</p>
+      <div class="vp-home-actions">
         {{#layout.hero.actions}}
-        <a class="doc-home-button {{ variant }}" href="{{ link }}"
-          >{{ text }}</a
-        >
+        <a class="vp-home-button {{ variant }}" href="{{ link }}">{{ text }}</a>
         {{/layout.hero.actions}}
       </div>
-      <p class="doc-home-hint">{{ layout.hero.hint }}</p>
+      <p class="vp-home-hint">{{ layout.hero.hint }}</p>
     </article>
 
     <aside
-      class="doc-home-visual"
+      class="vp-home-visual"
       data-reveal="3"
       aria-label="{{ layout.quickStart.title }}"
     >
-      <div class="doc-home-code-card">
-        <div class="doc-home-code-head">
-          <span class="doc-home-code-dots" aria-hidden="true"></span>
+      <div class="vp-home-code-card">
+        <div class="vp-home-code-head">
+          <span class="vp-home-code-dots" aria-hidden="true"></span>
           <span>{{ layout.quickStart.title }}</span>
         </div>
         {{#layout.quickStart.groups}}
-        <section class="doc-home-command-group">
+        <section class="vp-home-command-group">
           <h2>{{ title }}</h2>
           <pre><code>{{#lines}}{{ this }}
 {{/lines}}</code></pre>
@@ -38,15 +36,15 @@
     </aside>
   </section>
 
-  <section class="doc-home-section" id="features" data-reveal="3">
-    <div class="doc-home-section-head">
+  <section class="vp-home-section" id="features" data-reveal="3">
+    <div class="vp-home-section-head">
       <h2>{{ layout.features.title }}</h2>
       <p>{{ layout.features.description }}</p>
     </div>
-    <div class="doc-home-features">
+    <div class="vp-home-features">
       {{#layout.features.items}}
-      <article class="doc-home-feature">
-        <div class="doc-home-feature-index">{{ index }}</div>
+      <article class="vp-home-feature">
+        <div class="vp-home-feature-index">{{ index }}</div>
         <h3>{{ title }}</h3>
         <p>{{ description }}</p>
       </article>
@@ -54,18 +52,18 @@
     </div>
   </section>
 
-  <section class="doc-home-cta" data-reveal="4">
+  <section class="vp-home-cta" data-reveal="4">
     <div>
       <h2>{{ layout.cta.title }}</h2>
       <p>{{ layout.cta.description }}</p>
     </div>
-    <div class="doc-home-actions">
+    <div class="vp-home-actions">
       {{#layout.cta.actions}}
-      <a class="doc-home-button {{ variant }}" href="{{ link }}">{{ text }}</a>
+      <a class="vp-home-button {{ variant }}" href="{{ link }}">{{ text }}</a>
       {{/layout.cta.actions}}
     </div>
   </section>
 
-  <section class="doc-home-content j-content is-sm">{{{ content }}}</section>
+  <section class="vp-home-content j-content is-sm">{{{ content }}}</section>
 </main>
-<footer class="doc-footer" data-doc-footer></footer>
+<footer class="vp-footer" data-vp-footer></footer>

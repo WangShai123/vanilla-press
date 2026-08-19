@@ -4,15 +4,15 @@
 
 ## 运行时
 
-在 `vp/config/config.ts` 中，按需配置是否启用站点地图功能。
+在 `vp/config/runtime.ts` 中，按需配置是否启用站点地图功能。
 
-```javascript
+```ts
 export default {
   siteUrl: 'https://example.com',
-  runtime: {
+  build: {
     sitemap: true,
   },
-};
+}
 ```
 
 ## 地址

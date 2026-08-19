@@ -1,4 +1,4 @@
-import type { LanguageMessages } from 'vanilla-press';
+import type { LanguageMessages } from 'vanilla-press'
 
 export default {
   'zh-CN': {
@@ -28,6 +28,8 @@ export default {
       robots: 'Robots',
       llms: 'LLMs',
       externalLink: '外部链接',
+      editLink: '编辑链接',
+      lastUpdated: '更新时间',
       others: '其他',
       changelog: '变更日志',
     },
@@ -41,6 +43,10 @@ export default {
       placeholder: '输入关键词...',
       empty: '没有找到匹配内容',
       hint: '输入关键词搜索标题和正文',
+    },
+    editor: {
+      editLink: '在 GitHub 上编辑此页面',
+      lastUpdated: '最后更新于:',
     },
     prevNext: {
       previous: '上一页',
@@ -72,6 +78,8 @@ export default {
       quickStart: 'Quick Start',
       layout: 'Layout',
       externalLink: 'External Link',
+      editLink: 'Edit Link',
+      lastUpdated: 'Last Updated',
       others: 'Others',
       changelog: 'Changelog',
     },
@@ -86,6 +94,10 @@ export default {
       empty: 'No results found',
       hint: 'Search titles and page content',
     },
+    editor: {
+      editLink: 'Edit this page on GitHub',
+      lastUpdated: 'Last updated:',
+    },
     prevNext: {
       previous: 'Previous',
       next: 'Next',
@@ -97,4 +109,4 @@ export default {
       login: 'Login',
     },
   },
-} satisfies LanguageMessages;
+} satisfies LanguageMessages

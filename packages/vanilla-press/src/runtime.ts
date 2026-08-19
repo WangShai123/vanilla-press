@@ -1,2 +1,2 @@
-export { initDocPage } from './runtime/index.ts';
-export { isMobile } from 'vanilla-jui';
+export { initDocPage } from './runtime/index.ts'
+export { isMobile } from 'vanilla-jui'

@@ -1,12 +1,12 @@
 :root {
-  --doc-header-height: 58px;
-  --doc-panel: var(--ui-surface);
-  --doc-panel-overlay: var(--ui-surface-overlay);
-  --doc-ink: var(--tone-heading);
-  --doc-muted: var(--tone-caption);
-  --doc-line: var(--ui-border-subtle);
-  --doc-accent: var(--tone-text);
-  --doc-accent-bg: var(--tone-soft);
+  --vp-header-height: 58px;
+  --vp-panel: var(--ui-surface);
+  --vp-panel-overlay: var(--ui-surface-overlay);
+  --vp-ink: var(--tone-heading);
+  --vp-muted: var(--tone-caption);
+  --vp-line: var(--ui-border-subtle);
+  --vp-accent: var(--tone-text);
+  --vp-accent-bg: var(--tone-soft);
 }
 
 .aurora {

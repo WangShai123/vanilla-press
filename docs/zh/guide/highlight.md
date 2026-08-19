@@ -5,10 +5,10 @@
 ## 示例
 
 ```js
-const pages = ['index.md', 'guide/components.md'];
+const pages = ['index.md', 'guide/components.md']
 
 export function toHtml(file) {
-  return file.replace(/\.md$/, '.html');
+  return file.replace(/\.md$/, '.html')
 }
 ```
 
@@ -40,11 +40,11 @@ class Test
 
 ## 运行时
 
-在 `vp/config/config.ts` 中，按需配置是否启用代码高亮功能，以及允许构建的语言列表。`vanilla-press` 基于 `highlight.js` core，只会注册 `runtime.highlight.languages` 中配置的语言模块。
+在 `vp/config/runtime.ts` 中，按需配置是否启用代码高亮功能，以及允许构建的语言列表。`vanilla-press` 基于 `highlight.js` core，只会注册 `browser.highlight.languages` 中配置的语言模块。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     highlight: {
       enabled: true,
       languages: [
@@ -59,7 +59,7 @@ export default {
       ],
     },
   },
-};
+}
 ```
 
 `highlight: false` 或 `highlight: { enabled: false }` 会关闭代码高亮。未配置 `languages` 时使用默认语言列表；配置后仅支持列表中的语言，适合减少按需加载的语言模块。
@@ -68,8 +68,8 @@ export default {
 
 默认支持以下语言：
 
-```javascript
-[
+```ts
+;[
   { value: 'plaintext', label: 'Plain Text' },
   { value: 'bash', label: 'Bash' },
   { value: 'c', label: 'C' },
@@ -94,7 +94,7 @@ export default {
   { value: 'typescript', label: 'TypeScript' },
   { value: 'xml', label: 'XML' },
   { value: 'yaml', label: 'YAML' },
-];
+]
 ```
 
 更多语言支持请参考 `highlight.js` [官方文档](https://highlightjs.org/)。

@@ -4,14 +4,14 @@ The sidebar navigation displayed along the side of the page.
 
 ## Runtime
 
-In `vp/config/config.ts`, configure whether the sidebar is enabled.
+In `vp/config/runtime.ts`, configure whether the sidebar is enabled.
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     sidebar: true,
   },
-};
+}
 ```
 
 ## Configuration
@@ -23,7 +23,7 @@ In `vp/config/sidebar.ts`, configure the site's sidebar data as needed.
 - `children`: array of second-level sidebar items
 - `collapse`: whether the group is collapsed by default when `children` is present
 
-```javascript
+```ts
 export default [
   { label: 'sidebar.home', path: 'index' },
   {
@@ -36,7 +36,7 @@ export default [
       { label: 'sidebar.sidebar', path: 'guide/sidebar' },
     ],
   },
-];
+]
 ```
 
 When `path` is empty, no link is generated.

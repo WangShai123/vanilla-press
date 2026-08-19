@@ -10,7 +10,7 @@
   "sortPackageJson": true,
   "sortImports": true,
   "sortTailwindcss": true,
-  "semi": true,
+  "semi": false,
   "singleQuote": true,
   "tabWidth": 2,
   "useTabs": false,

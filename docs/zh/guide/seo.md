@@ -4,19 +4,19 @@
 
 ## 运行时
 
-在 `vp/config/config.ts` 中，按需配置是否启用 SEO 功能。
+在 `vp/config/runtime.ts` 中，按需配置是否启用 SEO 功能。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     seo: true,
   },
-};
+}
 ```
 
 ## 配置
 
-`runtime.seo` 配置类型为 `boolean`，默认值为 `true`。
+`browser.seo` 配置类型为 `boolean`，默认值为 `true`。
 
 - `false`: 仅自动解析 html title
 - `true`: 支持在 `markdown` 文档中使用 `frontmatter` 配置 `title`、`description`、`keywords`，并自动解析。

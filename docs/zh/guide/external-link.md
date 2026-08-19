@@ -8,14 +8,14 @@
 
 ## 运行时
 
-在 `vp/config/config.ts` 中，按需配置是否启用外部链接功能。默认启用。
+在 `vp/config/runtime.ts` 中，按需配置是否启用外部链接功能。默认启用。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     externalLink: true,
   },
-};
+}
 ```
 
 ## 说明

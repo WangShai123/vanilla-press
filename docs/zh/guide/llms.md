@@ -4,23 +4,23 @@
 
 ## 运行时
 
-`runtime.llms` 默认启用。
+`build.llms` 默认启用。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  build: {
     llms: true,
   },
-};
+}
 ```
 
 ## 元数据
 
-`runtime.llms: true` 等同于使用默认配置。
+`build.llms: true` 等同于使用默认配置。
 
-```javascript
+```ts
 export default {
-  runtime: {
+  build: {
     llms: {
       enabled: true, // 是否启用 llms 功能
       link: true, // 是否启用工具栏：查看 Markdown 链接
@@ -29,7 +29,7 @@ export default {
       claude: true, // 是否启用工具栏：在 Claude 中打开
     },
   },
-};
+}
 ```
 
 - 当设置为 `false` 时，不会构建 `dist/llms.txt` 和各个页面对应的 `.md` 文件。
@@ -39,7 +39,7 @@ export default {
 
 在 `vp/config/llms.ts` 中配置 `llms.txt` 中 标题、说明、次标题、工具栏 的提示文本。
 
-```javascript
+```ts
 export default {
   title: 'VanillaPress',
   description: 'Markdown source routes for VanillaPress documentation.',
@@ -62,7 +62,7 @@ export default {
       },
     },
   },
-};
+}
 ```
 
 ## 输出

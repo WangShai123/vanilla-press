@@ -8,14 +8,14 @@ Indicate external links to users.
 
 ## Runtime
 
-In `vp/config/config.ts`, you can configure whether to enable the external link feature. The default is true.
+In `vp/config/runtime.ts`, you can configure whether to enable the external link feature. The default is true.
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     externalLink: true,
   },
-};
+}
 ```
 
 ## Info

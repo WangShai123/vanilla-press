@@ -4,14 +4,14 @@ A static search feature with search assets isolated by language.
 
 ## Runtime
 
-In `vp/config/config.ts`, configure whether search is enabled.
+In `vp/config/runtime.ts`, configure whether search is enabled.
 
-```javascript
+```ts
 export default {
-  runtime: {
+  browser: {
     search: true,
   },
-};
+}
 ```
 
 When search is disabled, the build does not emit `search.js`, and pages do not render a search entry.

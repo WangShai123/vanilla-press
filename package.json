@@ -1,6 +1,6 @@
 {
   "name": "vanilla-press-repo",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -10,6 +10,7 @@
     "build": "vanilla-press build",
     "build:packages": "npm --workspace vanilla-press run build",
     "check": "vp fmt --check packages/vanilla-press/src packages/create-vanilla-press/bin packages/create-vanilla-press/src scripts && vp lint packages/vanilla-press/src && tsc --noEmit",
+    "fix": "vp check --fix docs packages/vanilla-press/src packages/create-vanilla-press/bin packages/create-vanilla-press/src scripts",
     "dev": "vanilla-press dev",
     "sync:create-template": "node scripts/sync-create-template.js",
     "test": "vp test run --dir packages/vanilla-press/src --passWithNoTests"

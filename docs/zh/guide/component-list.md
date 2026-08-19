@@ -2,16 +2,23 @@
 
 `vanilla-press` 内置组件是基于 `vanilla-jui` 的一套 Markdown 容器组件，主要用于文档页面排版与交互增强。
 
-## Tabs
+组件分为容器组件和标签组件：
+
+- 容器组件：语法使用 `:::` 开头，如 `:::tabs`、`:::accordion` 等。
+- 标签组件：语法使用 `<` 开头，首字母大写，类似于 `HTML` 标签，如 `<Badge />` 等。
+
+## 容器组件
+
+### Tabs
 
 :::tabs
 @tab JavaScript
 
 ```javascript
-const pages = ['index.md', 'guide/components.md'];
+const pages = ['index.md', 'guide/components.md']
 
 export function toHtml(file) {
-  return file.replace(/\.md$/, '.html');
+  return file.replace(/\.md$/, '.html')
 }
 ```
 
@@ -41,7 +48,7 @@ export function toHtml(file) {
 
 :::
 
-## Accordion
+### Accordion
 
 :::tabs
 @tab 示例
@@ -85,7 +92,7 @@ export function toHtml(file) {
 - `multiple` 是否允许同时展开多个面板，不写即为 false
 - `collapsible` 是否允许折叠所有面板，不写即为 false
 
-## Offcanvas
+### Offcanvas
 
 :::tabs
 @tab 示例
@@ -100,10 +107,10 @@ export function toHtml(file) {
 
 ```javascript
 // javascript
-const pages = ['index.md', 'guide/components.md'];
+const pages = ['index.md', 'guide/components.md']
 
 export function toHtml(file) {
-  return file.replace(/\.md$/, '.html');
+  return file.replace(/\.md$/, '.html')
 }
 ```
 
@@ -122,10 +129,10 @@ export function toHtml(file) {
 
 ```javascript
 // javascript
-const pages = ['index.md', 'guide/components.md'];
+const pages = ['index.md', 'guide/components.md']
 
 export function toHtml(file) {
-  return file.replace(/\.md$/, '.html');
+  return file.replace(/\.md$/, '.html')
 }
 ```
 
@@ -139,7 +146,7 @@ export function toHtml(file) {
 - `title` 按钮文本，写法 `:::offcanvas [按钮文本]`，默认值 `打开面板`
 - `direction` 面板方向，写法 `:::offcanvas [按钮文本] direction`，支持 `left`、`right`、`top`、`bottom`，默认值 `right`
 
-## Tip
+### Tip
 
 :::tabs
 @tab 示例
@@ -192,7 +199,7 @@ export function toHtml(file) {
 - `info`、`success`、`warning`、`danger` 分别对应 `is-default`、`is-success`、`is-warning`、`is-danger`。
 - 不传标题时，中文页面默认显示 `提示`，英文页面默认显示 `Tip`。
 
-## Tree
+### Tree
 
 帮助用户快速了解文档的目录结构的组件。
 
@@ -246,98 +253,17 @@ my-project/
 
 在 `src/config/icons.ts` 中，按需增减 svg 图标的配置。
 
-```javascript
+```ts
 export default {
   'align-left':
     '<path d="M3 4H21V6H3V4ZM3 19H17V21H3V19ZM3 14H21V16H3V14ZM3 9H17V11H3V9Z"></path>',
   'align-right':
     '<path d="M3 4H21V6H3V4ZM7 19H21V21H7V19ZM3 14H21V16H3V14ZM7 9H21V11H7V9Z"></path>',
   copy: '<path d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path>',
-};
+}
 ```
 
-## Badge
-
-:::tabs
-@tab 示例
-
-<p class="flex-container">
-
-::: badge
-1.0
-:::
-
-::: badge reverse
-1.0
-:::
-
-::: badge primary
-1.0
-:::
-
-::: badge success
-1.0
-:::
-
-::: badge warning
-1.0
-:::
-
-::: badge danger
-1.0
-:::
-
-::: badge error
-1.0
-:::
-</p>
-
-<div class="flex-container">
-
-::: badge default sm
-1.0
-:::
-
-::: badge reverse sm
-1.0
-:::
-
-::: badge primary sm
-1.0
-:::
-
-::: badge success sm
-1.0
-:::
-
-::: badge warning sm
-1.0
-:::
-
-::: badge danger sm
-1.0
-:::
-
-::: badge error sm
-1.0
-:::
-</div>
-
-@tab 语法
-
-```markdown
-::: badge [theme] [size]
-text
-:::
-```
-
-:::
-
-`theme` 默认值 `default`，可选：`reverse`、`primary`、`success`、`warning`、`danger`、`error`
-
-`size` 默认值 `md`，可选：`sm`、`lg`
-
-## Details
+### Details
 
 :::tabs
 @tab 示例
@@ -355,3 +281,60 @@ text
 ```
 
 :::
+
+## 标签组件
+
+### Group
+
+行内容器组件 `<Group />` 用来包裹行内 HTML 或 `Badge` 等组件。
+
+:::tabs
+@tab 示例
+
+<Group gap={8}>
+  <Badge text="apple" />
+  <Badge text="orange" theme="primary" />
+  <Badge text="banana" theme="warning" />
+</Group>
+
+@tab 语法
+
+```markdown
+<Group gap={8}>
+  <Badge text="apple" />
+  <Badge text="orange" theme="primary" />
+  <Badge text="banana" theme="warning" />
+</Group>
+```
+
+:::
+
+#### 参数说明
+
+- `gap`：`number` 或 `null`。默认值为 `8`，渲染为 `gap: 8px`。
+
+### Badge
+
+徽标组件 `<Badge />` 支持直接在标题或正文中使用。
+
+:::tabs
+@tab 示例
+
+# 标题 <Badge text="new" />
+
+正文中也可以插入 <Badge text="beta" theme="primary" size="sm" />。
+
+@tab 语法
+
+```markdown
+<Badge text="new" />
+<Badge text="beta" theme="primary" size="sm" />
+```
+
+:::
+
+#### 参数说明
+
+- `text`：标签文本。若省略，则使用标签内部内容。
+- `theme`：默认值 `default`，可选值 `reverse`、`primary`、`success`、`warning`、`danger`、`error`。
+- `size`：默认值 `md`，可选值 `sm`。

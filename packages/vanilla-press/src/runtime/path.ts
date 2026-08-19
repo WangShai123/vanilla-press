@@ -1,30 +1,30 @@
 export function normalizeRel(value: unknown = ''): string {
-  return String(value).replace(/^\/+/, '').replace(/\/+/g, '/');
+  return String(value).replace(/^\/+/, '').replace(/\/+/g, '/')
 }
 
 export function localeCode(value: unknown = ''): string {
-  return String(value).trim().toLowerCase();
+  return String(value).trim().toLowerCase()
 }
 
 function dirname(rel: unknown): string {
-  const normalized = normalizeRel(rel);
-  const index = normalized.lastIndexOf('/');
-  return index >= 0 ? normalized.slice(0, index) : '';
+  const normalized = normalizeRel(rel)
+  const index = normalized.lastIndexOf('/')
+  return index >= 0 ? normalized.slice(0, index) : ''
 }
 
 export function relativeAsset(fromRel: unknown, toRel: unknown): string {
-  const fromParts = dirname(fromRel).split('/').filter(Boolean);
-  const toParts = normalizeRel(toRel).split('/').filter(Boolean);
+  const fromParts = dirname(fromRel).split('/').filter(Boolean)
+  const toParts = normalizeRel(toRel).split('/').filter(Boolean)
 
   while (fromParts.length && toParts.length && fromParts[0] === toParts[0]) {
-    fromParts.shift();
-    toParts.shift();
+    fromParts.shift()
+    toParts.shift()
   }
 
-  const relative = [...fromParts.map(() => '..'), ...toParts].join('/');
+  const relative = [...fromParts.map(() => '..'), ...toParts].join('/')
   return relative
     ? relative.startsWith('.')
       ? relative
       : `./${relative}`
-    : './';
+    : './'
 }

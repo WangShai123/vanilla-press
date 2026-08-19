@@ -81,3 +81,14 @@
 #### 1.4.5
 
 - fix: Fixed dataset marker error
+
+#### 1.4.6
+
+- feat: Added edit and last updated time features
+- feat: Added Group component
+- feat: `vp` directory now includes `cache` directory for caching build results
+- feat: Scaffold now automatically adds `.gitignore` file to ignore `vp/cache`, `node_modules`
+- refactor: Refactored Badge component
+- fix: Runtime configuration is now structured into `runtime` and `browser`
+- style: All `doc` related names are now prefixed with `vp`
+- docs: Updated related documentation
