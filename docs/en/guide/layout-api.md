@@ -39,7 +39,7 @@ Create `vp/layouts/landing/template.html`, and define template variables from th
     <p>{{ layout.hero.description }}</p>
   </section>
 
-  <article class="j-content is-sm">{{{ content }}}</article>
+  <article class="j-editor is-sm">{{{ content }}}</article>
 </main>
 ```
 
@@ -183,9 +183,7 @@ The built-in `default` layout reuses the common documentation structure: left si
   <section class="{{ shell.mainClassName }}">
     <div class="vp-content" data-reveal>
       <div class="vp-content-wrap">
-        <article class="j-content is-sm" data-vp-editor>
-          {{{ content }}}
-        </article>
+        <article class="j-editor is-sm" data-vp-editor>{{{ content }}}</article>
         {{{ editorHelp }}}
       </div>
       {{{ slots.prevNext }}}

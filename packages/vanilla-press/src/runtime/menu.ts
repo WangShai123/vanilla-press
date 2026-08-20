@@ -369,7 +369,7 @@ export function initMobileSecondary(
     tocButton.append(icon('align-right', { className: 'el-icon el-suffix' }))
 
     const tocPanel = jsx('div', { className: 'vp-mobile-toc-panel' })
-    const article = q<HTMLElement>('.j-content')
+    const article = q<HTMLElement>('.j-editor')
     const { headings, offset } = tocOptions(config)
     if (article && q(headings, article)) {
       const toc = createToc({

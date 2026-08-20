@@ -6,12 +6,12 @@
 
 ```text
 vanilla-press-repo/
-├── docs/                         # 官网 Markdown 文档，只放页面内容
-├── assets/                       # 官网静态资源，构建时复制到 dist/public/
+├── docs/                         # 网站 Markdown 文档，只放页面内容
+├── assets/                       # 网站静态资源，构建时复制到 dist/public/
 ├── vp/
-│   ├── config/                   # 官网配置，也是 starter 模板配置源
-│   ├── layouts/                  # 官网自定义布局，也是 starter 模板布局源
-│   └── components/               # 官网自定义组件，也是 starter 模板组件源
+│   ├── config/                   # 网站配置，也是 starter 模板配置源
+│   ├── layouts/                  # 网站自定义布局，也是 starter 模板布局源
+│   └── components/               # 网站自定义组件，也是 starter 模板组件源
 ├── packages/
 │   ├── vanilla-press/            # 核心构建器、运行时、内置布局和 CLI
 │   └── create-vanilla-press/     # npm create 脚手架

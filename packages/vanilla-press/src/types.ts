@@ -307,6 +307,14 @@ export interface BuildOptions {
   cacheDir?: string
   layoutsDir?: string
   componentsDir?: string
+  report?: boolean
+  buildReason?: string
+  reportMode?: 'build' | 'dev'
+  reportState?: BuildReportState
+}
+
+export interface BuildReportState {
+  hashes: Map<string, string>
 }
 
 export interface MarkdownComponentContext {

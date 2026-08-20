@@ -39,7 +39,7 @@ vp/
     <p>{{ layout.hero.description }}</p>
   </section>
 
-  <article class="j-content is-sm">{{{ content }}}</article>
+  <article class="j-editor is-sm">{{{ content }}}</article>
 </main>
 ```
 
@@ -183,9 +183,7 @@ layouts:
   <section class="{{ shell.mainClassName }}">
     <div class="vp-content" data-reveal>
       <div class="vp-content-wrap">
-        <article class="j-content is-sm" data-vp-editor>
-          {{{ content }}}
-        </article>
+        <article class="j-editor is-sm" data-vp-editor>{{{ content }}}</article>
         {{{ editorHelp }}}
       </div>
       {{{ slots.prevNext }}}

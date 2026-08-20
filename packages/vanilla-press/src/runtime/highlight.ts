@@ -139,7 +139,7 @@ function languageClass(language: unknown): string {
 }
 
 function renderCode(language: string, label: string, value: string): string {
-  return `<pre class="j-code-editor hljs" data-vp-component><div class="code-header"><span class="code-dots"></span><span class="code-language">${escapeHtml(label)}</span></div><code class="language-${languageClass(language)}">${value}</code></pre>`
+  return `<pre class="code-block hljs" data-vp-component><div class="code-header"><span class="code-dots"></span><span class="code-language">${escapeHtml(label)}</span></div><code class="language-${languageClass(language)}">${value}</code></pre>`
 }
 
 export function createHighlighter(config: RuntimeConfig = {}) {

@@ -5,7 +5,7 @@ import { tocOptions } from '../utilities/features.ts'
 
 export function initToc(config: RuntimeConfig = {}): void {
   const toc = q<HTMLElement>('[data-vp-toc]')
-  const article = q<HTMLElement>('.j-content')
+  const article = q<HTMLElement>('.j-editor')
   if (!toc || !article || toc.dataset.vpReady === 'true') return
 
   const { headings, offset } = tocOptions(config)

@@ -5,7 +5,7 @@ import './icons.ts'
 
 const EXTERNAL_LINK_SELECTOR = 'a[href^="http://"], a[href^="https://"]'
 const LINK_SCOPE_SELECTOR =
-  '[data-vp-editor], .j-content, [data-vp-menu], [data-vp-sidebar]'
+  '[data-vp-editor], .j-editor, [data-vp-menu], [data-vp-sidebar]'
 const EXTERNAL_LINK_READY_ATTR = 'data-vp-external-link'
 const EXTERNAL_LINK_ICON_ATTR = 'data-vp-external-link-icon'
 

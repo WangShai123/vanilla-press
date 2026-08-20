@@ -100,3 +100,7 @@
 #### 1.4.8
 
 - feat: Added timezone marker
+
+#### 1.4.11
+
+- fix: Optimized development server memory management

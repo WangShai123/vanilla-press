@@ -25,7 +25,7 @@ export function toHtml(file) {
 @tab HTML
 
 ```html
-<article class="j-content is-sm">
+<article class="j-editor is-sm">
   <h1>组件示例</h1>
   <p>主体内容使用 vanilla-jui 排版类。</p>
 </article>

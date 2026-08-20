@@ -39,8 +39,6 @@ export default [
 ]
 ```
 
-When `path` is empty, no link is generated.
-
 ## Initialization
 
 The sidebar initializes differently based on the user's device type:

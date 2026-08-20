@@ -59,7 +59,7 @@ ${sidebar}
     <section class="vp-main${hasAside ? ' has-aside' : ''}">
       <div class="vp-content" data-reveal>
         <div class="vp-content-wrap">
-          <article class="j-content is-sm" data-vp-editor>
+          <article class="j-editor is-sm" data-vp-editor>
             ${body}
           </article>
         </div>

@@ -14,7 +14,7 @@
 }
 
 /* LLMS */
-.vp-main .j-content .llms-container {
+.vp-main .j-editor .llms-container {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

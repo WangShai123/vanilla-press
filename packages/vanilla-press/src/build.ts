@@ -26,6 +26,7 @@ import { renderDefaultLocaleEntrypoint, renderHtml } from './render/html.ts'
 import { layoutStyles, loadLayouts, renderLayout } from './render/layout.ts'
 import type {
   BuildOptions,
+  BuildReportState,
   RuntimeConfig,
   FooterScriptConfig,
   FrontmatterData,
@@ -161,7 +162,7 @@ async function resolveSourceModule(
   return null
 }
 
-async function ensureSourceConfig(configDir: string): Promise<void> {
+export async function ensureSourceConfig(configDir: string): Promise<void> {
   const files = [
     ['runtime', DEFAULT_CONFIG_TS],
     ['footerScript', DEFAULT_FOOTER_SCRIPT_TS],
@@ -189,7 +190,9 @@ async function ensureSourceConfig(configDir: string): Promise<void> {
   }
 }
 
-async function loadRuntimeConfig(configDir: string): Promise<RuntimeConfig> {
+export async function loadRuntimeConfig(
+  configDir: string
+): Promise<RuntimeConfig> {
   const file =
     (await resolveSourceModule(configDir, 'runtime')) ||
     (await resolveSourceModule(configDir, 'config'))
@@ -198,7 +201,7 @@ async function loadRuntimeConfig(configDir: string): Promise<RuntimeConfig> {
   return importDefault<RuntimeConfig>(file, {})
 }
 
-async function loadFooterScript(
+export async function loadFooterScript(
   configDir: string
 ): Promise<FooterScriptConfig> {
   const file = await resolveSourceModule(configDir, 'footerScript')
@@ -207,7 +210,9 @@ async function loadFooterScript(
   return importDefault<FooterScriptConfig>(file, '')
 }
 
-async function loadRobotsConfig(configDir: string): Promise<UnknownRecord> {
+export async function loadRobotsConfig(
+  configDir: string
+): Promise<UnknownRecord> {
   const file = await resolveSourceModule(configDir, 'robots')
   if (!file) return DEFAULT_ROBOTS_CONFIG as UnknownRecord
 
@@ -217,7 +222,9 @@ async function loadRobotsConfig(configDir: string): Promise<UnknownRecord> {
   )
 }
 
-async function loadLlmsConfig(configDir: string): Promise<UnknownRecord> {
+export async function loadLlmsConfig(
+  configDir: string
+): Promise<UnknownRecord> {
   const file = await resolveSourceModule(configDir, 'llms')
   if (!file) return DEFAULT_LLMS_CONFIG as UnknownRecord
 
@@ -252,14 +259,16 @@ function validateRuntimeConfig(config: RuntimeConfig = {}): void {
   }
 }
 
-async function loadLanguages(configDir: string): Promise<LanguagesConfig> {
+export async function loadLanguages(
+  configDir: string
+): Promise<LanguagesConfig> {
   const file = await resolveSourceModule(configDir, 'languages')
   if (!file) return {}
 
   return importDefault<LanguagesConfig>(file, {})
 }
 
-function resolveI18nData(
+export function resolveI18nData(
   config: RuntimeConfig = {},
   messages: LanguagesConfig = {}
 ): LanguagesConfig {
@@ -274,14 +283,14 @@ function resolveI18nData(
   }
 }
 
-async function loadMenuItems(configDir: string): Promise<unknown[]> {
+export async function loadMenuItems(configDir: string): Promise<unknown[]> {
   const file = await resolveSourceModule(configDir, 'menu')
   if (!file) return []
 
   return importDefault<unknown[]>(file, [])
 }
 
-async function loadSidebarItems(configDir: string): Promise<unknown[]> {
+export async function loadSidebarItems(configDir: string): Promise<unknown[]> {
   const file = await resolveSourceModule(configDir, 'sidebar')
   if (!file) return []
 
@@ -301,7 +310,33 @@ function sourceHash(value: string): string {
   return createHash('sha256').update(value).digest('hex').slice(0, 8)
 }
 
-async function loadLastEditCache(cacheDir: string): Promise<LastEditCache> {
+function logIfChanged(
+  reportState: BuildReportState | undefined,
+  log: (message: string) => void,
+  key: string,
+  value: string,
+  message: string
+): boolean {
+  if (!reportState) {
+    log(message)
+    return true
+  }
+
+  const hash = sourceHash(value)
+  const previous = reportState.hashes.get(key)
+  reportState.hashes.set(key, hash)
+
+  if (previous !== hash) {
+    log(message)
+    return true
+  }
+
+  return false
+}
+
+export async function loadLastEditCache(
+  cacheDir: string
+): Promise<LastEditCache> {
   const file = path.join(cacheDir, LAST_EDIT_CACHE_FILE)
   try {
     const text = await fs.readFile(file, 'utf8')
@@ -312,7 +347,7 @@ async function loadLastEditCache(cacheDir: string): Promise<LastEditCache> {
   }
 }
 
-async function writeLastEditCache(
+export async function writeLastEditCache(
   cacheDir: string,
   cache: LastEditCache
 ): Promise<void> {
@@ -383,24 +418,27 @@ function resolveDefaultLocale(
   )
 }
 
-async function writeDefaultLocaleEntrypoint(
+export async function writeDefaultLocaleEntrypoint(
   outputDir: string,
   config: RuntimeConfig = {},
   languages: LanguagesConfig = {},
   pages: RenderedPage[] = [],
-  footerScript: FooterScriptConfig = ''
-): Promise<void> {
-  if (!isI18nEnabled(config)) return
+  footerScript: FooterScriptConfig = '',
+  reportState?: BuildReportState,
+  log: (message: string) => void = console.warn,
+  label = 'built'
+): Promise<boolean> {
+  if (!isI18nEnabled(config)) return false
   const i18n = browserOption(config, 'i18n') as RuntimeI18nConfig | undefined
-  if (i18n?.redirectToDefault === false) return
-  if (pages.some((page) => page.rel === 'index.html')) return
+  if (i18n?.redirectToDefault === false) return false
+  if (pages.some((page) => page.rel === 'index.html')) return false
 
   const locale = resolveDefaultLocale(config, languages)
   const prefix = normalizePath(locale?.path)
   if (prefix) {
     const target = `${prefix}/index.html`
     const hasTarget = pages.some((page) => page.rel === target)
-    if (!hasTarget) return
+    if (!hasTarget) return false
   }
 
   const rootIndexFile = path.join(outputDir, 'index.html')
@@ -416,10 +454,19 @@ async function writeDefaultLocaleEntrypoint(
   })
 
   await fs.writeFile(rootIndexFile, html, 'utf8')
-  console.warn(`built ${toPosix(path.relative(workingRoot, rootIndexFile))}`)
+  return logIfChanged(
+    reportState,
+    log,
+    rootIndexFile,
+    html,
+    `${label}: ${toPosix(path.relative(workingRoot, rootIndexFile))}`
+  )
 }
 
-async function buildCss(outputDir: string, layouts: LayoutMap): Promise<void> {
+export async function buildCss(
+  outputDir: string,
+  layouts: LayoutMap
+): Promise<void> {
   const configuredCss = await readStyleConfig(
     path.join(packageRoot, 'src/config/externalStyle.ts')
   )
@@ -432,16 +479,33 @@ async function buildCss(outputDir: string, layouts: LayoutMap): Promise<void> {
   await fs.writeFile(path.join(outputDir, 'styles.css'), css, 'utf8')
 }
 
-async function copyStaticAssets(
+export async function copyStaticAssets(
   assetsDir: string,
   publicDir: string
 ): Promise<void> {
   if (!(await pathExists(assetsDir))) return
 
-  await fs.cp(assetsDir, publicDir, {
-    recursive: true,
-    filter: (file) => !file.endsWith(`${path.sep}.DS_Store`),
-  })
+  await fs.mkdir(publicDir, { recursive: true })
+  const entries = await fs.readdir(assetsDir, { withFileTypes: true })
+
+  await Promise.all(
+    entries.map(async (entry) => {
+      if (entry.name === '.DS_Store') return
+
+      const source = path.join(assetsDir, entry.name)
+      const target = path.join(publicDir, entry.name)
+
+      if (entry.isDirectory()) {
+        await copyStaticAssets(source, target)
+        return
+      }
+
+      if (!entry.isFile()) return
+
+      await fs.mkdir(path.dirname(target), { recursive: true })
+      await fs.copyFile(source, target)
+    })
+  )
 }
 
 function serializeRuntimeValue(value: unknown): string {
@@ -480,7 +544,7 @@ ${sharedExports ? `${sharedExports}\n` : ''}
   return file
 }
 
-async function buildRuntime(
+export async function buildRuntime(
   outputDir: string,
   data: RuntimeBundleData = {}
 ): Promise<void> {
@@ -820,7 +884,7 @@ async function rewriteHtmlAssets(
   )
 }
 
-async function minifyJsAssets(outputDir: string): Promise<void> {
+async function minifyJsAssets(outputDir: string): Promise<number> {
   const files = (
     await glob('**/*.js', {
       cwd: outputDir,
@@ -844,7 +908,8 @@ async function minifyJsAssets(outputDir: string): Promise<void> {
       await fs.writeFile(fullPath, result.code.trim(), 'utf8')
     })
   )
-  console.warn(`minified js: ${files.length} file(s)`)
+
+  return files.length
 }
 
 async function writePageScripts(
@@ -907,7 +972,7 @@ async function bundleModuleScript(
   return rel
 }
 
-async function buildComponentScripts(
+export async function buildComponentScripts(
   outputDir: string,
   components: LoadedMarkdownComponent[] = []
 ): Promise<Map<string, ModuleScriptAsset>> {
@@ -937,7 +1002,7 @@ async function buildComponentScripts(
   return assets
 }
 
-async function buildLayoutScripts(
+export async function buildLayoutScripts(
   outputDir: string,
   layouts: LayoutMap
 ): Promise<Map<string, ModuleScriptAsset>> {
@@ -993,7 +1058,7 @@ function pageComponentScripts(
   )
 }
 
-function pageSharedVpModules(
+export function pageSharedVpModules(
   pages: RenderedPage[] = []
 ): SharedVpScriptModule[] {
   return Array.from(
@@ -1005,7 +1070,7 @@ function pageSharedVpModules(
   ).sort()
 }
 
-function readSource(file: string, markdown: string): SourcePage {
+export function readSource(file: string, markdown: string): SourcePage {
   const frontmatter = parseFrontmatter(markdown) as FrontmatterData
 
   return {
@@ -1056,7 +1121,7 @@ function brandHref(
   )
 }
 
-function renderSource(
+export function renderSource(
   source: SourcePage,
   md: MarkdownItInstance,
   config: RuntimeConfig,
@@ -1159,7 +1224,7 @@ function createSearchIndex(pages: RenderedPage[] = []): SearchIndexItem[] {
   }))
 }
 
-async function writeSearchIndex(
+export async function writeSearchIndex(
   outputDir: string,
   pages: RenderedPage[] = []
 ): Promise<void> {
@@ -1187,7 +1252,7 @@ function escapeXml(value: unknown): string {
     .replace(/"/g, '&quot;')
 }
 
-async function writeSitemap(
+export async function writeSitemap(
   outputDir: string,
   pages: RenderedPage[] = [],
   config: RuntimeConfig = {}
@@ -1204,7 +1269,7 @@ async function writeSitemap(
   await fs.writeFile(path.join(outputDir, 'sitemap.xml'), xml, 'utf8')
 }
 
-async function writeRobots(
+export async function writeRobots(
   outputDir: string,
   robotsConfig: UnknownRecord = {}
 ): Promise<void> {
@@ -1212,7 +1277,7 @@ async function writeRobots(
   await fs.writeFile(path.join(outputDir, 'robots.txt'), text, 'utf8')
 }
 
-async function writeLlms(
+export async function writeLlms(
   outputDir: string,
   pages: RenderedPage[] = [],
   config: RuntimeConfig = {},
@@ -1238,6 +1303,10 @@ export async function build({
   cacheDir,
   layoutsDir = defaultLayoutsDir,
   componentsDir = defaultComponentsDir,
+  report = true,
+  buildReason = 'initial',
+  reportMode = 'build',
+  reportState: buildReportState,
 }: BuildOptions = {}): Promise<void> {
   if (path.resolve(inputDir) === path.resolve(outputDir)) {
     throw new Error('inputDir and outputDir must be different directories.')
@@ -1259,6 +1328,14 @@ export async function build({
   const lastEditCache = buildOption(config, 'lastEdit')
     ? await loadLastEditCache(resolvedCacheDir)
     : {}
+  const logOutput = report ? console.warn : () => {}
+  const reportState = report ? buildReportState : undefined
+  const isDevReport = reportMode === 'dev'
+  const isInitialBuild = buildReason === 'initial'
+  const showSummary = !isDevReport || isInitialBuild
+  const updatedLabel = isDevReport && !isInitialBuild ? 'Updated' : 'built'
+
+  logOutput(`Build Started: ${buildReason}`)
 
   await fs.rm(outputDir, { force: true, recursive: true })
   await fs.mkdir(outputDir, { recursive: true })
@@ -1339,7 +1416,13 @@ export async function build({
     const outputFile = path.join(outputDir, page.rel)
     await fs.mkdir(path.dirname(outputFile), { recursive: true })
     await fs.writeFile(outputFile, page.html, 'utf8')
-    console.warn(`built: ${toPosix(path.relative(workingRoot, outputFile))}`)
+    logIfChanged(
+      reportState,
+      logOutput,
+      outputFile,
+      page.html,
+      `${updatedLabel}: ${toPosix(path.relative(workingRoot, outputFile))}`
+    )
   }
 
   await writeDefaultLocaleEntrypoint(
@@ -1347,15 +1430,22 @@ export async function build({
     config,
     languages,
     pages,
-    footerScript
+    footerScript,
+    reportState,
+    logOutput
   )
-  await minifyJsAssets(outputDir)
+  const minifiedAssets = await minifyJsAssets(outputDir)
   const assetMap = await hashRootAssets(outputDir)
   await rewriteHtmlAssets(outputDir, assetMap)
 
-  console.warn(
-    `done: ${pages.length} page(s), ${toPosix(path.relative(workingRoot, outputDir))}`
-  )
+  if (showSummary) {
+    logOutput('Build Complete.')
+    logOutput(
+      `Built Directory: ${toPosix(path.relative(workingRoot, outputDir))}`
+    )
+    logOutput(`Minified Assets: ${minifiedAssets} file(s).`)
+    logOutput(`Built Pages: ${pages.length}.`)
+  }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
