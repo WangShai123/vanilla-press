@@ -1,6 +1,6 @@
 {
   "name": "vanilla-press",
-  "version": "1.4.13",
+  "version": "1.4.14",
   "private": false,
   "description": "A static documentation generator built on markdown-it.",
   "keywords": [
@@ -65,7 +65,7 @@
     "markdown-it-front-matter": "^0.2.4",
     "markdown-it-link-attributes": "^4.0.1",
     "vanilla-create-storage": "^1.0.4",
-    "vanilla-jui": "^1.5.27",
+    "vanilla-jui": "^1.5.28",
     "vanilla-signal": "^1.1.15",
     "vanilla-signal-i18n": "^1.1.2",
     "vite": "^8.2.1"
