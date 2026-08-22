@@ -183,7 +183,9 @@ The built-in `default` layout reuses the common documentation structure: left si
   <section class="{{ shell.mainClassName }}">
     <div class="vp-content" data-reveal>
       <div class="vp-content-wrap">
-        <article class="j-editor is-sm" data-vp-editor>{{{ content }}}</article>
+        <article class="{{ shell.editorClassName }}" data-vp-editor>
+          {{{ content }}}
+        </article>
         {{{ editorHelp }}}
       </div>
       {{{ slots.prevNext }}}

@@ -48,6 +48,7 @@ import type {
   UnknownRecord,
 } from './types.ts'
 import { loadCustomComponents } from './utilities/components.ts'
+import { assertEditorSizeConfig } from './utilities/editor-size.ts'
 import {
   buildOption,
   isI18nEnabled,
@@ -488,6 +489,8 @@ function createDevServer(outputDir: string) {
 }
 
 function validateRuntimeConfig(config: RuntimeConfig = {}): void {
+  assertEditorSizeConfig(config)
+
   const siteUrl = String(config.siteUrl || '').trim()
 
   if (!siteUrl) {

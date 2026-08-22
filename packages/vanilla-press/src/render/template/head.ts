@@ -1,5 +1,6 @@
 import { MOBILE_CLASS_BOOT_SCRIPT } from '../../config/defaults.ts'
-import type { SeoData } from '../../types.ts'
+import type { RuntimeConfig, SeoData } from '../../types.ts'
+import { editorSizeBootScript } from '../../utilities/editor-size.ts'
 import { escapeHtml } from '../../utilities/html.ts'
 import { toText } from '../../utilities/string.ts'
 import { themeBootScript } from '../../utilities/theme.ts'
@@ -12,6 +13,7 @@ interface HeadOptions {
   i18nRedirectScript: string
   cssHref: string
   faviconHref: string
+  config?: RuntimeConfig
 }
 
 function renderSeoMeta(seo: SeoData = {}): string {
@@ -34,8 +36,10 @@ export function renderHead({
   i18nRedirectScript,
   cssHref,
   faviconHref,
+  config,
 }: HeadOptions): string {
   const seoMeta = renderSeoMeta(seo)
+  const editorBootScript = editorSizeBootScript(config)
 
   return `<head>
   <meta charset="utf-8">
@@ -45,6 +49,7 @@ export function renderHead({
   ${seoMeta ? `${seoMeta}\n` : ''}
   <script>${MOBILE_CLASS_BOOT_SCRIPT}
   ${themeEnabled ? `${themeBootScript(themeDefault)}` : ''}
+  ${editorBootScript}
   ${i18nRedirectScript || ''}</script>
   <link rel="icon" href="${faviconHref}">
   <link rel="stylesheet" href="${cssHref}">

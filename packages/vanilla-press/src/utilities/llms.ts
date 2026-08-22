@@ -1,9 +1,14 @@
 import { JSDOM } from 'jsdom'
+import { addIcons, iconHtml } from 'vanilla-jui'
 
+import icons from '../config/icons.ts'
 import type { RuntimeConfig, LanguagesConfig, UnknownRecord } from '../types.ts'
 import { isRecord } from '../types.ts'
+import { isEditorSizeEnabled } from './editor-size.ts'
 import { llmsOptions, type LlmsRuntimeOptions } from './features.ts'
 import { toText } from './string.ts'
+
+addIcons(icons)
 
 interface RoutePage {
   rel?: string
@@ -230,6 +235,23 @@ function createOptionsButton(
   return button
 }
 
+function createEditorSizeButton(
+  document: Document,
+  action: 'decrease' | 'increase',
+  iconName: 'subtract' | 'add'
+): HTMLButtonElement {
+  const button = document.createElement('button')
+  button.type = 'button'
+  button.className = 'j-button is-default is-icon'
+  button.setAttribute('data-vp-editor-size-action', action)
+  button.setAttribute(
+    'aria-label',
+    action === 'decrease' ? 'Decrease editor size' : 'Increase editor size'
+  )
+  button.innerHTML = iconHtml(iconName)
+  return button
+}
+
 function createLlmsContainer(
   document: Document,
   page: RoutePage = {},
@@ -238,31 +260,43 @@ function createLlmsContainer(
   languages: LanguagesConfig = {}
 ): HTMLDivElement | null {
   const options = llmsOptions(siteConfig)
-  if (!hasVisibleControls(options)) return null
+  const llmsVisible = hasVisibleControls(options)
+  const editorSizeEnabled = isEditorSizeEnabled(siteConfig)
+  if (!llmsVisible && !editorSizeEnabled) return null
 
   const labels = llmsContainerLabels(llmsConfig, languages, page)
   const container = document.createElement('div')
   container.className = 'vp-editor-helper'
-  container.setAttribute('data-vp-llms', '')
-  container.setAttribute(
-    'data-vp-llms-md-url',
-    markdownRouteUrl(page, siteConfig)
-  )
-  container.setAttribute('data-vp-llms-label-link', labels.link)
-  container.setAttribute('data-vp-llms-label-copy', labels.copy)
-  container.setAttribute('data-vp-llms-label-chatgpt', labels.chatgpt)
-  container.setAttribute('data-vp-llms-label-claude', labels.claude)
-  container.setAttribute('data-vp-llms-label-options', labels.options)
-  setBooleanData(container, 'data-vp-llms-copy', options.copy)
-  setBooleanData(container, 'data-vp-llms-chatgpt', options.chatgpt)
-  setBooleanData(container, 'data-vp-llms-claude', options.claude)
 
-  if (options.link) {
-    container.appendChild(createLinkButton(document, labels))
+  if (llmsVisible) {
+    container.setAttribute('data-vp-llms', '')
+    container.setAttribute(
+      'data-vp-llms-md-url',
+      markdownRouteUrl(page, siteConfig)
+    )
+    container.setAttribute('data-vp-llms-label-link', labels.link)
+    container.setAttribute('data-vp-llms-label-copy', labels.copy)
+    container.setAttribute('data-vp-llms-label-chatgpt', labels.chatgpt)
+    container.setAttribute('data-vp-llms-label-claude', labels.claude)
+    container.setAttribute('data-vp-llms-label-options', labels.options)
+    setBooleanData(container, 'data-vp-llms-copy', options.copy)
+    setBooleanData(container, 'data-vp-llms-chatgpt', options.chatgpt)
+    setBooleanData(container, 'data-vp-llms-claude', options.claude)
+
+    if (options.link) {
+      container.appendChild(createLinkButton(document, labels))
+    }
+
+    if (options.copy || options.chatgpt || options.claude) {
+      container.appendChild(createOptionsButton(document, labels))
+    }
   }
 
-  if (options.copy || options.chatgpt || options.claude) {
-    container.appendChild(createOptionsButton(document, labels))
+  if (editorSizeEnabled) {
+    container.append(
+      createEditorSizeButton(document, 'decrease', 'subtract'),
+      createEditorSizeButton(document, 'increase', 'add')
+    )
   }
 
   return container

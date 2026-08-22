@@ -32,6 +32,7 @@ export default {
     },
   },
   browser: {
+    editorSize: 'sm',
     seo: true,
     externalLink: true,
     highlight: {

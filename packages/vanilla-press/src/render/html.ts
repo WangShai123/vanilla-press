@@ -148,15 +148,16 @@ export function renderHtml({
 
   return `<!doctype html>
 <html lang="${htmlLang}">
-${renderHead({
-  title: htmlTitle,
-  seo,
-  themeEnabled,
-  themeDefault,
-  i18nRedirectScript,
-  cssHref,
-  faviconHref,
-})}
+  ${renderHead({
+    title: htmlTitle,
+    seo,
+    themeEnabled,
+    themeDefault,
+    i18nRedirectScript,
+    cssHref,
+    faviconHref,
+    config,
+  })}
 <body class="vp-layout-${pageLayout?.name || 'default'}">
   ${pageLayout?.html || body}
 ${importMap ? `${importMap}\n` : ''}
@@ -203,6 +204,7 @@ ${renderHead({
   i18nRedirectScript: delayScript(i18nRedirectScript),
   cssHref: './public/styles.css',
   faviconHref: './public/favicon.ico',
+  config,
 })}
 <body>
   <div class="j-loader"><span class="loader" style="--loader-width:4px;--loader-size:4rem;"></span></div>

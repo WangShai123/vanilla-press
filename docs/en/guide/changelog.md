@@ -104,3 +104,8 @@
 #### 1.4.11
 
 - fix: Optimized development server memory management
+
+#### 1.4.15
+
+- feat: Added font size control feature
+- docs: Updated related documentation

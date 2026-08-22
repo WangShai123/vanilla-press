@@ -45,6 +45,7 @@ import type {
 } from './types.ts'
 import { isRecord } from './types.ts'
 import { loadCustomComponents } from './utilities/components.ts'
+import { assertEditorSizeConfig } from './utilities/editor-size.ts'
 import {
   DEFAULT_LAST_EDIT_FORMAT,
   formatLastEditDate,
@@ -235,6 +236,8 @@ export async function loadLlmsConfig(
 }
 
 function validateRuntimeConfig(config: RuntimeConfig = {}): void {
+  assertEditorSizeConfig(config)
+
   const siteUrl = String(config.siteUrl || '').trim()
 
   if (!siteUrl) {

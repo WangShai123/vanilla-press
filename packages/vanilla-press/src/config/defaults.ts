@@ -39,6 +39,7 @@ export default {
     }
   },
   browser: {
+    editorSize: "sm",
     seo: true,
     search: true,
     externalLink: true,

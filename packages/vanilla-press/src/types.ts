@@ -88,6 +88,7 @@ export interface RuntimeThemeConfig extends RuntimeFeatureConfig {
 }
 
 export type RuntimeFeatureSwitch = boolean | RuntimeFeatureConfig
+export type RuntimeEditorSize = boolean | 'sm' | 'md' | 'lg' | 'xl'
 export type FooterScriptType = 'script' | 'module'
 export type FooterScriptConfig = string
 
@@ -107,6 +108,7 @@ export interface BrowserRuntimeConfig extends UnknownRecord {
   i18n?: boolean | RuntimeI18nConfig
   theme?: boolean | RuntimeThemeConfig
   auth?: RuntimeFeatureSwitch
+  editorSize?: RuntimeEditorSize
 }
 
 export interface RuntimeEditorLinkConfig extends UnknownRecord {

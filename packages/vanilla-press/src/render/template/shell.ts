@@ -1,4 +1,5 @@
 import type { RuntimeConfig } from '../../types.ts'
+import { editorClassName } from '../../utilities/editor-size.ts'
 
 interface ShellOptions {
   body: string
@@ -53,13 +54,14 @@ export function renderPageShell({
   const toc = renderToc(tocEnabled)
   const aside = renderAside({ config, toc })
   const hasAside = Boolean(aside)
+  const editorClass = editorClassName(config)
 
   return `<main class="vp-shell${sidebarEnabled ? ' has-sidebar' : ''}">
 ${sidebar}
     <section class="vp-main${hasAside ? ' has-aside' : ''}">
       <div class="vp-content" data-reveal>
         <div class="vp-content-wrap">
-          <article class="j-editor is-sm" data-vp-editor>
+          <article class="${editorClass}" data-vp-editor>
             ${body}
           </article>
         </div>
@@ -82,11 +84,13 @@ export function createPageShellContext({
   const toc = renderToc(tocEnabled)
   const aside = renderAside({ config, toc })
   const hasAside = Boolean(aside)
+  const editorClass = editorClassName(config)
 
   return {
     shell: {
       className: `vp-shell${sidebarEnabled ? ' has-sidebar' : ''}`,
       mainClassName: `vp-main${hasAside ? ' has-aside' : ''}`,
+      editorClassName: editorClass,
     },
     slots: {
       header,

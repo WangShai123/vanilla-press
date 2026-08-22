@@ -4,6 +4,7 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 365
 
 export interface DocPreference extends Record<string, unknown> {
   locale?: string
+  size?: string
 }
 
 function cookiePattern(name: string): RegExp {

@@ -51,6 +51,7 @@
 | 配置项                              | 类型              | 默认值         | 说明                                                                                                           |
 | ----------------------------------- | ----------------- | -------------- | -------------------------------------------------------------------------------------------------------------- |
 | `browser`                           | object            | -              | 浏览器运行时配置                                                                                               |
+| `browser.editorSize`                | boolean \| string | "sm"           | 是否启用正文编辑器尺寸控制。`false` 关闭；`true` 使用默认值；可选值为 "sm"、"md"、"lg"、"xl"                   |
 | `browser.seo`                       | boolean           | true           | 是否启用 SEO 功能，设置为 `false` 时关闭                                                                       |
 | `browser.search`                    | boolean           | true           | 是否启用搜索功能，设置为 `false` 时关闭                                                                        |
 | `browser.externalLink`              | boolean           | true           | 是否增强正文、菜单、侧边栏区域的站外链接，设置为 `false` 时关闭                                                |
@@ -119,6 +120,7 @@ export default {
     },
   },
   browser: {
+    editorSize: 'sm',
     seo: true,
     search: true,
     externalLink: true,

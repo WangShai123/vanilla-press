@@ -22,6 +22,7 @@ import {
   isTocEnabled,
 } from '../utilities/features.ts'
 import { initDocChrome } from './chrome.ts'
+import { initEditorSize } from './editor-size.ts'
 import { initLinkAttributes } from './link-attributes.ts'
 import { initLlms } from './llms.ts'
 import { initMobileSecondary } from './menu.ts'
@@ -283,6 +284,7 @@ export function initDocPage(options: DocPageOptions = {}): void {
       chrome.locale
     )
   }
+  initEditorSize(options.config)
   if (isLlmsEnabled(options.config)) {
     initLlms()
   }

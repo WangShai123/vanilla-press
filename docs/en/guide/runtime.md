@@ -46,41 +46,42 @@ The default export in `vp/config/runtime.ts` describes three layers:
 
 ### runtime
 
-| Option                              | Type              | Default        | Description                                                                                                            |
-| ----------------------------------- | ----------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `browser`                           | object            | -              | Browser runtime configuration.                                                                                         |
-| `browser.seo`                       | boolean           | true           | Whether to enable SEO. Set to `false` to disable it.                                                                   |
-| `browser.search`                    | boolean           | true           | Whether to enable search. Set to `false` to disable it.                                                                |
-| `browser.externalLink`              | boolean           | true           | Whether to enhance external links in content, menu, and sidebar areas. Set to `false` to disable it.                   |
-| `browser.highlight`                 | boolean \| object | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                     |
-| `browser.highlight.enabled`         | boolean           | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                     |
-| `browser.highlight.languages`       | array             | Default list   | Supported highlight languages. Only listed `highlight.js` language modules are registered.                             |
-| `browser.menu`                      | boolean           | true           | Whether to enable the top menu. Set to `false` to disable it.                                                          |
-| `browser.sidebar`                   | boolean           | true           | Whether to enable the sidebar. Set to `false` to disable it.                                                           |
-| `browser.toc`                       | boolean \| object | true           | Whether to enable the page table of contents.                                                                          |
-| `browser.toc.enabled`               | boolean           | true           | Whether to enable the table of contents. Set to `false` to disable it.                                                 |
-| `browser.toc.headings`              | string            | "h2, h3"       | Heading selector used to build the table of contents.                                                                  |
-| `browser.toc.offset`                | number            | 80             | Scroll positioning offset.                                                                                             |
-| `browser.prevNext`                  | boolean \| object | false          | Whether to enable previous/next page navigation.                                                                       |
-| `browser.i18n`                      | boolean \| object | Enabled        | Internationalization configuration object.                                                                             |
-| `browser.i18n.enabled`              | boolean           | true           | Whether to enable i18n.                                                                                                |
-| `browser.i18n.locale`               | string            | "zh-CN"        | Default language.                                                                                                      |
-| `browser.i18n.fallbackLocale`       | string            | "en"           | Fallback language.                                                                                                     |
-| `browser.i18n.locales`              | array             | -              | Locale options. Each item contains `code`, `label`, and `path`.                                                        |
-| `browser.i18n.redirectToDefault`    | boolean           | true           | Whether to redirect to the default locale.                                                                             |
-| `browser.theme`                     | boolean \| object | Enabled        | Theme configuration.                                                                                                   |
-| `browser.theme.enabled`             | boolean           | true           | Whether to enable the theme feature.                                                                                   |
-| `browser.theme.default`             | object            | -              | Initial theme values used by the inline boot script.                                                                   |
-| `browser.theme.default.mode`        | "dark" \| "light" | "dark"         | Initial color mode. Invalid values fall back to "dark".                                                                |
-| `browser.theme.default.theme`       | enum              | "indigo"       | Initial palette: gray, olive, tomato, ruby, pink, violet, indigo, blue, teal, grass, mint, lime, yellow, orange, gold. |
-| `browser.theme.default.radius`      | enum              | "sm"           | Initial radius: sm, md, lg, xl, round.                                                                                 |
-| `browser.theme.default.shadow`      | enum              | "sm"           | Initial shadow: none, sm, md, lg.                                                                                      |
-| `browser.theme.default.font`        | enum              | "sm"           | Initial font size: sm, md.                                                                                             |
-| `browser.theme.label`               | string            | "theme.button" | i18n key for the theme button label.                                                                                   |
-| `browser.theme.options`             | object            | -              | Options object passed to `vanilla-jui` Theme.                                                                          |
-| `browser.theme.panel`               | object \| null    | -              | Panel configuration passed to `theme.createPanel()`.                                                                   |
-| `browser.theme.offcanvas`           | object            | -              | Offcanvas configuration object for the theme panel.                                                                    |
-| `browser.theme.offcanvas.direction` | string            | "right"        | Direction of the theme panel offcanvas.                                                                                |
+| Option                              | Type              | Default        | Description                                                                                                                                  |
+| ----------------------------------- | ----------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `browser`                           | object            | -              | Browser runtime configuration.                                                                                                               |
+| `browser.editorSize`                | boolean \| string | "sm"           | Whether to enable content editor size controls. `false` disables it; `true` uses the default; allowed values are "sm", "md", "lg", and "xl". |
+| `browser.seo`                       | boolean           | true           | Whether to enable SEO. Set to `false` to disable it.                                                                                         |
+| `browser.search`                    | boolean           | true           | Whether to enable search. Set to `false` to disable it.                                                                                      |
+| `browser.externalLink`              | boolean           | true           | Whether to enhance external links in content, menu, and sidebar areas. Set to `false` to disable it.                                         |
+| `browser.highlight`                 | boolean \| object | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                                           |
+| `browser.highlight.enabled`         | boolean           | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                                           |
+| `browser.highlight.languages`       | array             | Default list   | Supported highlight languages. Only listed `highlight.js` language modules are registered.                                                   |
+| `browser.menu`                      | boolean           | true           | Whether to enable the top menu. Set to `false` to disable it.                                                                                |
+| `browser.sidebar`                   | boolean           | true           | Whether to enable the sidebar. Set to `false` to disable it.                                                                                 |
+| `browser.toc`                       | boolean \| object | true           | Whether to enable the page table of contents.                                                                                                |
+| `browser.toc.enabled`               | boolean           | true           | Whether to enable the table of contents. Set to `false` to disable it.                                                                       |
+| `browser.toc.headings`              | string            | "h2, h3"       | Heading selector used to build the table of contents.                                                                                        |
+| `browser.toc.offset`                | number            | 80             | Scroll positioning offset.                                                                                                                   |
+| `browser.prevNext`                  | boolean \| object | false          | Whether to enable previous/next page navigation.                                                                                             |
+| `browser.i18n`                      | boolean \| object | Enabled        | Internationalization configuration object.                                                                                                   |
+| `browser.i18n.enabled`              | boolean           | true           | Whether to enable i18n.                                                                                                                      |
+| `browser.i18n.locale`               | string            | "zh-CN"        | Default language.                                                                                                                            |
+| `browser.i18n.fallbackLocale`       | string            | "en"           | Fallback language.                                                                                                                           |
+| `browser.i18n.locales`              | array             | -              | Locale options. Each item contains `code`, `label`, and `path`.                                                                              |
+| `browser.i18n.redirectToDefault`    | boolean           | true           | Whether to redirect to the default locale.                                                                                                   |
+| `browser.theme`                     | boolean \| object | Enabled        | Theme configuration.                                                                                                                         |
+| `browser.theme.enabled`             | boolean           | true           | Whether to enable the theme feature.                                                                                                         |
+| `browser.theme.default`             | object            | -              | Initial theme values used by the inline boot script.                                                                                         |
+| `browser.theme.default.mode`        | "dark" \| "light" | "dark"         | Initial color mode. Invalid values fall back to "dark".                                                                                      |
+| `browser.theme.default.theme`       | enum              | "indigo"       | Initial palette: gray, olive, tomato, ruby, pink, violet, indigo, blue, teal, grass, mint, lime, yellow, orange, gold.                       |
+| `browser.theme.default.radius`      | enum              | "sm"           | Initial radius: sm, md, lg, xl, round.                                                                                                       |
+| `browser.theme.default.shadow`      | enum              | "sm"           | Initial shadow: none, sm, md, lg.                                                                                                            |
+| `browser.theme.default.font`        | enum              | "sm"           | Initial font size: sm, md.                                                                                                                   |
+| `browser.theme.label`               | string            | "theme.button" | i18n key for the theme button label.                                                                                                         |
+| `browser.theme.options`             | object            | -              | Options object passed to `vanilla-jui` Theme.                                                                                                |
+| `browser.theme.panel`               | object \| null    | -              | Panel configuration passed to `theme.createPanel()`.                                                                                         |
+| `browser.theme.offcanvas`           | object            | -              | Offcanvas configuration object for the theme panel.                                                                                          |
+| `browser.theme.offcanvas.direction` | string            | "right"        | Direction of the theme panel offcanvas.                                                                                                      |
 
 ## Default Configuration
 
@@ -117,6 +118,7 @@ export default {
     },
   },
   browser: {
+    editorSize: 'sm',
     seo: true,
     search: true,
     externalLink: true,
