@@ -15,7 +15,7 @@
   gap: 36px;
 }
 
-.vp-main.has-aside > .j-editor {
+.vp-main.has-aside>.j-editor {
   grid-column: 1;
   grid-row: 1;
 }
@@ -45,8 +45,4 @@ html.j-radius-round .vp-main .vp-content {
 
 .desktop #global-search {
   width: 500px;
-}
-
-.j-editor table {
-  margin: 0 0 var(--content-block-space);
 }
