@@ -207,7 +207,7 @@ a[data-vp-external-link] span.external-link svg {
   position: relative;
 }
 
-.j-tree-list .j-tree-list > .j-tree-item::before {
+.j-tree-list .j-tree-list>.j-tree-item::before {
   position: absolute;
   top: 13px;
   left: -11px;
@@ -243,7 +243,7 @@ a[data-vp-external-link] span.external-link svg {
   outline: 0;
 }
 
-.j-tree-item.is-directory > .j-tree-node {
+.j-tree-item.is-directory>.j-tree-node {
   color: var(--vp-ink);
   font-weight: 600;
 }
@@ -258,7 +258,7 @@ a[data-vp-external-link] span.external-link svg {
   color: var(--vp-muted);
 }
 
-.j-tree-item.is-directory > .j-tree-node .j-tree-icon {
+.j-tree-item.is-directory>.j-tree-node .j-tree-icon {
   color: var(--vp-accent);
 }
 
@@ -277,13 +277,13 @@ a[data-vp-external-link] span.external-link svg {
   --tab-fg: var(--ui-fg-muted);
 }
 
-.j-tabs .panel-list .panel-item > [data-vp-component] {
+.j-tabs .panel-list .panel-item>[data-vp-component] {
   margin: 0;
 }
 
-.j-tabs .panel-list .panel-item > [data-vp-component] + [data-vp-component],
-.j-tabs .panel-list .panel-item pre.hljs + p,
-.j-tabs .panel-list .panel-item pre.hljs + div {
+.j-tabs .panel-list .panel-item>[data-vp-component]+[data-vp-component],
+.j-tabs .panel-list .panel-item pre.hljs+p,
+.j-tabs .panel-list .panel-item pre.hljs+div {
   margin-top: 0.875rem;
 }
 
@@ -344,9 +344,4 @@ table tbody {
 
 table tr:last-child td {
   border: 0;
-}
-
-table th,
-table td {
-  --table-cell-padding: 0.5rem 1rem;
 }
