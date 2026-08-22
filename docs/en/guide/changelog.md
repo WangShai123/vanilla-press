@@ -109,3 +109,7 @@
 
 - feat: Added font size control feature
 - docs: Updated related documentation
+
+#### 1.4.17
+
+- fix: Added valid html tags and attributes

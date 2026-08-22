@@ -207,7 +207,7 @@ ${renderHead({
   config,
 })}
 <body>
-  <div class="j-loader"><span class="loader" style="--loader-width:4px;--loader-size:4rem;"></span></div>
+  <div class="j-loader"><span class="loader" style="--loader-width:3px;--loader-size:3rem;"></span></div>
 ${footerScriptHtml ? `${footerScriptHtml}\n` : ''}
 </body>
 </html>
