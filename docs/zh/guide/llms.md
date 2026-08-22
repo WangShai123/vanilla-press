@@ -90,7 +90,7 @@ Markdown source routes for VanillaPress documentation.
 
 ## 多语言
 
-`container.labels` 用于配置页面标题下方 `.llms-container` 的多语言文案。key 需要对应 `vp/config/languages.ts` 中的 locale code，例如 `zh-CN`、`en`。
+`container.labels` 用于配置页面标题下方 `.vp-editor-helper` 的多语言文案。key 需要对应 `vp/config/languages.ts` 中的 locale code，例如 `zh-CN`、`en`。
 
 | 字段    | 说明                       |
 | ------- | -------------------------- |

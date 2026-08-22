@@ -90,7 +90,7 @@ Markdown source routes for VanillaPress documentation.
 
 ## Localized
 
-`container.labels` configures localized text for the `.llms-container` rendered below the page title. Keys should match locale codes from `vp/config/languages.ts`, such as `zh-CN` or `en`.
+`container.labels` configures localized text for the `.vp-editor-helper` rendered below the page title. Keys should match locale codes from `vp/config/languages.ts`, such as `zh-CN` or `en`.
 
 | Field   | Description                              |
 | ------- | ---------------------------------------- |

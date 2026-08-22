@@ -7,7 +7,7 @@ Enable multilingual documentation so users can browse the site in different lang
 In `vp/config/runtime.ts`, configure whether internationalization is enabled.
 
 - Configuration property: `i18n`
-- Configuration type: `boolean` || `object`
+- Configuration type: `boolean` | `object`
 
 ```ts
 export default {

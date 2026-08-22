@@ -65,7 +65,7 @@
     "markdown-it-front-matter": "^0.2.4",
     "markdown-it-link-attributes": "^4.0.1",
     "vanilla-create-storage": "^1.0.4",
-    "vanilla-jui": "^1.5.28",
+    "vanilla-jui": "^1.5.29",
     "vanilla-signal": "^1.1.15",
     "vanilla-signal-i18n": "^1.1.2",
     "vite": "^8.2.1"

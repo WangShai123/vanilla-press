@@ -14,7 +14,7 @@
 }
 
 /* LLMS */
-.vp-main .j-editor .llms-container {
+.vp-main .j-editor .vp-editor-helper {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -344,4 +344,9 @@ table tbody {
 
 table tr:last-child td {
   border: 0;
+}
+
+table th,
+table td {
+  --table-cell-padding: .5rem 1rem;
 }

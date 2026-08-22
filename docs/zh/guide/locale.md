@@ -7,7 +7,7 @@
 在 `vp/config/runtime.ts` 中，按需配置是否启用国际化功能。
 
 - 配置属性：`i18n`
-- 配置类型：`boolean` || `object`
+- 配置类型：`boolean` | `object`
 
 ```ts
 export default {

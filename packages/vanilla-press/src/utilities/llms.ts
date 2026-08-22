@@ -242,7 +242,7 @@ function createLlmsContainer(
 
   const labels = llmsContainerLabels(llmsConfig, languages, page)
   const container = document.createElement('div')
-  container.className = 'llms-container'
+  container.className = 'vp-editor-helper'
   container.setAttribute('data-vp-llms', '')
   container.setAttribute(
     'data-vp-llms-md-url',
