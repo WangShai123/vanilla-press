@@ -110,6 +110,10 @@
 - feat: Added font size control feature
 - docs: Updated related documentation
 
-#### 1.4.16-18
+#### 1.4.16-19
 
 - fix: Added valid html tags and attributes
+
+#### 1.4.20
+
+- fix: Fixed scaffold process issue

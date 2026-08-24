@@ -281,22 +281,12 @@ a[data-vp-external-link] span.external-link svg {
   margin: 0;
 }
 
-.j-tabs .panel-list .panel-item>[data-vp-component]+[data-vp-component],
 .j-tabs .panel-list .panel-item pre.hljs+p,
-.j-tabs .panel-list .panel-item pre.hljs+div {
+.j-tabs .panel-list .panel-item pre.hljs+div,
+.j-tabs .panel-list .panel-item>[data-vp-component]+[data-vp-component],
+.j-tabs .panel-list .panel-item p+[data-vp-component] {
   margin-top: 0.875rem;
 }
-
-/* .j-tabs .panel-list .panel-item>pre {
-  transform: translate3d(-0.75rem, -0.75rem, 0);
-  border-radius: 0;
-  border: 0;
-  width: calc(100% + 1.5rem);
-}
-
-.j-tabs .panel-list .panel-item>pre:last-child {
-  margin-bottom: -1.5rem;
-} */
 
 /* tabs / accordion / offcanvas */
 .vp-main .j-tabs,

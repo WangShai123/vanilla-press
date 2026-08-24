@@ -1,13 +1,25 @@
+import { execFile } from 'child_process'
 import fs from 'fs/promises'
 import path from 'path'
 import process from 'process'
+import readline from 'readline/promises'
 import { fileURLToPath } from 'url'
+import { promisify } from 'util'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const packageRoot = path.resolve(__dirname, '..')
 const templateRoot = path.join(packageRoot, 'template')
 const templateDirectories = ['assets', 'docs', 'vp']
-const templateFiles = ['README.md', '.gitignore']
+const templateFiles = ['README.md']
+const projectGitignore = `node_modules
+dist
+vp/cache
+`
+const execFileAsync = promisify(execFile)
+
+function write(output, text) {
+  output.write(text)
+}
 
 function toPosix(value) {
   return value.split(path.sep).join('/')
@@ -103,6 +115,75 @@ async function copyTemplate(targetDir) {
   )
 }
 
+async function writeGitignore(targetDir) {
+  await fs.writeFile(path.join(targetDir, '.gitignore'), projectGitignore)
+}
+
+function yes(value) {
+  return /^(?:y|yes)$/i.test(String(value || '').trim())
+}
+
+async function confirmGitInit(input = process.stdin, output = process.stdout) {
+  if (!input.isTTY || !output.isTTY) return false
+
+  const rl = readline.createInterface({ input, output })
+  try {
+    const answer = await rl.question('Initialize a git repository? (y/N) ')
+    return yes(answer)
+  } finally {
+    rl.close()
+  }
+}
+
+async function initGit(targetDir) {
+  await execFileAsync('git', ['init', '--quiet'], { cwd: targetDir })
+  await writeGitignore(targetDir)
+}
+
+async function maybeInitGit(targetDir, options = {}) {
+  const result = {
+    requested: false,
+    initialized: false,
+    warning: '',
+  }
+
+  if (options.git === true) {
+    result.requested = true
+  } else if (options.git === false) {
+    return result
+  } else {
+    result.requested = await confirmGitInit(options.input, options.output)
+  }
+
+  if (!result.requested) return result
+
+  try {
+    await initGit(targetDir)
+    result.initialized = true
+  } catch (error) {
+    result.warning = `Git initialization failed: ${error.message}`
+  }
+
+  return result
+}
+
+function printCompletion(result, output = process.stdout) {
+  write(output, `\nVanillaPress project created in ${result.relativeDir}\n`)
+
+  if (result.git.initialized) {
+    write(output, 'Git repository initialized and .gitignore added.\n')
+  } else if (result.git.warning) {
+    write(output, `${result.git.warning}\n`)
+  }
+
+  write(output, 'Next steps:\n')
+  if (result.relativeDir !== '.') {
+    write(output, `  cd ${result.relativeDir}\n`)
+  }
+  write(output, '  npm install\n')
+  write(output, '  npm run dev\n')
+}
+
 async function loadSourcePackage() {
   const packageJson = await fs.readFile(
     path.join(packageRoot, 'package.json'),
@@ -151,7 +232,8 @@ async function rewriteConfig(targetDir, projectName) {
 
 export async function scaffoldProject(rawTarget = '.', options = {}) {
   const force = Boolean(options.force)
-  const targetDir = path.resolve(options.cwd || process.cwd(), rawTarget)
+  const cwd = options.cwd || process.cwd()
+  const targetDir = path.resolve(cwd, rawTarget)
   const projectName = resolveProjectName(
     rawTarget === '.' ? '' : rawTarget,
     targetDir
@@ -161,18 +243,18 @@ export async function scaffoldProject(rawTarget = '.', options = {}) {
   await copyTemplate(targetDir)
   await writeProjectPackage(targetDir, projectName)
   await rewriteConfig(targetDir, projectName)
+  const git = await maybeInitGit(targetDir, options)
+  const relativeDir = toPosix(path.relative(cwd, targetDir) || '.')
 
-  const relativeDir =
-    path.relative(options.cwd || process.cwd(), targetDir) || '.'
-  process.stdout.write(
-    `\nScaffolded vanilla-press project in ${toPosix(relativeDir)}\n`
-  )
-  process.stdout.write('Next steps:\n')
-  if (relativeDir !== '.') {
-    process.stdout.write(`  cd ${toPosix(relativeDir)}\n`)
+  const result = {
+    targetDir,
+    relativeDir,
+    projectName,
+    git,
   }
-  process.stdout.write('  npm install\n')
-  process.stdout.write('  npm run dev\n')
+
+  printCompletion(result, options.output || process.stdout)
+  return result
 }
 
 export async function runScaffoldCli(args = [], options = {}) {
@@ -187,5 +269,7 @@ export async function runScaffoldCli(args = [], options = {}) {
   await scaffoldProject(rawTarget, {
     cwd: options.cwd,
     force,
+    input: options.input,
+    output: options.output,
   })
 }

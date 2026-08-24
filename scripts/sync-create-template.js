@@ -48,4 +48,8 @@ await fs.mkdir(templateRoot, { recursive: true })
 await copy(path.join(repoRoot, 'assets'), path.join(templateRoot, 'assets'))
 await copy(path.join(repoRoot, 'docs'), path.join(templateRoot, 'docs'))
 await copy(path.join(repoRoot, 'vp'), path.join(templateRoot, 'vp'))
+await fs.rm(path.join(templateRoot, 'vp', 'cache'), {
+  force: true,
+  recursive: true,
+})
 await fs.writeFile(path.join(templateRoot, 'README.md'), starterReadme, 'utf8')
