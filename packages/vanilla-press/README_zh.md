@@ -4,7 +4,7 @@
 
 > 只构建需要的，只使用想要的，把最终控制权留给用户。
 
-[英文](README.md)
+- [English](README.md)
 
 ## 特点
 
@@ -40,3 +40,7 @@ npm run dev
 - `vp/layouts/`：用户自定义布局。
 - `vp/components/`：用户自定义组件。
 - `package.json`：项目依赖配置。
+
+## 预览
+
+[在线预览](https://app.jealer.com/vanilla-press)

@@ -4,7 +4,7 @@ A lightweight, flexible, and highly customizable static documentation generator.
 
 > Build what you need. Use what you want. Control what you ship.
 
-[中文](README_zh.md)
+- [中文](README_zh.md)
 
 ## Features
 
@@ -40,3 +40,7 @@ npm run dev
 - `vp/layouts/`: User custom layouts directory.
 - `vp/components/`: User custom components directory.
 - `package.json`: Project dependencies configuration.
+
+## Demo
+
+[Demo Online](https://app.jealer.com/vanilla-press)
