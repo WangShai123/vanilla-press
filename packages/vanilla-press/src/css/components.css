@@ -318,7 +318,7 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 /* table */
-table thead {
+/* table thead {
   border-top: 1px solid var(--vp-line);
 }
 
@@ -334,4 +334,4 @@ table tbody {
 
 table tr:last-child td {
   border: 0;
-}
+} */
