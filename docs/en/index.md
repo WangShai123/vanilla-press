@@ -28,9 +28,6 @@ layouts:
           lines:
             - npm install
             - npm run dev
-        - title: Build documentation
-          lines:
-            - npm run build
     features:
       title: Why vanilla-press
       description: Keep static deployment simple while supporting custom layouts and components, plus a minimized runtime built on demand.

@@ -28,9 +28,6 @@ layouts:
           lines:
             - npm install
             - npm run dev
-        - title: 构建文档
-          lines:
-            - npm run build
     features:
       title: 为什么选择 vanilla-press
       description: 保留静态部署的简单性，支持：自定义布局和组件，按需构建最小化运行时。

@@ -146,7 +146,7 @@ function renderTreeNode(node: TreeNode): string {
 
   return `<li ${attrs}>
   <div ${nodeAttrs}>
-    <span class="j-tree-icon" data-tree-icon aria-hidden="true"></span>
+    <span class="j-tree-icon" data-tree-icon></span>
     <span class="j-tree-label">${escapeHtml(node.name)}</span>
   </div>
   ${renderTreeNodes(node.children, node.collapsed)}
