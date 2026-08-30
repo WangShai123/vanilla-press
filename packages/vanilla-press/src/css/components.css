@@ -203,6 +203,14 @@ a[data-vp-external-link] span.external-link svg {
   padding: 1rem;
 }
 
+.j-accordion .panel-content>*:first-child {
+  margin-top: 0;
+}
+
+.j-accordion .panel-content>*:last-child {
+  margin-bottom: 0;
+}
+
 /* tip */
 .j-tip .tip-content p {
   margin: 0;
