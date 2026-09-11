@@ -53,9 +53,7 @@ The default export in `vp/config/runtime.ts` describes three layers:
 | `browser.seo`                       | boolean           | true           | Whether to enable SEO. Set to `false` to disable it.                                                                                         |
 | `browser.search`                    | boolean           | true           | Whether to enable search. Set to `false` to disable it.                                                                                      |
 | `browser.externalLink`              | boolean           | true           | Whether to enhance external links in content, menu, and sidebar areas. Set to `false` to disable it.                                         |
-| `browser.highlight`                 | boolean \| object | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                                           |
-| `browser.highlight.enabled`         | boolean           | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                                           |
-| `browser.highlight.languages`       | array             | Default list   | Supported highlight languages. Only listed `highlight.js` language modules are registered.                                                   |
+| `browser.highlight`                 | boolean           | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                                           |
 | `browser.menu`                      | boolean           | true           | Whether to enable the top menu. Set to `false` to disable it.                                                                                |
 | `browser.sidebar`                   | boolean           | true           | Whether to enable the sidebar. Set to `false` to disable it.                                                                                 |
 | `browser.toc`                       | boolean \| object | true           | Whether to enable the page table of contents.                                                                                                |
@@ -122,35 +120,7 @@ export default {
     seo: true,
     search: true,
     externalLink: true,
-    highlight: {
-      enabled: true,
-      languages: [
-        { value: 'plaintext', label: 'Plain Text' },
-        { value: 'bash', label: 'Bash' },
-        { value: 'c', label: 'C' },
-        { value: 'cpp', label: 'C++' },
-        { value: 'css', label: 'CSS' },
-        { value: 'dockerfile', label: 'Dockerfile' },
-        { value: 'go', label: 'Go' },
-        { value: 'graphql', label: 'GraphQL' },
-        { value: 'html', label: 'HTML' },
-        { value: 'java', label: 'Java' },
-        { value: 'javascript', label: 'JavaScript' },
-        { value: 'json', label: 'JSON' },
-        { value: 'kotlin', label: 'Kotlin' },
-        { value: 'markdown', label: 'Markdown' },
-        { value: 'nginx', label: 'Nginx' },
-        { value: 'php', label: 'PHP' },
-        { value: 'python', label: 'Python' },
-        { value: 'ruby', label: 'Ruby' },
-        { value: 'rust', label: 'Rust' },
-        { value: 'sql', label: 'SQL' },
-        { value: 'swift', label: 'Swift' },
-        { value: 'typescript', label: 'TypeScript' },
-        { value: 'xml', label: 'XML' },
-        { value: 'yaml', label: 'YAML' },
-      ],
-    },
+    highlight: true,
     menu: true,
     sidebar: true,
     toc: true,

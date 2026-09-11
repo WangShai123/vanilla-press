@@ -1,5 +1,5 @@
 :root {
-  --vp-header-height: 58px;
+  --vp-header-height: 52px;
   --vp-panel: var(--ui-surface);
   --vp-panel-overlay: var(--ui-surface-overlay);
   --vp-ink: var(--tone-heading);
@@ -45,6 +45,7 @@
 }
 
 @keyframes element-float {
+
   0%,
   100% {
     transform: translateY(0);

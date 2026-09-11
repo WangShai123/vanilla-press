@@ -36,6 +36,7 @@ import type {
   ModuleScriptAsset,
   PageScriptAsset,
   RenderedPage,
+  RuntimeSidebarConfig,
   RuntimeBundleData,
   RuntimeI18nConfig,
   SeoData,
@@ -298,6 +299,52 @@ export async function loadSidebarItems(configDir: string): Promise<unknown[]> {
   if (!file) return []
 
   return importDefault<unknown[]>(file, [])
+}
+
+function normalizeSidebarDir(file: string): string {
+  const dir = toPosix(path.dirname(file))
+  return dir === '.' ? '' : dir.replace(/^\/+|\/+$/g, '')
+}
+
+export async function loadDirectorySidebarItems(
+  inputDir: string
+): Promise<RuntimeSidebarConfig['directories']> {
+  const files = (
+    await glob('**/sidebar.{ts,js}', {
+      cwd: inputDir,
+      nodir: true,
+      windowsPathsNoEscape: true,
+    })
+  ).sort()
+
+  const directories = await Promise.all(
+    files.map(async (file) => {
+      const dir = normalizeSidebarDir(file)
+      if (!dir) return null
+
+      const items = await importDefault<RuntimeSidebarConfig['items']>(
+        path.join(inputDir, file),
+        []
+      )
+
+      return { dir, items }
+    })
+  )
+
+  return directories
+    .filter((item): item is RuntimeSidebarConfig['directories'][number] =>
+      Boolean(item)
+    )
+    .sort((a, b) => a.dir.localeCompare(b.dir))
+}
+
+export function createRuntimeSidebarConfig(
+  items: unknown[] = [],
+  directories: RuntimeSidebarConfig['directories'] = []
+): unknown[] | RuntimeSidebarConfig {
+  return directories.length
+    ? { items: items as RuntimeSidebarConfig['items'], directories }
+    : items
 }
 
 interface LastEditCacheEntry {
@@ -1356,6 +1403,9 @@ export async function build({
   const sidebarItems = isSidebarEnabled(config)
     ? await loadSidebarItems(configDir)
     : []
+  const directorySidebarItems = isSidebarEnabled(config)
+    ? await loadDirectorySidebarItems(inputDir)
+    : []
   const llmsConfig = isLlmsEnabled(config)
     ? await loadLlmsConfig(configDir)
     : {}
@@ -1399,7 +1449,10 @@ export async function build({
     config,
     languages,
     menuItems,
-    sidebarItems,
+    sidebarItems: createRuntimeSidebarConfig(
+      sidebarItems,
+      directorySidebarItems
+    ),
     sharedVpModules: pageSharedVpModules(pages),
   })
   if (isSearchEnabled(config)) await writeSearchIndex(publicDir, pages)

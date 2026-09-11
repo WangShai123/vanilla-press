@@ -44,7 +44,7 @@ export function createMarkdown(
   components: LoadedMarkdownComponent[] = []
 ): MarkdownItType {
   const highlighter: MarkdownHighlighter = isHighlightEnabled(config)
-    ? (createHighlighter(config) as MarkdownHighlighter)
+    ? (createHighlighter() as MarkdownHighlighter)
     : renderPlainCode
   const md = new MarkdownIt({
     html: true,

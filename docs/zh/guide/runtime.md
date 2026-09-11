@@ -55,9 +55,7 @@
 | `browser.seo`                       | boolean           | true           | 是否启用 SEO 功能，设置为 `false` 时关闭                                                                       |
 | `browser.search`                    | boolean           | true           | 是否启用搜索功能，设置为 `false` 时关闭                                                                        |
 | `browser.externalLink`              | boolean           | true           | 是否增强正文、菜单、侧边栏区域的站外链接，设置为 `false` 时关闭                                                |
-| `browser.highlight`                 | boolean \| object | true           | 是否启用代码高亮，设置为 `false` 时关闭                                                                        |
-| `browser.highlight.enabled`         | boolean           | true           | 是否启用代码高亮，设置为 `false` 时关闭                                                                        |
-| `browser.highlight.languages`       | array             | 默认语言列表   | 支持高亮的语言列表，仅会注册列表中的 `highlight.js` 语言模块                                                   |
+| `browser.highlight`                 | boolean           | true           | 是否启用代码高亮，设置为 `false` 时关闭                                                                        |
 | `browser.menu`                      | boolean           | true           | 是否启用顶部主菜单，设置为 `false` 时关闭                                                                      |
 | `browser.sidebar`                   | boolean           | true           | 是否启用侧边栏，设置为 `false` 时关闭                                                                          |
 | `browser.toc`                       | boolean \| object | true           | 是否启用页面目录                                                                                               |
@@ -124,35 +122,7 @@ export default {
     seo: true,
     search: true,
     externalLink: true,
-    highlight: {
-      enabled: true,
-      languages: [
-        { value: 'plaintext', label: 'Plain Text' },
-        { value: 'bash', label: 'Bash' },
-        { value: 'c', label: 'C' },
-        { value: 'cpp', label: 'C++' },
-        { value: 'css', label: 'CSS' },
-        { value: 'dockerfile', label: 'Dockerfile' },
-        { value: 'go', label: 'Go' },
-        { value: 'graphql', label: 'GraphQL' },
-        { value: 'html', label: 'HTML' },
-        { value: 'java', label: 'Java' },
-        { value: 'javascript', label: 'JavaScript' },
-        { value: 'json', label: 'JSON' },
-        { value: 'kotlin', label: 'Kotlin' },
-        { value: 'markdown', label: 'Markdown' },
-        { value: 'nginx', label: 'Nginx' },
-        { value: 'php', label: 'PHP' },
-        { value: 'python', label: 'Python' },
-        { value: 'ruby', label: 'Ruby' },
-        { value: 'rust', label: 'Rust' },
-        { value: 'sql', label: 'SQL' },
-        { value: 'swift', label: 'Swift' },
-        { value: 'typescript', label: 'TypeScript' },
-        { value: 'xml', label: 'XML' },
-        { value: 'yaml', label: 'YAML' },
-      ],
-    },
+    highlight: true,
     menu: true,
     sidebar: true,
     toc: true,

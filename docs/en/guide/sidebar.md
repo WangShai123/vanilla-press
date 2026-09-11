@@ -16,7 +16,7 @@ export default {
 
 ## Configuration
 
-In `vp/config/sidebar.ts`, configure the site's sidebar data as needed.
+In `vp/config/sidebar.ts`, configure the site's global sidebar data as needed.
 
 - `label`: i18n message key for the sidebar item
 - `path`: page path for the sidebar item, without `.html`
@@ -38,6 +38,23 @@ export default [
   },
 ]
 ```
+
+## Directory Sidebar
+
+Since `1.5.0`, a subdirectory under `docs/` can add its own `sidebar.ts` or `sidebar.js` to replace the global sidebar for all pages in that directory.
+
+For example, `docs/components/sidebar.ts` applies to pages under `docs/components/**`, and uses the same format as `vp/config/sidebar.ts`:
+
+```ts
+import type { SidebarConfig } from 'vanilla-press'
+
+export default [
+  { label: 'components.overview', path: 'components/index' },
+  { label: 'components.button', path: 'components/button' },
+] satisfies SidebarConfig
+```
+
+When multiple directory sidebars match the current page, the nearest directory wins. Once a directory sidebar matches, the global sidebar is not rendered for that page.
 
 ## Initialization
 

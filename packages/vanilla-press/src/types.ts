@@ -16,11 +16,6 @@ export interface LocaleEntry extends UnknownRecord {
   label?: string
 }
 
-export interface HighlightLanguage extends UnknownRecord {
-  value: string
-  label: string
-}
-
 export type LanguageMessageValue =
   | string
   | number
@@ -52,10 +47,6 @@ export interface RuntimeI18nConfig extends UnknownRecord {
 export interface RuntimeFeatureConfig extends UnknownRecord {
   enabled?: boolean
   label?: string
-}
-
-export interface RuntimeHighlightConfig extends RuntimeFeatureConfig {
-  languages?: HighlightLanguage[]
 }
 
 export interface RuntimeTocConfig extends RuntimeFeatureConfig {
@@ -99,7 +90,7 @@ export interface RuntimeVpScriptConfig extends UnknownRecord {
 export interface BrowserRuntimeConfig extends UnknownRecord {
   seo?: RuntimeFeatureSwitch
   externalLink?: RuntimeFeatureSwitch
-  highlight?: boolean | RuntimeHighlightConfig
+  highlight?: boolean
   menu?: RuntimeFeatureSwitch
   sidebar?: RuntimeFeatureSwitch
   toc?: boolean | RuntimeTocConfig
@@ -205,6 +196,18 @@ export type MenuConfig = NavItem[]
 
 export type SidebarConfig = NavItem[]
 
+export interface DirectorySidebarConfig extends UnknownRecord {
+  dir: string
+  items: NavItem[]
+}
+
+export interface RuntimeSidebarConfig extends UnknownRecord {
+  items: NavItem[]
+  directories: DirectorySidebarConfig[]
+}
+
+export type RuntimeSidebar = NavItem[] | RuntimeSidebarConfig
+
 export interface RobotsRule extends UnknownRecord {
   userAgent?: string | string[]
   allow?: string | string[]
@@ -297,7 +300,7 @@ export interface RuntimeBundleData {
   config?: RuntimeConfig
   languages?: LanguagesConfig | UnknownRecord
   menuItems?: unknown[]
-  sidebarItems?: unknown[]
+  sidebarItems?: unknown[] | RuntimeSidebarConfig
   sharedVpModules?: SharedVpScriptModule[]
 }
 

@@ -40,61 +40,18 @@ class Test
 
 ## 运行时
 
-在 `vp/config/runtime.ts` 中，按需配置是否启用代码高亮功能，以及允许构建的语言列表。`vanilla-press` 基于 `highlight.js` core，只会注册 `browser.highlight.languages` 中配置的语言模块。
+在 `vp/config/runtime.ts` 中，按需配置是否启用代码高亮功能。
 
 ```ts
 export default {
   browser: {
-    highlight: {
-      enabled: true,
-      languages: [
-        { value: 'plaintext', label: 'Plain Text' },
-        { value: 'bash', label: 'Bash' },
-        { value: 'javascript', label: 'JavaScript' },
-        { value: 'typescript', label: 'TypeScript' },
-        { value: 'html', label: 'HTML' },
-        { value: 'css', label: 'CSS' },
-        { value: 'json', label: 'JSON' },
-        { value: 'markdown', label: 'Markdown' },
-      ],
-    },
+    highlight: true,
   },
 }
 ```
 
-`highlight: false` 或 `highlight: { enabled: false }` 会关闭代码高亮。未配置 `languages` 时使用默认语言列表；配置后仅支持列表中的语言，适合减少按需加载的语言模块。
+`highlight` 默认为 `true`。设置为 `false` 时，会关闭代码高亮。
 
 ## 支持语言
 
-默认支持以下语言：
-
-```ts
-;[
-  { value: 'plaintext', label: 'Plain Text' },
-  { value: 'bash', label: 'Bash' },
-  { value: 'c', label: 'C' },
-  { value: 'cpp', label: 'C++' },
-  { value: 'css', label: 'CSS' },
-  { value: 'dockerfile', label: 'Dockerfile' },
-  { value: 'go', label: 'Go' },
-  { value: 'graphql', label: 'GraphQL' },
-  { value: 'html', label: 'HTML' },
-  { value: 'java', label: 'Java' },
-  { value: 'javascript', label: 'JavaScript' },
-  { value: 'json', label: 'JSON' },
-  { value: 'kotlin', label: 'Kotlin' },
-  { value: 'markdown', label: 'Markdown' },
-  { value: 'nginx', label: 'Nginx' },
-  { value: 'php', label: 'PHP' },
-  { value: 'python', label: 'Python' },
-  { value: 'ruby', label: 'Ruby' },
-  { value: 'rust', label: 'Rust' },
-  { value: 'sql', label: 'SQL' },
-  { value: 'swift', label: 'Swift' },
-  { value: 'typescript', label: 'TypeScript' },
-  { value: 'xml', label: 'XML' },
-  { value: 'yaml', label: 'YAML' },
-]
-```
-
-更多语言支持请参考 `highlight.js` [官方文档](https://highlightjs.org/)。
+支持 193 种语言，详情参考 `highlight.js` [官方文档](https://highlightjs.org/)。

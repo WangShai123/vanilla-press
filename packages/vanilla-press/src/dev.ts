@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 
 import { build as esbuildBuild } from 'esbuild'
 import { glob } from 'glob'
+import { WebSocket, WebSocketServer } from 'ws'
 
 import {
   buildComponentScripts,
@@ -13,6 +14,8 @@ import {
   buildRuntime,
   buildLayoutScripts,
   copyStaticAssets,
+  createRuntimeSidebarConfig,
+  loadDirectorySidebarItems,
   loadFooterScript,
   loadLastEditCache,
   loadLanguages,
@@ -42,6 +45,7 @@ import type {
   LoadedMarkdownComponent,
   ModuleScriptAsset,
   RenderedPage,
+  RuntimeSidebarConfig,
   RuntimeConfig,
   SharedVpScriptModule,
   SourcePage,
@@ -76,7 +80,7 @@ const defaultLayoutsDir = path.join(defaultProjectDir, 'layouts')
 const defaultComponentsDir = path.join(defaultProjectDir, 'components')
 const DEV_PREFIX = '/__vanilla_press_dev/'
 const CLIENT_SCRIPT = `${DEV_PREFIX}client.js`
-const EVENTS_PATH = `${DEV_PREFIX}events`
+const SOCKET_PATH = `${DEV_PREFIX}ws`
 
 export interface DevOptions extends BuildOptions {
   host?: string
@@ -131,6 +135,7 @@ interface DevState {
   languages: ReturnType<typeof resolveI18nData>
   menuItems: unknown[]
   sidebarItems: unknown[]
+  directorySidebarItems: RuntimeSidebarConfig['directories']
   llmsConfig: UnknownRecord
   robotsConfig: UnknownRecord
   layouts: LayoutMap
@@ -366,14 +371,43 @@ async function findStaticFile(
 }
 
 function reloadClientScript(): string {
-  return `const source = new EventSource(${JSON.stringify(EVENTS_PATH)});
-const close = () => source.close();
+  return `const path = ${JSON.stringify(SOCKET_PATH)};
+const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+const url = protocol + '//' + location.host + path;
+let socket;
+let retryTimer = 0;
+let closed = false;
+
+const close = () => {
+  closed = true;
+  if (retryTimer) clearTimeout(retryTimer);
+  if (socket && socket.readyState < 2) socket.close();
+};
+
+const connect = () => {
+  if (closed) return;
+  socket = new WebSocket(url);
+  socket.addEventListener('message', (event) => {
+    let message;
+    try {
+      message = JSON.parse(event.data);
+    } catch {
+      return;
+    }
+    if (message && message.type === 'reload') {
+      close();
+      location.reload();
+    }
+  });
+  socket.addEventListener('close', () => {
+    if (!closed) retryTimer = setTimeout(connect, 1000);
+  });
+  socket.addEventListener('error', () => {});
+};
+
 window.addEventListener('pagehide', close, { once: true });
 window.addEventListener('beforeunload', close, { once: true });
-source.addEventListener('reload', () => {
-  close();
-  location.reload();
-});
+connect();
 `
 }
 
@@ -430,11 +464,6 @@ async function serveStatic(
 }
 
 function createDevServer(outputDir: string) {
-  const clients = new Set<ServerResponse>()
-  const removeClient = (client: ServerResponse): void => {
-    clients.delete(client)
-  }
-
   const server = http.createServer((req, res) => {
     const url = new URL(req.url || '/', 'http://localhost')
 
@@ -447,43 +476,38 @@ function createDevServer(outputDir: string) {
       return
     }
 
-    if (url.pathname === EVENTS_PATH) {
-      res.writeHead(200, {
-        'Cache-Control': 'no-store',
-        Connection: 'keep-alive',
-        'Content-Type': 'text/event-stream',
-      })
-      res.write(': connected\n\n')
-      clients.add(res)
-      const cleanup = () => removeClient(res)
-      req.on('close', cleanup)
-      req.on('aborted', cleanup)
-      res.on('close', cleanup)
-      res.on('error', cleanup)
-      return
-    }
-
     serveStatic(outputDir, req, res).catch((error) => {
       console.error(error)
       send(res, 500, 'Internal server error')
     })
   })
+  const webSocketServer = new WebSocketServer({ server, path: SOCKET_PATH })
 
   return {
     server,
     reload() {
-      for (const client of clients) {
-        if (client.destroyed || client.writableEnded) {
-          clients.delete(client)
+      const message = JSON.stringify({ type: 'reload' })
+
+      for (const client of webSocketServer.clients) {
+        if (client.readyState !== WebSocket.OPEN) {
+          client.terminate()
           continue
         }
 
-        try {
-          client.write('event: reload\ndata: ok\n\n')
-        } catch {
-          clients.delete(client)
-        }
+        client.send(message)
       }
+    },
+    close(): Promise<void> {
+      for (const client of webSocketServer.clients) {
+        client.terminate()
+      }
+
+      return new Promise((resolve, reject) => {
+        webSocketServer.close((error) => {
+          if (error) reject(error)
+          else resolve()
+        })
+      })
     },
   }
 }
@@ -583,6 +607,9 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
   const sidebarItems = isSidebarEnabled(config)
     ? await loadSidebarItems(configDir)
     : []
+  const directorySidebarItems = isSidebarEnabled(config)
+    ? await loadDirectorySidebarItems(inputDir)
+    : []
   const llmsConfig = isLlmsEnabled(config)
     ? await loadLlmsConfig(configDir)
     : {}
@@ -607,6 +634,7 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
     languages,
     menuItems,
     sidebarItems,
+    directorySidebarItems,
     llmsConfig,
     robotsConfig,
     layouts,
@@ -636,6 +664,41 @@ async function writeLlmsIndex(state: DevState): Promise<string[]> {
   }
 
   return changed
+}
+
+async function refreshDevState(state: DevState): Promise<void> {
+  const config = await loadRuntimeConfig(state.configDir)
+  validateRuntimeConfig(config)
+
+  state.config = config
+  state.footerScript = await loadFooterScript(state.configDir)
+  state.customComponents = await loadCustomComponents(state.componentsDir)
+  state.md = createMarkdown(config, state.customComponents)
+  state.layouts = await loadLayouts({
+    packageRoot,
+    layoutsDir: state.layoutsDir,
+  })
+  state.languages = isI18nEnabled(config)
+    ? resolveI18nData(config, await loadLanguages(state.configDir))
+    : {}
+  state.menuItems = isMenuEnabled(config)
+    ? await loadMenuItems(state.configDir)
+    : []
+  state.sidebarItems = isSidebarEnabled(config)
+    ? await loadSidebarItems(state.configDir)
+    : []
+  state.directorySidebarItems = isSidebarEnabled(config)
+    ? await loadDirectorySidebarItems(state.inputDir)
+    : []
+  state.llmsConfig = isLlmsEnabled(config)
+    ? await loadLlmsConfig(state.configDir)
+    : {}
+  state.robotsConfig = isRobotsEnabled(config)
+    ? await loadRobotsConfig(state.configDir)
+    : {}
+  state.lastEditCache = buildOption(config, 'lastEdit')
+    ? await loadLastEditCache(state.cacheDir)
+    : {}
 }
 
 async function syncPageOutputs(
@@ -710,7 +773,10 @@ async function refreshGlobalOutputs(
       config: state.config,
       languages: state.languages,
       menuItems: state.menuItems,
-      sidebarItems: state.sidebarItems,
+      sidebarItems: createRuntimeSidebarConfig(
+        state.sidebarItems,
+        state.directorySidebarItems
+      ),
       sharedVpModules: sharedModules,
     })
     state.sharedVpModules = sharedModules
@@ -762,6 +828,7 @@ async function refreshGlobalOutputs(
 
 async function rebuildFull(state: DevState, reason: string): Promise<void> {
   console.warn(green(`Build Started: ${reason}`))
+  await refreshDevState(state)
 
   await fs.rm(state.outputDir, { force: true, recursive: true })
   await fs.mkdir(state.outputDir, { recursive: true })
@@ -829,7 +896,10 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
     config: state.config,
     languages: state.languages,
     menuItems: state.menuItems,
-    sidebarItems: state.sidebarItems,
+    sidebarItems: createRuntimeSidebarConfig(
+      state.sidebarItems,
+      state.directorySidebarItems
+    ),
     sharedVpModules: state.sharedVpModules,
   })
 
@@ -1155,6 +1225,7 @@ export async function dev({
 
   const close = async () => {
     await closeWatchers()
+    await devServer.close()
     await new Promise<void>((resolve) =>
       devServer.server.close(() => resolve())
     )

@@ -64,25 +64,25 @@ function renderMobileMenu(menuEnabled: boolean): string {
 
 function renderMobileSearch(searchEnabled: boolean): string {
   return searchEnabled
-    ? '<button class="vp-search-button vp-mobile-icon-button j-button is-ghost is-icon is-lg" type="button" data-vp-search hidden aria-label="搜索"></button>'
+    ? '<button class="vp-search-button vp-mobile-icon-button j-button is-ghost is-icon" type="button" data-vp-search hidden aria-label="搜索"></button>'
     : ''
 }
 
 function renderMobileLocale(i18nEnabled: boolean): string {
   return i18nEnabled
-    ? '<select class="vp-locale j-select is-lg" data-vp-locale aria-label="切换语言" id="vp-locale-mobile"></select>'
+    ? '<select class="vp-locale j-select" data-vp-locale aria-label="切换语言" id="vp-locale-mobile"></select>'
     : ''
 }
 
 function renderMobileTheme(themeEnabled: boolean): string {
   return themeEnabled
-    ? '<button class="vp-theme-button vp-mobile-icon-button j-button is-ghost is-icon is-lg" type="button" data-vp-theme hidden aria-label="主题"></button>'
+    ? '<button class="vp-theme-button vp-mobile-icon-button j-button is-ghost is-icon" type="button" data-vp-theme hidden aria-label="主题"></button>'
     : ''
 }
 
 function renderMobileAuth(authEnabled: boolean): string {
   return authEnabled
-    ? '<button class="vp-auth-button vp-mobile-icon-button j-button is-ghost is-icon is-lg" type="button" data-vp-auth hidden aria-label="登录"></button>'
+    ? '<button class="vp-auth-button vp-mobile-icon-button j-button is-ghost is-icon" type="button" data-vp-auth hidden aria-label="登录"></button>'
     : ''
 }
 
@@ -120,8 +120,8 @@ function renderMobileSecondary({
 }: Pick<ChromeOptions, 'sidebarEnabled' | 'tocEnabled'>): string {
   return sidebarEnabled || tocEnabled
     ? `<div class="vp-mobile-secondary" data-vp-mobile-secondary hidden>
-      ${sidebarEnabled ? '<button class="vp-mobile-secondary-button j-button is-ghost" type="button" data-vp-mobile-sidebar aria-label="打开文档导航"></button>' : ''}
-      ${tocEnabled ? '<button class="vp-mobile-secondary-button j-button is-ghost" type="button" data-vp-mobile-toc aria-label="打开页面目录"></button>' : ''}
+      ${sidebarEnabled ? '<button class="vp-mobile-secondary-button j-button is-ghost is-sm" type="button" data-vp-mobile-sidebar aria-label="打开文档导航"></button>' : ''}
+      ${tocEnabled ? '<button class="vp-mobile-secondary-button j-button is-ghost is-sm" type="button" data-vp-mobile-toc aria-label="打开页面目录"></button>' : ''}
     </div>`
     : ''
 }

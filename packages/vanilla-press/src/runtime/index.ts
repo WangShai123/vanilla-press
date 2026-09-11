@@ -11,6 +11,7 @@ import type {
   LanguagesConfig,
   NavItem,
   RuntimePage,
+  RuntimeSidebar,
   SearchSource,
 } from '../types.ts'
 import {
@@ -47,7 +48,7 @@ export interface RuntimeCustomComponent {
 export interface DocPageOptions {
   config?: RuntimeConfig
   menu?: NavItem[]
-  sidebar?: NavItem[]
+  sidebar?: RuntimeSidebar
   languages?: LanguagesConfig
   page?: RuntimePage
   search?: SearchSource
@@ -257,16 +258,57 @@ function syncViewportClasses(mobile: boolean): void {
   html.classList.toggle('desktop', !mobile)
 }
 
+function normalizeSidebarRel(value: unknown = ''): string {
+  return String(value)
+    .replace(/^\/+|\/+$/g, '')
+    .replace(/\/+/g, '/')
+}
+
+function pageIsInsideDir(page: RuntimePage = {}, dir: unknown): boolean {
+  const rel = normalizeSidebarRel(page.rel || 'index.html')
+  const base = normalizeSidebarRel(dir)
+  return Boolean(base) && rel.startsWith(`${base}/`)
+}
+
+function resolveSidebarItems(
+  sidebar: RuntimeSidebar | undefined,
+  page: RuntimePage = {}
+): NavItem[] {
+  if (Array.isArray(sidebar)) return sidebar
+
+  const globalItems = Array.isArray(sidebar?.items) ? sidebar.items : []
+  const directories = Array.isArray(sidebar?.directories)
+    ? sidebar.directories
+    : []
+  let selected: NavItem[] | null = null
+  let selectedLength = -1
+
+  for (const entry of directories) {
+    if (!Array.isArray(entry.items) || !pageIsInsideDir(page, entry.dir)) {
+      continue
+    }
+
+    const length = normalizeSidebarRel(entry.dir).length
+    if (length > selectedLength) {
+      selected = entry.items
+      selectedLength = length
+    }
+  }
+
+  return selected || globalItems
+}
+
 export function initDocPage(options: DocPageOptions = {}): void {
   const componentRegistry = createComponentRegistry(options.customComponents)
   const components = normalizeComponents(options.components, componentRegistry)
   const mobile = isMobile()
+  const sidebarItems = resolveSidebarItems(options.sidebar, options.page)
   syncViewportClasses(mobile)
 
   const chrome = initDocChrome(
     options.config,
     options.menu,
-    options.sidebar,
+    sidebarItems,
     options.languages,
     options.page,
     mobile
@@ -297,7 +339,7 @@ export function initDocPage(options: DocPageOptions = {}): void {
   if (mobile) {
     if (isSidebarEnabled(options.config) || isTocEnabled(options.config)) {
       initMobileSecondary(
-        options.sidebar,
+        sidebarItems,
         options.page,
         chrome.i18n,
         chrome.locale,
@@ -311,7 +353,7 @@ export function initDocPage(options: DocPageOptions = {}): void {
   if (isPrevNextEnabled(options.config)) {
     initPrevNext(
       options.config,
-      options.sidebar,
+      sidebarItems,
       options.page,
       chrome.i18n,
       chrome.locale

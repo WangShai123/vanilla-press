@@ -89,9 +89,7 @@ export function isSearchEnabled(config: RuntimeConfig = {}): boolean {
 }
 
 export function isHighlightEnabled(config: RuntimeConfig = {}): boolean {
-  const highlight = browserOption(config, 'highlight')
-  if (highlight === false) return false
-  return featureObject(highlight).enabled !== false
+  return browserOption(config, 'highlight') !== false
 }
 
 export function isExternalLinkEnabled(config: RuntimeConfig = {}): boolean {

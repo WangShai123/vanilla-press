@@ -43,8 +43,12 @@ export function renderHead({
 
   return `<head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="generator" content="vanilla-press">
+  <meta name="vanilla-press-homepage" content="https://app.jealer.com/vanilla-press/">
   <title>${escapeHtml(title)}</title>
   ${seoMeta ? `${seoMeta}\n` : ''}
   <script>${MOBILE_CLASS_BOOT_SCRIPT}

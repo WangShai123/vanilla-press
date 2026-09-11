@@ -1,12 +1,3 @@
-import DEFAULT_HIGHLIGHT_LANGUAGES from './highlight.ts'
-
-const DEFAULT_HIGHLIGHT_LANGUAGES_TS = `[
-${DEFAULT_HIGHLIGHT_LANGUAGES.map(
-  ({ value, label }, index) =>
-    `        { value: ${JSON.stringify(value)}, label: ${JSON.stringify(label)} }${index === DEFAULT_HIGHLIGHT_LANGUAGES.length - 1 ? '' : ','}`
-).join('\n')}
-      ]`
-
 export const DEFAULT_CONFIG_TS = `import type { RuntimeConfig } from 'vanilla-press';
 
 export default {
@@ -43,10 +34,7 @@ export default {
     seo: true,
     search: true,
     externalLink: true,
-    highlight: {
-      enabled: true,
-      languages: ${DEFAULT_HIGHLIGHT_LANGUAGES_TS}
-    },
+    highlight: true,
     menu: true,
     sidebar: true,
     toc: true,

@@ -172,19 +172,15 @@ a[data-vp-external-link] span.external-link svg {
   --tab-fg: var(--ui-fg-muted);
 }
 
-.j-tabs .panel-list .panel-item>*,
-.j-tabs .panel-list .panel-item p {
-  margin-block: 1rem;
+.j-tabs .panel-list .panel-item>*+* {
+  margin-top: 12px;
 }
 
 .j-tabs .panel-list .panel-item>*:first-child {
   margin-top: 0;
 }
 
-.j-tabs .panel-list .panel-item>*:last-child {
-  margin-bottom: 0;
-}
-
+.j-tabs .panel-list .panel-item>*:last-child,
 .j-tabs .panel-item details[open]>*:last-child {
   margin-bottom: 0;
 }
@@ -213,14 +209,6 @@ a[data-vp-external-link] span.external-link svg {
 .j-tip .tip-content {
   display: block;
   justify-items: unset;
-}
-
-.j-tip .tip-content>*:first-child {
-  margin-top: 0 !important;
-}
-
-.j-tip .tip-content>*:last-child {
-  margin-bottom: 0 !important;
 }
 
 /* group */

@@ -16,7 +16,7 @@ export default {
 
 ## 配置
 
-在 `vp/config/sidebar.ts` 中，按需配置站点的侧边栏数据。
+在 `vp/config/sidebar.ts` 中，按需配置站点的全局侧边栏数据。
 
 - `label`: 侧边栏项的国际化语言包的 key
 - `path`: 侧边栏项的页面路径，不需要写 `.html`
@@ -38,6 +38,23 @@ export default [
   },
 ]
 ```
+
+## 目录级侧边栏
+
+从 `1.5.0` 开始，`docs/` 下的子目录可以新增自己的 `sidebar.ts` 或 `sidebar.js`，用于覆盖该目录下所有页面的全局侧边栏。
+
+例如 `docs/components/sidebar.ts` 会作用于 `docs/components/**` 下的页面，且格式与 `vp/config/sidebar.ts` 完全一致：
+
+```ts
+import type { SidebarConfig } from 'vanilla-press'
+
+export default [
+  { label: 'components.overview', path: 'components/index' },
+  { label: 'components.button', path: 'components/button' },
+] satisfies SidebarConfig
+```
+
+如果多个目录级侧边栏同时匹配当前页面，会使用最靠近当前页面的那一份配置。目录级侧边栏命中后，不会再渲染全局侧边栏。
 
 ## 初始化
 
