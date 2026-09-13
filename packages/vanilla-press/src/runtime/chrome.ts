@@ -46,7 +46,13 @@ function renderFooter(
 
   const siteName = normalizeSiteName(config)
   const year = new Date().getFullYear()
-  const brand = jsx('div', { children: `${siteName} © ${year}` })
+  const icpConfig = buildOption(config, 'icp')
+  const icp = jsx('div', {
+    children: jsx`<a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer noopener">${icpConfig}</a>`,
+  })
+  const brand = jsx('div', {
+    children: jsx`<a href="${config.siteUrl}">${siteName}</a> © ${year}`,
+  })
   const social = jsx('div', { className: 'footer-social' })
   const socialValue = buildOption(config, 'social')
   const socialConfig = isPlainObject(socialValue)
@@ -72,17 +78,22 @@ function renderFooter(
 
   const builtBy = jsx('div', {
     children: [
-      'Powered by ',
+      'BuiltBy ',
       jsx('a', {
         href: 'https://app.jealer.com/vanilla-press/',
         target: '_blank',
-        rel: 'noreferrer noopener',
+        title: 'VanillaPress',
         children: 'VanillaPress',
       }),
     ],
   })
 
-  footer.append(brand, social, builtBy)
+  const footInfo = jsx('div', {
+    className: 'footer-info',
+    children: [brand, icpConfig ? icp : null, builtBy],
+  })
+
+  footer.append(footInfo, social)
 }
 
 export function initDocChrome(

@@ -1,41 +1,31 @@
 .vp-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 4px;
-  flex-wrap: wrap;
   padding: 12px 20px;
   border-top: 1px solid var(--vp-line);
   color: var(--vp-muted);
   background: var(--vp-panel-overlay);
   font-size: var(--font-size-sm);
-}
-
-.mobile .vp-footer {
-  justify-content: flex-start;
-}
-
-.vp-footer > div {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 4px;
 }
 
+.vp-footer .footer-info,
+.vp-footer .footer-social {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mobile .footer-info {
+  justify-content: flex-start;
+}
+
+
+
 .vp-footer a {
   color: inherit;
-}
-
-.vp-footer .footer-social {
-  gap: 8px;
-}
-
-.vp-footer .footer-social a {
   text-decoration: none;
-}
-
-.vp-footer .footer-social a:hover {
-  color: var(--vp-accent);
-  border-color: var(--vp-accent);
-  background: var(--vp-accent-bg);
 }
 
 .vp-footer .footer-social .el-icon {

@@ -30,6 +30,7 @@ export default {
       text: 'editor.lastUpdated',
       utc: true,
     },
+    icp: '',
   },
   browser: {
     editorSize: 'sm',

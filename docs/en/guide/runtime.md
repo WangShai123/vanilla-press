@@ -43,6 +43,7 @@ The default export in `vp/config/runtime.ts` describes three layers:
 | `build.lastEdit.text`    | string \| object     | `editor.lastUpdated`                                                | Default text for last edit time. Defaults to `editor.lastUpdated` in `languages.ts`.      |
 | `build.lastEdit.format`  | string               | `yyyy-MM-dd HH:mm:ss`                                               | Default last edit time format. Defaults to `yyyy-MM-dd HH:mm:ss`.                         |
 | `build.lastEdit.utc`     | boolean              | true                                                                | Whether to append the current build timezone label, such as `UTC+8`.                      |
+| `icp` | string | "" | ICP number, not built if not configured |
 
 ### runtime
 
@@ -114,6 +115,7 @@ export default {
       format: 'yyyy-MM-dd HH:mm:ss',
       utc: true,
     },
+    icp: '',
   },
   browser: {
     editorSize: 'sm',

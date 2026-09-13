@@ -45,6 +45,7 @@
 | `build.lastEdit.text`    | string \| object     | `editor.lastUpdated`                                                | 最后更新时间文案，默认使用 `editor.lastUpdated` 多语言文本。                           |
 | `build.lastEdit.format`  | string               | `yyyy-MM-dd HH:mm:ss`                                               | 最后更新时间格式，默认使用 `yyyy-MM-dd HH:mm:ss` 格式。                                |
 | `build.lastEdit.utc`     | boolean              | true                                                                | 是否在时间后追加当前构建环境的 UTC 标记，如 `UTC+8`。                                  |
+| `icp` | string | "" | ICP 备案号，未配置时不构建 |
 
 ### runtime
 
@@ -116,6 +117,7 @@ export default {
       format: 'yyyy-MM-dd HH:mm:ss',
       utc: true,
     },
+    icp: '',
   },
   browser: {
     editorSize: 'sm',
