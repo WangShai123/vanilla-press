@@ -3,6 +3,21 @@
   margin-block: 1.25rem;
 }
 
+.dark .shiki,
+.dark .shiki code span {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+
+  html:not(.light) .shiki,
+  html:not(.light) .shiki span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+  }
+}
+
 /* title */
 .vp-content h1,
 .vp-content h2,

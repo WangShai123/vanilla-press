@@ -6,37 +6,34 @@
 .vp-main {
   width: 100%;
   min-width: 0;
-  padding: 36px 56px;
   display: flex;
   margin-left: 240px;
+  padding: 48px 56px 24px;
 }
 
 .vp-main.has-aside {
   gap: 36px;
 }
 
-.vp-main.has-aside > .j-editor {
+.vp-main.has-aside>.j-editor {
   grid-column: 1;
   grid-row: 1;
 }
 
 .vp-main .vp-content {
-  flex: 1;
+  flex: 5 1 0;
   min-width: 0;
 }
 
 .vp-content-wrap {
-  border: 1px solid var(--vp-line);
-  border-radius: var(--radius-md);
   background: var(--vp-panel);
-  padding: 36px;
+  border-radius: var(--radius-md);
 }
 
 .vp-main .j-editor {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  /* margin: 0 0 0 auto; */
 }
 
 html.j-radius-round .vp-main .vp-content {

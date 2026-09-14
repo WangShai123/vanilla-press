@@ -2,6 +2,15 @@
 
 ## 1.5.x
 
+#### 1.5.2
+
+- feat: Code highlighting replaced from `highlight.js` to `shiki`.
+- fix: Removed default template `footer`.
+
+#### 1.5.1
+
+- fix: Fixed toc and other related style issues.
+
 #### 1.5.0
 
 - feat: Reworked the dev server auto-refresh channel to use WebSocket via `ws`.

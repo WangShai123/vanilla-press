@@ -13,6 +13,10 @@ export default {
     vpScript: {
       shared: []
     },
+    highlight: {
+      light: "github-light-default",
+      dark: "github-dark-default"
+    },
     llms: {
       enabled: true,
       link: true,
@@ -34,7 +38,6 @@ export default {
     seo: true,
     search: true,
     externalLink: true,
-    highlight: true,
     menu: true,
     sidebar: true,
     toc: true,

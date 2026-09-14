@@ -90,7 +90,6 @@ export interface RuntimeVpScriptConfig extends UnknownRecord {
 export interface BrowserRuntimeConfig extends UnknownRecord {
   seo?: RuntimeFeatureSwitch
   externalLink?: RuntimeFeatureSwitch
-  highlight?: boolean
   menu?: RuntimeFeatureSwitch
   sidebar?: RuntimeFeatureSwitch
   toc?: boolean | RuntimeTocConfig
@@ -113,10 +112,16 @@ export interface RuntimeLastEditConfig extends UnknownRecord {
   utc?: boolean
 }
 
+export interface RuntimeHighlightConfig extends UnknownRecord {
+  light?: string
+  dark?: string
+}
+
 export interface BuildRuntimeConfig extends UnknownRecord {
   social?: UnknownRecord
   sitemap?: RuntimeFeatureSwitch
   robots?: RuntimeFeatureSwitch
+  highlight?: RuntimeHighlightConfig
   llms?: boolean | RuntimeLlmsFeatureConfig
   footerScript?: FooterScriptType
   vpScript?: RuntimeVpScriptConfig

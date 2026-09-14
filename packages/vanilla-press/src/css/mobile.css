@@ -17,13 +17,10 @@
 
   .vp-main {
     display: block;
-    padding: 18px;
+    padding: 24px 20px;
     margin-left: 0;
   }
 
-  .vp-content-wrap {
-    padding: 18px;
-  }
 
   .vp-aside,
   .vp-sidebar {
@@ -47,15 +44,6 @@
   min-height: auto;
 }
 
-.mobile .vp-main {
-  display: block;
-  margin-left: 0;
-}
-
-.mobile .vp-main .vp-content-wrap {
-  border: 0;
-  padding: 14px 0 0;
-}
 
 .mobile .vp-prev-next {
   flex-direction: column;

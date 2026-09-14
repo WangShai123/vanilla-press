@@ -1,6 +1,6 @@
 # Highlight
 
-Highlight is powered by `highlight.js` and supports multiple languages.
+Highlight is powered by `Shiki` and prerendered to static HTML during build.
 
 ## Example
 
@@ -40,18 +40,25 @@ class Test
 
 ## Runtime
 
-In `vp/config/runtime.ts`, configure whether code highlighting is enabled.
+Code highlighting is enabled by default and only runs during build.
+
+Light mode uses the `GitHub Light Default` theme, and dark mode uses the `GitHub Dark Default` theme.
+
+Customize themes with `build.highlight` in `vp/config/runtime.ts`:
 
 ```ts
 export default {
-  browser: {
-    highlight: true,
+  build: {
+    highlight: {
+      light: 'github-light-default',
+      dark: 'github-dark-default',
+    },
   },
 }
 ```
 
-`highlight` defaults to `true`. Set it to `false` to disable code highlighting.
+If `light` or `dark` is missing, does not exist, or fails to load, the default theme is used.
 
-## Supported Languages
+## Supported Themes
 
-193 languages are supported. See the `highlight.js` [official documentation](https://highlightjs.org/) for details.
+Shiki provides dozens of themes. See the `Shiki` [official documentation](https://shiki.style/themes) for details.

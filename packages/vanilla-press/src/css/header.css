@@ -3,8 +3,7 @@
   top: 0;
   z-index: 20;
   min-height: var(--vp-header-height);
-  border-bottom: 1px solid var(--vp-line);
-  background: var(--vp-panel-overlay);
+  background: var(--ui-bg);
   backdrop-filter: blur(2px);
 }
 
@@ -126,13 +125,21 @@
 .vp-mobile-menu-panel,
 .vp-mobile-sidebar-panel,
 .vp-mobile-toc-panel {
-  min-width: min(78vw, 320px);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 100%;
   padding: 16px;
-  height: 100%;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
 .vp-mobile-menu-panel .j-menu[data-menu-type='mobile'] {
-  height: 100%;
+  min-height: 100%;
+  min-height: 100vh;
   --sub-menu-box-shadow: none;
   padding-bottom: 48px;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }

@@ -32,6 +32,9 @@
 | `build.robots`           | boolean              | true                                                                | 是否在 `dist/` 中输出 `robots.txt`，设置为 `false` 时关闭                              |
 | `build.footerScript`     | "script" \| "module" | "script"                                                            | 页脚脚本标签类型；脚本内容来自 `vp/config/footerScript.ts`                             |
 | `build.vpScript.shared`  | array                | []                                                                  | 额外打包进 `runtime.js` 的 npm 依赖，供页面 `vp-script` 模块复用                       |
+| `build.highlight`        | object               | -                                                                   | 代码高亮主题配置，配置缺失或主题加载失败时使用默认值                                   |
+| `build.highlight.light`  | string               | "github-light-default"                                              | 浅色模式 Shiki 主题                                                                    |
+| `build.highlight.dark`   | string               | "github-dark-default"                                               | 深色模式 Shiki 主题                                                                    |
 | `build.llms`             | boolean \| object    | true                                                                | 是否在 `dist/` 中输出 `llms.txt`、每个页面对应的 Markdown 路由和页面 Markdown 操作入口 |
 | `build.llms.enabled`     | boolean              | true                                                                | 是否启用 LLMs 功能，设置为 `false` 时关闭                                              |
 | `build.llms.link`        | boolean              | true                                                                | 是否在正文标题下输出“查看 Markdown”按钮                                                |
@@ -45,7 +48,7 @@
 | `build.lastEdit.text`    | string \| object     | `editor.lastUpdated`                                                | 最后更新时间文案，默认使用 `editor.lastUpdated` 多语言文本。                           |
 | `build.lastEdit.format`  | string               | `yyyy-MM-dd HH:mm:ss`                                               | 最后更新时间格式，默认使用 `yyyy-MM-dd HH:mm:ss` 格式。                                |
 | `build.lastEdit.utc`     | boolean              | true                                                                | 是否在时间后追加当前构建环境的 UTC 标记，如 `UTC+8`。                                  |
-| `icp` | string | "" | ICP 备案号，未配置时不构建 |
+| `icp`                    | string               | ""                                                                  | ICP 备案号，未配置时不构建                                                             |
 
 ### runtime
 
@@ -56,7 +59,6 @@
 | `browser.seo`                       | boolean           | true           | 是否启用 SEO 功能，设置为 `false` 时关闭                                                                       |
 | `browser.search`                    | boolean           | true           | 是否启用搜索功能，设置为 `false` 时关闭                                                                        |
 | `browser.externalLink`              | boolean           | true           | 是否增强正文、菜单、侧边栏区域的站外链接，设置为 `false` 时关闭                                                |
-| `browser.highlight`                 | boolean           | true           | 是否启用代码高亮，设置为 `false` 时关闭                                                                        |
 | `browser.menu`                      | boolean           | true           | 是否启用顶部主菜单，设置为 `false` 时关闭                                                                      |
 | `browser.sidebar`                   | boolean           | true           | 是否启用侧边栏，设置为 `false` 时关闭                                                                          |
 | `browser.toc`                       | boolean \| object | true           | 是否启用页面目录                                                                                               |
@@ -100,6 +102,10 @@ export default {
     vpScript: {
       shared: [],
     },
+    highlight: {
+      light: 'github-light-default',
+      dark: 'github-dark-default',
+    },
     llms: {
       enabled: true,
       link: true,
@@ -124,7 +130,6 @@ export default {
     seo: true,
     search: true,
     externalLink: true,
-    highlight: true,
     menu: true,
     sidebar: true,
     toc: true,

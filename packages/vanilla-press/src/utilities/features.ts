@@ -88,10 +88,6 @@ export function isSearchEnabled(config: RuntimeConfig = {}): boolean {
   return browserOption(config, 'search') !== false
 }
 
-export function isHighlightEnabled(config: RuntimeConfig = {}): boolean {
-  return browserOption(config, 'highlight') !== false
-}
-
 export function isExternalLinkEnabled(config: RuntimeConfig = {}): boolean {
   return browserOption(config, 'externalLink') !== false
 }

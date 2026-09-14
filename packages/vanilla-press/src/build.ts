@@ -124,7 +124,7 @@ interface SearchIndexItem {
   content: string
 }
 
-type MarkdownItInstance = ReturnType<typeof createMarkdown>
+type MarkdownItInstance = Awaited<ReturnType<typeof createMarkdown>>
 
 const SHARED_VP_SCRIPT_MODULES = [
   'vanilla-jui',
@@ -1383,7 +1383,7 @@ export async function build({
   validateRuntimeConfig(config)
   const footerScript = await loadFooterScript(configDir)
   const customComponents = await loadCustomComponents(componentsDir)
-  const md = createMarkdown(config, customComponents)
+  const md = await createMarkdown(config, customComponents)
   const layouts = await loadLayouts({ packageRoot, layoutsDir })
   const lastEditCache = buildOption(config, 'lastEdit')
     ? await loadLastEditCache(resolvedCacheDir)

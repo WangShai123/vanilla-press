@@ -1,7 +1,8 @@
 .vp-sidebar {
-  padding: 24px 18px;
+  padding: 0 18px;
+  margin-top: 24px;
+  margin-bottom: 24px;
   background: var(--vp-panel);
-  border-right: 1px solid var(--vp-line);
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--ui-border-subtle) transparent;
@@ -73,7 +74,6 @@
 
 .vp-nav-children {
   display: grid;
-  /* gap: 4px; */
   gap: 2px;
   margin-left: 10px;
   padding-left: 10px;

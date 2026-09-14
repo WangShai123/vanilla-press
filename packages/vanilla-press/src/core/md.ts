@@ -11,20 +11,11 @@ import { installOffcanvas } from '../components/offcanvas.ts'
 import { installTabs } from '../components/tabs.ts'
 import { installTip } from '../components/tip.ts'
 import { installTree } from '../components/tree.ts'
-import { createHighlighter } from '../runtime/highlight.ts'
 import { installVpScript } from '../runtime/vpScript.ts'
 import type { RuntimeConfig, LoadedMarkdownComponent } from '../types.ts'
-import { isHighlightEnabled } from '../utilities/features.ts'
 import { escapeHtml } from '../utilities/html.ts'
 import { markComponent } from '../utilities/markdown.ts'
-
-type MarkdownHighlighter = (code: string, lang: string, attrs: string) => string
-
-function renderPlainCode(code: string, lang: string): string {
-  const language = String(lang || '').trim()
-  const suffix = language ? ` class="language-${language}"` : ''
-  return `<pre><code${suffix}>${escapeHtml(code)}</code></pre>`
-}
+import { installCodeHighlight } from './highlight.ts'
 
 function installCustomComponents(
   md: MarkdownItType,
@@ -39,20 +30,17 @@ function installCustomComponents(
   }
 }
 
-export function createMarkdown(
+export async function createMarkdown(
   config: RuntimeConfig = {},
   components: LoadedMarkdownComponent[] = []
-): MarkdownItType {
-  const highlighter: MarkdownHighlighter = isHighlightEnabled(config)
-    ? (createHighlighter() as MarkdownHighlighter)
-    : renderPlainCode
+): Promise<MarkdownItType> {
   const md = new MarkdownIt({
     html: true,
     linkify: true,
     typographer: true,
-    highlight: highlighter,
   })
 
+  await installCodeHighlight(md, config)
   md.use(frontMatter, () => {})
   md.use(attrs)
   md.use(anchor, {
@@ -71,7 +59,3 @@ export function createMarkdown(
 
   return md
 }
-
-const md = createMarkdown()
-
-export default md

@@ -19,6 +19,7 @@ export function initToc(config: RuntimeConfig = {}): void {
     target: article,
     headings,
     offset,
+    title: true,
   })
   instance.mount(toc)
   toc.dataset.vpReady = 'true'

@@ -141,7 +141,7 @@ interface DevState {
   robotsConfig: UnknownRecord
   layouts: LayoutMap
   customComponents: LoadedMarkdownComponent[]
-  md: ReturnType<typeof createMarkdown>
+  md: Awaited<ReturnType<typeof createMarkdown>>
   lastEditCache: LastEditCache
   sourcesByFile: Map<string, SourcePage>
   pagesByFile: Map<string, RenderedPage>
@@ -599,7 +599,7 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
   validateRuntimeConfig(config)
   const footerScript = await loadFooterScript(configDir)
   const customComponents = await loadCustomComponents(componentsDir)
-  const md = createMarkdown(config, customComponents)
+  const md = await createMarkdown(config, customComponents)
   const layouts = await loadLayouts({ packageRoot, layoutsDir })
   const languages = isI18nEnabled(config)
     ? resolveI18nData(config, await loadLanguages(configDir))
@@ -674,7 +674,7 @@ async function refreshDevState(state: DevState): Promise<void> {
   state.config = config
   state.footerScript = await loadFooterScript(state.configDir)
   state.customComponents = await loadCustomComponents(state.componentsDir)
-  state.md = createMarkdown(config, state.customComponents)
+  state.md = await createMarkdown(config, state.customComponents)
   state.layouts = await loadLayouts({
     packageRoot,
     layoutsDir: state.layoutsDir,

@@ -30,6 +30,9 @@ The default export in `vp/config/runtime.ts` describes three layers:
 | `build.robots`           | boolean              | true                                                                | Whether to output `robots.txt` into `dist/`. Set to `false` to disable it.                |
 | `build.footerScript`     | "script" \| "module" | "script"                                                            | Footer script tag type. The script content comes from `vp/config/footerScript.ts`.        |
 | `build.vpScript.shared`  | array                | []                                                                  | Extra npm dependencies to bundle into `runtime.js` for reuse by page `vp-script` modules. |
+| `build.highlight`        | object               | -                                                                   | Code highlight theme configuration. Missing or failed themes fall back to defaults.       |
+| `build.highlight.light`  | string               | "github-light-default"                                              | Shiki theme used in light mode.                                                           |
+| `build.highlight.dark`   | string               | "github-dark-default"                                               | Shiki theme used in dark mode.                                                            |
 | `build.llms`             | boolean \| object    | true                                                                | Whether to output `llms.txt`, per-page Markdown routes, and page Markdown actions.        |
 | `build.llms.enabled`     | boolean              | true                                                                | Whether to enable LLMs. Set to `false` to disable it.                                     |
 | `build.llms.link`        | boolean              | true                                                                | Whether to render the "View Markdown" button below the content title.                     |
@@ -43,7 +46,7 @@ The default export in `vp/config/runtime.ts` describes three layers:
 | `build.lastEdit.text`    | string \| object     | `editor.lastUpdated`                                                | Default text for last edit time. Defaults to `editor.lastUpdated` in `languages.ts`.      |
 | `build.lastEdit.format`  | string               | `yyyy-MM-dd HH:mm:ss`                                               | Default last edit time format. Defaults to `yyyy-MM-dd HH:mm:ss`.                         |
 | `build.lastEdit.utc`     | boolean              | true                                                                | Whether to append the current build timezone label, such as `UTC+8`.                      |
-| `icp` | string | "" | ICP number, not built if not configured |
+| `icp`                    | string               | ""                                                                  | ICP number, not built if not configured                                                   |
 
 ### runtime
 
@@ -54,7 +57,6 @@ The default export in `vp/config/runtime.ts` describes three layers:
 | `browser.seo`                       | boolean           | true           | Whether to enable SEO. Set to `false` to disable it.                                                                                         |
 | `browser.search`                    | boolean           | true           | Whether to enable search. Set to `false` to disable it.                                                                                      |
 | `browser.externalLink`              | boolean           | true           | Whether to enhance external links in content, menu, and sidebar areas. Set to `false` to disable it.                                         |
-| `browser.highlight`                 | boolean           | true           | Whether to enable code highlighting. Set to `false` to disable it.                                                                           |
 | `browser.menu`                      | boolean           | true           | Whether to enable the top menu. Set to `false` to disable it.                                                                                |
 | `browser.sidebar`                   | boolean           | true           | Whether to enable the sidebar. Set to `false` to disable it.                                                                                 |
 | `browser.toc`                       | boolean \| object | true           | Whether to enable the page table of contents.                                                                                                |
@@ -98,6 +100,10 @@ export default {
     vpScript: {
       shared: [],
     },
+    highlight: {
+      light: 'github-light-default',
+      dark: 'github-dark-default',
+    },
     llms: {
       enabled: true,
       link: true,
@@ -122,7 +128,6 @@ export default {
     seo: true,
     search: true,
     externalLink: true,
-    highlight: true,
     menu: true,
     sidebar: true,
     toc: true,

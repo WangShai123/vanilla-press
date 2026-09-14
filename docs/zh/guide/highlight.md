@@ -1,6 +1,6 @@
 # 代码高亮
 
-基于 `highlight.js` 的代码高亮，支持多种语言。
+基于 `Shiki` 的代码高亮，构建时预渲染为静态 HTML。
 
 ## 示例
 
@@ -40,18 +40,25 @@ class Test
 
 ## 运行时
 
-在 `vp/config/runtime.ts` 中，按需配置是否启用代码高亮功能。
+代码高亮是默认构建功能，仅在构建阶段运行。
+
+浅色模式使用 `GitHub Light Default` 主题，深色模式使用 `GitHub Dark Default` 主题。
+
+可通过 `vp/config/runtime.ts` 的 `build.highlight` 自定义主题：
 
 ```ts
 export default {
-  browser: {
-    highlight: true,
+  build: {
+    highlight: {
+      light: 'github-light-default',
+      dark: 'github-dark-default',
+    },
   },
 }
 ```
 
-`highlight` 默认为 `true`。设置为 `false` 时，会关闭代码高亮。
+`light` 或 `dark` 缺失、主题不存在或加载失败时，会使用默认主题。
 
-## 支持语言
+## 支持主题
 
-支持 193 种语言，详情参考 `highlight.js` [官方文档](https://highlightjs.org/)。
+Shiki 提供了数十种主题，详情参考 `Shiki` [官方文档](https://shiki.style/themes)。
