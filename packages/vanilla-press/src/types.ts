@@ -287,6 +287,10 @@ export interface PageLayout {
 export interface ChromeOptions {
   rel: string
   brandHref: string
+  config: RuntimeConfig
+  languages: LanguagesConfig
+  menuItems: NavItem[]
+  page: RuntimePage
   menuEnabled: boolean
   searchEnabled: boolean
   i18nEnabled: boolean

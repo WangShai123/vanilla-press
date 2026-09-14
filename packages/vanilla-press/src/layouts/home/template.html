@@ -20,7 +20,7 @@
       data-reveal="3"
       aria-label="{{ layout.quickStart.title }}"
     >
-      <div class="vp-home-code-card">
+      <div>
         <div class="vp-home-code-head">
           <span class="vp-home-code-dots" aria-hidden="true"></span>
           <span>{{ layout.quickStart.title }}</span>
@@ -66,4 +66,4 @@
 
   <section class="vp-home-content j-editor is-sm">{{{ content }}}</section>
 </main>
-<footer class="vp-footer" data-vp-footer></footer>
+<footer class="vp-footer" data-vp-footer>{{{ slots.footer }}}</footer>

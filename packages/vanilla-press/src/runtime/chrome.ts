@@ -1,5 +1,4 @@
-import { all, icon, isPlainObject, q } from 'vanilla-jui'
-import { jsx } from 'vanilla-signal'
+import { q } from 'vanilla-jui'
 
 import type {
   RuntimeConfig,
@@ -8,16 +7,12 @@ import type {
   LocaleEntry,
   NavItem,
   RuntimePage,
-  UnknownRecord,
 } from '../types.ts'
 import {
   isI18nEnabled,
   isMenuEnabled,
   isSidebarEnabled,
-  buildOption,
 } from '../utilities/features.ts'
-import { normalizeSiteName } from '../utilities/page.ts'
-import { toText } from '../utilities/string.ts'
 import { initAuth } from './auth.ts'
 import { createDocI18n, currentLocale } from './i18n.ts'
 import { initLocale, maybeRedirectToDefaultLocale } from './locale.ts'
@@ -35,66 +30,6 @@ type DocChromeState =
       locale: LocaleEntry | null
       redirected: false
     }
-
-function renderFooter(
-  footer: HTMLElement | null,
-  config: RuntimeConfig = {}
-): void {
-  if (!footer) return
-
-  footer.textContent = ''
-
-  const siteName = normalizeSiteName(config)
-  const year = new Date().getFullYear()
-  const icpConfig = buildOption(config, 'icp')
-  const icp = jsx('div', {
-    children: jsx`<a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer noopener">${icpConfig}</a>`,
-  })
-  const brand = jsx('div', {
-    children: jsx`<a href="${config.siteUrl}">${siteName}</a> © ${year}`,
-  })
-  const social = jsx('div', { className: 'footer-social' })
-  const socialValue = buildOption(config, 'social')
-  const socialConfig = isPlainObject(socialValue)
-    ? (socialValue as UnknownRecord)
-    : {}
-
-  Object.entries(socialConfig).forEach(([name, href]) => {
-    const url = toText(href).trim()
-    if (!url) return
-
-    social.append(
-      jsx('a', {
-        href: url,
-        className: 'j-button is-icon is-sm is-ghost',
-        target: '_blank',
-        rel: 'noreferrer noopener',
-        'aria-label': name,
-        title: name,
-        children: icon(name, { className: 'el-icon' }),
-      })
-    )
-  })
-
-  const builtBy = jsx('div', {
-    children: [
-      'BuiltBy ',
-      jsx('a', {
-        href: 'https://app.jealer.com/vanilla-press/',
-        target: '_blank',
-        title: 'VanillaPress',
-        children: 'VanillaPress',
-      }),
-    ],
-  })
-
-  const footInfo = jsx('div', {
-    className: 'footer-info',
-    children: [brand, icpConfig ? icp : null, builtBy],
-  })
-
-  footer.append(footInfo, social)
-}
 
 export function initDocChrome(
   config: RuntimeConfig = {},
@@ -116,14 +51,6 @@ export function initDocChrome(
   const mobileHeader = q<HTMLElement>('[data-vp-mobile-header]')
   if (desktopHeader) desktopHeader.hidden = mobile
   if (mobileHeader) mobileHeader.hidden = !mobile
-  const siteName = normalizeSiteName(config)
-
-  all<HTMLElement>('[data-vp-brand]').forEach((brand) => {
-    brand.textContent = siteName
-  })
-
-  const footer = q<HTMLElement>('[data-vp-footer]')
-  renderFooter(footer, config)
 
   const asideCustom = q<HTMLElement>('[data-vp-aside-custom]')
   if (asideCustom && config.aside?.html) {

@@ -167,6 +167,12 @@ export function initHeaderMenu(
   const nav = q<HTMLElement>('.vp-menu[data-vp-menu]')
   if (!nav || nav.dataset.vpReady === 'true') return
 
+  if (nav.querySelector('.menu')) {
+    nav.classList.add('j-menu')
+    nav.dataset.vpReady = 'true'
+    return
+  }
+
   nav.classList.add('j-menu')
   createEffect(() => {
     nav.textContent = ''
