@@ -20,6 +20,7 @@ import {
   isTocEnabled,
 } from '../utilities/features.ts'
 import { initDocChrome } from './chrome.ts'
+import { initCodeBlock } from './code-block.ts'
 import { initEditorSize } from './editor-size.ts'
 import { initLlms } from './llms.ts'
 import { initMobileSecondary } from './menu.ts'
@@ -69,6 +70,10 @@ const builtinComponentRegistry: Record<string, ComponentRegistryEntry> = {
   },
   tip: {
     init: initTip,
+    dependsOn: [],
+  },
+  'code-block': {
+    init: initCodeBlock,
     dependsOn: [],
   },
 }

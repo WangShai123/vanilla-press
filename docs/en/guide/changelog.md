@@ -2,6 +2,10 @@
 
 ## 1.5.x
 
+#### 1.5.9
+
+- feat: Added code copy feature.
+
 #### 1.5.8
 
 - feat: Code highlighting now supports line highlights, focus, diff, warnings/errors, and line numbers.

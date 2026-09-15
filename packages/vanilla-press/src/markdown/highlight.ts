@@ -15,6 +15,7 @@ import {
 import type { RuntimeConfig } from '../types.ts'
 import { isRecord } from '../types.ts'
 import { serverOption } from '../utilities/features.ts'
+import { markComponent } from '../utilities/markdown.ts'
 import { toText } from '../utilities/string.ts'
 
 type CodeHighlightThemes = Record<'light' | 'dark', BundledTheme>
@@ -140,7 +141,10 @@ function isLineRangeAttr(attr: [string, string | number]): boolean {
 
 function restoreFenceLineRangeMeta(state: StateCore): void {
   for (const token of state.tokens) {
-    if (token.type !== 'fence' || !token.attrs?.length) continue
+    if (token.type !== 'fence') continue
+
+    markComponent(state.env, 'code-block')
+    if (!token.attrs?.length) continue
 
     const ranges: string[] = []
     const attrs = token.attrs.filter((attr) => {
@@ -295,7 +299,7 @@ function createCodeBlockTransformer(): ShikiTransformer {
         )
       }
       hast.properties ||= {}
-      hast.properties['data-vp-component'] = ''
+      hast.properties['data-vp-component'] = 'code-block'
       hast.children.unshift(codeHeader(languageLabel(this.options.lang)))
       return hast
     },

@@ -10,7 +10,6 @@
 }
 
 @media (prefers-color-scheme: dark) {
-
   html:not(.light) .shiki,
   html:not(.light) .shiki span {
     color: var(--shiki-dark) !important;
@@ -169,7 +168,7 @@ a[data-vp-external-link] span.external-link svg {
   align-items: center;
 }
 
-.vp-prev-next-label>span {
+.vp-prev-next-label > span {
   flex: 0 1 auto;
   min-width: 0;
 }
@@ -194,16 +193,16 @@ a[data-vp-external-link] span.external-link svg {
   --tab-fg: var(--ui-fg-muted);
 }
 
-.j-tabs .panel-list .panel-item>*+* {
+.j-tabs .panel-list .panel-item > * + * {
   margin-top: 12px;
 }
 
-.j-tabs .panel-list .panel-item>*:first-child {
+.j-tabs .panel-list .panel-item > *:first-child {
   margin-top: 0;
 }
 
-.j-tabs .panel-list .panel-item>*:last-child,
-.j-tabs .panel-item details[open]>*:last-child {
+.j-tabs .panel-list .panel-item > *:last-child,
+.j-tabs .panel-item details[open] > *:last-child {
   margin-bottom: 0;
 }
 
@@ -219,11 +218,11 @@ a[data-vp-external-link] span.external-link svg {
   padding: 1rem;
 }
 
-.j-accordion .panel-content>*:first-child {
+.j-accordion .panel-content > *:first-child {
   margin-top: 0;
 }
 
-.j-accordion .panel-content>*:last-child {
+.j-accordion .panel-content > *:last-child {
   margin-bottom: 0;
 }
 
@@ -245,13 +244,34 @@ a[data-vp-external-link] span.external-link svg {
   list-style: none;
 }
 
-.j-editor .j-tree>.j-tree-list:first-child {
+.j-editor .j-tree > .j-tree-list:first-child {
   padding: 0;
   margin: 0;
 }
 
 .code-block .code-header .code-dots {
   background-color: var(--state-success) !important;
+}
+
+.code-block {
+  position: relative;
+}
+
+.code-block .vp-code-copy {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.5rem;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+
+.code-block:hover .vp-code-copy,
+.code-block .vp-code-copy:focus-visible {
+  opacity: 1;
 }
 
 .code-block code {
@@ -271,27 +291,31 @@ a[data-vp-external-link] span.external-link svg {
   background-color: color-mix(in srgb, var(--ui-indigo) 12%, transparent);
 }
 
-.dark .code-block .line>span {
+.dark .code-block .line > span {
   background-color: transparent !important;
 }
 
 @media (prefers-color-scheme: dark) {
-  html:not(.light) .code-block .line>span {
+  html:not(.light) .code-block .line > span {
     background-color: transparent !important;
   }
 }
 
 .dark .code-block .line.highlighted {
-  background-color: color-mix(in srgb,
-      var(--ui-indigo) 22%,
-      transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--ui-indigo) 22%,
+    transparent
+  ) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .code-block .line.highlighted {
-    background-color: color-mix(in srgb,
-        var(--ui-indigo) 22%,
-        transparent) !important;
+    background-color: color-mix(
+      in srgb,
+      var(--ui-indigo) 22%,
+      transparent
+    ) !important;
   }
 }
 
@@ -310,16 +334,20 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 .dark .code-block .line.diff.add {
-  background-color: color-mix(in srgb,
-      var(--state-success) 26%,
-      transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--state-success) 26%,
+    transparent
+  ) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .code-block .line.diff.add {
-    background-color: color-mix(in srgb,
-        var(--state-success) 26%,
-        transparent) !important;
+    background-color: color-mix(
+      in srgb,
+      var(--state-success) 26%,
+      transparent
+    ) !important;
   }
 }
 
@@ -332,16 +360,20 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 .dark .code-block .line.diff.remove {
-  background-color: color-mix(in srgb,
-      var(--state-danger) 26%,
-      transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--state-danger) 26%,
+    transparent
+  ) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .code-block .line.diff.remove {
-    background-color: color-mix(in srgb,
-        var(--state-danger) 26%,
-        transparent) !important;
+    background-color: color-mix(
+      in srgb,
+      var(--state-danger) 26%,
+      transparent
+    ) !important;
   }
 }
 
@@ -354,16 +386,20 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 .dark .code-block .line.warning {
-  background-color: color-mix(in srgb,
-      var(--state-warning) 30%,
-      transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--state-warning) 30%,
+    transparent
+  ) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .code-block .line.warning {
-    background-color: color-mix(in srgb,
-        var(--state-warning) 30%,
-        transparent) !important;
+    background-color: color-mix(
+      in srgb,
+      var(--state-warning) 30%,
+      transparent
+    ) !important;
   }
 }
 
@@ -372,16 +408,20 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 .dark .code-block .line.error {
-  background-color: color-mix(in srgb,
-      var(--state-danger) 28%,
-      transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--state-danger) 28%,
+    transparent
+  ) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .code-block .line.error {
-    background-color: color-mix(in srgb,
-        var(--state-danger) 28%,
-        transparent) !important;
+    background-color: color-mix(
+      in srgb,
+      var(--state-danger) 28%,
+      transparent
+    ) !important;
   }
 }
 
