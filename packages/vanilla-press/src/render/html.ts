@@ -11,8 +11,7 @@ import {
   isI18nEnabled,
   isSearchEnabled,
   isThemeEnabled,
-  browserOption,
-  buildOption,
+  serverOption,
 } from '../utilities/features.ts'
 import { escapeHtml } from '../utilities/html.ts'
 import { i18nRedirectBootScript } from '../utilities/i18n-routes.ts'
@@ -20,9 +19,6 @@ import { documentTitle, normalizeSiteName } from '../utilities/page.ts'
 import { normalizePath, relativeAsset } from '../utilities/path.ts'
 import { renderHead } from './template/head.ts'
 import { renderRuntimeScript } from './template/runtime.ts'
-
-const SHARED_VP_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime'
-const VP_RUNTIME_ID = 'vanilla-press/vp-runtime'
 
 interface RenderHtmlOptions {
   title: string
@@ -36,8 +32,10 @@ interface RenderHtmlOptions {
   componentScripts?: string[]
   layoutScript?: string
   searchEnabled?: boolean
-  runtimeImportMap?: boolean
+  importMap?: Record<string, string>
   scripts?: string[]
+  clientScripts?: string[]
+  clientStyles?: string[]
   footerScript?: FooterScriptConfig
 }
 
@@ -54,7 +52,7 @@ function resolveHtmlLang(
   config: RuntimeConfig = {},
   languages: LanguagesConfig = {}
 ): string {
-  const i18n = browserOption(config, 'i18n') as RuntimeI18nConfig | undefined
+  const i18n = serverOption(config, 'i18n') as RuntimeI18nConfig | undefined
   const fallback =
     String(i18n?.locale || languages.locale || 'zh-CN').trim() || 'zh-CN'
   if (!isI18nEnabled(config)) return fallback
@@ -79,19 +77,16 @@ function renderPageScripts(rel: string, scripts: string[] = []): string {
     .join('\n')
 }
 
-function renderRuntimeImportMap(rel: string, enabled: boolean): string {
-  if (!enabled) return ''
+function renderImportMap(imports: Record<string, string> = {}): string {
+  if (!Object.keys(imports).length) return ''
 
   return `  <script type="importmap">${JSON.stringify({
-    imports: {
-      [SHARED_VP_SCRIPT_RUNTIME_ID]: relativeAsset(rel, 'public/runtime.js'),
-      [VP_RUNTIME_ID]: relativeAsset(rel, 'public/runtime.js'),
-    },
+    imports,
   })}</script>`
 }
 
 function footerScriptType(config: RuntimeConfig = {}): 'script' | 'module' {
-  return buildOption(config, 'footerScript') === 'module' ? 'module' : 'script'
+  return serverOption(config, 'footerScript') === 'module' ? 'module' : 'script'
 }
 
 function escapeScriptContent(value: FooterScriptConfig = ''): string {
@@ -126,8 +121,10 @@ export function renderHtml({
   componentScripts = [],
   layoutScript = '',
   searchEnabled = isSearchEnabled(config),
-  runtimeImportMap = false,
+  importMap = {},
   scripts = [],
+  clientScripts = [],
+  clientStyles = [],
   footerScript = '',
 }: RenderHtmlOptions): string {
   const cssHref = relativeAsset(rel, 'public/styles.css')
@@ -135,9 +132,9 @@ export function renderHtml({
   const runtimeHref = relativeAsset(rel, 'public/runtime.js')
   const searchHref = relativeAsset(rel, 'public/search.js')
   const themeEnabled = isThemeEnabled(config)
-  const theme = browserOption(config, 'theme')
+  const theme = config.client?.theme
   const themeDefault = isRecord(theme) ? theme.default : undefined
-  const i18n = (browserOption(config, 'i18n') || {}) as RuntimeI18nConfig
+  const i18n = (serverOption(config, 'i18n') || {}) as RuntimeI18nConfig
   const i18nRedirectScript =
     isI18nEnabled(config) &&
     i18n.redirectToDefault !== false &&
@@ -146,8 +143,12 @@ export function renderHtml({
       : ''
   const htmlLang = resolveHtmlLang(rel, config, languages)
   const htmlTitle = documentTitle(seo?.title || title, config, rel)
-  const importMap = renderRuntimeImportMap(rel, runtimeImportMap)
+  const importMapHtml = renderImportMap(importMap)
   const pageScripts = renderPageScripts(rel, scripts)
+  const clientScriptTags = renderPageScripts(rel, clientScripts)
+  const clientStyleHrefs = clientStyles.map((style) =>
+    relativeAsset(rel, style)
+  )
   const footerScriptHtml = renderFooterScript(config, footerScript)
 
   return `<!doctype html>
@@ -159,12 +160,13 @@ export function renderHtml({
     themeDefault,
     i18nRedirectScript,
     cssHref,
+    stylesheets: clientStyleHrefs,
     faviconHref,
     config,
   })}
 <body class="vp-layout-${pageLayout?.name || 'default'}">
   ${pageLayout?.html || body}
-${importMap ? `${importMap}\n` : ''}
+${importMapHtml ? `${importMapHtml}\n` : ''}
   ${renderRuntimeScript({
     runtimeHref,
     searchHref,
@@ -179,6 +181,7 @@ ${importMap ? `${importMap}\n` : ''}
     seo,
   })}
 ${pageScripts ? `${pageScripts}\n` : ''}
+${clientScriptTags ? `${clientScriptTags}\n` : ''}
 ${footerScriptHtml ? `${footerScriptHtml}\n` : ''}
 </body>
 </html>
@@ -193,7 +196,7 @@ export function renderDefaultLocaleEntrypoint({
   footerScript = '',
 }: DefaultLocaleEntrypointOptions = {}): string {
   const i18nRedirectScript = i18nRedirectBootScript(i18n, languages)
-  const theme = browserOption(config, 'theme')
+  const theme = config.client?.theme
   const themeDefault = isRecord(theme) ? theme.default : undefined
   const siteName = normalizeSiteName(config)
   const footerScriptHtml = renderFooterScript(config, footerScript)

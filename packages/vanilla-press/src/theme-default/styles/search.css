@@ -1,7 +1,3 @@
-.vp-search-button svg {
-  fill: var(--tone-caption);
-}
-
 #global-search .modal-body {
   scrollbar-width: thin;
   scrollbar-color: var(--ui-border-subtle) transparent;

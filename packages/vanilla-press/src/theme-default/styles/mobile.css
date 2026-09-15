@@ -1,0 +1,39 @@
+@media (max-width: 960px) {
+  .vp-shell {
+    display: block;
+    min-height: auto;
+  }
+
+  .vp-main {
+    display: block;
+    padding: 24px 20px;
+    margin-left: 0;
+  }
+
+  .vp-aside,
+  .vp-sidebar {
+    display: none;
+  }
+
+  .vp-prev-next {
+    flex-direction: column;
+  }
+
+  .vp-nav-title {
+    font-size: 1rem;
+  }
+
+  .j-toc .toc-link {
+    font-size: 1rem;
+    padding-block: 0.75rem;
+  }
+
+  .vp-nav,
+  .vp-nav-item {
+    gap: 4px;
+  }
+
+  .vp-nav-children .vp-nav-title {
+    padding-block: 8px;
+  }
+}

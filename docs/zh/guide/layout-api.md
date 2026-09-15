@@ -72,7 +72,7 @@ export default function initLandingLayout(root: Document, config: unknown) {
 }
 ```
 
-布局脚本默认导出函数会在页面运行时调用，参数为 `(document, runtimeConfig)`。布局脚本会被打包为 `dist/public/布局名.hash.js`，只在使用该布局的 HTML 页面中加载。脚本中的静态 npm 依赖会复用 `build.vpScript.shared` 和默认白名单：命中的依赖会打包进全局 `runtime.js`，未命中的依赖仍打包进该布局脚本文件。布局脚本也可以通过 `import { name } from 'vanilla-press/vp-runtime'` 复用 `vp/shared/runtime.ts` 中导出的项目公共运行时代码。
+布局脚本默认导出函数会在页面运行时调用，参数为 `(document, runtimeConfig)`。布局脚本会被打包为 `dist/public/布局名.hash.js`，只在使用该布局的 HTML 页面中加载。脚本中的静态 npm 依赖会复用 `server.client.shared` 和默认白名单：命中的依赖会打包进全局 `runtime.js`，未命中的依赖仍打包进该布局脚本文件。布局脚本也可以通过 `vanilla-press/client` 和 `vanilla-press/client/modules/*` 复用 `vp/client` 中的项目公共浏览器代码。
 
 然后在 Markdown 页面中使用它：
 
@@ -97,27 +97,27 @@ layouts:
 
 布局模板可以读取构建器注入的上下文。
 
-| 变量                      | 说明                                   |
-| ------------------------- | -------------------------------------- |
-| `{{ title }}`             | 当前页面标题，优先使用 SEO 标题        |
-| `{{ description }}`       | 当前页面描述，来自 frontmatter         |
-| `{{ keywords }}`          | 当前页面关键词，来自 frontmatter       |
-| `{{ page.title }}`        | Markdown 页面标题                      |
-| `{{ page.rel }}`          | 当前页面输出路径                       |
-| `{{ site.siteName }}`     | `vp/config/runtime.ts` 中的站点配置    |
-| `{{ layout.* }}`          | 当前布局作用域下的数据                 |
-| `{{ layouts.* }}`         | 所有布局作用域数据                     |
-| `{{{ content }}}`         | Markdown 渲染后的 HTML                 |
-| `{{{ editorHelp }}}`      | 编辑辅助块，包含编辑链接和最后编辑时间 |
-| `{{{ slots.header }}}`    | 桌面主菜单和手机主菜单模板             |
-| `{{{ slots.secondary }}}` | 手机次级菜单模板                       |
-| `{{{ slots.sidebar }}}`   | 默认侧边栏插槽                         |
-| `{{{ slots.aside }}}`     | 默认右侧区域插槽，包含目录             |
-| `{{{ slots.prevNext }}}`  | 分页导航插槽                           |
+| 变量                          | 说明                                       |
+| ----------------------------- | ------------------------------------------ |
+| `{{ title }}`                 | 当前页面标题，优先使用 SEO 标题            |
+| `{{ description }}`           | 当前页面描述，来自 frontmatter             |
+| `{{ keywords }}`              | 当前页面关键词，来自 frontmatter           |
+| `{{ page.title }}`            | Markdown 页面标题                          |
+| `{{ page.rel }}`              | 当前页面输出路径                           |
+| `{{ site.siteName }}`         | `vp/config/runtime.ts` 中的站点配置        |
+| `{{ layout.* }}`              | 当前布局作用域下的数据                     |
+| `{{ layouts.* }}`             | 所有布局作用域数据                         |
+| `{{{ content }}}`             | Markdown 渲染后的 HTML                     |
+| `{{{ editorHelp }}}`          | 编辑辅助块，包含编辑链接和最后编辑时间     |
+| `{{{ slots.header }}}`        | 响应式站点头部，包含站点名、主菜单和操作组 |
+| `{{{ slots.sidebar }}}`       | 默认侧边栏插槽                             |
+| `{{{ slots.mobileSidebar }}}` | 手机端侧边栏抽屉内容插槽                   |
+| `{{{ slots.aside }}}`         | 默认右侧区域插槽，包含目录                 |
+| `{{{ slots.prevNext }}}`      | 分页导航插槽                               |
 
 普通双花括号会进行 HTML 转义，适合输出 frontmatter 中的文本。
 
-三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`editorHelp`、`slots.header`、`slots.secondary`、`slots.sidebar`、`slots.aside` 和 `slots.prevNext`。
+三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`editorHelp`、`slots.header`、`slots.sidebar`、`slots.mobileSidebar`、`slots.aside` 和 `slots.prevNext`。
 
 ## 数组循环
 
@@ -164,7 +164,7 @@ layouts:
 
 ## 分页导航插槽
 
-`browser.prevNext` 只会渲染到当前布局显式声明的插槽中：
+`server.prevNext` 只会渲染到当前布局显式声明的插槽中：
 
 ```html
 <div data-vp-prev-next></div>
@@ -177,7 +177,8 @@ layouts:
 内置 `default` 布局复用文档站常规结构：左侧侧边栏、正文、右侧目录和页脚。它的模板核心结构如下：
 
 ```html
-<header class="vp-header">{{{ slots.header }}} {{{ slots.secondary }}}</header>
+<header class="vp-header">{{{ slots.header }}}</header>
+{{{ slots.mobileSidebar }}}
 <main class="{{ shell.className }}">
   {{{ slots.sidebar }}}
   <section class="{{ shell.mainClassName }}">
@@ -196,4 +197,4 @@ layouts:
 <footer class="vp-footer" data-vp-footer></footer>
 ```
 
-如果新布局仍然是文档页，可以从这个结构复制后调整。`{{{ slots.header }}}` 和 `{{{ slots.secondary }}}` 都应该放在 `.vp-header` 内部，因为运行时会把 `.vp-mobile-header` 和 `.vp-mobile-secondary` 都挂载为 `.vp-header` 的子元素。如果新布局是首页或营销页，通常只在 `.vp-header` 内保留 `{{{ slots.header }}}`，不使用 `{{{ slots.secondary }}}`，然后自行设计页面主体。
+如果新布局仍然是文档页，可以从这个结构复制后调整。`{{{ slots.header }}}` 应放在 `.vp-header` 内部，`{{{ slots.mobileSidebar }}}` 应放在 header 后方，供窄屏侧边栏抽屉使用。如果新布局是首页或营销页，通常只保留 `{{{ slots.header }}}`，然后自行设计页面主体。

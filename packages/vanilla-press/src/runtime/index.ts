@@ -1,4 +1,4 @@
-import { all, isMobile, q } from 'vanilla-jui'
+import { all, q } from 'vanilla-jui'
 
 import './icons.ts'
 import { initAccordion } from '../components/accordion.ts'
@@ -15,21 +15,15 @@ import type {
   SearchSource,
 } from '../types.ts'
 import {
-  isPrevNextEnabled,
-  isExternalLinkEnabled,
   isLlmsEnabled,
   isSearchEnabled,
-  isSidebarEnabled,
   isTocEnabled,
 } from '../utilities/features.ts'
 import { initDocChrome } from './chrome.ts'
 import { initEditorSize } from './editor-size.ts'
-import { initLinkAttributes } from './link-attributes.ts'
 import { initLlms } from './llms.ts'
 import { initMobileSecondary } from './menu.ts'
-import { initPrevNext } from './prev-next.ts'
 import { initSearch } from './search.ts'
-import { initSeo } from './seo.ts'
 import { initToc } from './toc.ts'
 
 type ComponentInit = (root: Document | Element, config?: RuntimeConfig) => void
@@ -252,71 +246,20 @@ function watchDynamicComponents(
   observer.observe(document.body, { childList: true, subtree: true })
 }
 
-function syncViewportClasses(mobile: boolean): void {
-  const html = document.documentElement
-  html.classList.toggle('mobile', mobile)
-  html.classList.toggle('desktop', !mobile)
-}
-
-function normalizeSidebarRel(value: unknown = ''): string {
-  return String(value)
-    .replace(/^\/+|\/+$/g, '')
-    .replace(/\/+/g, '/')
-}
-
-function pageIsInsideDir(page: RuntimePage = {}, dir: unknown): boolean {
-  const rel = normalizeSidebarRel(page.rel || 'index.html')
-  const base = normalizeSidebarRel(dir)
-  return Boolean(base) && rel.startsWith(`${base}/`)
-}
-
-function resolveSidebarItems(
-  sidebar: RuntimeSidebar | undefined,
-  page: RuntimePage = {}
-): NavItem[] {
-  if (Array.isArray(sidebar)) return sidebar
-
-  const globalItems = Array.isArray(sidebar?.items) ? sidebar.items : []
-  const directories = Array.isArray(sidebar?.directories)
-    ? sidebar.directories
-    : []
-  let selected: NavItem[] | null = null
-  let selectedLength = -1
-
-  for (const entry of directories) {
-    if (!Array.isArray(entry.items) || !pageIsInsideDir(page, entry.dir)) {
-      continue
-    }
-
-    const length = normalizeSidebarRel(entry.dir).length
-    if (length > selectedLength) {
-      selected = entry.items
-      selectedLength = length
-    }
-  }
-
-  return selected || globalItems
-}
-
 export function initDocPage(options: DocPageOptions = {}): void {
   const componentRegistry = createComponentRegistry(options.customComponents)
   const components = normalizeComponents(options.components, componentRegistry)
-  const mobile = isMobile()
-  const sidebarItems = resolveSidebarItems(options.sidebar, options.page)
-  syncViewportClasses(mobile)
 
   const chrome = initDocChrome(
     options.config,
     options.menu,
-    sidebarItems,
+    [],
     options.languages,
-    options.page,
-    mobile
+    options.page
   )
 
   if (chrome?.redirected) return
 
-  initSeo(options.config, options.page)
   if (isSearchEnabled(options.config)) {
     initSearch(
       options.config,
@@ -330,33 +273,11 @@ export function initDocPage(options: DocPageOptions = {}): void {
   if (isLlmsEnabled(options.config)) {
     initLlms()
   }
-  if (isExternalLinkEnabled(options.config)) {
-    initLinkAttributes()
-  }
   initComponents(document, components, componentRegistry, options.config)
   watchDynamicComponents(components, componentRegistry, options.config)
 
-  if (mobile) {
-    if (isSidebarEnabled(options.config) || isTocEnabled(options.config)) {
-      initMobileSecondary(
-        sidebarItems,
-        options.page,
-        chrome.i18n,
-        chrome.locale,
-        options.config
-      )
-    }
-  } else if (isTocEnabled(options.config)) {
+  initMobileSecondary(chrome.i18n, options.config)
+  if (isTocEnabled(options.config)) {
     initToc(options.config)
-  }
-
-  if (isPrevNextEnabled(options.config)) {
-    initPrevNext(
-      options.config,
-      sidebarItems,
-      options.page,
-      chrome.i18n,
-      chrome.locale
-    )
   }
 }

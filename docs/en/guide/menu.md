@@ -2,21 +2,9 @@
 
 The main navigation menu displayed at the top of the page.
 
-## Runtime
-
-In `vp/config/runtime.ts`, configure whether the main menu is enabled.
-
-```ts
-export default {
-  browser: {
-    menu: true,
-  },
-}
-```
-
-## Configuration
-
 In `vp/config/menu.ts`, configure the site's menu data as needed.
+
+When `vp/config/menu.ts` exports a valid menu array, VanillaPress builds the menu HTML directly for both desktop and mobile. Export an empty array to render no menu.
 
 - `label`: i18n message key for the menu item
 - `path`: page path for the menu item, without `.html`

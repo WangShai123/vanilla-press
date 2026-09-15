@@ -3,47 +3,24 @@ export const DEFAULT_CONFIG_TS = `import type { RuntimeConfig } from 'vanilla-pr
 export default {
   siteName: "VanillaPress",
   siteUrl: "https://example.com",
-  build: {
+  server: {
     social: {
       github: "https://github.com/WangShai123/vanilla-press"
     },
-    sitemap: false,
-    robots: true,
     footerScript: "script",
-    vpScript: {
-      shared: []
-    },
     highlight: {
       light: "github-light-default",
       dark: "github-dark-default"
     },
     llms: {
-      enabled: true,
       link: true,
       copy: true,
       chatgpt: true,
       claude: true
     },
-    editLink: {
-      text: "editor.editLink"
-    },
-    lastEdit: {
-      text: "editor.lastUpdated",
-      format: "yyyy-MM-dd HH:mm:ss",
-      utc: true
-    }
-  },
-  browser: {
-    editorSize: "sm",
-    seo: true,
-    search: true,
     externalLink: true,
-    menu: true,
-    sidebar: true,
-    toc: true,
     prevNext: false,
     i18n: {
-      enabled: true,
       locale: "zh-CN",
       fallbackLocale: "en",
       locales: [
@@ -52,6 +29,22 @@ export default {
       ],
       redirectToDefault: true
     },
+    editLink: {
+      text: "editor.editLink"
+    },
+    lastEdit: {
+      text: "editor.lastUpdated",
+      format: "yyyy-MM-dd HH:mm:ss",
+      utc: true
+    },
+    client: {
+      shared: []
+    }
+  },
+  client: {
+    editorSize: "sm",
+    search: true,
+    toc: true,
     theme: {
       enabled: true,
       default: {
@@ -266,6 +259,3 @@ export default [
   }
 ] satisfies SidebarConfig;
 `
-
-export const MOBILE_CLASS_BOOT_SCRIPT =
-  "(function(w,n,d){function m(){var u;if(typeof n==='undefined')return!1;if(n.userAgentData&&typeof n.userAgentData.mobile==='boolean')return n.userAgentData.mobile;u=n.userAgent||'';if(/\\b(BlackBerry|webOS|iPhone|IEMobile|Android|Windows Phone|iPad|iPod)\\b/i.test(u))return!0;if(typeof w==='undefined'||typeof w.matchMedia!=='function')return!1;return w.matchMedia('(pointer: coarse)').matches&&w.matchMedia('(max-width: 820px)').matches}var r=d.documentElement,b=m();r.classList.toggle('mobile',b);r.classList.toggle('desktop',!b)})(window,navigator,document);"

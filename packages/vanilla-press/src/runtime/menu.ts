@@ -1,92 +1,13 @@
-import {
-  createMenu,
-  createOffcanvas,
-  createToc,
-  icon,
-  q,
-  type Menu,
-  type MenuItem,
-} from 'vanilla-jui'
-import { createEffect, jsx } from 'vanilla-signal'
-import { t as s } from 'vanilla-signal-i18n'
+import { createOffcanvas, createToc, icon, q } from 'vanilla-jui'
 
-import type {
-  RuntimeConfig,
-  DocI18n,
-  LocaleEntry,
-  NavItem,
-  RuntimePage,
-} from '../types.ts'
-import {
-  isSidebarEnabled,
-  isTocEnabled,
-  tocOptions,
-} from '../utilities/features.ts'
-import { toText } from '../utilities/string.ts'
-import { joinLocalePath } from './i18n.ts'
+import type { RuntimeConfig, DocI18n } from '../types.ts'
+import { isTocEnabled, tocOptions } from '../utilities/features.ts'
 import { localize } from './i18n.ts'
-import { normalizeRel, relativeAsset } from './path.ts'
-const l = {
-  zh: { Back: '返回' },
-}
-const t = (key: string): string => s(key, l)
+import { compactViewportQuery, isCompactViewport } from './viewport.ts'
 
-function rawItemPath(item: NavItem = {}): unknown {
-  return item.path ?? item.href ?? item.url ?? ''
-}
-
-function isExternalPath(value: unknown = ''): boolean {
-  const path = toText(value)
-  return /^(?:[a-z][a-z\d+.-]*:)?\/\//i.test(path) || path.startsWith('#')
-}
-
-function normalizePagePath(value: unknown = ''): string {
-  const path = toText(value).trim()
-  if (!path || isExternalPath(path)) return path
-  const clean = path.replace(/^\/+/, '')
-  if (clean.endsWith('/')) return `${clean}index.html`
-  if (/\.[a-z0-9]+$/i.test(clean)) return clean
-  return `${clean}.html`
-}
-
-function resolveItemHref(
-  item: NavItem,
-  page: RuntimePage,
-  locale: LocaleEntry | null
-): string {
-  const itemPath = rawItemPath(item)
-  const href = normalizePagePath(itemPath)
-  if (!href || isExternalPath(href)) return href
-  const localizedHref = locale ? joinLocalePath(locale, href) : href
-  return relativeAsset(page.rel, localizedHref)
-}
-
-function menuItemIsActive(
-  item: NavItem,
-  page: RuntimePage,
-  locale: LocaleEntry | null
-): boolean {
-  const itemPath = normalizePagePath(rawItemPath(item))
-  const href =
-    itemPath && !isExternalPath(itemPath)
-      ? normalizeRel(locale ? joinLocalePath(locale, itemPath) : itemPath)
-      : ''
-  const rel = normalizeRel(page.rel || '')
-  if (href && href === rel) return true
-  return (
-    Array.isArray(item.children) &&
-    item.children.some((child) => menuItemIsActive(child, page, locale))
-  )
-}
-
-function slugifyMenu(value: unknown): string {
-  return (
-    String(value)
-      .trim()
-      .toLowerCase()
-      .replace(/[^\p{Letter}\p{Number}]+/gu, '-')
-      .replace(/^-+|-+$/g, '') || 'item'
-  )
+interface DrawerApi {
+  show(): unknown
+  hide(): unknown
 }
 
 function translate(key: string, fallback: string, i18n: DocI18n): string {
@@ -94,311 +15,229 @@ function translate(key: string, fallback: string, i18n: DocI18n): string {
   return text && text !== key ? text : fallback
 }
 
-function toMenuItems(
-  items: NavItem[] = [],
-  page: RuntimePage = {},
-  i18n: DocI18n,
-  locale: LocaleEntry | null
-): MenuItem[] {
-  return items.map((item, index) => {
-    const children = Array.isArray(item.children) ? item.children : []
-    const classes = Array.isArray(item.classes) ? [...item.classes] : []
-    if (menuItemIsActive(item, page, locale)) classes.push('current-menu-item')
+function bindNav(root: ParentNode = document): void {
+  root.querySelectorAll<HTMLElement>('.vp-nav').forEach((nav) => {
+    if (nav.dataset.vpReady === 'true') return
 
-    return {
-      id:
-        item.id ||
-        `${index}-${slugifyMenu(localize(item.i18n || item.label || item.title, i18n))}`,
-      title: localize(item.i18n || item.label || item.title, i18n),
-      url: resolveItemHref(item, page, locale),
-      target: item.target,
-      classes,
-      children: toMenuItems(children, page, i18n, locale),
-    }
-  })
-}
+    nav
+      .querySelectorAll<HTMLElement>('.vp-nav-item.has-children')
+      .forEach((item) => {
+        const toggle = item.querySelector<HTMLButtonElement>(
+          ':scope > .vp-nav-toggle'
+        )
+        const title = item.querySelector<HTMLAnchorElement>(
+          ':scope > .vp-nav-title'
+        )
+        const list = item.querySelector<HTMLElement>(
+          ':scope > .vp-nav-children'
+        )
+        if (!toggle || !list) return
 
-function renderMenuItem(
-  item: NavItem,
-  page: RuntimePage,
-  i18n: DocI18n,
-  locale: LocaleEntry | null
-): HTMLElement {
-  const children = Array.isArray(item.children) ? item.children : []
-  const active = menuItemIsActive(item, page, locale)
-  const classes = ['menu-item']
+        const setCollapsed = (collapsed: boolean): void => {
+          item.classList.toggle('is-collapsed', collapsed)
+          list.hidden = collapsed
+          toggle.setAttribute('aria-expanded', String(!collapsed))
+        }
 
-  if (children.length) classes.push('menu-item-has-children')
-  if (active) classes.push('current-menu-item')
-  if (Array.isArray(item.classes)) classes.push(...item.classes)
+        toggle.addEventListener('click', () => {
+          setCollapsed(!item.classList.contains('is-collapsed'))
+        })
 
-  const href = resolveItemHref(item, page, locale)
+        if (title && !title.hasAttribute('href')) {
+          title.addEventListener('click', () => toggle.click())
+        }
+      })
 
-  return jsx('li', {
-    className: classes.join(' '),
-    children: [
-      jsx('a', {
-        className: 'menu-link',
-        ...(href ? { href } : {}),
-        ...(item.target ? { target: item.target } : {}),
-        children: jsx('span', {
-          className: 'menu-text',
-          children: localize(item.i18n || item.label || item.title, i18n),
-        }),
-      }),
-      children.length
-        ? jsx('ul', {
-            className: 'sub-menu',
-            children: children.map((child) =>
-              renderMenuItem(child, page, i18n, locale)
-            ),
-          })
-        : null,
-    ],
-  })
-}
-
-export function initHeaderMenu(
-  menuItems: NavItem[] = [],
-  page: RuntimePage = {},
-  i18n: DocI18n,
-  locale: LocaleEntry | null = null
-): void {
-  const nav = q<HTMLElement>('.vp-menu[data-vp-menu]')
-  if (!nav || nav.dataset.vpReady === 'true') return
-
-  if (nav.querySelector('.menu')) {
-    nav.classList.add('j-menu')
     nav.dataset.vpReady = 'true'
+  })
+}
+
+function clonedContent(selector: string): HTMLElement | null {
+  const source = q<HTMLElement>(selector)
+  const content = source?.firstElementChild?.cloneNode(true)
+  if (content instanceof HTMLElement) {
+    content.querySelectorAll<HTMLElement>('[data-vp-ready]').forEach((node) => {
+      node.removeAttribute('data-vp-ready')
+    })
+    content.removeAttribute('data-vp-ready')
+  }
+  return content instanceof HTMLElement ? content : null
+}
+
+function closeOnAnchorClick(root: HTMLElement, close: () => void): void {
+  root.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return
+    const link = event.target.closest('a[href]')
+    if (link) close()
+  })
+}
+
+function onCompactViewportExit(close: () => void): void {
+  if (
+    typeof window === 'undefined' ||
+    typeof window.matchMedia !== 'function'
+  ) {
     return
   }
 
-  nav.classList.add('j-menu')
-  createEffect(() => {
-    nav.textContent = ''
-    nav.append(
-      jsx('ul', {
-        className: 'menu',
-        children: menuItems.map((item) =>
-          renderMenuItem(item, page, i18n, locale)
-        ),
-      })
-    )
-  })
+  const media = window.matchMedia(compactViewportQuery)
+  const listener = (event: MediaQueryListEvent): void => {
+    if (!event.matches) close()
+  }
 
+  media.addEventListener('change', listener)
+}
+
+export function initHeaderMenu(): void {
+  const nav = q<HTMLElement>('.vp-menu[data-vp-menu]')
+  if (!nav) return
+  nav.classList.add('j-menu')
   nav.dataset.vpReady = 'true'
 }
 
-export function initMobileHeader(
-  menuItems: NavItem[] = [],
-  page: RuntimePage = {},
-  i18n: DocI18n,
-  locale: LocaleEntry | null = null
-): void {
-  const header = q<HTMLElement>('[data-vp-mobile-header]')
+export function initMobileHeader(): void {
   const menuButton = q<HTMLButtonElement>('[data-vp-mobile-menu]')
-  if (!header || !menuButton || header.dataset.vpReady === 'true') return
+  if (!menuButton || menuButton.dataset.vpReady === 'true') return
 
-  header.hidden = false
   menuButton.textContent = ''
   menuButton.append(icon('menu', { className: 'el-icon' }))
 
-  const panel = jsx('div', {
-    className: 'vp-mobile-menu-panel',
-    'data-vp-menu': '',
-  })
-  let menu: Menu | null = null
-
-  const destroyMenu = (): void => {
-    menu?.destroy()
-    menu = null
-    panel.textContent = ''
-  }
-
-  const drawer = createOffcanvas({
-    direction: 'left',
-    content: panel,
-    onShow: () => {
-      destroyMenu()
-      const nextMenu = createMenu({
-        backText: t('Back'),
-        type: 'mobile',
-        data: toMenuItems(menuItems, page, i18n, locale),
-      })
-      menu = nextMenu
-      nextMenu.mount(panel)
-    },
-    onHidden: destroyMenu,
-  }).build()
-
-  menuButton.addEventListener('click', () => drawer.show())
-  header.dataset.vpReady = 'true'
-}
-
-function renderSidebarItem(
-  item: NavItem,
-  page: RuntimePage,
-  i18n: DocI18n,
-  locale: LocaleEntry | null
-): HTMLElement {
-  const children = Array.isArray(item.children) ? item.children : []
-  const active = menuItemIsActive(item, page, locale)
-  const collapsed = children.length && item.collapse === true && !active
-  const className = children.length
-    ? `vp-nav-item has-children${active ? ' is-active' : ''}${collapsed ? ' is-collapsed' : ''}`
-    : `vp-nav-item${active ? ' is-active' : ''}`
-
-  const href = resolveItemHref(item, page, locale)
-  const titleText = localize(item.i18n || item.label || item.title, i18n)
-  const title = jsx('a', {
-    className: `vp-nav-title${active ? ' is-active' : ''}`,
-    ...(href ? { href } : {}),
-    children: titleText,
-  })
-
-  if (!children.length) {
-    return jsx('div', {
-      className,
-      children: title,
-    })
-  }
-
-  const toggle = jsx('button', {
-    className: 'vp-nav-toggle j-button is-ghost is-icon',
-    type: 'button',
-    'aria-label': titleText,
-    'aria-expanded': String(!collapsed),
-    children: icon('arrow-down', { className: 'el-icon' }),
-  })
-  const list = jsx('div', {
-    className: 'vp-nav-children',
-    hidden: collapsed,
-    children: children.map((child) =>
-      renderSidebarItem(child, page, i18n, locale)
-    ),
-  })
-  const wrapper = jsx('div', {
-    className,
-    children: [title, toggle, list],
-  })
-
-  toggle.addEventListener('click', () => {
-    const next = !wrapper.classList.contains('is-collapsed')
-    wrapper.classList.toggle('is-collapsed', next)
-    list.hidden = next
-    toggle.setAttribute('aria-expanded', String(!next))
-  })
-
-  if (!href) {
-    title.addEventListener('click', () => {
-      toggle.click()
-    })
-  }
-  return wrapper
-}
-
-function renderSidebar(
-  sidebarItems: NavItem[] = [],
-  page: RuntimePage = {},
-  i18n: DocI18n,
-  locale: LocaleEntry | null
-): HTMLElement {
-  return jsx('nav', {
-    className: 'vp-nav',
-    'data-vp-sidebar': '',
-    'aria-label': '文档导航',
-    children: sidebarItems.map((item) =>
-      renderSidebarItem(item, page, i18n, locale)
-    ),
-  })
-}
-
-export function initSidebar(
-  sidebarItems: NavItem[] = [],
-  page: RuntimePage = {},
-  i18n: DocI18n,
-  locale: LocaleEntry | null = null
-): void {
-  const nav = q<HTMLElement>('[data-vp-sidebar]')
-  if (!nav || nav.dataset.vpReady === 'true') return
-
-  createEffect(() => {
-    nav.textContent = ''
-    sidebarItems.forEach((item) =>
-      nav.append(renderSidebarItem(item, page, i18n, locale))
-    )
-  })
-
-  nav.dataset.vpReady = 'true'
-}
-
-export function initMobileSecondary(
-  sidebarItems: NavItem[] = [],
-  page: RuntimePage = {},
-  i18n: DocI18n,
-  locale: LocaleEntry | null = null,
-  config: RuntimeConfig = {}
-): void {
-  const secondary = q<HTMLElement>('[data-vp-mobile-secondary]')
-  const sidebarButton = q<HTMLButtonElement>('[data-vp-mobile-sidebar]')
-  const tocButton = q<HTMLButtonElement>('[data-vp-mobile-toc]')
-  if (!secondary || secondary.dataset.vpReady === 'true') {
+  if (!q<HTMLElement>('[data-vp-mobile-menu-content]')) {
+    menuButton.hidden = true
+    menuButton.dataset.vpReady = 'true'
     return
   }
 
-  secondary.hidden = false
+  let drawer: DrawerApi | null = null
+  const showMenu = (): void => {
+    if (!isCompactViewport()) return
+
+    if (!drawer) {
+      const panel = clonedContent('[data-vp-mobile-menu-content]')
+      if (!panel) return
+
+      bindNav(panel)
+      drawer = createOffcanvas({
+        direction: 'left',
+        content: panel,
+      }).build()
+
+      closeOnAnchorClick(panel, () => {
+        void drawer?.hide()
+      })
+      onCompactViewportExit(() => {
+        void drawer?.hide()
+      })
+    }
+
+    drawer.show()
+  }
+
+  menuButton.addEventListener('click', showMenu)
+  menuButton.dataset.vpReady = 'true'
+}
+
+export function initSidebar(): void {
+  const sidebar = q<HTMLElement>('.vp-sidebar')
+  if (sidebar) bindNav(sidebar)
+}
+
+export function initMobileSecondary(
+  i18n: DocI18n,
+  config: RuntimeConfig = {}
+): void {
+  const sidebarButton = q<HTMLButtonElement>('[data-vp-mobile-sidebar]')
+  const tocButton = q<HTMLButtonElement>('[data-vp-mobile-toc]')
   const sidebarLabel = translate('mobile.navigation', '导航', i18n)
   const tocLabel = translate('mobile.toc', '目录', i18n)
 
-  if (sidebarButton && isSidebarEnabled(config)) {
+  if (sidebarButton && sidebarButton.dataset.vpReady !== 'true') {
     sidebarButton.textContent = ''
     sidebarButton.setAttribute('aria-label', sidebarLabel)
     sidebarButton.append(icon('align-left', { className: 'el-icon el-prefix' }))
     sidebarButton.append(sidebarLabel)
 
-    const sidebarPanel = jsx('div', {
-      className: 'vp-mobile-sidebar-panel',
-      children: renderSidebar(sidebarItems, page, i18n, locale),
-    })
-    const sidebarDrawer = createOffcanvas({
-      direction: 'left',
-      content: sidebarPanel,
-    }).build()
+    if (!q<HTMLElement>('[data-vp-mobile-sidebar-content]')) {
+      sidebarButton.hidden = true
+    } else {
+      let sidebarDrawer: DrawerApi | null = null
+      const showSidebar = (): void => {
+        if (!isCompactViewport()) return
 
-    sidebarButton.addEventListener('click', () => sidebarDrawer.show())
+        if (!sidebarDrawer) {
+          const panel = clonedContent('[data-vp-mobile-sidebar-content]')
+          if (!panel) return
+
+          bindNav(panel)
+          sidebarDrawer = createOffcanvas({
+            direction: 'left',
+            content: panel,
+          }).build()
+
+          closeOnAnchorClick(panel, () => {
+            void sidebarDrawer?.hide()
+          })
+          onCompactViewportExit(() => {
+            void sidebarDrawer?.hide()
+          })
+        }
+
+        sidebarDrawer.show()
+      }
+
+      sidebarButton.addEventListener('click', showSidebar)
+    }
+    sidebarButton.dataset.vpReady = 'true'
   }
 
-  if (tocButton && isTocEnabled(config)) {
+  if (
+    tocButton &&
+    tocButton.dataset.vpReady !== 'true' &&
+    isTocEnabled(config)
+  ) {
     tocButton.textContent = ''
     tocButton.setAttribute('aria-label', tocLabel)
     tocButton.append(tocLabel)
     tocButton.append(icon('align-right', { className: 'el-icon el-suffix' }))
 
-    const tocPanel = jsx('div', { className: 'vp-mobile-toc-panel' })
     const article = q<HTMLElement>('.j-editor')
     const { headings, offset } = tocOptions(config)
-    if (article && q(headings, article)) {
-      const toc = createToc({
-        target: article,
-        headings,
-        offset,
-      })
-      toc.mount(tocPanel)
-    } else {
+    if (!article || !q(headings, article)) {
       tocButton.hidden = true
+      tocButton.dataset.vpReady = 'true'
+      return
     }
 
-    const tocDrawer = createOffcanvas({
-      direction: 'right',
-      content: tocPanel,
-    }).build()
-    tocPanel.addEventListener('click', (event) => {
-      if (!(event.target instanceof Element)) return
-      const link = event.target.closest('a[href^="#"]')
-      if (link) void tocDrawer.hide()
-    })
-    tocButton.addEventListener('click', () => tocDrawer.show())
-  }
+    let tocDrawer: DrawerApi | null = null
+    const showToc = (): void => {
+      if (!isCompactViewport()) return
 
-  secondary.dataset.vpReady = 'true'
+      if (!tocDrawer) {
+        const tocPanel = document.createElement('div')
+        tocPanel.className = 'vp-mobile-toc-panel'
+        const toc = createToc({
+          target: article,
+          headings,
+          offset,
+        })
+        toc.mount(tocPanel)
+        tocDrawer = createOffcanvas({
+          direction: 'right',
+          content: tocPanel,
+        }).build()
+
+        closeOnAnchorClick(tocPanel, () => {
+          void tocDrawer?.hide()
+        })
+        onCompactViewportExit(() => {
+          void tocDrawer?.hide()
+        })
+      }
+
+      tocDrawer.show()
+    }
+
+    tocButton.addEventListener('click', showToc)
+    tocButton.dataset.vpReady = 'true'
+  }
 }

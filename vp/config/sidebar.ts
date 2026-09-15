@@ -9,7 +9,7 @@ export default [
       { label: 'sidebar.homeLayout', path: 'guide/layout-home' },
       { label: 'sidebar.componentApi', path: 'guide/component-api' },
       { label: 'Components List', path: 'guide/component-list' },
-      { label: 'sidebar.vpScript', path: 'guide/vp-script' },
+      { label: 'sidebar.client', path: 'guide/client' },
     ],
   },
   {

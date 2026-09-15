@@ -2,9 +2,14 @@
 
 ## 1.5.x
 
+#### 1.5.3
+
+- feat: client entries.
+
 #### 1.5.2
 
 - feat: Code highlighting replaced from `highlight.js` to `shiki`.
+- feat: Client entries now support CSS and can be loaded per page from Markdown frontmatter.
 - fix: Removed default template `footer`.
 
 #### 1.5.1
@@ -47,10 +52,10 @@
 
 - feat: Added edit and last updated time features
 - feat: Added Group component
-- feat: `vp` directory now includes `cache` directory for caching build results
+- feat: `vp` directory now includes `cache` directory for caching server results
 - feat: Scaffold now automatically adds `.gitignore` file to ignore `vp/cache`, `node_modules`
 - refactor: Refactored Badge component
-- fix: Runtime configuration is now structured into `runtime` and `browser`
+- fix: Runtime configuration is now structured into `runtime` and `client`
 - style: All `doc` related names are now prefixed with `vp`
 - docs: Updated related documentation
 
@@ -83,7 +88,7 @@
 #### 1.3.2
 
 - fix: Fixed home title rule
-- docs: Updated layout/component/vp-script documentation.
+- docs: Updated layout/component/client management documentation.
 
 #### 1.3.1
 
@@ -129,7 +134,7 @@
 
 #### 1.2.10
 
-- feat: Added `vp-script` feature, supporting the use of `vp-script` in Markdown to write page-specific scripts.
+- feat: Added client entry support for page-specific scripts declared from Markdown frontmatter.
 - feat: Added `footer-script` feature, supporting unified bottom script injection for all pages through `vp/config/footerScript.ts`.
 - chore: Updated dependency versions
 - fix: Narrowed types based on dependency updates for stricter and more precise type definitions

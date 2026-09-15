@@ -10,7 +10,6 @@
 }
 
 @media (prefers-color-scheme: dark) {
-
   html:not(.light) .shiki,
   html:not(.light) .shiki span {
     color: var(--shiki-dark) !important;
@@ -34,7 +33,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin-block: 1.25rem;
+  margin: 1.25rem 0 1.75rem;
 }
 
 .llms-options-trigger svg {
@@ -159,12 +158,19 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 .vp-prev-next-label {
+  width: max-content;
+  max-width: 100%;
   color: var(--vp-muted);
   font-size: var(--font-size-sm);
   line-height: 1.2;
   display: flex;
   gap: 4px;
   align-items: center;
+}
+
+.vp-prev-next-label > span {
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .is-prev .vp-prev-next-label {
@@ -187,16 +193,16 @@ a[data-vp-external-link] span.external-link svg {
   --tab-fg: var(--ui-fg-muted);
 }
 
-.j-tabs .panel-list .panel-item>*+* {
+.j-tabs .panel-list .panel-item > * + * {
   margin-top: 12px;
 }
 
-.j-tabs .panel-list .panel-item>*:first-child {
+.j-tabs .panel-list .panel-item > *:first-child {
   margin-top: 0;
 }
 
-.j-tabs .panel-list .panel-item>*:last-child,
-.j-tabs .panel-item details[open]>*:last-child {
+.j-tabs .panel-list .panel-item > *:last-child,
+.j-tabs .panel-item details[open] > *:last-child {
   margin-bottom: 0;
 }
 
@@ -212,11 +218,11 @@ a[data-vp-external-link] span.external-link svg {
   padding: 1rem;
 }
 
-.j-accordion .panel-content>*:first-child {
+.j-accordion .panel-content > *:first-child {
   margin-top: 0;
 }
 
-.j-accordion .panel-content>*:last-child {
+.j-accordion .panel-content > *:last-child {
   margin-bottom: 0;
 }
 
@@ -238,7 +244,7 @@ a[data-vp-external-link] span.external-link svg {
   list-style: none;
 }
 
-.j-editor .j-tree>.j-tree-list:first-child {
+.j-editor .j-tree > .j-tree-list:first-child {
   padding: 0;
   margin: 0;
 }

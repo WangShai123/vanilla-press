@@ -33,7 +33,7 @@ class Test
     $this->builder->useAutowiring(true);
     $this->builder->useAttributes(true);
 
-    return $this->builder->build();
+    return $this->builder->server();
   }
 }
 ```
@@ -44,11 +44,11 @@ class Test
 
 浅色模式使用 `GitHub Light Default` 主题，深色模式使用 `GitHub Dark Default` 主题。
 
-可通过 `vp/config/runtime.ts` 的 `build.highlight` 自定义主题：
+可通过 `vp/config/runtime.ts` 的 `server.highlight` 自定义主题：
 
 ```ts
 export default {
-  build: {
+  server: {
     highlight: {
       light: 'github-light-default',
       dark: 'github-dark-default',

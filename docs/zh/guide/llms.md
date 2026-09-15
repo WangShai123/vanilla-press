@@ -2,27 +2,14 @@
 
 生成 `llms.txt`，并为每个页面生成对应的 Markdown 路由文件，方便 LLM 直接读取文档源内容。
 
-## 运行时
-
-`build.llms` 默认启用。
-
-```ts
-export default {
-  build: {
-    llms: true,
-  },
-}
-```
-
 ## 元数据
 
-`build.llms: true` 等同于使用默认配置。
+LLMs 输出默认启用。`server.llms` 只用于配置页面工具栏数据。
 
 ```ts
 export default {
-  build: {
+  server: {
     llms: {
-      enabled: true, // 是否启用 llms 功能
       link: true, // 是否启用工具栏：查看 Markdown 链接
       copy: true, // 是否启用工具栏：复制 Markdown 链接
       chatgpt: true, // 是否启用工具栏：在 ChatGPT 中打开
@@ -32,7 +19,6 @@ export default {
 }
 ```
 
-- 当设置为 `false` 时，不会构建 `dist/llms.txt` 和各个页面对应的 `.md` 文件。
 - `link`、`copy`、`chatgpt`、`claude` 其中任意一项启用时，页面正文标题的下方就会输出 LLMS 工具栏。
 
 ## 配置

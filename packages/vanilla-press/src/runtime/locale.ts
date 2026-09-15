@@ -10,7 +10,7 @@ import type {
   RuntimePage,
 } from '../types.ts'
 import { isRecord } from '../types.ts'
-import { isI18nEnabled, runtimeOption } from '../utilities/features.ts'
+import { isI18nEnabled, serverOption } from '../utilities/features.ts'
 import {
   AUTO_LOCALE,
   defaultLocaleRoute,
@@ -28,7 +28,7 @@ import {
 } from './preference.ts'
 
 function i18nOptions(config: RuntimeConfig): RuntimeI18nConfig {
-  const value = runtimeOption(config, 'i18n')
+  const value = serverOption(config, 'i18n')
   return isRecord(value) ? (value as RuntimeI18nConfig) : {}
 }
 

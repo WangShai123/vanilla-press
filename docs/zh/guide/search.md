@@ -8,7 +8,7 @@
 
 ```ts
 export default {
-  browser: {
+  client: {
     search: true,
   },
 }

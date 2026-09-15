@@ -2,13 +2,13 @@
 
 Pagination helps users move through documentation pages more efficiently.
 
-## Runtime
+## Build
 
-In `vp/config/runtime.ts`, configure whether pagination is enabled.
+Pagination is rendered during build and configured with `server.prevNext`.
 
 ```ts
 export default {
-  browser: {
+  server: {
     prevNext: true,
   },
 }
@@ -16,7 +16,7 @@ export default {
 
 ## Slots
 
-Pagination only renders into a `<div data-vp-prev-next></div>` slot provided by the selected layout, then replaces it with `<nav class="vp-prev-next"></nav>`.
+Pagination only renders into a `<div data-vp-prev-next></div>` slot provided by the selected layout.
 
 - The default documentation layout includes this slot.
 - `layout: home` homepage layout does not render pagination by default.

@@ -1,16 +1,16 @@
 .vp-sidebar {
-  padding: 0 18px;
-  margin-top: 24px;
-  margin-bottom: 24px;
+  top: var(--vp-header-height);
+  bottom: 0;
+  box-sizing: border-box;
+  padding: 24px 18px;
   background: var(--vp-panel);
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--ui-border-subtle) transparent;
   position: fixed;
   width: 240px;
   min-width: 120px;
-  height: 100vh;
-  height: 100dvh;
 }
 
 .vp-nav {
@@ -44,7 +44,7 @@
 
 .vp-nav-title:hover,
 .vp-nav-title.is-active,
-.vp-nav-item.is-active>.vp-nav-title {
+.vp-nav-item.is-active > .vp-nav-title {
   color: var(--vp-accent);
   background: var(--vp-accent-bg);
 }
@@ -64,11 +64,11 @@
   transition: transform 0.18s ease;
 }
 
-.vp-nav-item.has-children>.vp-nav-title {
+.vp-nav-item.has-children > .vp-nav-title {
   padding-right: 36px;
 }
 
-.vp-nav-item.is-collapsed>.vp-nav-toggle svg {
+.vp-nav-item.is-collapsed > .vp-nav-toggle svg {
   transform: rotate(-90deg);
 }
 

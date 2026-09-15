@@ -21,9 +21,11 @@ import {
   DEFAULT_ROBOTS_TS,
   DEFAULT_SIDEBAR_TS,
 } from './config/defaults.ts'
-import { createMarkdown } from './core/md.ts'
+import { createMarkdown } from './markdown/md.ts'
 import { renderDefaultLocaleEntrypoint, renderHtml } from './render/html.ts'
 import { layoutStyles, loadLayouts, renderLayout } from './render/layout.ts'
+import { renderTreeNav } from './render/template/navigation.ts'
+import { createDocI18n, currentLocale } from './runtime/i18n.ts'
 import type {
   BuildOptions,
   BuildReportState,
@@ -35,14 +37,18 @@ import type {
   LoadedMarkdownComponent,
   ModuleScriptAsset,
   NavItem,
-  PageScriptAsset,
   RenderedPage,
   RuntimeSidebarConfig,
+  RuntimeSidebar,
   RuntimeBundleData,
   RuntimeI18nConfig,
   SeoData,
-  SharedVpScriptModule,
+  ClientImport,
+  ClientEntryAssets,
+  ServerClientConfig,
+  SharedClientModule,
   SourcePage,
+  StylesheetAsset,
   UnknownRecord,
 } from './types.ts'
 import { isRecord } from './types.ts'
@@ -53,19 +59,15 @@ import {
   formatLastEditDate,
   renderEditorHelp,
 } from './utilities/editor.ts'
+import { renderExternalLinks } from './utilities/external-link.ts'
 import {
   isAuthEnabled,
-  browserOption,
-  buildOption,
+  serverOption,
   isI18nEnabled,
-  isVpScriptEnabled,
   isLlmsEnabled,
-  isMenuEnabled,
   isRobotsEnabled,
   isSitemapEnabled,
   isSearchEnabled,
-  isSeoEnabled,
-  isSidebarEnabled,
   isThemeEnabled,
   isTocEnabled,
 } from './utilities/features.ts'
@@ -96,7 +98,9 @@ import {
   stripMdExt,
   toPosix,
 } from './utilities/path.ts'
+import { renderPrevNext } from './utilities/prev-next.ts'
 import { renderRobotsTxt } from './utilities/robots.ts'
+import { resolvePageSidebarItems } from './utilities/sidebar.ts'
 import { minifyCss, readStyleConfig } from './utilities/style.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -124,16 +128,22 @@ interface SearchIndexItem {
   content: string
 }
 
+interface ClientEntryFiles {
+  scripts: Map<string, string>
+  styles: Map<string, string>
+}
+
 type MarkdownItInstance = Awaited<ReturnType<typeof createMarkdown>>
 
-const SHARED_VP_SCRIPT_MODULES = [
+const SHARED_CLIENT_MODULES = [
   'vanilla-jui',
   'vanilla-signal',
   'vanilla-create-storage',
   'vanilla-signal-i18n',
-] satisfies SharedVpScriptModule[]
-const SHARED_VP_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime'
-const VP_RUNTIME_ID = 'vanilla-press/vp-runtime'
+] satisfies SharedClientModule[]
+const SHARED_CLIENT_RUNTIME_ID = 'vanilla-press/runtime'
+const CLIENT_RUNTIME_ID = 'vanilla-press/client'
+const CLIENT_MODULE_PREFIX = 'vanilla-press/client/modules/'
 const IMPORT_STATEMENT_RE =
   /^(\s*)import\s+(?:(.*?)\s+from\s+)?(['"])([^'"]+)\3\s*;?/gms
 
@@ -182,14 +192,6 @@ export async function ensureSourceConfig(configDir: string): Promise<void> {
   for (const [basename, content] of files) {
     if (await resolveSourceModule(configDir, basename)) continue
 
-    if (basename === 'runtime') {
-      const legacy = await resolveSourceModule(configDir, 'config')
-      if (legacy) {
-        await fs.copyFile(legacy, path.join(configDir, 'runtime.ts'))
-        continue
-      }
-    }
-
     await fs.writeFile(path.join(configDir, `${basename}.ts`), content, 'utf8')
   }
 }
@@ -197,18 +199,16 @@ export async function ensureSourceConfig(configDir: string): Promise<void> {
 export async function loadRuntimeConfig(
   configDir: string
 ): Promise<RuntimeConfig> {
-  const file =
-    (await resolveSourceModule(configDir, 'runtime')) ||
-    (await resolveSourceModule(configDir, 'config'))
+  const file = await resolveSourceModule(configDir, 'runtime')
   if (!file) return {}
 
   return importDefault<RuntimeConfig>(file, {})
 }
 
-export async function loadCustomRuntimeFile(
-  sharedDir: string
+export async function loadClientRuntimeFile(
+  clientDir: string
 ): Promise<string | null> {
-  return resolveSourceModule(sharedDir, 'runtime')
+  return resolveSourceModule(clientDir, 'runtime')
 }
 
 export async function loadFooterScript(
@@ -284,7 +284,7 @@ export function resolveI18nData(
   config: RuntimeConfig = {},
   messages: LanguagesConfig = {}
 ): LanguagesConfig {
-  const i18n = (browserOption(config, 'i18n') || {}) as RuntimeI18nConfig
+  const i18n = (serverOption(config, 'i18n') || {}) as RuntimeI18nConfig
   const i18nMessages = messages && typeof messages === 'object' ? messages : {}
 
   return {
@@ -349,10 +349,10 @@ export async function loadDirectorySidebarItems(
 export function createRuntimeSidebarConfig(
   items: unknown[] = [],
   directories: RuntimeSidebarConfig['directories'] = []
-): unknown[] | RuntimeSidebarConfig {
+): RuntimeSidebar {
   return directories.length
     ? { items: items as RuntimeSidebarConfig['items'], directories }
-    : items
+    : (items as RuntimeSidebar)
 }
 
 interface LastEditCacheEntry {
@@ -417,7 +417,7 @@ function lastEditSettings(config: RuntimeConfig = {}): {
   format: string
   utc: boolean
 } {
-  const lastEdit = buildOption(config, 'lastEdit')
+  const lastEdit = serverOption(config, 'lastEdit')
   if (!lastEdit || lastEdit === false || lastEdit === true) {
     return { format: DEFAULT_LAST_EDIT_FORMAT, utc: true }
   }
@@ -436,7 +436,7 @@ function resolveLastEditText(
   config: RuntimeConfig = {},
   cache: LastEditCache = {}
 ): string {
-  const lastEdit = buildOption(config, 'lastEdit')
+  const lastEdit = serverOption(config, 'lastEdit')
   if (!lastEdit || lastEdit === false) return ''
 
   const currentHash = sourceHash(source.markdown)
@@ -462,7 +462,7 @@ function resolveDefaultLocale(
   const locales = Array.isArray(languages.locales) ? languages.locales : []
   if (!locales.length) return null
 
-  const i18n = browserOption(config, 'i18n') as RuntimeI18nConfig | undefined
+  const i18n = serverOption(config, 'i18n') as RuntimeI18nConfig | undefined
   const preferred = String(i18n?.locale || languages.locale || '')
     .trim()
     .toLowerCase()
@@ -487,7 +487,7 @@ export async function writeDefaultLocaleEntrypoint(
   label = 'built'
 ): Promise<boolean> {
   if (!isI18nEnabled(config)) return false
-  const i18n = browserOption(config, 'i18n') as RuntimeI18nConfig | undefined
+  const i18n = serverOption(config, 'i18n') as RuntimeI18nConfig | undefined
   if (i18n?.redirectToDefault === false) return false
   if (pages.some((page) => page.rel === 'index.html')) return false
 
@@ -571,20 +571,16 @@ function serializeRuntimeValue(value: unknown): string {
   return serialized === undefined ? 'undefined' : serialized
 }
 
-function runtimeSharedVpExports(modules: SharedVpScriptModule[] = []): string {
+function runtimeSharedClientExports(
+  modules: SharedClientModule[] = []
+): string {
   return Array.from(new Set(modules))
     .sort()
     .map(
       (moduleName) =>
-        `export * as ${sharedVpExportName(moduleName)} from ${JSON.stringify(pathToFileURL(require.resolve(moduleName)).href)};`
+        `export * as ${sharedClientExportName(moduleName)} from ${JSON.stringify(pathToFileURL(require.resolve(moduleName)).href)};`
     )
     .join('\n')
-}
-
-function runtimeCustomExports(file: string | null | undefined): string {
-  return file
-    ? `export * from ${JSON.stringify(pathToFileURL(file).href)};`
-    : ''
 }
 
 async function writeRuntimeEntry(
@@ -594,16 +590,14 @@ async function writeRuntimeEntry(
   const runtimeHref = pathToFileURL(
     path.join(packageRoot, 'src/runtime.ts')
   ).href
-  const sharedExports = runtimeSharedVpExports(data.sharedVpModules)
-  const customExports = runtimeCustomExports(data.customRuntimeFile)
-  const code = `import { initDocPage, isMobile } from ${JSON.stringify(runtimeHref)};
-export { initDocPage, isMobile };
+  const sharedExports = runtimeSharedClientExports(data.sharedClientModules)
+  const code = `import { initDocPage } from ${JSON.stringify(runtimeHref)};
+export { initDocPage };
 export const runtimeConfig = ${serializeRuntimeValue(data.config)};
 export const languages = ${serializeRuntimeValue(data.languages || {})};
 export const menuItems = ${serializeRuntimeValue(data.menuItems || [])};
 export const sidebarItems = ${serializeRuntimeValue(data.sidebarItems || [])};
 ${sharedExports ? `${sharedExports}\n` : ''}
-${customExports ? `${customExports}\n` : ''}
 `
   const file = path.join(dir, 'runtime-entry.js')
   await fs.writeFile(file, code, 'utf8')
@@ -671,10 +665,336 @@ function moduleScriptRel(name: string, code: string): string {
   return publicAssetRel(`${name}.${contentHash(code)}.js`)
 }
 
-function pageScriptRel(pageRel: string, code: string): string {
-  const ext = path.extname(pageRel)
-  const base = ext ? pageRel.slice(0, -ext.length) : pageRel
-  return publicAssetRel(`${base}.${contentHash(code)}.js`)
+function safeClientSubpath(value: string): string {
+  const clean = toPosix(value)
+    .replace(/^\.\//, '')
+    .replace(/\.(?:ts|js|css)$/i, '')
+    .replace(/^\/+/, '')
+    .trim()
+  if (!clean || clean.split('/').some((part) => part === '..')) {
+    throw new Error(`Invalid client module path "${value}".`)
+  }
+  return clean
+}
+
+function clientRuntimeRel(): string {
+  return 'public/client/runtime.js'
+}
+
+function clientModuleRel(specifier: string): string {
+  const name = safeClientSubpath(specifier.slice(CLIENT_MODULE_PREFIX.length))
+  return `public/client/modules/${name}.js`
+}
+
+function clientEntryScriptRel(name: string): string {
+  return `public/client/entries/${safeClientSubpath(name)}.js`
+}
+
+function clientEntryStyleRel(name: string): string {
+  return `public/client/entries/${safeClientSubpath(name)}.css`
+}
+
+function isClientModuleSpecifier(value: string): boolean {
+  return value.startsWith(CLIENT_MODULE_PREFIX)
+}
+
+function toClientImport(specifier: string): ClientImport | null {
+  if (specifier === CLIENT_RUNTIME_ID) {
+    return { specifier, type: 'runtime' }
+  }
+  if (isClientModuleSpecifier(specifier)) {
+    return { specifier, type: 'module' }
+  }
+  return null
+}
+
+function collectClientImports(code: string): ClientImport[] {
+  const imports = new Map<string, ClientImport>()
+
+  code.replace(
+    IMPORT_STATEMENT_RE,
+    (statement, _indent, rawClause, _quote, source) => {
+      const clause = String(rawClause || '').trim()
+      if (clause.startsWith('type ')) return statement
+
+      const item = toClientImport(String(source || ''))
+      if (item) imports.set(item.specifier, item)
+      return statement
+    }
+  )
+
+  return Array.from(imports.values()).sort((a, b) =>
+    a.specifier.localeCompare(b.specifier)
+  )
+}
+
+function mergeClientImports(imports: ClientImport[] = []): ClientImport[] {
+  return Array.from(
+    new Map(imports.map((item) => [item.specifier, item])).values()
+  ).sort((a, b) => a.specifier.localeCompare(b.specifier))
+}
+
+function clientImportMap(
+  rel: string,
+  imports: ClientImport[] = []
+): Record<string, string> {
+  const map: Record<string, string> = {}
+
+  for (const item of mergeClientImports(imports)) {
+    if (item.type === 'runtime') {
+      map[item.specifier] = relativeAsset(rel, clientRuntimeRel())
+    } else if (item.type === 'module') {
+      map[item.specifier] = relativeAsset(rel, clientModuleRel(item.specifier))
+    }
+  }
+
+  return map
+}
+
+async function resolveClientModuleFile(
+  clientDir: string,
+  specifier: string
+): Promise<string> {
+  const name = safeClientSubpath(specifier.slice(CLIENT_MODULE_PREFIX.length))
+  const file = await resolveSourceModule(path.join(clientDir, 'modules'), name)
+  if (!file) {
+    throw new Error(
+      `Missing client module "${specifier}". Add vp/client/modules/${name}.ts or .js.`
+    )
+  }
+  return file
+}
+
+async function bundleClientFile(
+  outputDir: string,
+  rel: string,
+  file: string
+): Promise<void> {
+  const result = await esbuildBuild({
+    bundle: true,
+    external: [
+      SHARED_CLIENT_RUNTIME_ID,
+      CLIENT_RUNTIME_ID,
+      `${CLIENT_MODULE_PREFIX}*`,
+    ],
+    format: 'esm',
+    legalComments: 'none',
+    minify: false,
+    platform: 'browser',
+    target: 'es2020',
+    entryPoints: [file],
+    write: false,
+  })
+  const output = result.outputFiles?.[0]?.text || ''
+  const outputFile = path.join(outputDir, rel)
+  await fs.mkdir(path.dirname(outputFile), { recursive: true })
+  await fs.writeFile(outputFile, output, 'utf8')
+}
+
+function configuredClientEntries(config: RuntimeConfig = {}): ClientEntryFiles {
+  const client = serverOption(config, 'client') as
+    | ServerClientConfig
+    | undefined
+  const entries = isRecord(client?.entries) ? client.entries : {}
+  const result: ClientEntryFiles = {
+    scripts: new Map<string, string>(),
+    styles: new Map<string, string>(),
+  }
+
+  for (const [name, file] of Object.entries(entries)) {
+    const cleanName = safeClientSubpath(name)
+    const entryFiles = Array.isArray(file) ? file : [file]
+
+    for (const item of entryFiles) {
+      if (typeof item !== 'string' || !item.trim()) continue
+
+      const entryFile = path.isAbsolute(item)
+        ? item
+        : path.resolve(workingRoot, item)
+      if (path.extname(entryFile).toLowerCase() === '.css') {
+        result.styles.set(cleanName, entryFile)
+      } else {
+        result.scripts.set(cleanName, entryFile)
+      }
+    }
+  }
+
+  return result
+}
+
+async function loadClientEntryFiles(
+  clientDir: string,
+  config: RuntimeConfig = {}
+): Promise<ClientEntryFiles> {
+  const entries = configuredClientEntries(config)
+  const entriesDir = path.join(clientDir, 'entries')
+  const files = await glob('**/*.{ts,js,css}', {
+    cwd: entriesDir,
+    nodir: true,
+    windowsPathsNoEscape: true,
+  }).catch(() => [])
+
+  for (const file of files.sort((a, b) => a.localeCompare(b))) {
+    const name = safeClientSubpath(file)
+    const entryFile = path.join(entriesDir, file)
+    if (path.extname(file).toLowerCase() === '.css') {
+      if (!entries.styles.has(name)) entries.styles.set(name, entryFile)
+    } else if (!entries.scripts.has(name)) {
+      entries.scripts.set(name, entryFile)
+    }
+  }
+
+  return entries
+}
+
+function pageClientEntryNames(source: SourcePage): string[] {
+  const value = source.frontmatter.client
+  const entries = Array.isArray(value)
+    ? value
+    : typeof value === 'string'
+      ? [value]
+      : isRecord(value)
+        ? Array.isArray(value.entry)
+          ? value.entry
+          : typeof value.entry === 'string'
+            ? [value.entry]
+            : []
+        : []
+
+  return Array.from(
+    new Set(
+      entries
+        .filter((item): item is string => typeof item === 'string')
+        .map((item) => safeClientSubpath(item))
+    )
+  ).sort()
+}
+
+export async function scanClientEntryAssets(
+  clientDir: string,
+  config: RuntimeConfig = {}
+): Promise<ClientEntryAssets> {
+  const files = await loadClientEntryFiles(clientDir, config)
+  const assets: ClientEntryAssets = {
+    scripts: new Map<string, ModuleScriptAsset>(),
+    styles: new Map<string, StylesheetAsset>(),
+  }
+
+  await Promise.all(
+    Array.from(files.scripts.entries()).map(async ([name, file]) => {
+      const code = await fs.readFile(file, 'utf8')
+      assets.scripts.set(name, {
+        name,
+        rel: clientEntryScriptRel(name),
+        file,
+        clientImports: collectClientImports(code),
+      })
+    })
+  )
+
+  for (const [name, file] of files.styles) {
+    assets.styles.set(name, {
+      name,
+      rel: clientEntryStyleRel(name),
+      file,
+    })
+  }
+
+  return assets
+}
+
+function requiredClientImports(pages: RenderedPage[] = []): ClientImport[] {
+  return mergeClientImports(
+    pages.flatMap((page) => [
+      ...(page.layoutScript?.clientImports || []),
+      ...(page.clientEntries || []).flatMap(
+        (entry) => entry.clientImports || []
+      ),
+    ])
+  )
+}
+
+function requiredClientEntries(
+  pages: RenderedPage[] = []
+): ModuleScriptAsset[] {
+  const entries = new Map<string, ModuleScriptAsset>()
+  for (const page of pages) {
+    for (const entry of page.clientEntries || []) entries.set(entry.name, entry)
+  }
+  return Array.from(entries.values()).sort((a, b) =>
+    a.name.localeCompare(b.name)
+  )
+}
+
+function requiredClientStyles(pages: RenderedPage[] = []): StylesheetAsset[] {
+  const entries = new Map<string, StylesheetAsset>()
+  for (const page of pages) {
+    for (const entry of page.clientStyles || []) entries.set(entry.name, entry)
+  }
+  return Array.from(entries.values()).sort((a, b) =>
+    a.name.localeCompare(b.name)
+  )
+}
+
+async function bundleClientStyle(
+  outputDir: string,
+  rel: string,
+  file: string
+): Promise<void> {
+  const outputFile = path.join(outputDir, rel)
+  await fs.mkdir(path.dirname(outputFile), { recursive: true })
+
+  await esbuildBuild({
+    bundle: true,
+    legalComments: 'none',
+    minify: true,
+    outfile: outputFile,
+    platform: 'browser',
+    target: 'es2020',
+    entryPoints: [file],
+  })
+}
+
+export async function buildClientAssets(
+  outputDir: string,
+  clientDir: string,
+  pages: RenderedPage[] = []
+): Promise<void> {
+  const imports = requiredClientImports(pages)
+  const runtimeImport = imports.find((item) => item.type === 'runtime')
+  if (runtimeImport) {
+    const file = await loadClientRuntimeFile(clientDir)
+    if (!file) {
+      throw new Error(
+        `Missing client runtime "${CLIENT_RUNTIME_ID}". Add vp/client/runtime.ts or .js.`
+      )
+    }
+    await bundleClientFile(outputDir, clientRuntimeRel(), file)
+  }
+
+  await Promise.all(
+    imports
+      .filter((item) => item.type === 'module')
+      .map(async (item) =>
+        bundleClientFile(
+          outputDir,
+          clientModuleRel(item.specifier),
+          await resolveClientModuleFile(clientDir, item.specifier)
+        )
+      )
+  )
+
+  await Promise.all(
+    requiredClientEntries(pages).map((entry) =>
+      bundleClientFile(outputDir, entry.rel, entry.file)
+    )
+  )
+
+  await Promise.all(
+    requiredClientStyles(pages).map((entry) =>
+      bundleClientStyle(outputDir, entry.rel, entry.file)
+    )
+  )
 }
 
 function componentRuntimeEntry(component: LoadedMarkdownComponent): string {
@@ -704,34 +1024,35 @@ export default { name, dependsOn, init };
 `
 }
 
-function vpScriptSharedModules(
-  config: RuntimeConfig = {}
-): SharedVpScriptModule[] {
-  const vpScript = buildOption(config, 'vpScript')
-  const shared =
-    vpScript && typeof vpScript === 'object'
-      ? (vpScript as UnknownRecord).shared
-      : []
+function clientSharedModules(config: RuntimeConfig = {}): SharedClientModule[] {
+  const client = serverOption(config, 'client') as
+    | ServerClientConfig
+    | undefined
+  const shared = client?.shared
   const configured = Array.isArray(shared)
     ? shared
         .filter((item): item is string => typeof item === 'string')
         .map((item) => item.trim())
         .filter(Boolean)
-    : []
+    : isRecord(shared)
+      ? Object.values(shared)
+          .flat()
+          .filter((item): item is string => typeof item === 'string')
+          .map((item) => item.trim())
+          .filter(Boolean)
+      : []
 
-  return Array.from(
-    new Set([...SHARED_VP_SCRIPT_MODULES, ...configured])
-  ).sort()
+  return Array.from(new Set([...SHARED_CLIENT_MODULES, ...configured])).sort()
 }
 
-function isSharedVpScriptModule(
+function isSharedClientModule(
   value: string,
-  sharedModules: SharedVpScriptModule[] = SHARED_VP_SCRIPT_MODULES
-): value is SharedVpScriptModule {
+  sharedModules: SharedClientModule[] = SHARED_CLIENT_MODULES
+): value is SharedClientModule {
   return sharedModules.includes(value)
 }
 
-function sharedVpExportName(moduleName: SharedVpScriptModule): string {
+function sharedClientExportName(moduleName: SharedClientModule): string {
   return `__vp_${moduleName.replace(/[^a-zA-Z0-9_$]/g, '_')}_${contentHash(moduleName)}`
 }
 
@@ -814,24 +1135,24 @@ function parseVpImportClause(clause: string): ParsedVpImportClause {
   return result
 }
 
-function rewriteSharedVpScriptImports(
+function rewriteSharedClientImports(
   code: string,
-  sharedVpModules: SharedVpScriptModule[] = SHARED_VP_SCRIPT_MODULES
+  sharedClientModules: SharedClientModule[] = SHARED_CLIENT_MODULES
 ): {
   code: string
-  sharedVpModules: SharedVpScriptModule[]
+  sharedClientModules: SharedClientModule[]
 } {
-  const sharedVpModuleSet = new Set<SharedVpScriptModule>()
+  const sharedClientModuleSet = new Set<SharedClientModule>()
   let index = 0
 
   const rewritten = code.replace(
     IMPORT_STATEMENT_RE,
     (statement, indent, rawClause, _quote, source) => {
-      if (!isSharedVpScriptModule(source, sharedVpModules)) {
+      if (!isSharedClientModule(source, sharedClientModules)) {
         return statement
       }
 
-      const exportName = sharedVpExportName(source)
+      const exportName = sharedClientExportName(source)
       const tempName = `__vp_shared_${index++}`
       const clause = String(rawClause || '').trim()
 
@@ -840,8 +1161,8 @@ function rewriteSharedVpScriptImports(
       }
 
       if (!clause) {
-        sharedVpModuleSet.add(source)
-        return `${indent}import { ${exportName} as ${tempName} } from '${SHARED_VP_SCRIPT_RUNTIME_ID}';`
+        sharedClientModuleSet.add(source)
+        return `${indent}import { ${exportName} as ${tempName} } from '${SHARED_CLIENT_RUNTIME_ID}';`
       }
 
       const parsed = parseVpImportClause(clause)
@@ -850,13 +1171,13 @@ function rewriteSharedVpScriptImports(
         return statement
       }
 
-      sharedVpModuleSet.add(source)
+      sharedClientModuleSet.add(source)
       if (parsed.namespaceName) {
-        return `${indent}import { ${exportName} as ${parsed.namespaceName} } from '${SHARED_VP_SCRIPT_RUNTIME_ID}';`
+        return `${indent}import { ${exportName} as ${parsed.namespaceName} } from '${SHARED_CLIENT_RUNTIME_ID}';`
       }
 
       const lines = [
-        `${indent}import { ${exportName} as ${tempName} } from '${SHARED_VP_SCRIPT_RUNTIME_ID}';`,
+        `${indent}import { ${exportName} as ${tempName} } from '${SHARED_CLIENT_RUNTIME_ID}';`,
       ]
 
       if (parsed.defaultName) {
@@ -880,57 +1201,8 @@ function rewriteSharedVpScriptImports(
 
   return {
     code: rewritten,
-    sharedVpModules: Array.from(sharedVpModuleSet).sort(),
+    sharedClientModules: Array.from(sharedClientModuleSet).sort(),
   }
-}
-
-function normalizeVpRuntimeImports(code: string): {
-  code: string
-  usesVpRuntime: boolean
-} {
-  let usesVpRuntime = false
-
-  const rewritten = code.replace(
-    IMPORT_STATEMENT_RE,
-    (statement, _indent, rawClause, _quote, source) => {
-      if (source !== VP_RUNTIME_ID) return statement
-
-      const clause = String(rawClause || '').trim()
-      if (clause.startsWith('type ')) return statement
-
-      usesVpRuntime = true
-      return statement
-    }
-  )
-
-  return { code: rewritten, usesVpRuntime }
-}
-
-function createPageScripts(
-  source: SourcePage,
-  scripts: string[] = [],
-  sharedVpModules: SharedVpScriptModule[] = SHARED_VP_SCRIPT_MODULES
-): PageScriptAsset[] {
-  const blocks = scripts.map((script) => script.trim()).filter(Boolean)
-  if (!blocks.length) return []
-
-  const code = `${blocks
-    .map((script, index) => `// vp-script ${index + 1}\n${script}`)
-    .join('\n\n')}\n`
-  const customRuntime = normalizeVpRuntimeImports(code)
-  const rewritten = rewriteSharedVpScriptImports(
-    customRuntime.code,
-    sharedVpModules
-  )
-
-  return [
-    {
-      rel: pageScriptRel(source.rel, rewritten.code),
-      code: rewritten.code,
-      sharedVpModules: rewritten.sharedVpModules,
-      usesVpRuntime: customRuntime.usesVpRuntime,
-    },
-  ]
 }
 
 function rewriteAssetReferences(
@@ -940,8 +1212,7 @@ function rewriteAssetReferences(
   let output = html
 
   for (const [from, to] of assetMap) {
-    const pattern = new RegExp(`(["'])([^"']*?)${from}(["'])`, 'g')
-    output = output.replace(pattern, `$1$2${to}$3`)
+    output = output.split(`public/${from}`).join(`public/${to}`)
   }
 
   return output
@@ -1017,38 +1288,6 @@ async function minifyJsAssets(outputDir: string): Promise<number> {
   return files.length
 }
 
-async function writePageScripts(
-  outputDir: string,
-  pages: RenderedPage[] = []
-): Promise<void> {
-  const scripts = pages.flatMap((page) => page.scripts || [])
-
-  await Promise.all(
-    scripts.map(async (script) => {
-      const outputFile = path.join(outputDir, script.rel)
-      const result = await esbuildBuild({
-        bundle: true,
-        format: 'esm',
-        legalComments: 'none',
-        minify: false,
-        platform: 'browser',
-        target: 'es2020',
-        write: false,
-        external: [SHARED_VP_SCRIPT_RUNTIME_ID, VP_RUNTIME_ID],
-        stdin: {
-          contents: script.code,
-          loader: 'js',
-          resolveDir: workingRoot,
-          sourcefile: script.rel,
-        },
-      })
-      const output = result.outputFiles?.[0]?.text || script.code
-      await fs.mkdir(path.dirname(outputFile), { recursive: true })
-      await fs.writeFile(outputFile, output, 'utf8')
-    })
-  )
-}
-
 async function bundleModuleScript(
   outputDir: string,
   name: string,
@@ -1119,7 +1358,7 @@ export async function buildLayoutScripts(
   config: RuntimeConfig = {}
 ): Promise<Map<string, ModuleScriptAsset>> {
   const assets = new Map<string, ModuleScriptAsset>()
-  const sharedVpModules = vpScriptSharedModules(config)
+  const sharedClientModules = clientSharedModules(config)
 
   await Promise.all(
     Array.from(layouts.values())
@@ -1127,11 +1366,8 @@ export async function buildLayoutScripts(
       .map(async (layout) => {
         const scriptFile = String(layout.scriptFile)
         const code = await fs.readFile(scriptFile, 'utf8')
-        const customRuntime = normalizeVpRuntimeImports(code)
-        const rewritten = rewriteSharedVpScriptImports(
-          customRuntime.code,
-          sharedVpModules
-        )
+        const clientImports = collectClientImports(code)
+        const rewritten = rewriteSharedClientImports(code, sharedClientModules)
         const loader =
           path.extname(scriptFile).toLowerCase() === '.ts' ? 'ts' : 'js'
         const rel = await bundleModuleScript(
@@ -1140,7 +1376,11 @@ export async function buildLayoutScripts(
           rewritten.code,
           scriptFile,
           {
-            external: [SHARED_VP_SCRIPT_RUNTIME_ID, VP_RUNTIME_ID],
+            external: [
+              SHARED_CLIENT_RUNTIME_ID,
+              CLIENT_RUNTIME_ID,
+              `${CLIENT_MODULE_PREFIX}*`,
+            ],
             loader,
             resolveDir: path.dirname(scriptFile),
           }
@@ -1150,8 +1390,8 @@ export async function buildLayoutScripts(
           name: layout.name,
           rel,
           file: scriptFile,
-          sharedVpModules: rewritten.sharedVpModules,
-          usesVpRuntime: customRuntime.usesVpRuntime,
+          sharedClientModules: rewritten.sharedClientModules,
+          clientImports,
         })
       })
   )
@@ -1184,27 +1424,16 @@ function pageComponentScripts(
   )
 }
 
-export function pageSharedVpModules(
+export function pageSharedClientModules(
   pages: RenderedPage[] = []
-): SharedVpScriptModule[] {
+): SharedClientModule[] {
   return Array.from(
     new Set(
       pages.flatMap((page) => [
-        ...(page.layoutScript?.sharedVpModules || []),
-        ...(page.scripts || []).flatMap(
-          (script) => script.sharedVpModules || []
-        ),
+        ...(page.layoutScript?.sharedClientModules || []),
       ])
     )
   ).sort()
-}
-
-export function pagesUseVpRuntime(pages: RenderedPage[] = []): boolean {
-  return pages.some(
-    (page) =>
-      Boolean(page.layoutScript?.usesVpRuntime) ||
-      (page.scripts || []).some((script) => script.usesVpRuntime)
-  )
 }
 
 export function readSource(file: string, markdown: string): SourcePage {
@@ -1240,7 +1469,7 @@ function localeHomeRel(
     (entry) =>
       rel === `${entry.route}/index.html` || rel.startsWith(`${entry.route}/`)
   )
-  const i18n = (browserOption(config, 'i18n') || {}) as RuntimeI18nConfig
+  const i18n = (serverOption(config, 'i18n') || {}) as RuntimeI18nConfig
   const route = matched?.route || defaultLocaleRoute(i18n, languages)
 
   return route && route !== 'auto' ? `${route}/index.html` : 'index.html'
@@ -1264,9 +1493,11 @@ export function renderSource(
   config: RuntimeConfig,
   languages: LanguagesConfig,
   menuItems: NavItem[],
+  sidebarItems: RuntimeSidebar,
   layouts: LayoutMap,
   componentScriptAssets: Map<string, ModuleScriptAsset>,
   layoutScriptAssets: Map<string, ModuleScriptAsset>,
+  clientEntryAssets: ClientEntryAssets,
   llmsConfig: UnknownRecord,
   footerScript: FooterScriptConfig,
   lastEditCache: LastEditCache,
@@ -1275,14 +1506,9 @@ export function renderSource(
   const env = {
     file: source.file,
     components: new Set<string>(),
-    vpScripts: [] as string[],
     config,
   }
   const rendered = md.render(source.markdown, env)
-  const sharedVpModules = vpScriptSharedModules(config)
-  const scripts = isVpScriptEnabled()
-    ? createPageScripts(source, env.vpScripts, sharedVpModules)
-    : []
   const articleBody = injectLlmsControls(
     cleanHtml(transformComponentTags(rendered)),
     source,
@@ -1297,45 +1523,113 @@ export function renderSource(
     resolveLastEditText(source, config, lastEditCache)
   )
   const body = articleBody
+  const pageInfo = {
+    title: source.title,
+    rel: source.rel,
+    seo: source.seo,
+  }
+  const i18n = createDocI18n(languages, pageInfo)
+  const locale = currentLocale(languages, pageInfo)
+  const pageSidebarItems = resolvePageSidebarItems(sidebarItems, pageInfo)
+  const menuEnabled = menuItems.length > 0
+  const sidebarEnabled = pageSidebarItems.length > 0
+  const sidebar = sidebarEnabled
+    ? renderTreeNav(
+        pageSidebarItems,
+        pageInfo,
+        i18n,
+        locale,
+        ' data-vp-sidebar'
+      )
+    : ''
+  const mobileSidebar = sidebarEnabled
+    ? `<div data-vp-mobile-sidebar-content hidden>
+      <div class="vp-mobile-sidebar-panel">
+        ${renderTreeNav(pageSidebarItems, pageInfo, i18n, locale, ' data-vp-mobile-sidebar-nav')}
+      </div>
+    </div>`
+    : ''
+  const prevNext = renderPrevNext(
+    config,
+    pageSidebarItems,
+    pageInfo,
+    i18n,
+    locale
+  )
   const pageLayout = renderLayout({
     body: articleBody,
     editorHelp,
+    sidebar,
+    mobileSidebar,
+    prevNext,
     source,
     config,
-    sidebarEnabled: isSidebarEnabled(config),
+    sidebarEnabled,
     tocEnabled: isTocEnabled(config),
     chrome: {
       rel: source.rel,
       brandHref: brandHref(source, config, languages, hasRootIndex),
       config,
       languages,
+      i18n,
       menuItems,
-      page: {
-        title: source.title,
-        rel: source.rel,
-        seo: source.seo,
-      },
-      menuEnabled: isMenuEnabled(config),
+      page: pageInfo,
+      menuEnabled,
       searchEnabled: isSearchEnabled(config),
       i18nEnabled: isI18nEnabled(config),
-      sidebarEnabled: isSidebarEnabled(config),
+      sidebarEnabled,
       tocEnabled: isTocEnabled(config),
       themeEnabled: isThemeEnabled(config),
       authEnabled: isAuthEnabled(config),
     },
     layouts,
   })
+  const renderedPageLayout = {
+    ...pageLayout,
+    html: renderExternalLinks(pageLayout.html, config),
+  }
   const components = Array.from(env.components).sort()
   const componentScripts = pageComponentScripts(
     components,
     componentScriptAssets
   )
   const layoutScript = layoutScriptAssets.get(pageLayout.name) || null
-  const runtimeImportMap =
-    scripts.some((script) => script.sharedVpModules.length) ||
-    scripts.some((script) => script.usesVpRuntime) ||
-    Boolean(layoutScript?.usesVpRuntime) ||
-    Boolean(layoutScript?.sharedVpModules?.length)
+  const clientEntryNames = pageClientEntryNames(source)
+  const clientEntries = clientEntryNames.flatMap((name) => {
+    const asset = clientEntryAssets.scripts.get(name)
+    return asset ? [asset] : []
+  })
+  const clientStyles = clientEntryNames.flatMap((name) => {
+    const asset = clientEntryAssets.styles.get(name)
+    return asset ? [asset] : []
+  })
+
+  for (const name of clientEntryNames) {
+    if (
+      !clientEntryAssets.scripts.has(name) &&
+      !clientEntryAssets.styles.has(name)
+    ) {
+      throw new Error(
+        `Missing client entry "${name}" in ${source.rel}. Add vp/client/entries/${name}.ts, .js, or .css, or configure server.client.entries.`
+      )
+    }
+  }
+  const clientImports = mergeClientImports([
+    ...(layoutScript?.clientImports || []),
+    ...clientEntries.flatMap((entry) => entry.clientImports || []),
+  ])
+  const runtimeImportMap = Boolean(layoutScript?.sharedClientModules?.length)
+  const importMap = {
+    ...(runtimeImportMap
+      ? {
+          [SHARED_CLIENT_RUNTIME_ID]: relativeAsset(
+            source.rel,
+            'public/runtime.js'
+          ),
+        }
+      : {}),
+    ...clientImportMap(source.rel, clientImports),
+  }
 
   return {
     ...source,
@@ -1344,10 +1638,11 @@ export function renderSource(
     components,
     componentScripts,
     layoutScript,
-    scripts,
+    clientEntries,
+    clientStyles,
     html: renderHtml({
       title: source.title,
-      seo: isSeoEnabled(config) ? source.seo : {},
+      seo: source.seo,
       body,
       rel: source.rel,
       components,
@@ -1355,10 +1650,11 @@ export function renderSource(
       layoutScript: layoutScript?.rel,
       config,
       languages,
-      pageLayout,
+      pageLayout: renderedPageLayout,
       searchEnabled: isSearchEnabled(config),
-      runtimeImportMap,
-      scripts: scripts.map((script) => script.rel),
+      importMap,
+      clientScripts: clientEntries.map((entry) => entry.rel),
+      clientStyles: clientStyles.map((entry) => entry.rel),
       footerScript,
     }),
   }
@@ -1470,16 +1766,15 @@ export async function build({
   await ensureSourceConfig(configDir)
   const resolvedCacheDir =
     cacheDir || path.join(path.dirname(configDir), 'cache')
-  const sharedDir = path.join(path.dirname(configDir), 'shared')
-  await fs.mkdir(sharedDir, { recursive: true })
+  const clientDir = path.join(path.dirname(configDir), 'client')
+  await fs.mkdir(clientDir, { recursive: true })
   const config = await loadRuntimeConfig(configDir)
   validateRuntimeConfig(config)
-  const customRuntimeFile = await loadCustomRuntimeFile(sharedDir)
   const footerScript = await loadFooterScript(configDir)
   const customComponents = await loadCustomComponents(componentsDir)
   const md = await createMarkdown(config, customComponents)
   const layouts = await loadLayouts({ packageRoot, layoutsDir })
-  const lastEditCache = buildOption(config, 'lastEdit')
+  const lastEditCache = serverOption(config, 'lastEdit')
     ? await loadLastEditCache(resolvedCacheDir)
     : {}
   const logOutput = report ? console.warn : () => {}
@@ -1495,7 +1790,7 @@ export async function build({
   await fs.mkdir(outputDir, { recursive: true })
   const publicDir = path.join(outputDir, 'public')
   await fs.mkdir(publicDir, { recursive: true })
-  if (buildOption(config, 'lastEdit')) {
+  if (serverOption(config, 'lastEdit')) {
     await fs.mkdir(resolvedCacheDir, { recursive: true })
   }
   await copyStaticAssets(assetsDir, publicDir)
@@ -1503,13 +1798,9 @@ export async function build({
   const languages = isI18nEnabled(config)
     ? resolveI18nData(config, await loadLanguages(configDir))
     : {}
-  const menuItems = isMenuEnabled(config) ? await loadMenuItems(configDir) : []
-  const sidebarItems = isSidebarEnabled(config)
-    ? await loadSidebarItems(configDir)
-    : []
-  const directorySidebarItems = isSidebarEnabled(config)
-    ? await loadDirectorySidebarItems(inputDir)
-    : []
+  const menuItems = await loadMenuItems(configDir)
+  const sidebarItems = await loadSidebarItems(configDir)
+  const directorySidebarItems = await loadDirectorySidebarItems(inputDir)
   const llmsConfig = isLlmsEnabled(config)
     ? await loadLlmsConfig(configDir)
     : {}
@@ -1537,6 +1828,11 @@ export async function build({
     layouts,
     config
   )
+  const clientEntryAssets = await scanClientEntryAssets(clientDir, config)
+  const runtimeSidebarItems = createRuntimeSidebarConfig(
+    sidebarItems,
+    directorySidebarItems
+  )
 
   const pages = sources.map((source) =>
     renderSource(
@@ -1545,20 +1841,17 @@ export async function build({
       config,
       languages,
       menuItems as NavItem[],
+      runtimeSidebarItems,
       layouts,
       componentScriptAssets,
       layoutScriptAssets,
+      clientEntryAssets,
       llmsConfig,
       footerScript,
       lastEditCache,
       hasRootIndex
     )
   )
-  if (pagesUseVpRuntime(pages) && !customRuntimeFile) {
-    throw new Error(
-      'Missing vp/shared/runtime.ts. Add vp/shared/runtime.ts or remove imports from "vanilla-press/vp-runtime".'
-    )
-  }
   await buildRuntime(publicDir, {
     config,
     languages,
@@ -1567,9 +1860,9 @@ export async function build({
       sidebarItems,
       directorySidebarItems
     ),
-    sharedVpModules: pageSharedVpModules(pages),
-    customRuntimeFile,
+    sharedClientModules: pageSharedClientModules(pages),
   })
+  await buildClientAssets(outputDir, clientDir, pages)
   if (isSearchEnabled(config)) await writeSearchIndex(publicDir, pages)
   if (isSitemapEnabled(config)) await writeSitemap(outputDir, pages, config)
   if (isLlmsEnabled(config)) {
@@ -1578,11 +1871,9 @@ export async function build({
   if (isRobotsEnabled(config)) {
     await writeRobots(outputDir, await loadRobotsConfig(configDir))
   }
-  if (buildOption(config, 'lastEdit')) {
+  if (serverOption(config, 'lastEdit')) {
     await writeLastEditCache(resolvedCacheDir, lastEditCache)
   }
-  await writePageScripts(outputDir, pages)
-
   for (const page of pages) {
     const outputFile = path.join(outputDir, page.rel)
     await fs.mkdir(path.dirname(outputFile), { recursive: true })

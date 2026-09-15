@@ -14,7 +14,7 @@ import {
 
 import type { RuntimeConfig } from '../types.ts'
 import { isRecord } from '../types.ts'
-import { buildOption } from '../utilities/features.ts'
+import { serverOption } from '../utilities/features.ts'
 import { toText } from '../utilities/string.ts'
 
 type CodeHighlightThemes = Record<'light' | 'dark', BundledTheme>
@@ -104,7 +104,7 @@ function normalizeTheme(value: unknown, fallback: BundledTheme): BundledTheme {
 }
 
 function highlightThemes(config: RuntimeConfig = {}): CodeHighlightThemes {
-  const highlight = buildOption(config, 'highlight')
+  const highlight = serverOption(config, 'highlight')
 
   if (!isRecord(highlight)) return DEFAULT_SHIKI_THEMES
 

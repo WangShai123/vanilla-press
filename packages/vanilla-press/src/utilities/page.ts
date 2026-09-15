@@ -1,5 +1,5 @@
 import type { RuntimeConfig } from '../types.ts'
-import { browserOption } from './features.ts'
+import { serverOption } from './features.ts'
 import { toText } from './string.ts'
 
 interface LocalePathItem {
@@ -34,7 +34,7 @@ export function isHomePageRel(
   const value = normalizeRel(rel) || 'index.html'
   if (value === 'index.html') return true
 
-  const i18n = browserOption(config, 'i18n') as
+  const i18n = serverOption(config, 'i18n') as
     | { locales?: LocalePathItem[] }
     | undefined
   const locales =

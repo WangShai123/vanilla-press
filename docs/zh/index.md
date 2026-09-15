@@ -40,7 +40,7 @@ layouts:
           description: 便捷的 API，轻松定制布局、组件、运行时模块，不需要改动主流程。
         - index: 3
           title: 自由组合
-          description: 提供依赖管理和 vp-script 能力，轻松与外部连接，实现授权、支付等高级功能。
+          description: 提供 client entry 与依赖管理能力，轻松与外部连接，实现授权、支付等高级功能。
         - index: 4
           title: Markdown 扩展
           description: 基于 markdown-it 扩展容器组件，用稳定的 data-vp 标记连接构建期和运行时。
@@ -57,7 +57,7 @@ layouts:
         - text: 布局 API
           link: ./guide/layout-api.html
           variant: is-primary
-        - text: vp-script API
-          link: ./guide/vp-script.html
+        - text: Client 管理
+          link: ./guide/client.html
           variant: is-secondary
 ---

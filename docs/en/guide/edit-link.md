@@ -2,15 +2,15 @@
 
 The edit link shows an “Edit” entry on documentation pages so authors can jump directly to the source file.
 
-This is a build-time feature controlled by `build.editLink` in `vp/config/runtime.ts`. During build, `vanilla-press` generates a link from the current page path and writes it to HTML.
+This is a build-time feature configured by `server.editLink` in `vp/config/runtime.ts`. During build, `vanilla-press` generates a link from the current page path and writes it to HTML.
 
 ## Configuration
 
-`build.editLink` is enabled by default.
+`server.editLink` is enabled by default.
 
 ```ts
 export default {
-  build: {
+  server: {
     editLink: true,
   },
 }
@@ -21,7 +21,7 @@ export default {
 
 ```ts
 export default {
-  build: {
+  server: {
     editLink: {
       pattern:
         'https://github.com/WangShai123/vanilla-press/edit/main/docs/:path',
@@ -53,7 +53,7 @@ For example, point the link to your own GitHub repository:
 
 ```ts
 export default {
-  build: {
+  server: {
     editLink: {
       pattern: 'https://github.com/your-name/your-repo/edit/main/docs/:path',
     },
@@ -69,7 +69,7 @@ The default value is `editor.editLink`, which is resolved through the current lo
 
 ```ts
 export default {
-  build: {
+  server: {
     editLink: {
       text: 'editor.editLink',
     },

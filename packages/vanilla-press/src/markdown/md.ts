@@ -11,7 +11,6 @@ import { installOffcanvas } from '../components/offcanvas.ts'
 import { installTabs } from '../components/tabs.ts'
 import { installTip } from '../components/tip.ts'
 import { installTree } from '../components/tree.ts'
-import { installVpScript } from '../runtime/vpScript.ts'
 import type { RuntimeConfig, LoadedMarkdownComponent } from '../types.ts'
 import { escapeHtml } from '../utilities/html.ts'
 import { markComponent } from '../utilities/markdown.ts'
@@ -55,7 +54,6 @@ export async function createMarkdown(
   installTip(md)
   installTree(md)
   installCustomComponents(md, components)
-  installVpScript(md)
 
   return md
 }

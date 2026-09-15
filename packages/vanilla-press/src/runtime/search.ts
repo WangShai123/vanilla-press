@@ -1,11 +1,4 @@
-import {
-  all,
-  createModal,
-  icon,
-  randomId,
-  isMobile,
-  type Modal,
-} from 'vanilla-jui'
+import { all, createModal, icon, randomId, type Modal } from 'vanilla-jui'
 import { jsx } from 'vanilla-signal'
 
 import type {
@@ -22,6 +15,7 @@ import { isSearchEnabled } from '../utilities/features.ts'
 import { toText } from '../utilities/string.ts'
 import { localize } from './i18n.ts'
 import { normalizeRel, relativeAsset } from './path.ts'
+import { isCompactViewport } from './viewport.ts'
 
 type SearchPayload = SearchIndexItem[] | SearchIndexPayload
 type SearchLoader = () => SearchPayload | Promise<SearchPayload>
@@ -114,7 +108,7 @@ function createSearchPanel({
 }: SearchPanelOptions): SearchPanelApi {
   let lg = ''
   let pd: Record<string, string> = {}
-  if (isMobile()) {
+  if (isCompactViewport()) {
     lg = 'is-lg'
     pd = { padding: '4px 2rem 2rem' }
   }
@@ -254,12 +248,12 @@ export function initSearch(
       text: {
         title: translate('search.title', '搜索文档', i18n),
       },
-      fullscreen: isMobile(),
+      fullscreen: isCompactViewport(),
       showCancel: false,
       footer: false,
       bgClose: true,
       escClose: true,
-      style: { width: isMobile() ? '' : 'min(92vw, 640px)' },
+      style: { width: isCompactViewport() ? '' : 'min(92vw, 640px)' },
       onShown: () => panelApi?.focus(),
     }).build()
 

@@ -1,6 +1,6 @@
 # Table of Contents
 
-Automatically generate a table of contents from the page content. By default it supports `h2` and `h3`, and visibility can be controlled through the `browser.toc` option.
+Automatically generate a table of contents from the page content. By default it supports `h2` and `h3`, and visibility can be controlled through the `client.toc` option.
 
 ## Runtime
 
@@ -8,7 +8,7 @@ In `vp/config/runtime.ts`, configure whether the table of contents is enabled.
 
 ```ts
 export default {
-  browser: {
+  client: {
     toc: true,
   },
 }
@@ -16,11 +16,11 @@ export default {
 
 ## Configuration
 
-`browser.toc: true` uses the default configuration, which is equivalent to:
+`client.toc: true` uses the default configuration, which is equivalent to:
 
 ```ts
 export default {
-  browser: {
+  client: {
     toc: {
       enabled: true,
       headings: 'h2, h3',
@@ -30,6 +30,6 @@ export default {
 }
 ```
 
-- `browser.toc.enabled`: Whether the table of contents is enabled, default is `true`.
-- `browser.toc.headings`: The heading levels supported in the table of contents, default is `h2, h3`.
-- `browser.toc.offset`: The scroll offset for positioning, default is `100`.
+- `client.toc.enabled`: Whether the table of contents is enabled, default is `true`.
+- `client.toc.headings`: The heading levels supported in the table of contents, default is `h2, h3`.
+- `client.toc.offset`: The scroll offset for positioning, default is `100`.

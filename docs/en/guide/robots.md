@@ -2,19 +2,9 @@
 
 Generate `robots.txt` to tell search engines which paths they can crawl.
 
-## Runtime
+## Output Rules
 
-`build.robots` is enabled by default.
-
-```ts
-export default {
-  build: {
-    robots: false,
-  },
-}
-```
-
-When `build.robots` is `false`, the build does not output `dist/robots.txt`.
+The build outputs `dist/robots.txt` by default.
 
 ## Configuration
 

@@ -31,6 +31,7 @@ npm run build
 - \`docs/\`: Markdown documentation pages.
 - \`assets/\`: static assets copied to \`dist/public/\`, including \`favicon.ico\`.
 - \`vp/config/\`: site, locale, menu, sidebar, robots, LLMs, and footer script config.
+- \`vp/client/\`: project-owned browser runtime code, modules, and page entries.
 - \`vp/layouts/\`: project layouts that override or extend built-in layouts.
 - \`vp/components/\`: project Markdown/runtime components.
 - \`dist/\`: generated static site output.

@@ -10,7 +10,7 @@ import type {
   UnknownRecord,
 } from '../types.ts'
 import { isRecord } from '../types.ts'
-import { buildOption } from './features.ts'
+import { serverOption } from './features.ts'
 import { toText } from './string.ts'
 
 export const DEFAULT_EDIT_LINK_PATTERN =
@@ -138,8 +138,8 @@ function resolveEditorHelp(
   i18n: ReturnType<typeof createDocI18n>
 } {
   return {
-    editLink: resolveEditLinkConfig(buildOption(config, 'editLink')),
-    lastEdit: resolveLastEditConfig(buildOption(config, 'lastEdit')),
+    editLink: resolveEditLinkConfig(serverOption(config, 'editLink')),
+    lastEdit: resolveLastEditConfig(serverOption(config, 'lastEdit')),
     i18n: createDocI18n(languages, page),
   }
 }

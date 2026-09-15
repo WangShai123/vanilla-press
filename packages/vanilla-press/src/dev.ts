@@ -4,13 +4,13 @@ import http, { type ServerResponse } from 'http'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { build as esbuildBuild } from 'esbuild'
 import { glob } from 'glob'
 import { WebSocket, WebSocketServer } from 'ws'
 
 import {
   buildComponentScripts,
   buildCss,
+  buildClientAssets,
   buildRuntime,
   buildLayoutScripts,
   copyStaticAssets,
@@ -20,16 +20,15 @@ import {
   loadLastEditCache,
   loadLanguages,
   loadLlmsConfig,
-  loadCustomRuntimeFile,
   loadMenuItems,
   loadRobotsConfig,
   loadRuntimeConfig,
   loadSidebarItems,
-  pageSharedVpModules,
-  pagesUseVpRuntime,
+  pageSharedClientModules,
   readSource,
   renderSource,
   resolveI18nData,
+  scanClientEntryAssets,
   ensureSourceConfig,
   writeDefaultLocaleEntrypoint,
   writeLastEditCache,
@@ -37,11 +36,12 @@ import {
   writeSearchIndex,
   writeSitemap,
 } from './build.ts'
-import { createMarkdown } from './core/md.ts'
+import { createMarkdown } from './markdown/md.ts'
 import { loadLayouts } from './render/layout.ts'
 import type {
   BuildOptions,
   BuildReportState,
+  ClientEntryAssets,
   FooterScriptConfig,
   LayoutMap,
   LoadedMarkdownComponent,
@@ -50,20 +50,19 @@ import type {
   RenderedPage,
   RuntimeSidebarConfig,
   RuntimeConfig,
-  SharedVpScriptModule,
+  SharedClientModule,
   SourcePage,
+  StylesheetAsset,
   UnknownRecord,
 } from './types.ts'
 import { loadCustomComponents } from './utilities/components.ts'
 import { assertEditorSizeConfig } from './utilities/editor-size.ts'
 import {
-  buildOption,
+  serverOption,
   isI18nEnabled,
   isLlmsEnabled,
-  isMenuEnabled,
   isRobotsEnabled,
   isSearchEnabled,
-  isSidebarEnabled,
   isSitemapEnabled,
 } from './utilities/features.ts'
 import { markdownRouteRel, renderLlmsTxt } from './utilities/llms.ts'
@@ -81,8 +80,6 @@ const defaultOutputDir = path.join(workingRoot, 'dist')
 const defaultConfigDir = path.join(defaultProjectDir, 'config')
 const defaultLayoutsDir = path.join(defaultProjectDir, 'layouts')
 const defaultComponentsDir = path.join(defaultProjectDir, 'components')
-const SHARED_VP_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime'
-const VP_RUNTIME_ID = 'vanilla-press/vp-runtime'
 const DEV_PREFIX = '/__vanilla_press_dev/'
 const CLIENT_SCRIPT = `${DEV_PREFIX}client.js`
 const SOCKET_PATH = `${DEV_PREFIX}ws`
@@ -133,7 +130,7 @@ interface DevState {
   configDir: string
   layoutsDir: string
   componentsDir: string
-  sharedDir: string
+  clientDir: string
   cacheDir: string
   publicDir: string
   config: RuntimeConfig
@@ -152,8 +149,8 @@ interface DevState {
   pagesByFile: Map<string, RenderedPage>
   componentScriptAssets: Map<string, ModuleScriptAsset>
   layoutScriptAssets: Map<string, ModuleScriptAsset>
-  sharedVpModules: SharedVpScriptModule[]
-  customRuntimeFile: string | null
+  clientEntryAssets: ClientEntryAssets
+  sharedClientModules: SharedClientModule[]
   hasRootIndex: boolean
   reportState: BuildReportState
 }
@@ -194,39 +191,6 @@ async function removeFileIfExists(file: string): Promise<boolean> {
   if (!(await pathExists(file))) return false
   await fs.rm(file, { force: true })
   return true
-}
-
-async function writePageScriptsForPage(
-  outputDir: string,
-  page: RenderedPage
-): Promise<string[]> {
-  const written: string[] = []
-
-  for (const script of page.scripts || []) {
-    const outputFile = path.join(outputDir, script.rel)
-    const result = await esbuildBuild({
-      bundle: true,
-      format: 'esm',
-      legalComments: 'none',
-      minify: false,
-      platform: 'browser',
-      target: 'es2020',
-      write: false,
-      external: [SHARED_VP_SCRIPT_RUNTIME_ID, VP_RUNTIME_ID],
-      stdin: {
-        contents: script.code,
-        loader: 'js',
-        resolveDir: workingRoot,
-        sourcefile: script.rel,
-      },
-    })
-    const output = result.outputFiles?.[0]?.text || script.code
-    if (await writeTextIfChanged(outputFile, output)) {
-      written.push(outputFile)
-    }
-  }
-
-  return written
 }
 
 function resolveDir(value: string | undefined, fallback: string): string {
@@ -591,7 +555,7 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
   const configDir = resolveDir(options.configDir, defaultConfigDir)
   const layoutsDir = resolveDir(options.layoutsDir, defaultLayoutsDir)
   const componentsDir = resolveDir(options.componentsDir, defaultComponentsDir)
-  const sharedDir = path.join(path.dirname(configDir), 'shared')
+  const clientDir = path.join(path.dirname(configDir), 'client')
   const cacheDir =
     options.cacheDir || path.join(path.dirname(configDir), 'cache')
   const publicDir = path.join(outputDir, 'public')
@@ -600,12 +564,11 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
   await fs.mkdir(assetsDir, { recursive: true })
   await fs.mkdir(layoutsDir, { recursive: true })
   await fs.mkdir(componentsDir, { recursive: true })
-  await fs.mkdir(sharedDir, { recursive: true })
+  await fs.mkdir(clientDir, { recursive: true })
   await ensureSourceConfig(configDir)
 
   const config = await loadRuntimeConfig(configDir)
   validateRuntimeConfig(config)
-  const customRuntimeFile = await loadCustomRuntimeFile(sharedDir)
   const footerScript = await loadFooterScript(configDir)
   const customComponents = await loadCustomComponents(componentsDir)
   const md = await createMarkdown(config, customComponents)
@@ -613,20 +576,16 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
   const languages = isI18nEnabled(config)
     ? resolveI18nData(config, await loadLanguages(configDir))
     : {}
-  const menuItems = isMenuEnabled(config) ? await loadMenuItems(configDir) : []
-  const sidebarItems = isSidebarEnabled(config)
-    ? await loadSidebarItems(configDir)
-    : []
-  const directorySidebarItems = isSidebarEnabled(config)
-    ? await loadDirectorySidebarItems(inputDir)
-    : []
+  const menuItems = await loadMenuItems(configDir)
+  const sidebarItems = await loadSidebarItems(configDir)
+  const directorySidebarItems = await loadDirectorySidebarItems(inputDir)
   const llmsConfig = isLlmsEnabled(config)
     ? await loadLlmsConfig(configDir)
     : {}
   const robotsConfig = isRobotsEnabled(config)
     ? await loadRobotsConfig(configDir)
     : {}
-  const lastEditCache = buildOption(config, 'lastEdit')
+  const lastEditCache = serverOption(config, 'lastEdit')
     ? await loadLastEditCache(cacheDir)
     : {}
 
@@ -637,7 +596,7 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
     configDir,
     layoutsDir,
     componentsDir,
-    sharedDir,
+    clientDir,
     cacheDir,
     publicDir,
     config,
@@ -656,8 +615,11 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
     pagesByFile: new Map<string, RenderedPage>(),
     componentScriptAssets: new Map<string, ModuleScriptAsset>(),
     layoutScriptAssets: new Map<string, ModuleScriptAsset>(),
-    sharedVpModules: [],
-    customRuntimeFile,
+    clientEntryAssets: {
+      scripts: new Map<string, ModuleScriptAsset>(),
+      styles: new Map<string, StylesheetAsset>(),
+    },
+    sharedClientModules: [],
     hasRootIndex: false,
     reportState: {
       hashes: new Map<string, string>(),
@@ -683,7 +645,6 @@ async function refreshDevState(state: DevState): Promise<void> {
   validateRuntimeConfig(config)
 
   state.config = config
-  state.customRuntimeFile = await loadCustomRuntimeFile(state.sharedDir)
   state.footerScript = await loadFooterScript(state.configDir)
   state.customComponents = await loadCustomComponents(state.componentsDir)
   state.md = await createMarkdown(config, state.customComponents)
@@ -694,22 +655,16 @@ async function refreshDevState(state: DevState): Promise<void> {
   state.languages = isI18nEnabled(config)
     ? resolveI18nData(config, await loadLanguages(state.configDir))
     : {}
-  state.menuItems = isMenuEnabled(config)
-    ? await loadMenuItems(state.configDir)
-    : []
-  state.sidebarItems = isSidebarEnabled(config)
-    ? await loadSidebarItems(state.configDir)
-    : []
-  state.directorySidebarItems = isSidebarEnabled(config)
-    ? await loadDirectorySidebarItems(state.inputDir)
-    : []
+  state.menuItems = await loadMenuItems(state.configDir)
+  state.sidebarItems = await loadSidebarItems(state.configDir)
+  state.directorySidebarItems = await loadDirectorySidebarItems(state.inputDir)
   state.llmsConfig = isLlmsEnabled(config)
     ? await loadLlmsConfig(state.configDir)
     : {}
   state.robotsConfig = isRobotsEnabled(config)
     ? await loadRobotsConfig(state.configDir)
     : {}
-  state.lastEditCache = buildOption(config, 'lastEdit')
+  state.lastEditCache = serverOption(config, 'lastEdit')
     ? await loadLastEditCache(state.cacheDir)
     : {}
 }
@@ -717,21 +672,9 @@ async function refreshDevState(state: DevState): Promise<void> {
 async function syncPageOutputs(
   state: DevState,
   page: RenderedPage,
-  previousPage: RenderedPage | null
+  _previousPage: RenderedPage | null
 ): Promise<string[]> {
   const changed: string[] = []
-
-  if (previousPage) {
-    const nextScripts = new Set((page.scripts || []).map((item) => item.rel))
-    for (const script of previousPage.scripts || []) {
-      if (nextScripts.has(script.rel)) continue
-      const file = path.join(state.outputDir, script.rel)
-      if (await removeFileIfExists(file)) changed.push(file)
-    }
-  }
-
-  const scriptChanges = await writePageScriptsForPage(state.outputDir, page)
-  changed.push(...scriptChanges)
 
   const htmlFile = path.join(state.outputDir, page.rel)
   if (await writeTextIfChanged(htmlFile, page.html)) {
@@ -756,10 +699,6 @@ async function removePageOutputs(
     path.join(state.outputDir, markdownRouteRel(page)),
   ])
 
-  for (const script of page.scripts || []) {
-    targets.add(path.join(state.outputDir, script.rel))
-  }
-
   await Promise.all(
     Array.from(targets).map(async (file) => {
       if (await removeFileIfExists(file)) changed.push(file)
@@ -775,16 +714,13 @@ async function refreshGlobalOutputs(
 ): Promise<string[]> {
   const pages = collectPages(state)
   const changed: string[] = []
-  const sharedModules = pageSharedVpModules(pages)
-  if (pagesUseVpRuntime(pages) && !state.customRuntimeFile) {
-    throw new Error(
-      'Missing vp/shared/runtime.ts. Add vp/shared/runtime.ts or remove imports from "vanilla-press/vp-runtime".'
-    )
-  }
+  const sharedModules = pageSharedClientModules(pages)
   const runtimeChanged =
     forceRuntime ||
-    sharedModules.length !== state.sharedVpModules.length ||
-    sharedModules.some((item, index) => item !== state.sharedVpModules[index])
+    sharedModules.length !== state.sharedClientModules.length ||
+    sharedModules.some(
+      (item, index) => item !== state.sharedClientModules[index]
+    )
 
   if (runtimeChanged) {
     await buildRuntime(state.publicDir, {
@@ -795,12 +731,13 @@ async function refreshGlobalOutputs(
         state.sidebarItems,
         state.directorySidebarItems
       ),
-      sharedVpModules: sharedModules,
-      customRuntimeFile: state.customRuntimeFile,
+      sharedClientModules: sharedModules,
     })
-    state.sharedVpModules = sharedModules
+    state.sharedClientModules = sharedModules
     changed.push(path.join(state.publicDir, 'runtime.js'))
   }
+
+  await buildClientAssets(state.outputDir, state.clientDir, pages)
 
   if (isSearchEnabled(state.config)) {
     const file = path.join(state.publicDir, 'search.js')
@@ -853,7 +790,7 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
   await fs.mkdir(state.outputDir, { recursive: true })
   await fs.mkdir(state.publicDir, { recursive: true })
 
-  if (buildOption(state.config, 'lastEdit')) {
+  if (serverOption(state.config, 'lastEdit')) {
     await fs.mkdir(state.cacheDir, { recursive: true })
   }
 
@@ -866,6 +803,10 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
   state.layoutScriptAssets = await buildLayoutScripts(
     state.outputDir,
     state.layouts,
+    state.config
+  )
+  state.clientEntryAssets = await scanClientEntryAssets(
+    state.clientDir,
     state.config
   )
 
@@ -899,9 +840,14 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
       state.config,
       state.languages,
       state.menuItems as NavItem[],
+      createRuntimeSidebarConfig(
+        state.sidebarItems,
+        state.directorySidebarItems
+      ),
       state.layouts,
       state.componentScriptAssets,
       state.layoutScriptAssets,
+      state.clientEntryAssets,
       state.llmsConfig,
       state.footerScript,
       state.lastEditCache,
@@ -911,12 +857,7 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
   }
 
   const pages = collectPages(state)
-  if (pagesUseVpRuntime(pages) && !state.customRuntimeFile) {
-    throw new Error(
-      'Missing vp/shared/runtime.ts. Add vp/shared/runtime.ts or remove imports from "vanilla-press/vp-runtime".'
-    )
-  }
-  state.sharedVpModules = pageSharedVpModules(pages)
+  state.sharedClientModules = pageSharedClientModules(pages)
 
   await buildRuntime(state.publicDir, {
     config: state.config,
@@ -926,9 +867,9 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
       state.sidebarItems,
       state.directorySidebarItems
     ),
-    sharedVpModules: state.sharedVpModules,
-    customRuntimeFile: state.customRuntimeFile,
+    sharedClientModules: state.sharedClientModules,
   })
+  await buildClientAssets(state.outputDir, state.clientDir, pages)
 
   if (isSearchEnabled(state.config)) {
     await writeSearchIndex(state.publicDir, pages)
@@ -955,7 +896,7 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
     )
   }
 
-  if (buildOption(state.config, 'lastEdit')) {
+  if (serverOption(state.config, 'lastEdit')) {
     await writeLastEditCache(state.cacheDir, state.lastEditCache)
   }
 
@@ -1002,7 +943,7 @@ async function rebuildMarkdown(state: DevState, reason: string): Promise<void> {
       state.sourcesByFile.delete(relFile)
       state.pagesByFile.delete(relFile)
       await removePageOutputs(state, previousPage)
-      if (buildOption(state.config, 'lastEdit')) {
+      if (serverOption(state.config, 'lastEdit')) {
         delete state.lastEditCache[relFile]
         await writeLastEditCache(state.cacheDir, state.lastEditCache)
       }
@@ -1032,9 +973,11 @@ async function rebuildMarkdown(state: DevState, reason: string): Promise<void> {
     state.config,
     state.languages,
     state.menuItems as NavItem[],
+    createRuntimeSidebarConfig(state.sidebarItems, state.directorySidebarItems),
     state.layouts,
     state.componentScriptAssets,
     state.layoutScriptAssets,
+    state.clientEntryAssets,
     state.llmsConfig,
     state.footerScript,
     state.lastEditCache,
@@ -1043,7 +986,7 @@ async function rebuildMarkdown(state: DevState, reason: string): Promise<void> {
   state.pagesByFile.set(source.file, page)
 
   const changed = await syncPageOutputs(state, page, previousPage)
-  if (buildOption(state.config, 'lastEdit')) {
+  if (serverOption(state.config, 'lastEdit')) {
     await writeLastEditCache(state.cacheDir, state.lastEditCache)
   }
 
@@ -1245,7 +1188,7 @@ export async function dev({
       configDir,
       layoutsDir,
       componentsDir,
-      state.sharedDir,
+      state.clientDir,
       path.join(packageRoot, 'src'),
     ],
     [state.outputDir],

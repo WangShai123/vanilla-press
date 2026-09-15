@@ -1,4 +1,3 @@
-import { MOBILE_CLASS_BOOT_SCRIPT } from '../../config/defaults.ts'
 import type { RuntimeConfig, SeoData } from '../../types.ts'
 import { editorSizeBootScript } from '../../utilities/editor-size.ts'
 import { escapeHtml } from '../../utilities/html.ts'
@@ -12,6 +11,7 @@ interface HeadOptions {
   themeDefault: unknown
   i18nRedirectScript: string
   cssHref: string
+  stylesheets?: string[]
   faviconHref: string
   config?: RuntimeConfig
 }
@@ -35,11 +35,15 @@ export function renderHead({
   themeDefault,
   i18nRedirectScript,
   cssHref,
+  stylesheets = [],
   faviconHref,
   config,
 }: HeadOptions): string {
   const seoMeta = renderSeoMeta(seo)
   const editorBootScript = editorSizeBootScript(config)
+  const pageStylesheets = stylesheets
+    .map((href) => `  <link rel="stylesheet" href="${href}">`)
+    .join('\n')
 
   return `<head>
   <meta charset="utf-8">
@@ -51,11 +55,11 @@ export function renderHead({
   <meta name="vanilla-press-homepage" content="https://app.jealer.com/vanilla-press/">
   <title>${escapeHtml(title)}</title>
   ${seoMeta ? `${seoMeta}\n` : ''}
-  <script>${MOBILE_CLASS_BOOT_SCRIPT}
-  ${themeEnabled ? `${themeBootScript(themeDefault)}` : ''}
+  <script>${themeEnabled ? `${themeBootScript(themeDefault)}` : ''}
   ${editorBootScript}
   ${i18nRedirectScript || ''}</script>
   <link rel="icon" href="${faviconHref}">
   <link rel="stylesheet" href="${cssHref}">
+${pageStylesheets ? `${pageStylesheets}\n` : ''}
 </head>`
 }

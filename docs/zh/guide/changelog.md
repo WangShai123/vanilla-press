@@ -2,9 +2,14 @@
 
 ## 1.5.x
 
+#### 1.5.3
+
+- feat: client entries.
+
 #### 1.5.2
 
 - feat: 代码高亮由 `highlight.js` 替换为 `shiki`。
+- feat: client entry 支持 CSS，并可在 Markdown frontmatter 中按页面声明加载。
 - fix: 移除了默认模板中的 `footer`。
 
 #### 1.5.1
@@ -50,7 +55,7 @@
 - feat: `vp` 目录下新增 `cache` 目录，用于缓存构建结果
 - feat: 脚手架创建项目时，会自动添加 `.gitignore` 文件，自动忽略 `vp/cache`, `node_modules`
 - refactor: 重构 Badge 组件
-- fix: 运行时配置结构化拆分为 `runtime` 和 `browser`
+- fix: 运行时配置结构化拆分为 `runtime` 和 `client`
 - style: 所有 `doc` 关联命名统一前缀为 `vp`
 - docs: 更新关联文档
 
@@ -83,7 +88,7 @@
 #### 1.3.2
 
 - fix: seo 首页标题规则
-- docs: 更新布局/组件/vp-script文档。
+- docs: 更新布局/组件/client 管理文档。
 
 #### 1.3.1
 
@@ -130,7 +135,7 @@
 
 #### 1.2.10
 
-- feat: 新增 `vp-script` 内联脚本功能，支持在 Markdown 中使用 `vp-script` 编写当前页面专用脚本。
+- feat: 新增 client entry 页面脚本能力，支持为 Markdown 页面声明独立入口脚本。
 - feat: 新增 `footer-script` 页脚脚本功能，支持通过 `vp/config/footerScript.ts` 为所有页面统一注入底部脚本。
 - chore: 更新依赖版本
 - fix: 根据依赖更新，收窄类型，让类型定义更严格和精准

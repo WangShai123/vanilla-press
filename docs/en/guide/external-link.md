@@ -6,13 +6,13 @@ Indicate external links to users.
 
 [MDN](https://developer.mozilla.org/)
 
-## Runtime
+## Build
 
-In `vp/config/runtime.ts`, you can configure whether to enable the external link feature. The default is true.
+External link enhancement runs during build and is enabled by default.
 
 ```ts
 export default {
-  browser: {
+  server: {
     externalLink: true,
   },
 }
@@ -20,11 +20,7 @@ export default {
 
 ## Info
 
-When enabled, it matches links whose `href` starts with `http://` or `https://` inside these areas:
-
-- `[data-vp-editor]`
-- `[data-vp-menu]`
-- `[data-vp-sidebar]`
+When enabled, it matches links whose `href` starts with `http://` or `https://` in the generated HTML.
 
 Matched links receive:
 

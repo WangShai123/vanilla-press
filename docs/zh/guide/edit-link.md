@@ -2,15 +2,15 @@
 
 编辑链接，用于在文档页面中输出“编辑”入口，方便作者直接跳转到文档源文件。
 
-这是一个构建阶段功能，由 `vp/config/runtime.ts` 中的 `build.editLink` 控制。构建时会根据当前页面路径生成链接，输出 HTML。
+这是一个构建阶段功能，由 `vp/config/runtime.ts` 中的 `server.editLink` 控制。构建时会根据当前页面路径生成链接，输出 HTML。
 
 ## 配置
 
-`build.editLink` 默认启用。
+`server.editLink` 默认启用。
 
 ```ts
 export default {
-  build: {
+  server: {
     editLink: true,
   },
 }
@@ -21,7 +21,7 @@ export default {
 
 ```ts
 export default {
-  build: {
+  server: {
     editLink: {
       pattern:
         'https://github.com/WangShai123/vanilla-press/edit/main/docs/:path',
@@ -53,7 +53,7 @@ export default {
 
 ```ts
 export default {
-  build: {
+  server: {
     editLink: {
       pattern: 'https://github.com/your-name/your-repo/edit/main/docs/:path',
     },
@@ -69,7 +69,7 @@ export default {
 
 ```ts
 export default {
-  build: {
+  server: {
     editLink: {
       text: 'editor.editLink',
     },

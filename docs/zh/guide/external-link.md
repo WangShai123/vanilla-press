@@ -6,13 +6,13 @@
 
 [MDN](https://developer.mozilla.org/)
 
-## 运行时
+## 构建
 
-在 `vp/config/runtime.ts` 中，按需配置是否启用外部链接功能。默认启用。
+外部链接增强在构建阶段执行，默认启用。
 
 ```ts
 export default {
-  browser: {
+  server: {
     externalLink: true,
   },
 }
@@ -20,11 +20,7 @@ export default {
 
 ## 说明
 
-启用后会匹配以下区域内 `href` 以 `http://` 或 `https://` 开头的链接：
-
-- `[data-vp-editor]`
-- `[data-vp-menu]`
-- `[data-vp-sidebar]`
+启用后会匹配 HTML 中 `href` 以 `http://` 或 `https://` 开头的链接。
 
 匹配到的链接会追加：
 

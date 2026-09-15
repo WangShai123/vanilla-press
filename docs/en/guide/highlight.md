@@ -33,7 +33,7 @@ class Test
     $this->builder->useAutowiring(true);
     $this->builder->useAttributes(true);
 
-    return $this->builder->build();
+    return $this->builder->server();
   }
 }
 ```
@@ -44,11 +44,11 @@ Code highlighting is enabled by default and only runs during build.
 
 Light mode uses the `GitHub Light Default` theme, and dark mode uses the `GitHub Dark Default` theme.
 
-Customize themes with `build.highlight` in `vp/config/runtime.ts`:
+Customize themes with `server.highlight` in `vp/config/runtime.ts`:
 
 ```ts
 export default {
-  build: {
+  server: {
     highlight: {
       light: 'github-light-default',
       dark: 'github-dark-default',

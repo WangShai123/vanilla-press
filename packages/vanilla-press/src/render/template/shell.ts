@@ -7,6 +7,8 @@ interface ShellOptions {
   config: RuntimeConfig
   sidebarEnabled: boolean
   tocEnabled: boolean
+  sidebar?: string
+  mobileSidebar?: string
 }
 
 interface AsideOptions {
@@ -19,13 +21,15 @@ interface ShellContextOptions {
   sidebarEnabled: boolean
   tocEnabled: boolean
   header?: string
-  secondary?: string
+  sidebar?: string
+  mobileSidebar?: string
+  prevNext?: string
 }
 
-function renderSidebar(sidebarEnabled: boolean): string {
-  return sidebarEnabled
+function renderSidebar(sidebarEnabled: boolean, sidebar = ''): string {
+  return sidebarEnabled && sidebar
     ? `    <aside class="vp-sidebar">
-      <nav class="vp-nav" data-vp-sidebar aria-label="文档导航"></nav>
+      ${sidebar}
     </aside>`
     : ''
 }
@@ -50,16 +54,19 @@ export function renderPageShell({
   config,
   sidebarEnabled,
   tocEnabled,
+  sidebar = '',
+  mobileSidebar = '',
 }: ShellOptions): string {
-  const sidebar = renderSidebar(sidebarEnabled)
+  const sidebarHtml = renderSidebar(sidebarEnabled, sidebar)
   const toc = renderToc(tocEnabled)
   const aside = renderAside({ config, toc })
   const hasAside = Boolean(aside)
   const editorClass = editorClassName(config)
   const footer = renderFooter(config)
 
-  return `<main class="vp-shell${sidebarEnabled ? ' has-sidebar' : ''}">
-${sidebar}
+  return `${mobileSidebar}
+  <main class="vp-shell${sidebarEnabled ? ' has-sidebar' : ''}">
+${sidebarHtml}
     <section class="vp-main${hasAside ? ' has-aside' : ''}">
       <div class="vp-content" data-reveal>
         <div class="vp-content-wrap">
@@ -80,9 +87,11 @@ export function createPageShellContext({
   sidebarEnabled,
   tocEnabled,
   header = '',
-  secondary = '',
+  sidebar = '',
+  mobileSidebar = '',
+  prevNext = '',
 }: ShellContextOptions) {
-  const sidebar = renderSidebar(sidebarEnabled)
+  const sidebarHtml = renderSidebar(sidebarEnabled, sidebar)
   const toc = renderToc(tocEnabled)
   const aside = renderAside({ config, toc })
   const hasAside = Boolean(aside)
@@ -97,11 +106,11 @@ export function createPageShellContext({
     },
     slots: {
       header,
-      secondary,
-      sidebar,
+      sidebar: sidebarHtml,
+      mobileSidebar,
       toc,
       aside,
-      prevNext: '<div data-vp-prev-next></div>',
+      prevNext: prevNext || '<div data-vp-prev-next></div>',
       footer,
     },
   }

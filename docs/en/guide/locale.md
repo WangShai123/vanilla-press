@@ -2,18 +2,14 @@
 
 Enable multilingual documentation so users can browse the site in different languages.
 
-## Runtime
+## Build
 
-In `vp/config/runtime.ts`, configure whether internationalization is enabled.
-
-- Configuration property: `i18n`
-- Configuration type: `boolean` | `object`
+Internationalization is enabled by default during build and does not need a switch. `server.i18n` describes locale metadata, and the build writes translated menu, sidebar, and related text into HTML for the current page locale.
 
 ```ts
 export default {
-  browser: {
+  server: {
     i18n: {
-      enabled: true,
       locale: 'zh-CN',
       fallbackLocale: 'en',
       locales: [
@@ -28,15 +24,15 @@ export default {
 
 ## Metadata
 
-In `vp/config/runtime.ts`, configure the site's i18n language metadata:
+In `vp/config/runtime.ts`, configure the site's i18n metadata:
 
-- `browser.i18n.locale`: default language
-- `browser.i18n.fallbackLocale`: fallback language
-- `browser.i18n.locales`: array of language options
+- `server.i18n.locale`: default language
+- `server.i18n.fallbackLocale`: fallback language
+- `server.i18n.locales`: array of language options
   - `code`: locale code
   - `label`: language name
   - `path`: locale route directory
-- `browser.i18n.redirectToDefault`: whether to redirect
+- `server.i18n.redirectToDefault`: whether to redirect
 
 ## Language Pack
 
@@ -69,4 +65,4 @@ Automatically redirect users to the corresponding language page based on their l
 
 - Priority: user language preference > site language preference
 - Bound data: `locale` field in cookies
-- Disabled: when `browser.i18n.redirectToDefault` is `false` or `browser.i18n.enabled` is `false`.
+- Disable redirect: set `server.i18n.redirectToDefault` to `false`.

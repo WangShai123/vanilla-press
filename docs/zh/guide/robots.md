@@ -2,19 +2,9 @@
 
 生成 `robots.txt`，用于告诉搜索引擎哪些路径可以抓取。
 
-## 运行时
+## 输出规则
 
-`build.robots` 默认启用。
-
-```ts
-export default {
-  build: {
-    robots: false,
-  },
-}
-```
-
-当 `build.robots` 为 `false` 时，不会构建 `dist/robots.txt`。
+构建阶段默认输出 `dist/robots.txt`。
 
 ## 配置
 

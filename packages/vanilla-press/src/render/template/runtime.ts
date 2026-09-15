@@ -31,7 +31,7 @@ export function renderRuntimeScript({
   const layoutScriptSource = JSON.stringify(layoutScript)
 
   return `<script type="module">
-    import { initDocPage, isMobile, runtimeConfig, languages, menuItems, sidebarItems } from '${runtimeHref}';
+    import { initDocPage, runtimeConfig, languages, menuItems, sidebarItems } from '${runtimeHref}';
     const customComponents = await Promise.all(${customComponentSources}.map(async (src) => {
       const mod = await import(src);
       const definition = mod.default || mod.component || mod;
@@ -41,27 +41,6 @@ export function renderRuntimeScript({
         init: definition?.init
       };
     })).then((items) => items.filter((item) => item.name && typeof item.init === 'function'));
-    const mobile = isMobile();
-    const desktopChromeTemplate = document.querySelector('[data-vp-desktop-chrome]');
-    const mobileChromeTemplate = document.querySelector('[data-vp-mobile-chrome]');
-    const mobileSecondaryTemplate = document.querySelector('[data-vp-mobile-secondary-chrome]');
-    if (mobile && mobileChromeTemplate) {
-      mobileChromeTemplate.replaceWith(mobileChromeTemplate.content.cloneNode(true));
-      desktopChromeTemplate?.remove();
-    } else if (!mobile && desktopChromeTemplate) {
-      desktopChromeTemplate.replaceWith(desktopChromeTemplate.content.cloneNode(true));
-      mobileChromeTemplate?.remove();
-    } else {
-      desktopChromeTemplate?.remove();
-      mobileChromeTemplate?.remove();
-    }
-    if (mobileSecondaryTemplate) {
-      if (mobile) {
-        mobileSecondaryTemplate.replaceWith(mobileSecondaryTemplate.content.cloneNode(true));
-      } else {
-        mobileSecondaryTemplate.remove();
-      }
-    }
     initDocPage({
       components: ${JSON.stringify(components)},
       config: runtimeConfig,

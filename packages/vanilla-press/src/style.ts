@@ -1,12 +1,12 @@
-import Aside from './css/aside.css'
-import Components from './css/components.css'
-import Config from './css/config.css'
-import Footer from './css/footer.css'
-import Header from './css/header.css'
-import Main from './css/main.css'
-import Mobile from './css/mobile.css'
-import Search from './css/search.css'
-import Sidebar from './css/sidebar.css'
+import Aside from './theme-default/styles/aside.css'
+import Components from './theme-default/styles/components.css'
+import Config from './theme-default/styles/config.css'
+import Footer from './theme-default/styles/footer.css'
+import Header from './theme-default/styles/header.css'
+import Main from './theme-default/styles/main.css'
+import Mobile from './theme-default/styles/mobile.css'
+import Search from './theme-default/styles/search.css'
+import Sidebar from './theme-default/styles/sidebar.css'
 
 export default [
   Config,

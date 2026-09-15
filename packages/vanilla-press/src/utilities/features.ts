@@ -29,85 +29,60 @@ function featureObject(value: unknown): FeatureObject {
   return isPlainObject(value) ? (value as FeatureObject) : {}
 }
 
-function runtimeSection(config: RuntimeConfig = {}): UnknownRecord {
-  return isPlainObject(config.runtime) ? (config.runtime as UnknownRecord) : {}
+export function clientOption(config: RuntimeConfig = {}, key: string): unknown {
+  const client = isPlainObject(config.client)
+    ? (config.client as UnknownRecord)
+    : {}
+  if (Object.hasOwn(client, key)) return client[key]
+  return undefined
 }
 
-export function browserOption(
-  config: RuntimeConfig = {},
-  key: string
-): unknown {
-  const browser = isPlainObject(config.browser)
-    ? (config.browser as UnknownRecord)
+export function serverOption(config: RuntimeConfig = {}, key: string): unknown {
+  const server = isPlainObject(config.server)
+    ? (config.server as UnknownRecord)
     : {}
-  const runtime = runtimeSection(config)
-  if (Object.hasOwn(browser, key)) return browser[key]
-  if (Object.hasOwn(runtime, key)) return runtime[key]
-  return config[key]
-}
-
-export function buildOption(config: RuntimeConfig = {}, key: string): unknown {
-  const build = isPlainObject(config.build)
-    ? (config.build as UnknownRecord)
-    : {}
-  const runtime = runtimeSection(config)
-  if (Object.hasOwn(build, key)) return build[key]
-  if (Object.hasOwn(runtime, key)) return runtime[key]
-  return config[key]
+  if (Object.hasOwn(server, key)) return server[key]
+  return undefined
 }
 
 export function runtimeOption(
   config: RuntimeConfig = {},
   key: string
 ): unknown {
-  return browserOption(config, key)
+  return clientOption(config, key)
 }
 
 export function isThemeEnabled(config: RuntimeConfig = {}): boolean {
-  const theme = browserOption(config, 'theme')
+  const theme = clientOption(config, 'theme')
   if (theme === false) return false
   return featureObject(theme).enabled !== false
 }
 
 export function isAuthEnabled(config: RuntimeConfig = {}): boolean {
-  const auth = browserOption(config, 'auth')
+  const auth = clientOption(config, 'auth')
   return auth === true || featureObject(auth).enabled === true
 }
 
-export function isI18nEnabled(config: RuntimeConfig = {}): boolean {
-  const i18n = browserOption(config, 'i18n')
-  if (i18n === false) return false
-  return featureObject(i18n).enabled !== false
-}
-
-export function isSeoEnabled(config: RuntimeConfig = {}): boolean {
-  return browserOption(config, 'seo') !== false
+export function isI18nEnabled(_config: RuntimeConfig = {}): boolean {
+  return true
 }
 
 export function isSearchEnabled(config: RuntimeConfig = {}): boolean {
-  return browserOption(config, 'search') !== false
+  return clientOption(config, 'search') !== false
 }
 
 export function isExternalLinkEnabled(config: RuntimeConfig = {}): boolean {
-  return browserOption(config, 'externalLink') !== false
-}
-
-export function isMenuEnabled(config: RuntimeConfig = {}): boolean {
-  return browserOption(config, 'menu') !== false
-}
-
-export function isSidebarEnabled(config: RuntimeConfig = {}): boolean {
-  return browserOption(config, 'sidebar') !== false
+  return serverOption(config, 'externalLink') !== false
 }
 
 export function isTocEnabled(config: RuntimeConfig = {}): boolean {
-  const toc = browserOption(config, 'toc')
+  const toc = clientOption(config, 'toc')
   if (toc === false) return false
   return featureObject(toc).enabled !== false
 }
 
 export function tocOptions(config: RuntimeConfig = {}): TocOptions {
-  const toc = featureObject(browserOption(config, 'toc'))
+  const toc = featureObject(clientOption(config, 'toc'))
   const offset = Number(toc.offset)
 
   return {
@@ -120,31 +95,24 @@ export function tocOptions(config: RuntimeConfig = {}): TocOptions {
 }
 
 export function isPrevNextEnabled(config: RuntimeConfig = {}): boolean {
-  const prevNext = browserOption(config, 'prevNext')
+  const prevNext = serverOption(config, 'prevNext')
   return prevNext === true || featureObject(prevNext).enabled === true
 }
 
 export function isSitemapEnabled(config: RuntimeConfig = {}): boolean {
-  const sitemap = buildOption(config, 'sitemap')
-  return sitemap === true || featureObject(sitemap).enabled === true
+  return /^https?:\/\//i.test(String(config.siteUrl || '').trim())
 }
 
-export function isRobotsEnabled(config: RuntimeConfig = {}): boolean {
-  return buildOption(config, 'robots') !== false
+export function isRobotsEnabled(_config: RuntimeConfig = {}): boolean {
+  return true
 }
 
-export function isLlmsEnabled(config: RuntimeConfig = {}): boolean {
-  const llms = buildOption(config, 'llms')
-  if (llms === false) return false
-  return featureObject(llms).enabled !== false
-}
-
-export function isVpScriptEnabled(): boolean {
+export function isLlmsEnabled(_config: RuntimeConfig = {}): boolean {
   return true
 }
 
 export function llmsOptions(config: RuntimeConfig = {}): LlmsRuntimeOptions {
-  const llms = featureObject(buildOption(config, 'llms'))
+  const llms = featureObject(serverOption(config, 'llms'))
   const enabled = isLlmsEnabled(config)
 
   return {

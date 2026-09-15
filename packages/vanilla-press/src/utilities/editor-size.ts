@@ -1,5 +1,5 @@
 import type { RuntimeConfig } from '../types.ts'
-import { browserOption } from './features.ts'
+import { clientOption } from './features.ts'
 
 export const EDITOR_SIZE_VALUES = ['sm', 'md', 'lg', 'xl'] as const
 export const DEFAULT_EDITOR_SIZE: EditorSize = 'sm'
@@ -22,7 +22,7 @@ export function normalizeEditorSize(
 }
 
 export function editorSizeOption(config: RuntimeConfig = {}): unknown {
-  return browserOption(config, 'editorSize')
+  return clientOption(config, 'editorSize')
 }
 
 export function isEditorSizeEnabled(config: RuntimeConfig = {}): boolean {

@@ -7,7 +7,6 @@ import {
   type ThemeOptions,
   type ThemePanelGroup,
 } from 'vanilla-jui'
-import { createEffect, jsx } from 'vanilla-signal'
 
 import type { RuntimeConfig, DocI18n, RuntimeFeatureConfig } from '../types.ts'
 import { isRecord } from '../types.ts'
@@ -50,18 +49,13 @@ export function initTheme(config: RuntimeConfig = {}, i18n: DocI18n): void {
   }).build()
 
   buttons.forEach((button) => {
+    const label = i18n.t(String(themeConfig.label || 'theme.button'))
     button.hidden = false
     button.textContent = ''
-    button.append(icon('palette', { className: 'el-icon el-prefix' }))
-
-    if (!button.classList.contains('is-icon')) {
-      const text = jsx('span', { className: 'button-content' })
-      button.append(text)
-
-      createEffect(() => {
-        text.textContent = i18n.t(String(themeConfig.label || 'theme.button'))
-      })
-    }
+    button.classList.add('is-icon')
+    button.title = label
+    button.setAttribute('aria-label', label)
+    button.append(icon('palette', { className: 'el-icon' }))
 
     button.addEventListener('click', () => drawer.show())
     button.dataset.vpReady = 'true'

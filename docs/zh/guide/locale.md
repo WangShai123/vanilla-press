@@ -2,18 +2,14 @@
 
 让文档站点支持多语言功能，方便不同语言的用户访问。
 
-## 运行时
+## 构建
 
-在 `vp/config/runtime.ts` 中，按需配置是否启用国际化功能。
-
-- 配置属性：`i18n`
-- 配置类型：`boolean` | `object`
+国际化是默认构建功能，不需要启用开关。`server.i18n` 用来描述语言元数据，构建阶段会按当前页面语言把菜单、侧边栏等文本写入 HTML。
 
 ```ts
 export default {
-  browser: {
+  server: {
     i18n: {
-      enabled: true,
       locale: 'zh-CN',
       fallbackLocale: 'en',
       locales: [
@@ -28,15 +24,15 @@ export default {
 
 ## 元数据
 
-`vp/config/runtime.ts` 中的国际化功能元信息配置：
+`vp/config/runtime.ts` 中的国际化元信息配置：
 
-- `browser.i18n.locale`: 默认语言
-- `browser.i18n.fallbackLocale`: 备用语言
-- `browser.i18n.locales`: 语言选项数组
+- `server.i18n.locale`: 默认语言
+- `server.i18n.fallbackLocale`: 备用语言
+- `server.i18n.locales`: 语言选项数组
   - `code`: 语言别名
   - `label`: 语言名称
   - `path`: 语言路由目录
-- `browser.i18n.redirectToDefault`: 是否重定向到默认语言
+- `server.i18n.redirectToDefault`: 是否重定向到默认语言
 
 ## 语言包
 
@@ -67,4 +63,4 @@ export default {
 
 - 优先级：用户语言偏好 > 站点语言偏好
 - 绑定数据：cookie 中的 `locale` 字段
-- 禁用：当 `browser.i18n.redirectToDefault` 为 `false` 或 `browser.i18n.enabled` 为 `false` 时。
+- 禁用重定向：`server.i18n.redirectToDefault` 为 `false` 时。

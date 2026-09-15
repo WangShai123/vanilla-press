@@ -17,11 +17,11 @@
   flex-wrap: wrap;
 }
 
-.mobile .footer-info {
-  justify-content: flex-start;
+@media (max-width: 960px) {
+  .vp-footer .footer-info {
+    justify-content: flex-start;
+  }
 }
-
-
 
 .vp-footer a {
   color: inherit;

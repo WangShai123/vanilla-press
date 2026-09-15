@@ -2,15 +2,15 @@
 
 Last updated shows the most recent content update time on documentation pages.
 
-This is a build-time feature controlled by `build.lastEdit` in `vp/config/runtime.ts`. During build, `vanilla-press` checks whether the page Markdown content has changed and writes the display time into the layout container.
+This is a build-time feature configured by `server.lastEdit` in `vp/config/runtime.ts`. During build, `vanilla-press` checks whether the page Markdown content has changed and writes the display time into the layout container.
 
 ## Configuration
 
-`build.lastEdit` is enabled by default.
+`server.lastEdit` is enabled by default.
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: true,
   },
 }
@@ -21,7 +21,7 @@ export default {
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: {
       text: 'editor.lastUpdated',
       format: 'yyyy-MM-dd HH:mm:ss',
@@ -39,7 +39,7 @@ The default value is `editor.lastUpdated`, which is resolved through the current
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: {
       text: 'editor.lastUpdated',
     },
@@ -72,11 +72,11 @@ export default {
 'yyyy-MM-dd HH:mm:ss'
 ```
 
-`vanilla-press` uses [date-fns](https://www.npmjs.com/package/date-fns) `format()` for date/time formatting. The value is formatted in the local timezone of the build environment.
+`vanilla-press` uses [date-fns](https://www.npmjs.com/package/date-fns) `format()` for date/time formatting. The value is formatted in the local timezone of the server environment.
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: {
       format: 'yyyy/MM/dd HH:mm',
     },
@@ -110,7 +110,7 @@ If the provided `format` cannot be parsed by `date-fns`, `vanilla-press` falls b
 
 ### UTC Marker
 
-`utc` controls whether the current build timezone label is appended after the time.
+`utc` controls whether the current server timezone label is appended after the time.
 
 When `utc: true`, the output becomes:
 
@@ -121,12 +121,12 @@ Last updated: 2026-08-19 23:57:03 UTC+8
 Notes:
 
 - The time is not converted to UTC.
-- `vanilla-press` appends the timezone label of the build environment, such as `UTC+8` or `UTC-5`.
+- `vanilla-press` appends the timezone label of the server environment, such as `UTC+8` or `UTC-5`.
 - If your custom `format` already includes timezone information, set `utc: false` to avoid duplicate output.
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: {
       utc: false,
     },
@@ -145,12 +145,12 @@ vp/cache/.last-edit.json
 Build rules:
 
 - Each page computes an identity from the Markdown source content.
-- If the page is built for the first time, or the Markdown content changes, the current build time is written.
+- If the page is built for the first time, or the Markdown content changes, the current server time is written.
 - If the Markdown content does not change, the cached time is reused.
 - Changing runtime config, layout templates, or styles does not refresh a page’s last updated time.
 - To force a refresh, change the Markdown source or delete `vp/cache/.last-edit.json` and rebuild.
 
-The cache file is local build state and should not be committed. The scaffold ignores `vp/cache` through `.gitignore` by default.
+The cache file is local server state and should not be committed. The scaffold ignores `vp/cache` through `.gitignore` by default.
 
 ## Output
 

@@ -10,13 +10,13 @@
 
 ```typescript
 export default {
-  build: {
+  server: {
     footerScript: 'script',
   },
 }
 ```
 
-`build.footerScript` 支持两个值：
+`server.footerScript` 支持两个值：
 
 | 值       | 输出                                 | 说明               |
 | -------- | ------------------------------------ | ------------------ |
@@ -62,4 +62,4 @@ gtag('config', 'G-XXXXXXXXXX');
 ` satisfies FooterScriptConfig
 ```
 
-如果统计服务要求加载外部 SDK，可以在脚本内动态创建 `script` 元素，或使用 `build.footerScript: 'module'` 编写模块脚本。
+如果统计服务要求加载外部 SDK，可以在脚本内动态创建 `script` 元素，或使用 `server.footerScript: 'module'` 编写模块脚本。

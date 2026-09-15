@@ -2,21 +2,9 @@
 
 显示在页面顶部的主菜单导航栏。
 
-## 运行时
-
-在 `vp/config/runtime.ts` 中，按需配置是否启用主菜单功能。
-
-```ts
-export default {
-  browser: {
-    menu: true,
-  },
-}
-```
-
-## 配置
-
 在 `vp/config/menu.ts` 中，按需配置站点的菜单数据。
+
+当 `vp/config/menu.ts` 导出有效菜单数组时，VanillaPress 会在桌面端和手机端直接构建菜单 HTML；导出空数组时不渲染菜单。
 
 - `label`: 菜单项的国际化语言包的 key
 - `path`: 菜单项的页面路径，不需要写 `.html`

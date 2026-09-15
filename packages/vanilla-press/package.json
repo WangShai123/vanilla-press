@@ -1,6 +1,6 @@
 {
   "name": "vanilla-press",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "private": false,
   "description": "A static documentation generator built on markdown-it.",
   "keywords": [
@@ -30,7 +30,7 @@
     "bin",
     "dist",
     "src",
-    "vp-runtime.d.ts",
+    "client.d.ts",
     "README.md",
     "README_zh.md"
   ],
@@ -44,9 +44,9 @@
       "types": "./src/runtime.ts",
       "default": "./dist/runtime.js"
     },
-    "./vp-runtime": {
-      "types": "./vp-runtime.d.ts",
-      "default": "./dist/runtime.js"
+    "./client": {
+      "types": "./client.d.ts",
+      "default": "./dist/client.js"
     }
   },
   "publishConfig": {

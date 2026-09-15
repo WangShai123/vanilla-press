@@ -2,21 +2,9 @@
 
 显示在页面侧面的侧边栏导航。
 
-## 运行时
-
-在 `vp/config/runtime.ts` 中，按需配置是否启用侧边栏功能。
-
-```ts
-export default {
-  browser: {
-    sidebar: true,
-  },
-}
-```
-
-## 配置
-
 在 `vp/config/sidebar.ts` 中，按需配置站点的全局侧边栏数据。
+
+当 `vp/config/sidebar.ts` 或目录级 `sidebar.ts` 导出有效侧边栏数组时，VanillaPress 会为对应页面直接构建桌面端和手机端侧边栏 HTML；导出空数组时不渲染侧边栏。
 
 - `label`: 侧边栏项的国际化语言包的 key
 - `path`: 侧边栏项的页面路径，不需要写 `.html`

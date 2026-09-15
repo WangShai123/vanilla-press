@@ -96,7 +96,7 @@ The build-time `install` function registers Markdown syntax and calls `markCompo
 
 Static npm imports used by the component `init` code are bundled into that component script. They are not bundled into the global `runtime.js`.
 
-If a component does not provide `init`, it only participates in Markdown rendering and does not generate a browser script.
+If a component does not provide `init`, it only participates in Markdown rendering and does not generate a client script.
 
 ## Runtime Rules
 
@@ -106,7 +106,7 @@ If a component does not provide `init`, it only participates in Markdown renderi
 - Runtime code must skip elements already marked with `data-vp-ready="true"`.
 - After initialization, mark the element with `data-vp-ready="true"`.
 - Use `dependsOn` when a component needs another component initialized first.
-- If a component module provides `init`, that same module is bundled for the browser. Keep top-level code and top-level static imports browser-compatible.
+- If a component module provides `init`, that same module is bundled for the client. Keep top-level code and top-level static imports client-compatible.
 
 Example with dependency:
 
@@ -125,6 +125,6 @@ export default {
 
 ## Initialization Model
 
-The browser runtime merges built-in components with project components, expands dependencies, initializes in dependency order, and repeats until no pending component nodes remain. It also watches dynamically inserted DOM and initializes new `data-vp-component` nodes automatically.
+The client runtime merges built-in components with project components, expands dependencies, initializes in dependency order, and repeats until no pending component nodes remain. It also watches dynamically inserted DOM and initializes new `data-vp-component` nodes automatically.
 
 Project component scripts are page-scoped: each page dynamically imports only the `dist/public/component-name.hash.js` files required by the project components used on that page. If a component declares `dependsOn` and the dependency is also a project component, the dependency script is loaded as well.

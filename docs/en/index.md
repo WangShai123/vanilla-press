@@ -40,7 +40,7 @@ layouts:
           description: Convenient APIs make it easy to customize layouts, components, and runtime modules without changing the main build flow.
         - index: 3
           title: Flexible Composition
-          description: Dependency management and vp-script support make it easy to connect with external services for advanced features such as auth and payments.
+          description: Client entries and dependency management make it easy to connect with external services for advanced features such as auth and payments.
         - index: 4
           title: Markdown Extensions
           description: Extend markdown-it with container components and connect build-time output to runtime behavior through stable data-vp markers.
@@ -57,7 +57,7 @@ layouts:
         - text: Layout API
           link: ./guide/layout-api.html
           variant: is-primary
-        - text: vp-script API
-          link: ./guide/vp-script.html
+        - text: Client Management
+          link: ./guide/client.html
           variant: is-secondary
 ---

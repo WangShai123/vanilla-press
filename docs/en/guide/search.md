@@ -8,13 +8,13 @@ In `vp/config/runtime.ts`, configure whether search is enabled.
 
 ```ts
 export default {
-  browser: {
+  client: {
     search: true,
   },
 }
 ```
 
-When search is disabled, the build does not emit `search.js`, and pages do not render a search entry.
+When search is disabled, the server does not emit `search.js`, and pages do not render a search entry.
 
 ## Index File
 

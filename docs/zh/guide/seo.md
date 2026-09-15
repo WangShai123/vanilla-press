@@ -2,24 +2,9 @@
 
 让文档站点在搜索引擎中更容易被发现。
 
-## 运行时
+## 构建
 
-在 `vp/config/runtime.ts` 中，按需配置是否启用 SEO 功能。
-
-```ts
-export default {
-  browser: {
-    seo: true,
-  },
-}
-```
-
-## 配置
-
-`browser.seo` 配置类型为 `boolean`，默认值为 `true`。
-
-- `false`: 仅自动解析 html title
-- `true`: 支持在 `markdown` 文档中使用 `frontmatter` 配置 `title`、`description`、`keywords`，并自动解析。
+SEO 是默认构建功能，不需要开关配置。构建阶段会读取 Markdown frontmatter 中的 `title`、`description`、`keywords`，并输出到 HTML。
 
 ## 示例
 

@@ -2,18 +2,9 @@
 
 帮助搜索引擎更好地抓取网站内容。
 
-## 运行时
+## 输出规则
 
-在 `vp/config/runtime.ts` 中，按需配置是否启用站点地图功能。
-
-```ts
-export default {
-  siteUrl: 'https://example.com',
-  build: {
-    sitemap: true,
-  },
-}
-```
+当 `siteUrl` 是有效的 `http(s)` 绝对地址时，构建阶段会输出 `dist/sitemap.xml`。未配置有效 `siteUrl` 时，不会输出 sitemap。
 
 ## 地址
 

@@ -10,7 +10,7 @@
 - 轻量级：输出资源简单、体积小。
 - 个性化：轻松定制布局、样式和组件。
 - 自由：按需选择运行时，只构建你需要的。
-- 可扩展：支持依赖管理、内联脚本与运行时增强。
+- 可扩展：支持依赖管理、client entry 与运行时增强。
 
 ## 安装
 
@@ -23,13 +23,13 @@ npm run dev
 
 ## 构建
 
-构建命令会读取文档目录 `docs/**/*.md`、扩展与配置目录 `vp/`、静态资源目录 `assets/`，并按目录结构输出静态 HTML 文件到 `dist/**/*.html`，并生成相关的 CSS 与 JS 运行时。站点配置现在放在 `vp/config/runtime.ts`，其中构建阶段配置放在 `build`，浏览器运行时配置放在 `browser`。
+构建命令会读取文档目录 `docs/**/*.md`、扩展与配置目录 `vp/`、静态资源目录 `assets/`，并按目录结构输出静态 HTML 文件到 `dist/**/*.html`，并生成相关的 CSS 与 JS 运行时。站点配置现在放在 `vp/config/runtime.ts`，其中构建阶段配置放在 `server`，浏览器运行时配置放在 `client`。
 
 :::tabs
 @tab 手动构建
 
 ```bash
-npm run build
+npm run server
 ```
 
 @tab 本地预览
@@ -48,7 +48,8 @@ npm run dev
 - `dist/public/`：构建后的静态资源目录，包含 CSS、JS、favicon、图片等。
 - `assets/`：静态资源输入目录。
 - `docs/`：文档输入目录，只放 Markdown 页面。
-- `vp/config/runtime.ts`：站点配置入口，分为 `build` 和 `browser`。
+- `vp/config/runtime.ts`：站点配置入口，分为 `server` 和 `client`。
+- `vp/client/`：项目自定义浏览器端公共代码、模块和页面入口。
 - `vp/layouts/`：自定义布局。
 - `vp/components/`：自定义组件。
 
@@ -61,6 +62,7 @@ vanilla-press/
 ├── docs/
 ├── vp/
 │ ├── config/
+│ ├── client/
 │ ├── layouts/
 │ └── components/
 ├── package.json
@@ -69,4 +71,4 @@ vanilla-press/
 
 ## 样式
 
-`vanilla-press` 采用 `desktop` 与 `mobile` 隔离策略，会根据用户设备类型，加载对应运行时和渲染样式。
+`vanilla-press` 采用响应式布局策略，通过 CSS 媒体查询切换桌面端与窄屏端样式，运行时只为已渲染的 DOM 绑定必要交互。

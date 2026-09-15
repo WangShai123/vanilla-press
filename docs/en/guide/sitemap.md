@@ -2,18 +2,9 @@
 
 Help search engines crawl site content more effectively.
 
-## Runtime
+## Output Rules
 
-In `vp/config/runtime.ts`, configure whether sitemap generation is enabled.
-
-```ts
-export default {
-  siteUrl: 'https://example.com',
-  build: {
-    sitemap: true,
-  },
-}
-```
+When `siteUrl` is a valid absolute `http(s)` URL, the build outputs `dist/sitemap.xml`. Without a valid `siteUrl`, sitemap output is skipped.
 
 ## URL
 

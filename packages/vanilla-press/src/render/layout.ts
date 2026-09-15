@@ -15,10 +15,7 @@ import {
   type SourcePage,
   type UnknownRecord,
 } from '../types.ts'
-import {
-  renderHeaderTemplates,
-  renderSecondaryTemplate,
-} from './template/chrome.ts'
+import { renderHeaderTemplates } from './template/chrome.ts'
 import { renderTemplate } from './template/engine.ts'
 import { createPageShellContext } from './template/shell.ts'
 
@@ -32,6 +29,9 @@ interface LoadLayoutsOptions {
 interface RenderLayoutOptions {
   body: string
   editorHelp?: string
+  sidebar?: string
+  mobileSidebar?: string
+  prevNext?: string
   source: SourcePage
   config: RuntimeConfig
   sidebarEnabled: boolean
@@ -113,7 +113,10 @@ export async function loadLayouts({
 }: LoadLayoutsOptions): Promise<LayoutMap> {
   const layouts: LayoutMap = new Map()
   const roots: { dir: string; source: LayoutSource }[] = [
-    { dir: path.join(packageRoot, 'src/layouts'), source: 'src' },
+    {
+      dir: path.join(packageRoot, 'src/theme-default/layouts'),
+      source: 'src',
+    },
     { dir: layoutsDir, source: 'vp' },
   ]
 
@@ -126,7 +129,7 @@ export async function loadLayouts({
 
   if (!layouts.has(defaultLayoutName)) {
     throw new Error(
-      'Missing required layout "default". Add src/layouts/default/template.html.'
+      'Missing required layout "default". Add src/theme-default/layouts/default/template.html.'
     )
   }
 
@@ -164,6 +167,9 @@ function scopedLayoutData(
 export function renderLayout({
   body,
   editorHelp = '',
+  sidebar = '',
+  mobileSidebar = '',
+  prevNext = '',
   source,
   config,
   sidebarEnabled,
@@ -184,7 +190,9 @@ export function renderLayout({
     sidebarEnabled,
     tocEnabled,
     header: renderHeaderTemplates(chrome),
-    secondary: renderSecondaryTemplate(chrome),
+    sidebar,
+    mobileSidebar,
+    prevNext,
   })
   const context = {
     ...shellContext,

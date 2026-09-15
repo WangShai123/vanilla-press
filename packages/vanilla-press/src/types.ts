@@ -54,7 +54,7 @@ export interface RuntimeTocConfig extends RuntimeFeatureConfig {
   offset?: number
 }
 
-export interface RuntimeLlmsFeatureConfig extends RuntimeFeatureConfig {
+export interface RuntimeLlmsFeatureConfig extends UnknownRecord {
   link?: boolean
   copy?: boolean
   chatgpt?: boolean
@@ -83,19 +83,9 @@ export type RuntimeEditorSize = boolean | 'sm' | 'md' | 'lg' | 'xl'
 export type FooterScriptType = 'script' | 'module'
 export type FooterScriptConfig = string
 
-export interface RuntimeVpScriptConfig extends UnknownRecord {
-  shared?: string[]
-}
-
-export interface BrowserRuntimeConfig extends UnknownRecord {
-  seo?: RuntimeFeatureSwitch
-  externalLink?: RuntimeFeatureSwitch
-  menu?: RuntimeFeatureSwitch
-  sidebar?: RuntimeFeatureSwitch
+export interface ClientRuntimeConfig extends UnknownRecord {
   toc?: boolean | RuntimeTocConfig
   search?: RuntimeFeatureSwitch
-  prevNext?: RuntimeFeatureSwitch
-  i18n?: boolean | RuntimeI18nConfig
   theme?: boolean | RuntimeThemeConfig
   auth?: RuntimeFeatureSwitch
   editorSize?: RuntimeEditorSize
@@ -117,14 +107,24 @@ export interface RuntimeHighlightConfig extends UnknownRecord {
   dark?: string
 }
 
-export interface BuildRuntimeConfig extends UnknownRecord {
+export type ClientSharedConfig = string[] | Record<string, string[]>
+export type ClientEntryConfig = string | string[]
+
+export interface ServerClientConfig extends UnknownRecord {
+  entries?: Record<string, ClientEntryConfig>
+  shared?: ClientSharedConfig
+}
+
+export interface ServerRuntimeConfig extends UnknownRecord {
   social?: UnknownRecord
-  sitemap?: RuntimeFeatureSwitch
-  robots?: RuntimeFeatureSwitch
+  icp?: string
+  externalLink?: RuntimeFeatureSwitch
+  prevNext?: RuntimeFeatureSwitch
+  i18n?: RuntimeI18nConfig
   highlight?: RuntimeHighlightConfig
-  llms?: boolean | RuntimeLlmsFeatureConfig
+  llms?: RuntimeLlmsFeatureConfig
   footerScript?: FooterScriptType
-  vpScript?: RuntimeVpScriptConfig
+  client?: ServerClientConfig
   editLink?: boolean | RuntimeEditorLinkConfig
   lastEdit?: boolean | RuntimeLastEditConfig
 }
@@ -132,8 +132,8 @@ export interface BuildRuntimeConfig extends UnknownRecord {
 export interface VPRuntime extends UnknownRecord {
   siteUrl?: string
   siteName?: string
-  build?: BuildRuntimeConfig
-  browser?: BrowserRuntimeConfig
+  server?: ServerRuntimeConfig
+  client?: ClientRuntimeConfig
   aside?: {
     html?: string
   } & UnknownRecord
@@ -144,6 +144,12 @@ export type RuntimeConfig = VPRuntime
 export interface FrontmatterData extends UnknownRecord {
   layout?: string
   layouts?: Record<string, unknown>
+  client?:
+    | string
+    | string[]
+    | {
+        entry?: string | string[]
+      }
 }
 
 export interface SourcePage {
@@ -155,23 +161,32 @@ export interface SourcePage {
   title: string
 }
 
-export interface PageScriptAsset {
-  rel: string
-  code: string
-  sharedVpModules: SharedVpScriptModule[]
-  usesVpRuntime?: boolean
-}
-
 export interface ModuleScriptAsset {
   name: string
   rel: string
   file: string
   dependsOn?: string[]
-  sharedVpModules?: SharedVpScriptModule[]
-  usesVpRuntime?: boolean
+  sharedClientModules?: SharedClientModule[]
+  clientImports?: ClientImport[]
 }
 
-export type SharedVpScriptModule = string
+export interface StylesheetAsset {
+  name: string
+  rel: string
+  file: string
+}
+
+export interface ClientEntryAssets {
+  scripts: Map<string, ModuleScriptAsset>
+  styles: Map<string, StylesheetAsset>
+}
+
+export type SharedClientModule = string
+
+export interface ClientImport {
+  specifier: string
+  type: 'runtime' | 'module'
+}
 
 export interface RuntimePage {
   rel?: string
@@ -270,7 +285,8 @@ export interface RenderedPage extends SourcePage {
   components: string[]
   componentScripts: ModuleScriptAsset[]
   layoutScript?: ModuleScriptAsset | null
-  scripts: PageScriptAsset[]
+  clientEntries: ModuleScriptAsset[]
+  clientStyles: StylesheetAsset[]
   html: string
 }
 
@@ -297,6 +313,7 @@ export interface ChromeOptions {
   brandHref: string
   config: RuntimeConfig
   languages: LanguagesConfig
+  i18n: DocI18n
   menuItems: NavItem[]
   page: RuntimePage
   menuEnabled: boolean
@@ -313,8 +330,7 @@ export interface RuntimeBundleData {
   languages?: LanguagesConfig | UnknownRecord
   menuItems?: unknown[]
   sidebarItems?: unknown[] | RuntimeSidebarConfig
-  sharedVpModules?: SharedVpScriptModule[]
-  customRuntimeFile?: string | null
+  sharedClientModules?: SharedClientModule[]
 }
 
 export interface BuildOptions {

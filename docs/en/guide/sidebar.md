@@ -2,21 +2,9 @@
 
 The sidebar navigation displayed along the side of the page.
 
-## Runtime
-
-In `vp/config/runtime.ts`, configure whether the sidebar is enabled.
-
-```ts
-export default {
-  browser: {
-    sidebar: true,
-  },
-}
-```
-
-## Configuration
-
 In `vp/config/sidebar.ts`, configure the site's global sidebar data as needed.
+
+When `vp/config/sidebar.ts` or a directory-level `sidebar.ts` exports a valid sidebar array, VanillaPress builds the desktop and mobile sidebar HTML directly for matching pages. Export an empty array to render no sidebar.
 
 - `label`: i18n message key for the sidebar item
 - `path`: page path for the sidebar item, without `.html`

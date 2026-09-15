@@ -10,7 +10,7 @@
 - Lightweight, with a small output size.
 - Customizable, with support for custom layouts, styles, and components.
 - Flexible, with support for custom runtime features.
-- Extensible with dependency management, vp-script, and runtime enhancements.
+- Extensible with dependency management, client entries, and runtime enhancements.
 
 ## Installation
 
@@ -23,18 +23,18 @@ npm run dev
 
 ## Build
 
-The build command reads `docs/**/*.md`, `vp/`, and `assets/`, outputs pages to `dist/**/*.html` following the same directory structure, and emits related CSS files and JS runtime. Site configuration now lives in `vp/config/runtime.ts`, with build-time options under `build` and browser runtime options under `browser`.
+The build command reads `docs/**/*.md`, `vp/`, and `assets/`, outputs pages to `dist/**/*.html` following the same directory structure, and emits related CSS files and JS runtime. Site configuration lives in `vp/config/runtime.ts`, with build-stage data under `server` and browser runtime data under `client`.
 
 :::tabs
 @tab Manual Build
 
 ```bash
-npm run build
+npm run server
 ```
 
 @tab Preview
 
-Start the local preview server. Changes under `docs/`, `vp/`, and `assets/` rebuild the site and refresh the browser automatically.
+Start the local preview server. Changes under `docs/`, `vp/`, and `assets/` rebuild the site and refresh the client automatically.
 
 ```bash
 npm run dev
@@ -48,7 +48,8 @@ npm run dev
 - `dist/public/`: generated static assets, including CSS, JS, favicon, images...
 - `assets/`: static assets input directory.
 - `docs/`: input directory for Markdown pages only.
-- `vp/config/runtime.ts`: site configuration, split into `build` and `browser`.
+- `vp/config/runtime.ts`: site configuration, split into `server` and `client`.
+- `vp/client/`: project-owned browser runtime code, modules, and page entries.
 - `vp/layouts/`: custom layouts.
 - `vp/components/`: custom components.
 
@@ -61,6 +62,7 @@ vanilla-press/
 ├── docs/
 ├── vp/
 │ ├── config/
+│ ├── client/
 │ ├── layouts/
 │ └── components/
 ├── package.json
@@ -69,4 +71,4 @@ vanilla-press/
 
 ## Styling
 
-The runtime separates `desktop` and `mobile` strategies. `vanilla-press` detects the device type and loads the matching runtime behavior and rendering styles.
+The runtime uses a responsive layout strategy. CSS media queries switch desktop and compact styles, while JavaScript only binds the interactions needed by the rendered DOM.

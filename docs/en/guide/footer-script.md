@@ -10,13 +10,13 @@ Configure the script tag type in `vp/config/runtime.ts`:
 
 ```typescript
 export default {
-  build: {
+  server: {
     footerScript: 'script',
   },
 }
 ```
 
-`build.footerScript` accepts two values:
+`server.footerScript` accepts two values:
 
 | Value    | Output                               | Description                   |
 | -------- | ------------------------------------ | ----------------------------- |
@@ -35,7 +35,7 @@ console.log('site footer script loaded');
 ` satisfies FooterScriptConfig
 ```
 
-After build, every page includes:
+After server, every page includes:
 
 ```html
 <script>
@@ -62,4 +62,4 @@ gtag('config', 'G-XXXXXXXXXX');
 ` satisfies FooterScriptConfig
 ```
 
-If the analytics provider requires an external SDK, create a `script` element dynamically inside the snippet, or set `build.footerScript: 'module'` for module script code.
+If the analytics provider requires an external SDK, create a `script` element dynamically inside the snippet, or set `server.footerScript: 'module'` for module script code.

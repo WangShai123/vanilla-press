@@ -2,15 +2,15 @@
 
 最后更新时间，用于在文档页面中输出当前页面的最近内容更新时间。
 
-这是一个构建阶段功能，由 `vp/config/runtime.ts` 中的 `build.lastEdit` 控制。构建时会读取页面 Markdown 内容，判断内容是否变化，并把显示时间输出到布局容器中。
+这是一个构建阶段功能，由 `vp/config/runtime.ts` 中的 `server.lastEdit` 控制。构建时会读取页面 Markdown 内容，判断内容是否变化，并把显示时间输出到布局容器中。
 
 ## 配置
 
-`build.lastEdit` 默认启用。
+`server.lastEdit` 默认启用。
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: true,
   },
 }
@@ -21,7 +21,7 @@ export default {
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: {
       text: 'editor.lastUpdated',
       format: 'yyyy-MM-dd HH:mm:ss',
@@ -39,7 +39,7 @@ export default {
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: {
       text: 'editor.lastUpdated',
     },
@@ -76,7 +76,7 @@ export default {
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: {
       format: 'yyyy/MM/dd HH:mm',
     },
@@ -126,7 +126,7 @@ export default {
 
 ```ts
 export default {
-  build: {
+  server: {
     lastEdit: {
       utc: false,
     },

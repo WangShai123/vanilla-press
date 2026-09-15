@@ -5,14 +5,9 @@ import type {
   DocI18n,
   LanguagesConfig,
   LocaleEntry,
-  NavItem,
   RuntimePage,
 } from '../types.ts'
-import {
-  isI18nEnabled,
-  isMenuEnabled,
-  isSidebarEnabled,
-} from '../utilities/features.ts'
+import { isI18nEnabled } from '../utilities/features.ts'
 import { initAuth } from './auth.ts'
 import { createDocI18n, currentLocale } from './i18n.ts'
 import { initLocale, maybeRedirectToDefaultLocale } from './locale.ts'
@@ -33,11 +28,10 @@ type DocChromeState =
 
 export function initDocChrome(
   config: RuntimeConfig = {},
-  menu: NavItem[] = [],
-  sidebar: NavItem[] = [],
+  _menu: unknown[] = [],
+  _sidebar: unknown[] = [],
   languages: LanguagesConfig = {},
-  page: RuntimePage = {},
-  mobile = false
+  page: RuntimePage = {}
 ): DocChromeState {
   if (maybeRedirectToDefaultLocale(config, languages, page)) {
     return { i18n: null, locale: null, redirected: true }
@@ -47,22 +41,14 @@ export function initDocChrome(
   const locale = i18nEnabled ? currentLocale(languages, page) : null
   const i18n = createDocI18n(languages, page)
 
-  const desktopHeader = q<HTMLElement>('[data-vp-desktop-header]')
-  const mobileHeader = q<HTMLElement>('[data-vp-mobile-header]')
-  if (desktopHeader) desktopHeader.hidden = mobile
-  if (mobileHeader) mobileHeader.hidden = !mobile
-
   const asideCustom = q<HTMLElement>('[data-vp-aside-custom]')
   if (asideCustom && config.aside?.html) {
     asideCustom.innerHTML = config.aside.html
   }
 
-  if (mobile && isMenuEnabled(config)) {
-    initMobileHeader(menu, page, i18n, locale)
-  } else if (!mobile) {
-    if (isMenuEnabled(config)) initHeaderMenu(menu, page, i18n, locale)
-    if (isSidebarEnabled(config)) initSidebar(sidebar, page, i18n, locale)
-  }
+  initHeaderMenu()
+  initMobileHeader()
+  initSidebar()
   if (i18nEnabled) initLocale(languages, page, i18n, config)
   initTheme(config, i18n)
   initAuth(config, i18n)

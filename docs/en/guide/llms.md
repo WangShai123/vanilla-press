@@ -2,27 +2,14 @@
 
 Generate `llms.txt` and matching Markdown route files for every page so LLMs can read the source documentation directly.
 
-## Runtime
-
-`build.llms` is enabled by default.
-
-```ts
-export default {
-  build: {
-    llms: true,
-  },
-}
-```
-
 ## Metadata
 
-`build.llms: true` is equivalent to using the default configuration.
+LLMs output is enabled by default. `server.llms` only configures page toolbar data.
 
 ```ts
 export default {
-  build: {
+  server: {
     llms: {
-      enabled: true, // whether to enable llms feature
       link: true, // whether to enable llms toolbar: View Markdown
       copy: true, // whether to enable llms toolbar: Copy Markdown link
       chatgpt: true, // whether to enable llms toolbar: Open in ChatGPT
@@ -32,7 +19,6 @@ export default {
 }
 ```
 
-- When `enabled: false`, the build skips `vp/config/llms.ts` and does not output `dist/llms.txt` or per-page `.md` files.
 - `link`, `copy`, `chatgpt`, and `claude`. If any of them is enabled, the page renders LLMS toolbar below the title of the page.
 
 ## Configuration
@@ -70,7 +56,7 @@ export default {
 Based on the address configured in `siteUrl`, generate the corresponding URL and the absolute path to the Markdown file.
 
 1. LLMS URL: `https://example.com/llms.txt`
-2. During the build process, a Markdown file at the same path will be output for each HTML page.
+2. During build, a Markdown file at the same path will be output for each HTML page.
 3. Generate the absolute path to the Markdown file in `llms.txt` based on `siteUrl`.
 
 | HTML file                        | Markdown file                  |
