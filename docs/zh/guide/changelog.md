@@ -2,7 +2,11 @@
 
 ## 1.5.x
 
-### 1.5.5
+#### 1.5.6
+
+- feat: `vp-header-doc-nav` 调整为布局插槽，默认文档布局使用，`home` 布局不使用。
+
+#### 1.5.5
 
 - feat: layouts、components 和 client entries 的脚本构建时启用压缩。
 

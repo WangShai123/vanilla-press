@@ -15,7 +15,7 @@ import {
   type SourcePage,
   type UnknownRecord,
 } from '../types.ts'
-import { renderHeaderTemplates } from './template/chrome.ts'
+import { renderHeaderDocNav, renderHeaderTemplates } from './template/chrome.ts'
 import { renderTemplate } from './template/engine.ts'
 import { createPageShellContext } from './template/shell.ts'
 
@@ -190,6 +190,7 @@ export function renderLayout({
     sidebarEnabled,
     tocEnabled,
     header: renderHeaderTemplates(chrome),
+    headerDocNav: renderHeaderDocNav(chrome),
     sidebar,
     mobileSidebar,
     prevNext,

@@ -2,7 +2,11 @@
 
 ## 1.5.x
 
-### 1.5.5
+#### 1.5.6
+
+- feat: `vp-header-doc-nav` is now a layout slot used by the default documentation layout and omitted by the `home` layout.
+
+#### 1.5.5
 
 - feat: Layouts, components, and client entry scripts are now minified during build.
 

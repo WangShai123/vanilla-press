@@ -110,6 +110,7 @@ layouts:
 | `{{{ content }}}`             | Markdown 渲染后的 HTML                     |
 | `{{{ editorHelp }}}`          | 编辑辅助块，包含编辑链接和最后编辑时间     |
 | `{{{ slots.header }}}`        | 响应式站点头部，包含站点名、主菜单和操作组 |
+| `{{{ slots.headerDocNav }}}`  | 窄屏文档导航插槽，包含侧边栏和目录按钮     |
 | `{{{ slots.sidebar }}}`       | 默认侧边栏插槽                             |
 | `{{{ slots.mobileSidebar }}}` | 手机端侧边栏抽屉内容插槽                   |
 | `{{{ slots.aside }}}`         | 默认右侧区域插槽，包含目录                 |
@@ -117,7 +118,7 @@ layouts:
 
 普通双花括号会进行 HTML 转义，适合输出 frontmatter 中的文本。
 
-三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`editorHelp`、`slots.header`、`slots.sidebar`、`slots.mobileSidebar`、`slots.aside` 和 `slots.prevNext`。
+三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`editorHelp`、`slots.header`、`slots.headerDocNav`、`slots.sidebar`、`slots.mobileSidebar`、`slots.aside` 和 `slots.prevNext`。
 
 ## 数组循环
 
@@ -177,7 +178,9 @@ layouts:
 内置 `default` 布局复用文档站常规结构：左侧侧边栏、正文、右侧目录和页脚。它的模板核心结构如下：
 
 ```html
-<header class="vp-header">{{{ slots.header }}}</header>
+<header class="vp-header">
+  {{{ slots.header }}} {{{ slots.headerDocNav }}}
+</header>
 {{{ slots.mobileSidebar }}}
 <main class="{{ shell.className }}">
   {{{ slots.sidebar }}}
@@ -197,4 +200,4 @@ layouts:
 <footer class="vp-footer" data-vp-footer></footer>
 ```
 
-如果新布局仍然是文档页，可以从这个结构复制后调整。`{{{ slots.header }}}` 应放在 `.vp-header` 内部，`{{{ slots.mobileSidebar }}}` 应放在 header 后方，供窄屏侧边栏抽屉使用。如果新布局是首页或营销页，通常只保留 `{{{ slots.header }}}`，然后自行设计页面主体。
+如果新布局仍然是文档页，可以从这个结构复制后调整。`{{{ slots.header }}}` 和 `{{{ slots.headerDocNav }}}` 应放在 `.vp-header` 内部，`{{{ slots.mobileSidebar }}}` 应放在 header 后方，供窄屏侧边栏抽屉使用。如果新布局是首页或营销页，通常只保留 `{{{ slots.header }}}`，然后自行设计页面主体。

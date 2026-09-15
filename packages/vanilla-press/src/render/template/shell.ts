@@ -21,6 +21,7 @@ interface ShellContextOptions {
   sidebarEnabled: boolean
   tocEnabled: boolean
   header?: string
+  headerDocNav?: string
   sidebar?: string
   mobileSidebar?: string
   prevNext?: string
@@ -87,6 +88,7 @@ export function createPageShellContext({
   sidebarEnabled,
   tocEnabled,
   header = '',
+  headerDocNav = '',
   sidebar = '',
   mobileSidebar = '',
   prevNext = '',
@@ -106,6 +108,7 @@ export function createPageShellContext({
     },
     slots: {
       header,
+      headerDocNav,
       sidebar: sidebarHtml,
       mobileSidebar,
       toc,

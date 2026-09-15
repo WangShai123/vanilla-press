@@ -61,7 +61,7 @@ function renderTocButton(tocEnabled: boolean): string {
     : ''
 }
 
-function renderHeaderDocNav(options: ChromeOptions): string {
+export function renderHeaderDocNav(options: ChromeOptions): string {
   const sidebarButton = renderSidebarButton(options.sidebarEnabled)
   const tocButton = renderTocButton(options.tocEnabled)
   if (!sidebarButton && !tocButton) return ''
@@ -80,7 +80,6 @@ function renderHeader(options: ChromeOptions): string {
   const locale = renderLocale(options.i18nEnabled)
   const theme = renderTheme(options.themeEnabled)
   const auth = renderAuth(options.authEnabled)
-  const docNav = renderHeaderDocNav(options)
 
   return `<div class="vp-header-inner" data-vp-header>
       <div class="vp-header-main">
@@ -94,8 +93,7 @@ ${theme}
 ${locale}
 ${auth}
       </div>
-    </div>
-${docNav}`
+    </div>`
 }
 
 function renderMobileMenuContent(options: ChromeOptions): string {
