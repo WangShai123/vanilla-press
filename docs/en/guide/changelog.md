@@ -2,6 +2,10 @@
 
 ## 1.5.x
 
+#### 1.5.8
+
+- feat: Code highlighting now supports line highlights, focus, diff, warnings/errors, and line numbers.
+
 #### 1.5.7
 
 - feat: Search indexes are split by locale path, and pages load the current language data file on demand.

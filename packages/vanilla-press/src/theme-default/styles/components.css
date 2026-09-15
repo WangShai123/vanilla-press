@@ -10,6 +10,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
+
   html:not(.light) .shiki,
   html:not(.light) .shiki span {
     color: var(--shiki-dark) !important;
@@ -168,7 +169,7 @@ a[data-vp-external-link] span.external-link svg {
   align-items: center;
 }
 
-.vp-prev-next-label > span {
+.vp-prev-next-label>span {
   flex: 0 1 auto;
   min-width: 0;
 }
@@ -193,16 +194,16 @@ a[data-vp-external-link] span.external-link svg {
   --tab-fg: var(--ui-fg-muted);
 }
 
-.j-tabs .panel-list .panel-item > * + * {
+.j-tabs .panel-list .panel-item>*+* {
   margin-top: 12px;
 }
 
-.j-tabs .panel-list .panel-item > *:first-child {
+.j-tabs .panel-list .panel-item>*:first-child {
   margin-top: 0;
 }
 
-.j-tabs .panel-list .panel-item > *:last-child,
-.j-tabs .panel-item details[open] > *:last-child {
+.j-tabs .panel-list .panel-item>*:last-child,
+.j-tabs .panel-item details[open]>*:last-child {
   margin-bottom: 0;
 }
 
@@ -218,11 +219,11 @@ a[data-vp-external-link] span.external-link svg {
   padding: 1rem;
 }
 
-.j-accordion .panel-content > *:first-child {
+.j-accordion .panel-content>*:first-child {
   margin-top: 0;
 }
 
-.j-accordion .panel-content > *:last-child {
+.j-accordion .panel-content>*:last-child {
   margin-bottom: 0;
 }
 
@@ -244,11 +245,185 @@ a[data-vp-external-link] span.external-link svg {
   list-style: none;
 }
 
-.j-editor .j-tree > .j-tree-list:first-child {
+.j-editor .j-tree>.j-tree-list:first-child {
   padding: 0;
   margin: 0;
 }
 
 .code-block .code-header .code-dots {
   background-color: var(--state-success) !important;
+}
+
+.code-block code {
+  counter-reset: vp-code-line var(--vp-code-line-start, 0);
+}
+
+.code-block .line {
+  display: block;
+  box-sizing: border-box;
+  min-height: 1.6em;
+  padding: 0 1rem;
+  margin: 0 -1rem;
+  line-height: inherit;
+}
+
+.code-block .line.highlighted {
+  background-color: color-mix(in srgb, var(--ui-indigo) 12%, transparent);
+}
+
+.dark .code-block .line>span {
+  background-color: transparent !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .code-block .line>span {
+    background-color: transparent !important;
+  }
+}
+
+.dark .code-block .line.highlighted {
+  background-color: color-mix(in srgb,
+      var(--ui-indigo) 22%,
+      transparent) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .code-block .line.highlighted {
+    background-color: color-mix(in srgb,
+        var(--ui-indigo) 22%,
+        transparent) !important;
+  }
+}
+
+.code-block .line.diff {
+  position: relative;
+}
+
+.code-block .line.diff::before {
+  position: absolute;
+  left: 0.35rem;
+  color: var(--tone-caption);
+}
+
+.code-block .line.diff.add {
+  background-color: color-mix(in srgb, var(--state-success) 14%, transparent);
+}
+
+.dark .code-block .line.diff.add {
+  background-color: color-mix(in srgb,
+      var(--state-success) 26%,
+      transparent) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .code-block .line.diff.add {
+    background-color: color-mix(in srgb,
+        var(--state-success) 26%,
+        transparent) !important;
+  }
+}
+
+.code-block .line.diff.add::before {
+  content: '+';
+}
+
+.code-block .line.diff.remove {
+  background-color: color-mix(in srgb, var(--state-danger) 14%, transparent);
+}
+
+.dark .code-block .line.diff.remove {
+  background-color: color-mix(in srgb,
+      var(--state-danger) 26%,
+      transparent) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .code-block .line.diff.remove {
+    background-color: color-mix(in srgb,
+        var(--state-danger) 26%,
+        transparent) !important;
+  }
+}
+
+.code-block .line.diff.remove::before {
+  content: '-';
+}
+
+.code-block .line.warning {
+  background-color: color-mix(in srgb, var(--state-warning) 18%, transparent);
+}
+
+.dark .code-block .line.warning {
+  background-color: color-mix(in srgb,
+      var(--state-warning) 30%,
+      transparent) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .code-block .line.warning {
+    background-color: color-mix(in srgb,
+        var(--state-warning) 30%,
+        transparent) !important;
+  }
+}
+
+.code-block .line.error {
+  background-color: color-mix(in srgb, var(--state-danger) 16%, transparent);
+}
+
+.dark .code-block .line.error {
+  background-color: color-mix(in srgb,
+      var(--state-danger) 28%,
+      transparent) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .code-block .line.error {
+    background-color: color-mix(in srgb,
+        var(--state-danger) 28%,
+        transparent) !important;
+  }
+}
+
+.code-block.has-focused-lines .line:not(.focused) {
+  opacity: 0.2;
+  transition: opacity 0.18s ease;
+}
+
+.code-block.has-focused-lines:hover .line {
+  opacity: 1;
+}
+
+.code-block.has-line-numbers .line {
+  position: relative;
+  padding-left: 3rem;
+  counter-increment: vp-code-line;
+}
+
+.code-block.has-line-numbers .line::before {
+  position: absolute;
+  left: 0;
+  width: 2.25rem;
+  color: var(--tone-caption);
+  text-align: right;
+  content: counter(vp-code-line);
+  user-select: none;
+}
+
+.code-block.has-line-numbers .line.diff::before {
+  content: counter(vp-code-line);
+}
+
+.code-block.has-line-numbers .line.diff::after {
+  position: absolute;
+  left: 2.65rem;
+  color: var(--tone-caption);
+}
+
+.code-block.has-line-numbers .line.diff.add::after {
+  content: '+';
+}
+
+.code-block.has-line-numbers .line.diff.remove::after {
+  content: '-';
 }

@@ -2,45 +2,42 @@
 
 Highlight is powered by `Shiki` and prerendered to static HTML during build.
 
-## Example
+## Demo
 
-```js
-const pages = ['index.md', 'guide/components.md']
+:::tabs
+@tab 示例
 
-export function toHtml(file) {
-  return file.replace(/\.md$/, '.html')
-}
-```
+```rust
+use std::future::Future;
 
-```php
-<?php
-namespace App;
-use DI\ContainerBuilder;
-
-class Test
+async fn map_concurrent<T, U, F, Fut>(items: Vec<T>, f: F) -> Vec<U>
+where
+    F: Fn(T) -> Fut,
+    Fut: Future<Output = U>,
 {
-  private ContainerBuilder $builder;
-
-  public function __construct()
-  {
-    parent::__construct();
-    $this->builder = new ContainerBuilder();
-  }
-
-  public function getContainer()
-  {
-    $this->builder->addDefinitions(config('dependence', []));
-    $this->builder->useAutowiring(true);
-    $this->builder->useAttributes(true);
-
-    return $this->builder->server();
-  }
+    futures::future::join_all(items.into_iter().map(f)).await
 }
 ```
+
+@tab 语法
+
+````markdown
+```rust
+use std::future::Future;
+
+async fn map_concurrent<T, U, F, Fut>(items: Vec<T>, f: F) -> Vec<U>
+where
+    F: Fn(T) -> Fut,
+    Fut: Future<Output = U>,
+{
+    futures::future::join_all(items.into_iter().map(f)).await
+}
+```
+````
+
+:::
 
 ## Runtime
-
-Code highlighting is enabled by default and only runs during build.
 
 Light mode uses the `GitHub Light Default` theme, and dark mode uses the `GitHub Dark Default` theme.
 
@@ -62,3 +59,229 @@ If `light` or `dark` is missing, does not exist, or fails to load, the default t
 ## Supported Themes
 
 Shiki provides dozens of themes. See the `Shiki` [official documentation](https://shiki.style/themes) for details.
+
+## Advanced Usage
+
+### Highlight Lines
+
+Add `{lines}` after the code block language to highlight specific lines. Single lines, multiple lines, and ranges are supported.
+
+:::tabs
+@tab Example
+
+```ts {2,4-6}
+const name = 'VanillaPress'
+const version = '1.5'
+
+export function info() {
+  return `${name}@${version}`
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts {2,4-6}
+const name = 'VanillaPress'
+const version = '1.5'
+
+export function info() {
+  return `${name}@${version}`
+}
+```
+````
+
+:::
+
+You can also use `[!code highlight]`. When it is placed at the end of a code line, it targets the current line. When it is placed on its own comment line, it targets the next line. The marker is removed during build and does not appear in the final HTML.
+
+:::tabs
+@tab Example
+
+```ts
+const name = 'VanillaPress'
+const version = '1.5' // [!code highlight]
+
+export function info() {
+  // [!code highlight:3]
+  return `${name}@${version}`
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts
+const name = 'VanillaPress'
+const version = '1.5' // [!code highlight]
+
+export function info() {
+  // [!code highlight:3]
+  return `${name}@${version}`
+}
+```
+````
+
+:::
+
+`[!code highlight:3]` highlights three lines starting from the target line.
+
+### Focus Code
+
+Use `[!code focus]` to emphasize key lines and dim the rest of the same code block.
+
+:::tabs
+@tab Example
+
+```ts
+const name = 'VanillaPress'
+const version = '1.5' // [!code focus]
+
+export function info() {
+  return `${name}@${version}` // [!code focus]
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts
+const name = 'VanillaPress'
+const version = '1.5' // [!code focus]
+
+export function info() {
+  return `${name}@${version}` // [!code focus]
+}
+```
+````
+
+:::
+
+Continuous ranges are supported too:
+
+:::tabs
+@tab Example
+
+```ts
+export function createApp() {
+  // [!code focus:3]
+  const app = {}
+  return app
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts
+export function createApp() {
+  // [!code focus:3]
+  const app = {}
+  return app
+}
+```
+````
+
+:::
+
+### Color Differences
+
+Use `[!code ++]` and `[!code --]` to mark added and removed lines. This is useful for showing before/after changes inside a code block.
+
+:::tabs
+@tab Example
+
+```ts
+const theme = 'github-light-default'
+const darkTheme = 'github-dark-default' // [!code --]
+const darkTheme = 'github-dark-high-contrast' // [!code ++]
+```
+
+@tab Syntax
+
+````markdown
+```ts
+const theme = 'github-light-default'
+const darkTheme = 'github-dark-default' // [!code --]
+const darkTheme = 'github-dark-high-contrast' // [!code ++]
+```
+````
+
+:::
+
+### Errors and Warnings
+
+Use `[!code warning]` and `[!code error]` to mark warning or error lines.
+
+:::tabs
+@tab Example
+
+```ts
+function loadTheme(theme?: string) {
+  if (!theme) return 'github-light-default' // [!code warning]
+  if (theme === 'unknown') throw new Error('Invalid theme') // [!code error]
+
+  return theme
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts
+function loadTheme(theme?: string) {
+  if (!theme) return 'github-light-default' // [!code warning]
+  if (theme === 'unknown') throw new Error('Invalid theme') // [!code error]
+
+  return theme
+}
+```
+````
+
+:::
+
+### Line Numbers
+
+Add `line-numbers` after the code block language to show line numbers.
+
+:::tabs
+@tab Example
+
+```ts line-numbers
+export const siteName = 'VanillaPress'
+export const version = '1.5'
+```
+
+@tab Syntax
+
+````markdown
+```ts line-numbers
+export const siteName = 'VanillaPress'
+export const version = '1.5'
+```
+````
+
+:::
+
+You can also set the starting line number:
+
+:::tabs
+@tab Example
+
+```ts line-numbers=10
+export function mount() {
+  return true
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts line-numbers=10
+export function mount() {
+  return true
+}
+```
+````
+
+:::
