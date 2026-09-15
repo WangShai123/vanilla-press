@@ -2,6 +2,11 @@
 
 ## 1.5.x
 
+#### 1.5.7
+
+- feat: Search indexes are split by locale path, and pages load the current language data file on demand.
+- feat: HTML now receives a `mobile` or `desktop` class during initialization based on device detection.
+
 #### 1.5.6
 
 - feat: `vp-header-doc-nav` is now a layout slot used by the default documentation layout and omitted by the `home` layout.

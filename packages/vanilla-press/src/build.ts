@@ -100,6 +100,11 @@ import {
 } from './utilities/path.ts'
 import { renderPrevNext } from './utilities/prev-next.ts'
 import { renderRobotsTxt } from './utilities/robots.ts'
+import {
+  pageInSearchLocale,
+  searchIndexFileName,
+  searchLocaleRoutes,
+} from './utilities/search.ts'
 import { resolvePageSidebarItems } from './utilities/sidebar.ts'
 import { minifyCss, readStyleConfig } from './utilities/style.ts'
 
@@ -1234,7 +1239,7 @@ function rewriteAssetReferences(
 
 async function hashRootAssets(outputDir: string): Promise<Map<string, string>> {
   const publicDir = path.join(outputDir, 'public')
-  const assetFiles = ['styles.css', 'runtime.js', 'search.js']
+  const assetFiles = ['styles.css', 'runtime.js']
 
   const assetMap = new Map<string, string>()
 
@@ -1693,12 +1698,40 @@ function createSearchIndex(pages: RenderedPage[] = []): SearchIndexItem[] {
   }))
 }
 
+export function renderSearchIndexFiles(
+  pages: RenderedPage[] = [],
+  config: RuntimeConfig = {},
+  languages: LanguagesConfig = {}
+): Map<string, string> {
+  const routes = isI18nEnabled(config) ? searchLocaleRoutes(languages) : []
+  const targets = routes.length
+    ? routes.map((route) => ({
+        fileName: searchIndexFileName(route),
+        pages: pages.filter((page) => pageInSearchLocale(page.rel, route)),
+      }))
+    : [{ fileName: searchIndexFileName(), pages }]
+
+  return new Map(
+    targets.map(({ fileName, pages: targetPages }) => [
+      fileName,
+      `export const searchIndex = ${JSON.stringify(createSearchIndex(targetPages))};\n`,
+    ])
+  )
+}
+
 export async function writeSearchIndex(
   outputDir: string,
-  pages: RenderedPage[] = []
+  pages: RenderedPage[] = [],
+  config: RuntimeConfig = {},
+  languages: LanguagesConfig = {}
 ): Promise<void> {
-  const code = `export const searchIndex = ${JSON.stringify(createSearchIndex(pages))};\n`
-  await fs.writeFile(path.join(outputDir, 'search.js'), code, 'utf8')
+  const files = renderSearchIndexFiles(pages, config, languages)
+
+  await Promise.all(
+    Array.from(files.entries()).map(([fileName, code]) =>
+      fs.writeFile(path.join(outputDir, fileName), code, 'utf8')
+    )
+  )
 }
 
 function siteUrl(config: RuntimeConfig = {}): string {
@@ -1885,7 +1918,9 @@ export async function build({
     sharedClientModules: pageSharedClientModules(pages),
   })
   await buildClientAssets(outputDir, clientDir, pages, config)
-  if (isSearchEnabled(config)) await writeSearchIndex(publicDir, pages)
+  if (isSearchEnabled(config)) {
+    await writeSearchIndex(publicDir, pages, config, languages)
+  }
   if (isSitemapEnabled(config)) await writeSitemap(outputDir, pages, config)
   if (isLlmsEnabled(config)) {
     await writeLlms(outputDir, pages, config, llmsConfig)

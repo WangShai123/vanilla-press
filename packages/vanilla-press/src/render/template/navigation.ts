@@ -124,7 +124,7 @@ function renderTreeNavItem(
       <a class="vp-nav-title${active ? ' is-active' : ''}"${href ? ` href="${attr(href)}"` : ''}>${escapeHtml(titleText)}</a>${
         children.length
           ? `
-      <button class="vp-nav-toggle j-button is-ghost is-icon" type="button" aria-label="${attr(titleText)}" aria-expanded="${String(!collapsed)}">
+      <button class="vp-nav-toggle" type="button" aria-label="${attr(titleText)}" aria-expanded="${String(!collapsed)}">
         ${iconHtml('arrow-down')}
       </button>
       <div class="vp-nav-children"${collapsed ? ' hidden' : ''}>

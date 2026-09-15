@@ -18,7 +18,22 @@ export default {
 
 ## 索引文件
 
-构建搜索功能时，会输出 `search.js` 作为搜索索引文件。
+构建搜索功能时，搜索索引文件按站点是否使用多语言输出。
+
+不使用多语言时，构建结果为通用数据文件：
+
+```text
+dist/public/search.js
+```
+
+使用多语言时，构建结果会按 `server.i18n.locales[].path` 拆分。假设语言路径为 `zh` 和 `en`：
+
+```text
+dist/public/search.zh.js
+dist/public/search.en.js
+```
+
+不同语言页面会在打开搜索时动态加载对应语言的数据文件。例如 `zh` 页面加载 `search.zh.js`，`en` 页面加载 `search.en.js`。
 
 ## 延迟加载
 

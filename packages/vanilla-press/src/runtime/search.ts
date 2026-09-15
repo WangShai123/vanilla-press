@@ -110,7 +110,7 @@ function createSearchPanel({
   let pd: Record<string, string> = {}
   if (isCompactViewport()) {
     lg = 'is-lg'
-    pd = { padding: '4px 2rem 2rem' }
+    pd = { padding: '4px 1rem 2rem' }
   }
   const input = jsx('input', {
     className: `j-input ${lg} vp-search-input`,

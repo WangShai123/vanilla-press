@@ -18,7 +18,22 @@ When search is disabled, the server does not emit `search.js`, and pages do not 
 
 ## Index File
 
-When building the search functionality, `search.js` will be output as the search index file.
+Search index files are emitted based on whether the site uses multiple languages.
+
+Without multiple languages, the build emits one shared data file:
+
+```text
+dist/public/search.js
+```
+
+With multiple languages, the build splits the files by `server.i18n.locales[].path`. If the language paths are `zh` and `en`, the output is:
+
+```text
+dist/public/search.zh.js
+dist/public/search.en.js
+```
+
+Pages dynamically load the matching language data file when search is opened. For example, `zh` pages load `search.zh.js`, and `en` pages load `search.en.js`.
 
 ## Lazy Loading
 

@@ -26,6 +26,7 @@ import {
   loadSidebarItems,
   pageSharedClientModules,
   readSource,
+  renderSearchIndexFiles,
   renderSource,
   resolveI18nData,
   scanClientEntryAssets,
@@ -66,7 +67,6 @@ import {
   isSitemapEnabled,
 } from './utilities/features.ts'
 import { markdownRouteRel, renderLlmsTxt } from './utilities/llms.ts'
-import { excerptText } from './utilities/page.ts'
 import { toPosix } from './utilities/path.ts'
 import { renderRobotsTxt } from './utilities/robots.ts'
 
@@ -520,17 +520,45 @@ function collectPages(state: DevState): RenderedPage[] {
   )
 }
 
-function collectSearchIndex(pages: RenderedPage[]): string {
-  const items = pages.map((page) => ({
-    title: page.seo?.title || page.title,
-    rel: page.rel,
-    keywords: page.seo?.keywords || '',
-    description: page.seo?.description || '',
-    excerpt: excerptText(page.seo?.description || page.content),
-    content: page.content,
-  }))
+function isSearchIndexOutput(file: string): boolean {
+  return /^search(?:\.[A-Za-z0-9._-]+)?\.js$/.test(file)
+}
 
-  return `export const searchIndex = ${JSON.stringify(items)};\n`
+async function removeStaleSearchIndexes(
+  publicDir: string,
+  expectedFiles: Set<string> = new Set()
+): Promise<string[]> {
+  const files = await fs.readdir(publicDir).catch(() => [])
+  const changed: string[] = []
+
+  await Promise.all(
+    files
+      .filter((file) => isSearchIndexOutput(file) && !expectedFiles.has(file))
+      .map(async (file) => {
+        const target = path.join(publicDir, file)
+        if (await removeFileIfExists(target)) changed.push(target)
+      })
+  )
+
+  return changed
+}
+
+async function syncSearchIndexes(
+  state: DevState,
+  pages: RenderedPage[]
+): Promise<string[]> {
+  const files = renderSearchIndexFiles(pages, state.config, state.languages)
+  const changed = await removeStaleSearchIndexes(
+    state.publicDir,
+    new Set(files.keys())
+  )
+
+  for (const [fileName, code] of files) {
+    const file = path.join(state.publicDir, fileName)
+    if (await writeTextIfChanged(file, code)) changed.push(file)
+  }
+
+  return changed
 }
 
 function collectSitemap(pages: RenderedPage[], config: RuntimeConfig): string {
@@ -740,10 +768,9 @@ async function refreshGlobalOutputs(
   await buildClientAssets(state.outputDir, state.clientDir, pages, state.config)
 
   if (isSearchEnabled(state.config)) {
-    const file = path.join(state.publicDir, 'search.js')
-    if (await writeTextIfChanged(file, collectSearchIndex(pages))) {
-      changed.push(file)
-    }
+    changed.push(...(await syncSearchIndexes(state, pages)))
+  } else {
+    changed.push(...(await removeStaleSearchIndexes(state.publicDir)))
   }
 
   if (isSitemapEnabled(state.config)) {
@@ -872,7 +899,12 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
   await buildClientAssets(state.outputDir, state.clientDir, pages, state.config)
 
   if (isSearchEnabled(state.config)) {
-    await writeSearchIndex(state.publicDir, pages)
+    await writeSearchIndex(
+      state.publicDir,
+      pages,
+      state.config,
+      state.languages
+    )
   }
 
   if (isSitemapEnabled(state.config)) {

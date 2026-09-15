@@ -17,6 +17,10 @@ import { escapeHtml } from '../utilities/html.ts'
 import { i18nRedirectBootScript } from '../utilities/i18n-routes.ts'
 import { documentTitle, normalizeSiteName } from '../utilities/page.ts'
 import { normalizePath, relativeAsset } from '../utilities/path.ts'
+import {
+  searchIndexFileName,
+  searchIndexFileNameForPage,
+} from '../utilities/search.ts'
 import { renderHead } from './template/head.ts'
 import { renderRuntimeScript } from './template/runtime.ts'
 
@@ -130,7 +134,10 @@ export function renderHtml({
   const cssHref = relativeAsset(rel, 'public/styles.css')
   const faviconHref = relativeAsset(rel, 'public/favicon.ico')
   const runtimeHref = relativeAsset(rel, 'public/runtime.js')
-  const searchHref = relativeAsset(rel, 'public/search.js')
+  const searchHref = relativeAsset(
+    rel,
+    `public/${isI18nEnabled(config) ? searchIndexFileNameForPage(rel, languages) : searchIndexFileName()}`
+  )
   const themeEnabled = isThemeEnabled(config)
   const theme = config.client?.theme
   const themeDefault = isRecord(theme) ? theme.default : undefined

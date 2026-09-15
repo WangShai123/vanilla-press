@@ -44,7 +44,7 @@
 
 .vp-nav-title:hover,
 .vp-nav-title.is-active,
-.vp-nav-item.is-active > .vp-nav-title {
+.vp-nav-item.is-active>.vp-nav-title {
   color: var(--vp-accent);
   background: var(--vp-accent-bg);
 }
@@ -54,21 +54,45 @@
 }
 
 .vp-nav-toggle {
+  appearance: none;
+  white-space: nowrap;
+  user-select: none;
+  touch-action: manipulation;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   position: absolute;
   top: 5px;
   right: 4px;
+
+  height: 2rem;
+  line-height: 1;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  aspect-ratio: 1;
+  outline: none;
+  font-size: var(--font-size-md);
   color: var(--tone-caption);
+  background-color: transparent;
+}
+
+.vp-nav-toggle:hover {
+  background-color: var(--tone-subtle);
+  border: 1px solid var(--tone-subtle);
 }
 
 .vp-nav-toggle svg {
+  width: var(--font-size-md);
   transition: transform 0.18s ease;
 }
 
-.vp-nav-item.has-children > .vp-nav-title {
+.vp-nav-item.has-children>.vp-nav-title {
   padding-right: 36px;
 }
 
-.vp-nav-item.is-collapsed > .vp-nav-toggle svg {
+.vp-nav-item.is-collapsed>.vp-nav-toggle svg {
   transform: rotate(-90deg);
 }
 

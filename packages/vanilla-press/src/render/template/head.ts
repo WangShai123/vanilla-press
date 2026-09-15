@@ -1,4 +1,5 @@
 import type { RuntimeConfig, SeoData } from '../../types.ts'
+import { deviceClassBootScript } from '../../utilities/device.ts'
 import { editorSizeBootScript } from '../../utilities/editor-size.ts'
 import { escapeHtml } from '../../utilities/html.ts'
 import { toText } from '../../utilities/string.ts'
@@ -40,6 +41,7 @@ export function renderHead({
   config,
 }: HeadOptions): string {
   const seoMeta = renderSeoMeta(seo)
+  const deviceBootScript = deviceClassBootScript()
   const editorBootScript = editorSizeBootScript(config)
   const pageStylesheets = stylesheets
     .map((href) => `  <link rel="stylesheet" href="${href}">`)
@@ -55,7 +57,8 @@ export function renderHead({
   <meta name="vanilla-press-homepage" content="https://app.jealer.com/vanilla-press/">
   <title>${escapeHtml(title)}</title>
   ${seoMeta ? `${seoMeta}\n` : ''}
-  <script>${themeEnabled ? `${themeBootScript(themeDefault)}` : ''}
+  <script>${deviceBootScript}
+  ${themeEnabled ? `${themeBootScript(themeDefault)}` : ''}
   ${editorBootScript}
   ${i18nRedirectScript || ''}</script>
   <link rel="icon" href="${faviconHref}">

@@ -28,7 +28,7 @@ export default [
       { label: 'sidebar.sitemap', path: 'guide/sitemap' },
       { label: 'sidebar.robots', path: 'guide/robots' },
       { label: 'sidebar.llms', path: 'guide/llms' },
-      { label: 'theme.button', path: 'guide/theme' },
+      { label: 'sidebar.theme', path: 'guide/theme' },
       { label: 'sidebar.externalLink', path: 'guide/external-link' },
       { label: 'sidebar.footerScript', path: 'guide/footer-script' },
       { label: 'sidebar.editLink', path: 'guide/edit-link' },
