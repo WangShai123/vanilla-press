@@ -242,3 +242,7 @@ a[data-vp-external-link] span.external-link svg {
   padding: 0;
   margin: 0;
 }
+
+.code-block .code-header .code-dots {
+  background-color: var(--state-success) !important;
+}

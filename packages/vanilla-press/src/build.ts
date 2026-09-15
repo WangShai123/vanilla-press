@@ -133,6 +133,7 @@ const SHARED_VP_SCRIPT_MODULES = [
   'vanilla-signal-i18n',
 ] satisfies SharedVpScriptModule[]
 const SHARED_VP_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime'
+const VP_RUNTIME_ID = 'vanilla-press/vp-runtime'
 const IMPORT_STATEMENT_RE =
   /^(\s*)import\s+(?:(.*?)\s+from\s+)?(['"])([^'"]+)\3\s*;?/gms
 
@@ -202,6 +203,12 @@ export async function loadRuntimeConfig(
   if (!file) return {}
 
   return importDefault<RuntimeConfig>(file, {})
+}
+
+export async function loadCustomRuntimeFile(
+  sharedDir: string
+): Promise<string | null> {
+  return resolveSourceModule(sharedDir, 'runtime')
 }
 
 export async function loadFooterScript(
@@ -574,6 +581,12 @@ function runtimeSharedVpExports(modules: SharedVpScriptModule[] = []): string {
     .join('\n')
 }
 
+function runtimeCustomExports(file: string | null | undefined): string {
+  return file
+    ? `export * from ${JSON.stringify(pathToFileURL(file).href)};`
+    : ''
+}
+
 async function writeRuntimeEntry(
   dir: string,
   data: RuntimeBundleData = {}
@@ -582,6 +595,7 @@ async function writeRuntimeEntry(
     path.join(packageRoot, 'src/runtime.ts')
   ).href
   const sharedExports = runtimeSharedVpExports(data.sharedVpModules)
+  const customExports = runtimeCustomExports(data.customRuntimeFile)
   const code = `import { initDocPage, isMobile } from ${JSON.stringify(runtimeHref)};
 export { initDocPage, isMobile };
 export const runtimeConfig = ${serializeRuntimeValue(data.config)};
@@ -589,6 +603,7 @@ export const languages = ${serializeRuntimeValue(data.languages || {})};
 export const menuItems = ${serializeRuntimeValue(data.menuItems || [])};
 export const sidebarItems = ${serializeRuntimeValue(data.sidebarItems || [])};
 ${sharedExports ? `${sharedExports}\n` : ''}
+${customExports ? `${customExports}\n` : ''}
 `
   const file = path.join(dir, 'runtime-entry.js')
   await fs.writeFile(file, code, 'utf8')
@@ -723,6 +738,7 @@ function sharedVpExportName(moduleName: SharedVpScriptModule): string {
 interface VpImportBinding {
   imported: string
   local: string
+  typeOnly?: boolean
 }
 
 interface ParsedVpImportClause {
@@ -761,12 +777,13 @@ function parseNamedImportBindings(value: string): VpImportBinding[] {
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean)
-    .map((item) => item.replace(/^type\s+/, '').trim())
     .map((item) => {
-      const parts = item.split(/\s+as\s+/)
+      const typeOnly = /^type\s+/.test(item)
+      const clean = item.replace(/^type\s+/, '').trim()
+      const parts = clean.split(/\s+as\s+/)
       const imported = String(parts[0] || '').trim()
       const local = String(parts[1] || imported).trim()
-      return { imported, local }
+      return { imported, local, typeOnly }
     })
     .filter((item) => item.imported && item.local)
 }
@@ -813,17 +830,27 @@ function rewriteSharedVpScriptImports(
       if (!isSharedVpScriptModule(source, sharedVpModules)) {
         return statement
       }
-      sharedVpModuleSet.add(source)
 
       const exportName = sharedVpExportName(source)
       const tempName = `__vp_shared_${index++}`
       const clause = String(rawClause || '').trim()
 
+      if (clause.startsWith('type ')) {
+        return statement
+      }
+
       if (!clause) {
+        sharedVpModuleSet.add(source)
         return `${indent}import { ${exportName} as ${tempName} } from '${SHARED_VP_SCRIPT_RUNTIME_ID}';`
       }
 
       const parsed = parseVpImportClause(clause)
+      const named = parsed.named.filter((item) => !item.typeOnly)
+      if (!parsed.defaultName && !parsed.namespaceName && !named.length) {
+        return statement
+      }
+
+      sharedVpModuleSet.add(source)
       if (parsed.namespaceName) {
         return `${indent}import { ${exportName} as ${parsed.namespaceName} } from '${SHARED_VP_SCRIPT_RUNTIME_ID}';`
       }
@@ -838,8 +865,8 @@ function rewriteSharedVpScriptImports(
         )
       }
 
-      if (parsed.named.length) {
-        const names = parsed.named
+      if (named.length) {
+        const names = named
           .map(({ imported, local }) =>
             imported === local ? imported : `${imported}: ${local}`
           )
@@ -857,6 +884,28 @@ function rewriteSharedVpScriptImports(
   }
 }
 
+function normalizeVpRuntimeImports(code: string): {
+  code: string
+  usesVpRuntime: boolean
+} {
+  let usesVpRuntime = false
+
+  const rewritten = code.replace(
+    IMPORT_STATEMENT_RE,
+    (statement, _indent, rawClause, _quote, source) => {
+      if (source !== VP_RUNTIME_ID) return statement
+
+      const clause = String(rawClause || '').trim()
+      if (clause.startsWith('type ')) return statement
+
+      usesVpRuntime = true
+      return statement
+    }
+  )
+
+  return { code: rewritten, usesVpRuntime }
+}
+
 function createPageScripts(
   source: SourcePage,
   scripts: string[] = [],
@@ -868,13 +917,18 @@ function createPageScripts(
   const code = `${blocks
     .map((script, index) => `// vp-script ${index + 1}\n${script}`)
     .join('\n\n')}\n`
-  const rewritten = rewriteSharedVpScriptImports(code, sharedVpModules)
+  const customRuntime = normalizeVpRuntimeImports(code)
+  const rewritten = rewriteSharedVpScriptImports(
+    customRuntime.code,
+    sharedVpModules
+  )
 
   return [
     {
       rel: pageScriptRel(source.rel, rewritten.code),
       code: rewritten.code,
       sharedVpModules: rewritten.sharedVpModules,
+      usesVpRuntime: customRuntime.usesVpRuntime,
     },
   ]
 }
@@ -980,7 +1034,7 @@ async function writePageScripts(
         platform: 'browser',
         target: 'es2020',
         write: false,
-        external: [SHARED_VP_SCRIPT_RUNTIME_ID],
+        external: [SHARED_VP_SCRIPT_RUNTIME_ID, VP_RUNTIME_ID],
         stdin: {
           contents: script.code,
           loader: 'js',
@@ -999,10 +1053,16 @@ async function bundleModuleScript(
   outputDir: string,
   name: string,
   code: string,
-  sourcefile: string
+  sourcefile: string,
+  options: {
+    external?: string[]
+    loader?: 'js' | 'ts'
+    resolveDir?: string
+  } = {}
 ): Promise<string> {
   const result = await esbuildBuild({
     bundle: true,
+    external: options.external,
     format: 'esm',
     legalComments: 'none',
     minify: false,
@@ -1011,8 +1071,8 @@ async function bundleModuleScript(
     write: false,
     stdin: {
       contents: code,
-      loader: 'js',
-      resolveDir: workingRoot,
+      loader: options.loader || 'js',
+      resolveDir: options.resolveDir || workingRoot,
       sourcefile,
     },
   })
@@ -1055,28 +1115,43 @@ export async function buildComponentScripts(
 
 export async function buildLayoutScripts(
   outputDir: string,
-  layouts: LayoutMap
+  layouts: LayoutMap,
+  config: RuntimeConfig = {}
 ): Promise<Map<string, ModuleScriptAsset>> {
   const assets = new Map<string, ModuleScriptAsset>()
+  const sharedVpModules = vpScriptSharedModules(config)
 
   await Promise.all(
     Array.from(layouts.values())
       .filter((layout) => layout.scriptFile)
       .map(async (layout) => {
         const scriptFile = String(layout.scriptFile)
-        const code = `export { default } from ${JSON.stringify(scriptFile)};
-`
+        const code = await fs.readFile(scriptFile, 'utf8')
+        const customRuntime = normalizeVpRuntimeImports(code)
+        const rewritten = rewriteSharedVpScriptImports(
+          customRuntime.code,
+          sharedVpModules
+        )
+        const loader =
+          path.extname(scriptFile).toLowerCase() === '.ts' ? 'ts' : 'js'
         const rel = await bundleModuleScript(
           outputDir,
           layout.name,
-          code,
-          `${layout.name}.layout-entry.js`
+          rewritten.code,
+          scriptFile,
+          {
+            external: [SHARED_VP_SCRIPT_RUNTIME_ID, VP_RUNTIME_ID],
+            loader,
+            resolveDir: path.dirname(scriptFile),
+          }
         )
 
         assets.set(layout.name, {
           name: layout.name,
           rel,
           file: scriptFile,
+          sharedVpModules: rewritten.sharedVpModules,
+          usesVpRuntime: customRuntime.usesVpRuntime,
         })
       })
   )
@@ -1114,11 +1189,22 @@ export function pageSharedVpModules(
 ): SharedVpScriptModule[] {
   return Array.from(
     new Set(
-      pages.flatMap((page) =>
-        (page.scripts || []).flatMap((script) => script.sharedVpModules || [])
-      )
+      pages.flatMap((page) => [
+        ...(page.layoutScript?.sharedVpModules || []),
+        ...(page.scripts || []).flatMap(
+          (script) => script.sharedVpModules || []
+        ),
+      ])
     )
   ).sort()
+}
+
+export function pagesUseVpRuntime(pages: RenderedPage[] = []): boolean {
+  return pages.some(
+    (page) =>
+      Boolean(page.layoutScript?.usesVpRuntime) ||
+      (page.scripts || []).some((script) => script.usesVpRuntime)
+  )
 }
 
 export function readSource(file: string, markdown: string): SourcePage {
@@ -1245,6 +1331,11 @@ export function renderSource(
     componentScriptAssets
   )
   const layoutScript = layoutScriptAssets.get(pageLayout.name) || null
+  const runtimeImportMap =
+    scripts.some((script) => script.sharedVpModules.length) ||
+    scripts.some((script) => script.usesVpRuntime) ||
+    Boolean(layoutScript?.usesVpRuntime) ||
+    Boolean(layoutScript?.sharedVpModules?.length)
 
   return {
     ...source,
@@ -1266,7 +1357,7 @@ export function renderSource(
       languages,
       pageLayout,
       searchEnabled: isSearchEnabled(config),
-      runtimeImportMap: scripts.some((script) => script.sharedVpModules.length),
+      runtimeImportMap,
       scripts: scripts.map((script) => script.rel),
       footerScript,
     }),
@@ -1379,8 +1470,11 @@ export async function build({
   await ensureSourceConfig(configDir)
   const resolvedCacheDir =
     cacheDir || path.join(path.dirname(configDir), 'cache')
+  const sharedDir = path.join(path.dirname(configDir), 'shared')
+  await fs.mkdir(sharedDir, { recursive: true })
   const config = await loadRuntimeConfig(configDir)
   validateRuntimeConfig(config)
+  const customRuntimeFile = await loadCustomRuntimeFile(sharedDir)
   const footerScript = await loadFooterScript(configDir)
   const customComponents = await loadCustomComponents(componentsDir)
   const md = await createMarkdown(config, customComponents)
@@ -1438,7 +1532,11 @@ export async function build({
     outputDir,
     customComponents
   )
-  const layoutScriptAssets = await buildLayoutScripts(outputDir, layouts)
+  const layoutScriptAssets = await buildLayoutScripts(
+    outputDir,
+    layouts,
+    config
+  )
 
   const pages = sources.map((source) =>
     renderSource(
@@ -1456,6 +1554,11 @@ export async function build({
       hasRootIndex
     )
   )
+  if (pagesUseVpRuntime(pages) && !customRuntimeFile) {
+    throw new Error(
+      'Missing vp/shared/runtime.ts. Add vp/shared/runtime.ts or remove imports from "vanilla-press/vp-runtime".'
+    )
+  }
   await buildRuntime(publicDir, {
     config,
     languages,
@@ -1465,6 +1568,7 @@ export async function build({
       directorySidebarItems
     ),
     sharedVpModules: pageSharedVpModules(pages),
+    customRuntimeFile,
   })
   if (isSearchEnabled(config)) await writeSearchIndex(publicDir, pages)
   if (isSitemapEnabled(config)) await writeSitemap(outputDir, pages, config)

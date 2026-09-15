@@ -20,11 +20,13 @@ import {
   loadLastEditCache,
   loadLanguages,
   loadLlmsConfig,
+  loadCustomRuntimeFile,
   loadMenuItems,
   loadRobotsConfig,
   loadRuntimeConfig,
   loadSidebarItems,
   pageSharedVpModules,
+  pagesUseVpRuntime,
   readSource,
   renderSource,
   resolveI18nData,
@@ -79,6 +81,8 @@ const defaultOutputDir = path.join(workingRoot, 'dist')
 const defaultConfigDir = path.join(defaultProjectDir, 'config')
 const defaultLayoutsDir = path.join(defaultProjectDir, 'layouts')
 const defaultComponentsDir = path.join(defaultProjectDir, 'components')
+const SHARED_VP_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime'
+const VP_RUNTIME_ID = 'vanilla-press/vp-runtime'
 const DEV_PREFIX = '/__vanilla_press_dev/'
 const CLIENT_SCRIPT = `${DEV_PREFIX}client.js`
 const SOCKET_PATH = `${DEV_PREFIX}ws`
@@ -129,6 +133,7 @@ interface DevState {
   configDir: string
   layoutsDir: string
   componentsDir: string
+  sharedDir: string
   cacheDir: string
   publicDir: string
   config: RuntimeConfig
@@ -148,6 +153,7 @@ interface DevState {
   componentScriptAssets: Map<string, ModuleScriptAsset>
   layoutScriptAssets: Map<string, ModuleScriptAsset>
   sharedVpModules: SharedVpScriptModule[]
+  customRuntimeFile: string | null
   hasRootIndex: boolean
   reportState: BuildReportState
 }
@@ -206,7 +212,7 @@ async function writePageScriptsForPage(
       platform: 'browser',
       target: 'es2020',
       write: false,
-      external: ['vanilla-press/runtime'],
+      external: [SHARED_VP_SCRIPT_RUNTIME_ID, VP_RUNTIME_ID],
       stdin: {
         contents: script.code,
         loader: 'js',
@@ -585,6 +591,7 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
   const configDir = resolveDir(options.configDir, defaultConfigDir)
   const layoutsDir = resolveDir(options.layoutsDir, defaultLayoutsDir)
   const componentsDir = resolveDir(options.componentsDir, defaultComponentsDir)
+  const sharedDir = path.join(path.dirname(configDir), 'shared')
   const cacheDir =
     options.cacheDir || path.join(path.dirname(configDir), 'cache')
   const publicDir = path.join(outputDir, 'public')
@@ -593,10 +600,12 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
   await fs.mkdir(assetsDir, { recursive: true })
   await fs.mkdir(layoutsDir, { recursive: true })
   await fs.mkdir(componentsDir, { recursive: true })
+  await fs.mkdir(sharedDir, { recursive: true })
   await ensureSourceConfig(configDir)
 
   const config = await loadRuntimeConfig(configDir)
   validateRuntimeConfig(config)
+  const customRuntimeFile = await loadCustomRuntimeFile(sharedDir)
   const footerScript = await loadFooterScript(configDir)
   const customComponents = await loadCustomComponents(componentsDir)
   const md = await createMarkdown(config, customComponents)
@@ -628,6 +637,7 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
     configDir,
     layoutsDir,
     componentsDir,
+    sharedDir,
     cacheDir,
     publicDir,
     config,
@@ -647,6 +657,7 @@ async function loadDevState(options: BuildOptions): Promise<DevState> {
     componentScriptAssets: new Map<string, ModuleScriptAsset>(),
     layoutScriptAssets: new Map<string, ModuleScriptAsset>(),
     sharedVpModules: [],
+    customRuntimeFile,
     hasRootIndex: false,
     reportState: {
       hashes: new Map<string, string>(),
@@ -672,6 +683,7 @@ async function refreshDevState(state: DevState): Promise<void> {
   validateRuntimeConfig(config)
 
   state.config = config
+  state.customRuntimeFile = await loadCustomRuntimeFile(state.sharedDir)
   state.footerScript = await loadFooterScript(state.configDir)
   state.customComponents = await loadCustomComponents(state.componentsDir)
   state.md = await createMarkdown(config, state.customComponents)
@@ -764,6 +776,11 @@ async function refreshGlobalOutputs(
   const pages = collectPages(state)
   const changed: string[] = []
   const sharedModules = pageSharedVpModules(pages)
+  if (pagesUseVpRuntime(pages) && !state.customRuntimeFile) {
+    throw new Error(
+      'Missing vp/shared/runtime.ts. Add vp/shared/runtime.ts or remove imports from "vanilla-press/vp-runtime".'
+    )
+  }
   const runtimeChanged =
     forceRuntime ||
     sharedModules.length !== state.sharedVpModules.length ||
@@ -779,6 +796,7 @@ async function refreshGlobalOutputs(
         state.directorySidebarItems
       ),
       sharedVpModules: sharedModules,
+      customRuntimeFile: state.customRuntimeFile,
     })
     state.sharedVpModules = sharedModules
     changed.push(path.join(state.publicDir, 'runtime.js'))
@@ -847,7 +865,8 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
   )
   state.layoutScriptAssets = await buildLayoutScripts(
     state.outputDir,
-    state.layouts
+    state.layouts,
+    state.config
   )
 
   const files = (
@@ -892,6 +911,11 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
   }
 
   const pages = collectPages(state)
+  if (pagesUseVpRuntime(pages) && !state.customRuntimeFile) {
+    throw new Error(
+      'Missing vp/shared/runtime.ts. Add vp/shared/runtime.ts or remove imports from "vanilla-press/vp-runtime".'
+    )
+  }
   state.sharedVpModules = pageSharedVpModules(pages)
 
   await buildRuntime(state.publicDir, {
@@ -903,6 +927,7 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
       state.directorySidebarItems
     ),
     sharedVpModules: state.sharedVpModules,
+    customRuntimeFile: state.customRuntimeFile,
   })
 
   if (isSearchEnabled(state.config)) {
@@ -1220,6 +1245,7 @@ export async function dev({
       configDir,
       layoutsDir,
       componentsDir,
+      state.sharedDir,
       path.join(packageRoot, 'src'),
     ],
     [state.outputDir],

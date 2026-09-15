@@ -72,7 +72,7 @@ export default function initLandingLayout(root: Document, config: unknown) {
 }
 ```
 
-The default exported function is called at page runtime with `(document, runtimeConfig)`. The layout script is bundled as `dist/public/layout-name.hash.js` and loaded only by HTML pages that use that layout. Static npm imports used by the script are bundled into the layout script file. They are not bundled into the global `runtime.js`.
+The default exported function is called at page runtime with `(document, runtimeConfig)`. The layout script is bundled as `dist/public/layout-name.hash.js` and loaded only by HTML pages that use that layout. Static npm imports used by the script reuse `build.vpScript.shared` and the default whitelist: matched dependencies are bundled into the global `runtime.js`, while unmatched dependencies stay bundled into the layout script file. Layout scripts can also import project-owned shared runtime code exported from `vp/shared/runtime.ts` with `import { name } from 'vanilla-press/vp-runtime'`.
 
 Then use it in a Markdown page:
 

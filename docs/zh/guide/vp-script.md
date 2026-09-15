@@ -104,6 +104,28 @@ button?.addEventListener('click', () => {
 - 当 `vp-script` 静态引入合法的共享依赖时，构建会自动把该导入改写为从 `runtime.js` 读取，并在当前页面加入 import map。用户不需要手写 import map。
 - 不在共享列表中的静态导入只会打包进当前页面自己的 `xx.hash.js` 脚本文件。
 
+## 自定义 Runtime
+
+如果多个 `vp-script` 或布局脚本需要复用项目自己的函数，可以新增 `vp/shared/runtime.ts` 或 `vp/shared/runtime.js`：
+
+```ts
+export function test() {
+  return 'runtime'
+}
+```
+
+然后在 `vp-script` 中通过固定包名 `vanilla-press/vp-runtime` 静态导入：
+
+````md
+```vp-script
+import { test } from 'vanilla-press/vp-runtime'
+
+console.log(test())
+```
+````
+
+`vp/shared/runtime.ts` 会被打包进全局 `runtime.js`。只有实际导入了 `vanilla-press/vp-runtime` 的页面才会注入 import map。这个子路径由 `vanilla-press` 包提供类型声明，安装依赖后编辑器可以自动解析到项目的 `vp/shared/runtime.ts`。
+
 ## 共享依赖白名单
 
 用户可以在 `vp/config/runtime.ts` 中扩展共享依赖白名单列表：

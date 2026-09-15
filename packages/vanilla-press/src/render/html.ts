@@ -21,6 +21,9 @@ import { normalizePath, relativeAsset } from '../utilities/path.ts'
 import { renderHead } from './template/head.ts'
 import { renderRuntimeScript } from './template/runtime.ts'
 
+const SHARED_VP_SCRIPT_RUNTIME_ID = 'vanilla-press/runtime'
+const VP_RUNTIME_ID = 'vanilla-press/vp-runtime'
+
 interface RenderHtmlOptions {
   title: string
   seo: SeoData
@@ -81,7 +84,8 @@ function renderRuntimeImportMap(rel: string, enabled: boolean): string {
 
   return `  <script type="importmap">${JSON.stringify({
     imports: {
-      'vanilla-press/runtime': relativeAsset(rel, 'public/runtime.js'),
+      [SHARED_VP_SCRIPT_RUNTIME_ID]: relativeAsset(rel, 'public/runtime.js'),
+      [VP_RUNTIME_ID]: relativeAsset(rel, 'public/runtime.js'),
     },
   })}</script>`
 }

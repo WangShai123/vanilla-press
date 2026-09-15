@@ -155,6 +155,10 @@ export function toHtml(file) {
 这是一个提示信息。
 :::
 
+::: primary
+这是一个提示信息。
+:::
+
 ::: success 成功
 操作已完成。
 :::
@@ -178,6 +182,10 @@ export function toHtml(file) {
 这是一个提示信息。
 :::
 
+::: primary
+这是一个提示信息。
+:::
+
 ::: success 成功
 操作已完成。
 :::
@@ -196,7 +204,7 @@ export function toHtml(file) {
 #### 参数说明
 
 - `:::tip` 是 `::: info` 的语法糖，输出 `is-default`。
-- `info`、`success`、`warning`、`danger` 分别对应 `is-default`、`is-success`、`is-warning`、`is-danger`。
+- `info`、`primary`、`success`、`warning`、`danger` 分别对应 `is-default`、`is-primary`、`is-success`、`is-warning`、`is-danger`。
 - 不传标题时，中文页面默认显示 `提示`，英文页面默认显示 `Tip`。
 
 ### Tree

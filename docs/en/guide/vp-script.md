@@ -104,6 +104,28 @@ During build, `vanilla-press` uses the shared dependency whitelist to decide whi
 - When `vp-script` statically imports a valid shared dependency, the build rewrites that import to read from `runtime.js` and injects an import map into the current page. Users do not need to write the import map by hand.
 - Static imports that are not in the shared list are bundled only into the current page's own `xx.hash.js`.
 
+## Custom Runtime
+
+If multiple `vp-script` blocks or layout scripts need to reuse project-owned functions, add `vp/shared/runtime.ts` or `vp/shared/runtime.js`:
+
+```ts
+export function test() {
+  return 'runtime'
+}
+```
+
+Then statically import it from `vp-script` with the fixed package name `vanilla-press/vp-runtime`:
+
+````md
+```vp-script
+import { test } from 'vanilla-press/vp-runtime'
+
+console.log(test())
+```
+````
+
+`vp/shared/runtime.ts` is bundled into the global `runtime.js`. Only pages that import `vanilla-press/vp-runtime` inject the import map. This subpath is typed by the `vanilla-press` package, so editors can resolve it automatically after installation.
+
 ## Shared Dependency Whitelist
 
 Users can extend the shared dependency whitelist in `vp/config/runtime.ts`:

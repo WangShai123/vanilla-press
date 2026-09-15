@@ -8,7 +8,7 @@ import {
 } from '../utilities/markdown.ts'
 import { toText } from '../utilities/string.ts'
 
-type TipType = 'info' | 'success' | 'warning' | 'danger'
+type TipType = 'info' | 'primary' | 'success' | 'warning' | 'danger'
 
 interface TipInfo {
   type: TipType
@@ -17,6 +17,7 @@ interface TipInfo {
 
 const TIP_TYPES: ReadonlySet<TipType> = new Set([
   'info',
+  'primary',
   'success',
   'warning',
   'danger',
@@ -74,7 +75,7 @@ export function installTip(md: MarkdownRuntime): void {
       const end = state.eMarks[startLine]
       const line = state.src.slice(start, end)
       const match = line.match(
-        /^:::\s*(tip|info|success|warning|danger)\b(?:\s+(.*))?$/i
+        /^:::\s*(tip|info|primary|success|warning|danger)\b(?:\s+(.*))?$/i
       )
 
       if (!match) return false

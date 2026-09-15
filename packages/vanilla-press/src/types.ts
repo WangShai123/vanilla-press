@@ -159,6 +159,7 @@ export interface PageScriptAsset {
   rel: string
   code: string
   sharedVpModules: SharedVpScriptModule[]
+  usesVpRuntime?: boolean
 }
 
 export interface ModuleScriptAsset {
@@ -166,6 +167,8 @@ export interface ModuleScriptAsset {
   rel: string
   file: string
   dependsOn?: string[]
+  sharedVpModules?: SharedVpScriptModule[]
+  usesVpRuntime?: boolean
 }
 
 export type SharedVpScriptModule = string
@@ -311,6 +314,7 @@ export interface RuntimeBundleData {
   menuItems?: unknown[]
   sidebarItems?: unknown[] | RuntimeSidebarConfig
   sharedVpModules?: SharedVpScriptModule[]
+  customRuntimeFile?: string | null
 }
 
 export interface BuildOptions {

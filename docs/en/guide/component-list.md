@@ -155,6 +155,10 @@ export function toHtml(file) {
 This is a tip message.
 :::
 
+::: primary
+This is a tip message.
+:::
+
 ::: success Success
 The operation has completed.
 :::
@@ -178,6 +182,10 @@ This is a tip message.
 This is a tip message.
 :::
 
+::: primary
+This is a tip message.
+:::
+
 ::: success Success
 The operation has completed.
 :::
@@ -196,7 +204,7 @@ This action cannot be undone.
 #### Parameters
 
 - `:::tip` is syntax sugar for `::: info`, and outputs `is-default`.
-- `info`, `success`, `warning`, and `danger` map to `is-default`, `is-success`, `is-warning`, and `is-danger`.
+- `info`, `primary`, `success`, `warning`, and `danger` map to `is-default`, `is-primary`, `is-success`, `is-warning`, and `is-danger`.
 - When no title is provided, Chinese pages show `提示` and English pages show `Tip`.
 
 ### Tree
