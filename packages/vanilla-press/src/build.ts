@@ -781,7 +781,7 @@ async function bundleClientFile(
     ],
     format: 'esm',
     legalComments: 'none',
-    minify: false,
+    minify: true,
     platform: 'browser',
     target: 'es2020',
     stdin: {
@@ -1318,7 +1318,7 @@ async function bundleModuleScript(
     external: options.external,
     format: 'esm',
     legalComments: 'none',
-    minify: false,
+    minify: true,
     platform: 'browser',
     target: 'es2020',
     write: false,
@@ -1331,8 +1331,10 @@ async function bundleModuleScript(
   })
   const output = result.outputFiles?.[0]?.text || code
   const rel = moduleScriptRel(name, output)
+  const outputFile = path.join(outputDir, rel)
 
-  await fs.writeFile(path.join(outputDir, rel), output, 'utf8')
+  await fs.mkdir(path.dirname(outputFile), { recursive: true })
+  await fs.writeFile(outputFile, output, 'utf8')
   return rel
 }
 

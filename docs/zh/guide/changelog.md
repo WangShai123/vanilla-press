@@ -2,6 +2,14 @@
 
 ## 1.5.x
 
+### 1.5.5
+
+- feat: layouts、components 和 client entries 的脚本构建时启用压缩。
+
+#### 1.5.4
+
+- fix: 修复 client entry 构建时未复用共享依赖的问题。
+
 #### 1.5.3
 
 - feat: client entries.
@@ -11,7 +19,6 @@
 - feat: 代码高亮由 `highlight.js` 替换为 `shiki`。
 - feat: client entry 支持 CSS，并可在 Markdown frontmatter 中按页面声明加载。
 - fix: 移除了默认模板中的 `footer`。
-- fix: 修复 client entry 构建时未复用共享依赖的问题。
 
 #### 1.5.1
 

@@ -2,6 +2,14 @@
 
 ## 1.5.x
 
+### 1.5.5
+
+- feat: Layouts, components, and client entry scripts are now minified during build.
+
+#### 1.5.4
+
+- fix: Fixed client entry builds not reusing shared dependencies.
+
 #### 1.5.3
 
 - feat: client entries.
@@ -11,7 +19,6 @@
 - feat: Code highlighting replaced from `highlight.js` to `shiki`.
 - feat: Client entries now support CSS and can be loaded per page from Markdown frontmatter.
 - fix: Removed default template `footer`.
-- fix: Fixed client entry builds not reusing shared dependencies.
 
 #### 1.5.1
 
