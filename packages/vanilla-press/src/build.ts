@@ -768,8 +768,10 @@ async function resolveClientModuleFile(
 async function bundleClientFile(
   outputDir: string,
   rel: string,
-  file: string
+  file: string,
+  code?: string
 ): Promise<void> {
+  const loader = path.extname(file).toLowerCase() === '.ts' ? 'ts' : 'js'
   const result = await esbuildBuild({
     bundle: true,
     external: [
@@ -782,7 +784,12 @@ async function bundleClientFile(
     minify: false,
     platform: 'browser',
     target: 'es2020',
-    entryPoints: [file],
+    stdin: {
+      contents: code ?? (await fs.readFile(file, 'utf8')),
+      loader,
+      resolveDir: path.dirname(file),
+      sourcefile: file,
+    },
     write: false,
   })
   const output = result.outputFiles?.[0]?.text || ''
@@ -875,6 +882,7 @@ export async function scanClientEntryAssets(
   config: RuntimeConfig = {}
 ): Promise<ClientEntryAssets> {
   const files = await loadClientEntryFiles(clientDir, config)
+  const sharedClientModules = clientSharedModules(config)
   const assets: ClientEntryAssets = {
     scripts: new Map<string, ModuleScriptAsset>(),
     styles: new Map<string, StylesheetAsset>(),
@@ -883,11 +891,13 @@ export async function scanClientEntryAssets(
   await Promise.all(
     Array.from(files.scripts.entries()).map(async ([name, file]) => {
       const code = await fs.readFile(file, 'utf8')
+      const rewritten = rewriteSharedClientImports(code, sharedClientModules)
       assets.scripts.set(name, {
         name,
         rel: clientEntryScriptRel(name),
         file,
         clientImports: collectClientImports(code),
+        sharedClientModules: rewritten.sharedClientModules,
       })
     })
   )
@@ -958,9 +968,11 @@ async function bundleClientStyle(
 export async function buildClientAssets(
   outputDir: string,
   clientDir: string,
-  pages: RenderedPage[] = []
+  pages: RenderedPage[] = [],
+  config: RuntimeConfig = {}
 ): Promise<void> {
   const imports = requiredClientImports(pages)
+  const sharedClientModules = clientSharedModules(config)
   const runtimeImport = imports.find((item) => item.type === 'runtime')
   if (runtimeImport) {
     const file = await loadClientRuntimeFile(clientDir)
@@ -985,9 +997,11 @@ export async function buildClientAssets(
   )
 
   await Promise.all(
-    requiredClientEntries(pages).map((entry) =>
-      bundleClientFile(outputDir, entry.rel, entry.file)
-    )
+    requiredClientEntries(pages).map(async (entry) => {
+      const code = await fs.readFile(entry.file, 'utf8')
+      const rewritten = rewriteSharedClientImports(code, sharedClientModules)
+      await bundleClientFile(outputDir, entry.rel, entry.file, rewritten.code)
+    })
   )
 
   await Promise.all(
@@ -1431,6 +1445,9 @@ export function pageSharedClientModules(
     new Set(
       pages.flatMap((page) => [
         ...(page.layoutScript?.sharedClientModules || []),
+        ...(page.clientEntries || []).flatMap(
+          (entry) => entry.sharedClientModules || []
+        ),
       ])
     )
   ).sort()
@@ -1618,7 +1635,10 @@ export function renderSource(
     ...(layoutScript?.clientImports || []),
     ...clientEntries.flatMap((entry) => entry.clientImports || []),
   ])
-  const runtimeImportMap = Boolean(layoutScript?.sharedClientModules?.length)
+  const runtimeImportMap = Boolean(
+    layoutScript?.sharedClientModules?.length ||
+    clientEntries.some((entry) => entry.sharedClientModules?.length)
+  )
   const importMap = {
     ...(runtimeImportMap
       ? {
@@ -1862,7 +1882,7 @@ export async function build({
     ),
     sharedClientModules: pageSharedClientModules(pages),
   })
-  await buildClientAssets(outputDir, clientDir, pages)
+  await buildClientAssets(outputDir, clientDir, pages, config)
   if (isSearchEnabled(config)) await writeSearchIndex(publicDir, pages)
   if (isSitemapEnabled(config)) await writeSitemap(outputDir, pages, config)
   if (isLlmsEnabled(config)) {

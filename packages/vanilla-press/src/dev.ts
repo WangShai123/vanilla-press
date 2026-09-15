@@ -737,7 +737,7 @@ async function refreshGlobalOutputs(
     changed.push(path.join(state.publicDir, 'runtime.js'))
   }
 
-  await buildClientAssets(state.outputDir, state.clientDir, pages)
+  await buildClientAssets(state.outputDir, state.clientDir, pages, state.config)
 
   if (isSearchEnabled(state.config)) {
     const file = path.join(state.publicDir, 'search.js')
@@ -869,7 +869,7 @@ async function rebuildFull(state: DevState, reason: string): Promise<void> {
     ),
     sharedClientModules: state.sharedClientModules,
   })
-  await buildClientAssets(state.outputDir, state.clientDir, pages)
+  await buildClientAssets(state.outputDir, state.clientDir, pages, state.config)
 
   if (isSearchEnabled(state.config)) {
     await writeSearchIndex(state.publicDir, pages)

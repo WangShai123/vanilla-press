@@ -52,9 +52,6 @@ export default {
       previous: '上一页',
       next: '下一页',
     },
-    theme: {
-      button: '主题',
-    },
     auth: {
       login: '登录',
     },
@@ -101,9 +98,6 @@ export default {
     prevNext: {
       previous: 'Previous',
       next: 'Next',
-    },
-    theme: {
-      button: 'Theme',
     },
     auth: {
       login: 'Login',

@@ -11,6 +11,7 @@
 - feat: Code highlighting replaced from `highlight.js` to `shiki`.
 - feat: Client entries now support CSS and can be loaded per page from Markdown frontmatter.
 - fix: Removed default template `footer`.
+- fix: Fixed client entry builds not reusing shared dependencies.
 
 #### 1.5.1
 
