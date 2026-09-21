@@ -1,10 +1,12 @@
 .vp-header {
-  position: sticky;
+  /* position: sticky; */
+  position: fixed;
   top: 0;
   z-index: 20;
+  width: 100%;
   min-height: var(--vp-header-height);
   background: var(--ui-bg);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
 }
 
 .vp-header-inner {
@@ -49,6 +51,10 @@
   gap: 4px;
 }
 
+.vp-menu.j-menu .menu .menu-item.menu-item-has-children:hover .sub-menu {
+  background-color: var(--ui-bg) !important;
+}
+
 .vp-menu.j-menu .menu .menu-item.current-menu-item>a,
 .vp-menu.j-menu .menu .menu-item a:hover,
 .vp-menu.j-menu .menu .menu-item.menu-item-has-children:hover>a {
@@ -64,7 +70,7 @@
 .vp-header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
 }
 
 .vp-header-actions,
@@ -74,7 +80,6 @@
 
 .vp-locale {
   appearance: none;
-  padding: 0;
   border: none;
   outline: none;
   box-shadow: none;
@@ -130,7 +135,7 @@
 
   .vp-header-actions {
     flex: 0 0 auto;
-    gap: 4px;
+    /* gap: 2px; */
   }
 
   .vp-header-menu-toggle {
@@ -142,7 +147,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    min-height: 40px;
+    min-height: 36px;
     padding: 0 8px;
     border-top: 1px solid var(--vp-line);
   }

@@ -35,10 +35,10 @@ layouts:
       actions:
         - text: Quick Start
           link: ./guide/quick-start.html
-          variant: is-primary
+          variant: is-solid
         - text: View Components
           link: ./guide/components.html
-          variant: is-secondary
+          variant: is-soft
     quickStart:
       title: Quick Start
       groups:
@@ -61,7 +61,7 @@ layouts:
       actions:
         - text: Read the Guide
           link: ./guide/quick-start.html
-          variant: is-primary
+          variant: is-solid
 ---
 ```
 
@@ -81,11 +81,11 @@ All variables for the `home` layout are placed under `layouts.home`. Inside the 
 
 Common fields in `actions`:
 
-| Field     | Description                                                                      |
-| --------- | -------------------------------------------------------------------------------- |
-| `text`    | Button text                                                                      |
-| `link`    | Button link                                                                      |
-| `variant` | Button style class. The current example supports `is-primary` and `is-secondary` |
+| Field     | Description                                                               |
+| --------- | ------------------------------------------------------------------------- |
+| `text`    | Button text                                                               |
+| `link`    | Button link                                                               |
+| `variant` | Button style class. The current example supports `is-solid` and `is-soft` |
 
 ## Quick Start Area
 
@@ -132,7 +132,7 @@ cta:
   actions:
     - text: Read the Guide
       link: ./guide/quick-start.html
-      variant: is-primary
+      variant: is-solid
 ```
 
 ## Markdown Content

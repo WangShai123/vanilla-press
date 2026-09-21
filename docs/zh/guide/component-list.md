@@ -332,6 +332,19 @@ export default {
 
 正文中也可以插入 <Badge text="beta" theme="primary" size="sm" />。
 
+<Group>
+<Badge text="default" theme="default" />
+<Badge text="reverse" theme="reverse" />
+<Badge text="solid" theme="solid" />
+<Badge text="soft" theme="soft" />
+<Badge text="wash" theme="wash" />
+<Badge text="primary" theme="primary" />
+<Badge text="success" theme="success" />
+<Badge text="warning" theme="warning" />
+<Badge text="danger" theme="danger" />
+<Badge text="error" theme="error" />
+</Group>
+
 @tab 语法
 
 ```markdown
@@ -344,5 +357,5 @@ export default {
 #### 参数说明
 
 - `text`：标签文本。若省略，则使用标签内部内容。
-- `theme`：默认值 `default`，可选值 `reverse`、`primary`、`success`、`warning`、`danger`、`error`。
+- `theme`：默认值 `default`，可选值 `reverse`、`solid`、`soft`、`wash`、`primary`、`success`、`warning`、`danger`、`error`。
 - `size`：默认值 `md`，可选值 `sm`。

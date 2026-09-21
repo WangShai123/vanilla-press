@@ -9,14 +9,14 @@ layouts:
       badge: vanilla press
       title: Lightweight, flexible, highly customizable SSG
       description: Build what you need. Use what you want. Control what you ship.
-      hint: Built-in multilingual support, search, SEO, theme modes, and common runtime features and components.
+      hint: Built-in multilingual support, search, SEO, theme modes, and common features.
       actions:
         - text: Quick Start
           link: ./guide/quick-start.html
-          variant: is-primary
+          variant: is-solid
         - text: View Components
-          link: ./guide/component-api.html
-          variant: is-secondary
+          link: ./guide/component-list.html
+          variant: is-soft
     quickStart:
       title: Quick Start
       groups:
@@ -56,8 +56,8 @@ layouts:
       actions:
         - text: Layout API
           link: ./guide/layout-api.html
-          variant: is-primary
+          variant: is-solid
         - text: Client Management
           link: ./guide/client.html
-          variant: is-secondary
+          variant: is-soft
 ---

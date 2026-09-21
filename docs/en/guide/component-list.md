@@ -332,6 +332,19 @@ The badge component `<Badge />` can be used directly in headings or body text.
 
 Inline badges <Badge text="beta" theme="primary" size="sm" /> can also be inserted in text.
 
+<Group>
+<Badge text="default" theme="default" />
+<Badge text="reverse" theme="reverse" />
+<Badge text="solid" theme="solid" />
+<Badge text="soft" theme="soft" />
+<Badge text="wash" theme="wash" />
+<Badge text="primary" theme="primary" />
+<Badge text="success" theme="success" />
+<Badge text="warning" theme="warning" />
+<Badge text="danger" theme="danger" />
+<Badge text="error" theme="error" />
+</Group>
+
 @tab Syntax
 
 ```markdown
@@ -344,5 +357,5 @@ Inline badges <Badge text="beta" theme="primary" size="sm" /> can also be insert
 #### Parameters
 
 - `text`: badge text. If omitted, the content inside the tag is used.
-- `theme`: defaults to `default`, with optional values `reverse`, `primary`, `success`, `warning`, `danger`, `error`.
+- `theme`: defaults to `default`, with optional values `reverse`, `solid`, `soft`, `wash`, `primary`, `success`, `warning`, `danger`, `error`.
 - `size`: defaults to `md`, with optional value `sm`.

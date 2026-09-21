@@ -2,6 +2,7 @@
   .vp-shell {
     display: block;
     min-height: auto;
+    margin-top: 84px;
   }
 
   .vp-main {

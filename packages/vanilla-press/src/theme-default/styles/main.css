@@ -1,6 +1,7 @@
 .vp-shell {
   min-height: calc(100vh - var(--vp-header-height));
   display: flex;
+  margin-top: var(--vp-header-height);
 }
 
 .vp-main {
@@ -15,7 +16,7 @@
   gap: 36px;
 }
 
-.vp-main.has-aside > .j-editor {
+.vp-main.has-aside>.j-editor {
   grid-column: 1;
   grid-row: 1;
 }

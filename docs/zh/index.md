@@ -13,10 +13,10 @@ layouts:
       actions:
         - text: 快速开始
           link: ./guide/quick-start.html
-          variant: is-primary
+          variant: is-solid
         - text: 查看组件
-          link: ./guide/component-api.html
-          variant: is-secondary
+          link: ./guide/component-list.html
+          variant: is-soft
     quickStart:
       title: 快速开始
       groups:
@@ -56,8 +56,8 @@ layouts:
       actions:
         - text: 布局 API
           link: ./guide/layout-api.html
-          variant: is-primary
+          variant: is-solid
         - text: Client 管理
           link: ./guide/client.html
-          variant: is-secondary
+          variant: is-soft
 ---

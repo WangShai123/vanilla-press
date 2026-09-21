@@ -141,10 +141,10 @@ layouts:
       actions:
         - text: 快速开始
           link: ./guide/quick-start.html
-          variant: is-primary
+          variant: is-solid
         - text: 查看 API
           link: ./guide/api.html
-          variant: is-secondary
+          variant: is-soft
 ```
 
 循环中的对象字段会提升到当前作用域，因此模板里可以直接写 `{{ text }}`、`{{ link }}`。如果数组项是字符串，可以使用 `{{ this }}` 输出当前项。

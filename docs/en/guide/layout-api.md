@@ -141,10 +141,10 @@ layouts:
       actions:
         - text: Quick Start
           link: ./guide/quick-start.html
-          variant: is-primary
+          variant: is-solid
         - text: View API
           link: ./guide/api.html
-          variant: is-secondary
+          variant: is-soft
 ```
 
 Object fields inside a loop are promoted into the current scope, so templates can use `{{ text }}` and `{{ link }}` directly. If an array item is a string, use `{{ this }}` to output the current item.

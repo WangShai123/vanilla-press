@@ -35,10 +35,10 @@ layouts:
       actions:
         - text: 快速开始
           link: ./guide/quick-start.html
-          variant: is-primary
+          variant: is-solid
         - text: 查看组件
           link: ./guide/components.html
-          variant: is-secondary
+          variant: is-soft
     quickStart:
       title: 快速开始
       groups:
@@ -61,7 +61,7 @@ layouts:
       actions:
         - text: 阅读指南
           link: ./guide/quick-start.html
-          variant: is-primary
+          variant: is-solid
 ---
 ```
 
@@ -81,11 +81,11 @@ layouts:
 
 `actions` 中常用字段：
 
-| 字段      | 说明                                                    |
-| --------- | ------------------------------------------------------- |
-| `text`    | 按钮文字                                                |
-| `link`    | 按钮链接                                                |
-| `variant` | 按钮样式类，当前示例支持 `is-primary` 和 `is-secondary` |
+| 字段      | 说明                                             |
+| --------- | ------------------------------------------------ |
+| `text`    | 按钮文字                                         |
+| `link`    | 按钮链接                                         |
+| `variant` | 按钮样式类，当前示例支持 `is-solid` 和 `is-soft` |
 
 ## 快速开始区域
 
@@ -132,7 +132,7 @@ cta:
   actions:
     - text: 阅读指南
       link: ./guide/quick-start.html
-      variant: is-primary
+      variant: is-solid
 ```
 
 ## Markdown 正文
