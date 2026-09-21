@@ -1,3 +1,8 @@
+html {
+  min-height: 100%;
+  height: auto;
+}
+
 body.vp-layout-home {
   background:
     radial-gradient(circle at 12% -8%,
