@@ -115,10 +115,12 @@ layouts:
 | `{{{ slots.mobileSidebar }}}` | 手机端侧边栏抽屉内容插槽                   |
 | `{{{ slots.aside }}}`         | 默认右侧区域插槽，包含目录                 |
 | `{{{ slots.prevNext }}}`      | 分页导航插槽                               |
+| `{{{ slots.footer-info }}}`   | 页脚站点信息插槽                           |
+| `{{{ slots.social-list }}}`   | 社交链接列表插槽                           |
 
 普通双花括号会进行 HTML 转义，适合输出 frontmatter 中的文本。
 
-三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`editorHelp`、`slots.header`、`slots.headerDocNav`、`slots.sidebar`、`slots.mobileSidebar`、`slots.aside` 和 `slots.prevNext`。
+三花括号不会转义，只用于构建器生成的可信 HTML 插槽，例如 `content`、`editorHelp`、`slots.header`、`slots.headerDocNav`、`slots.sidebar`、`slots.mobileSidebar`、`slots.aside`、`slots.prevNext`、`slots.footer-info` 和 `slots.social-list`。
 
 ## 数组循环
 
@@ -175,7 +177,7 @@ layouts:
 
 ## 默认布局参考
 
-内置 `default` 布局复用文档站常规结构：左侧侧边栏、正文、右侧目录和页脚。它的模板核心结构如下：
+内置 `default` 布局复用文档站常规结构：左侧侧边栏、正文和右侧目录。它的模板核心结构如下：
 
 ```html
 <header class="vp-header">

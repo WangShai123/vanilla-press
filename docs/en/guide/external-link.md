@@ -28,3 +28,11 @@ Matched links receive:
 - `rel="noopener noreferrer"`
 - `data-vp-external-link`
 - `external-link` icon
+
+## Scope
+
+External link enhancement only processes these generated regions:
+
+- Editor content: `data-vp-editor`
+- Header menu and mobile menu: `data-vp-menu`, `data-vp-mobile-menu-nav`
+- Sidebar navigation: `data-vp-sidebar`

@@ -2,6 +2,11 @@
 
 ## 1.5.x
 
+#### 1.5.11
+
+- feat: Updated layout footer slots and rendered social links after the header search entry.
+- fix: external-link scope.
+
 #### 1.5.10
 
 - feat: Added build-time math rendering.

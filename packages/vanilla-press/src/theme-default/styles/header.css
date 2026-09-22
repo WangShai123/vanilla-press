@@ -73,6 +73,17 @@
   gap: 2px;
 }
 
+.vp-header-actions .social-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.vp-header-actions .social-list .el-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .vp-header-actions,
 .vp-locale {
   color: var(--tone-caption);

@@ -28,3 +28,11 @@ export default {
 - `rel="noopener noreferrer"`
 - `data-vp-external-link`
 - `external-link` 图标
+
+## 作用范围
+
+外部链接增强只处理以下构建输出区域：
+
+- 正文内容：`data-vp-editor`
+- 顶部菜单和移动端菜单：`data-vp-menu`、`data-vp-mobile-menu-nav`
+- 侧边栏导航：`data-vp-sidebar`

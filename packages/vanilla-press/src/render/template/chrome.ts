@@ -77,6 +77,7 @@ function renderHeader(options: ChromeOptions): string {
   const headerMenu = renderHeaderMenu(options)
   const menuButton = renderMenuButton(options.menuEnabled)
   const search = renderSearch(options.searchEnabled)
+  const socialList = renderSocialList(options.config)
   const locale = renderLocale(options.i18nEnabled)
   const theme = renderTheme(options.themeEnabled)
   const auth = renderAuth(options.authEnabled)
@@ -89,6 +90,7 @@ ${menuButton}
 ${headerMenu}
       <div class="vp-header-actions">
 ${search}
+${socialList}
 ${theme}
 ${locale}
 ${auth}
@@ -121,11 +123,20 @@ function renderIcon(name: string): string {
   return `<svg class="el-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${content}</svg>`
 }
 
-export function renderFooter(config = {}): string {
+export function renderFooterInfo(config = {}): string {
   const siteName = normalizeSiteName(config)
   const year = new Date().getFullYear()
   const siteUrl = toText((config as { siteUrl?: unknown }).siteUrl)
   const icpConfig = serverOption(config, 'icp')
+
+  return `<div class="footer-info" data-footer-info>
+    <div>${siteUrl ? `<a href="${attr(siteUrl)}">${escapeHtml(siteName)}</a>` : escapeHtml(siteName)} © ${year}</div>
+    ${icpConfig ? `<div><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer noopener">${escapeHtml(icpConfig)}</a></div>` : ''}
+    <div>BuiltBy <a href="https://app.jealer.com/vanilla-press/" target="_blank" title="VanillaPress">VanillaPress</a></div>
+  </div>`
+}
+
+export function renderSocialList(config = {}): string {
   const socialValue = serverOption(config, 'social')
   const socialConfig = isRecord(socialValue) ? socialValue : {}
   const social = Object.entries(socialConfig)
@@ -137,10 +148,5 @@ export function renderFooter(config = {}): string {
     .filter(Boolean)
     .join('')
 
-  return `<div class="footer-info">
-    <div>${siteUrl ? `<a href="${attr(siteUrl)}">${escapeHtml(siteName)}</a>` : escapeHtml(siteName)} © ${year}</div>
-    ${icpConfig ? `<div><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer noopener">${escapeHtml(icpConfig)}</a></div>` : ''}
-    <div>BuiltBy <a href="https://app.jealer.com/vanilla-press/" target="_blank" title="VanillaPress">VanillaPress</a></div>
-  </div>
-  <div class="social-list">${social}</div>`
+  return social ? `<div class="social-list">${social}</div>` : ''
 }

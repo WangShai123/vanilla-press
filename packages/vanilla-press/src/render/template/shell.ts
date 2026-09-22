@@ -1,6 +1,6 @@
 import type { RuntimeConfig } from '../../types.ts'
 import { editorClassName } from '../../utilities/editor-size.ts'
-import { renderFooter } from './chrome.ts'
+import { renderFooterInfo, renderSocialList } from './chrome.ts'
 
 interface ShellOptions {
   body: string
@@ -63,7 +63,8 @@ export function renderPageShell({
   const aside = renderAside({ config, toc })
   const hasAside = Boolean(aside)
   const editorClass = editorClassName(config)
-  const footer = renderFooter(config)
+  const footerInfo = renderFooterInfo(config)
+  const socialList = renderSocialList(config)
 
   return `${mobileSidebar}
   <main class="vp-shell${sidebarEnabled ? ' has-sidebar' : ''}">
@@ -80,7 +81,7 @@ ${sidebarHtml}
 ${aside}
     </section>
   </main>
-  <footer class="vp-footer" data-vp-footer>${footer}</footer>`
+  <footer class="vp-footer" data-vp-footer>${footerInfo}${socialList}</footer>`
 }
 
 export function createPageShellContext({
@@ -98,7 +99,8 @@ export function createPageShellContext({
   const aside = renderAside({ config, toc })
   const hasAside = Boolean(aside)
   const editorClass = editorClassName(config)
-  const footer = renderFooter(config)
+  const footerInfo = renderFooterInfo(config)
+  const socialList = renderSocialList(config)
 
   return {
     shell: {
@@ -114,7 +116,8 @@ export function createPageShellContext({
       toc,
       aside,
       prevNext: prevNext || '<div data-vp-prev-next></div>',
-      footer,
+      'footer-info': footerInfo,
+      'social-list': socialList,
     },
   }
 }

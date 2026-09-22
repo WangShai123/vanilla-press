@@ -78,7 +78,7 @@ export default {
 
 | Option                 | Type                 | Description                                                   |
 | ---------------------- | -------------------- | ------------------------------------------------------------- |
-| server.social          | object               | Footer social links. Keys are icon names and values URLs.     |
+| server.social          | object               | Header and footer social links. Keys are icon names and values URLs. |
 | server.footerScript    | "script" \| "module" | Script type for `vp/config/footerScript.ts` output            |
 | server.highlight.light | string               | Light Shiki theme. Defaults to `github-light-default`         |
 | server.highlight.dark  | string               | Dark Shiki theme. Defaults to `github-dark-default`           |

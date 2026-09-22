@@ -78,7 +78,7 @@ export default {
 
 | 配置项                 | 类型                 | 说明                                             |
 | ---------------------- | -------------------- | ------------------------------------------------ |
-| server.social          | object               | 页脚社交链接配置，key 为图标名，value 为链接地址 |
+| server.social          | object               | 头部和页脚社交链接配置，key 为图标名，value 为链接地址 |
 | server.footerScript    | "script" \| "module" | `vp/config/footerScript.ts` 输出的脚本类型       |
 | server.highlight.light | string               | 浅色模式 Shiki 主题，默认 `github-light-default` |
 | server.highlight.dark  | string               | 深色模式 Shiki 主题，默认 `github-dark-default`  |
