@@ -43,4 +43,4 @@ npm run dev
 
 ## Demo
 
-[Demo Online](https://www.jealer.com/docs/vanilla-press)
+[Demo Online](https://www.jealer.com/docs/vanilla-press/)

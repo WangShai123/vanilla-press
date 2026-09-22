@@ -36,16 +36,4 @@ export default [
       { label: 'sidebar.lastUpdated', path: 'guide/last-edit' },
     ],
   },
-  {
-    label: 'sidebar.others',
-    collapse: true,
-    children: [
-      { label: 'sidebar.changelog', path: 'guide/changelog' },
-      {
-        label: 'Contributors',
-        path: 'https://www.jealer.com/contributors/',
-        target: '_blank',
-      },
-    ],
-  },
 ] satisfies SidebarConfig

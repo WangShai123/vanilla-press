@@ -54,7 +54,7 @@ export function renderHead({
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="generator" content="vanilla-press">
-  <meta name="vanilla-press-homepage" content="https://app.jealer.com/vanilla-press/">
+  <meta name="vanilla-press-homepage" content="https://www.jealer.com/docs/vanilla-press/">
   <title>${escapeHtml(title)}</title>
   ${seoMeta ? `${seoMeta}\n` : ''}
   <script>${deviceBootScript}

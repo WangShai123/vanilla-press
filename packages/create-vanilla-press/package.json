@@ -1,6 +1,6 @@
 {
   "name": "create-vanilla-press",
-  "version": "1.5.11",
+  "version": "1.5.12",
   "private": false,
   "description": "Create a vanilla-press documentation project.",
   "keywords": [
@@ -13,7 +13,7 @@
     "static",
     "vanilla"
   ],
-  "homepage": "https://www.jealer.com/docs/vanilla-press",
+  "homepage": "https://www.jealer.com/docs/vanilla-press/",
   "bugs": {
     "url": "https://github.com/WangShai123/vanilla-press/issues"
   },

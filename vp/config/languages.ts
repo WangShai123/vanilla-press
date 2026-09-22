@@ -10,7 +10,6 @@ export default {
     Runtime: '运行时',
     'Components List': '组件列表',
     Documentation: '文档中心',
-    Contributors: '贡献者',
     Features: '特性',
     sidebar: {
       layoutApi: '布局 API',

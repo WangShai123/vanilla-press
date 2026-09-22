@@ -132,7 +132,7 @@ export function renderFooterInfo(config = {}): string {
   return `<div class="footer-info" data-footer-info>
     <div>${siteUrl ? `<a href="${attr(siteUrl)}">${escapeHtml(siteName)}</a>` : escapeHtml(siteName)} © ${year}</div>
     ${icpConfig ? `<div><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer noopener">${escapeHtml(icpConfig)}</a></div>` : ''}
-    <div>BuiltBy <a href="https://app.jealer.com/vanilla-press/" target="_blank" title="VanillaPress">VanillaPress</a></div>
+    <div>BuiltBy <a href="https://www.jealer.com/docs/vanilla-press/" target="_blank" title="vanilla-press">VanillaPress</a></div>
   </div>`
 }
 
