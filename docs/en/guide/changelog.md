@@ -2,6 +2,10 @@
 
 ## 1.5.x
 
+#### 1.5.10
+
+- feat: Added build-time math rendering.
+
 #### 1.5.9
 
 - feat: Added code copy feature.

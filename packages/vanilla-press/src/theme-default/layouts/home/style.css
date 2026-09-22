@@ -1,9 +1,7 @@
-html {
-  min-height: 100%;
-  height: auto;
-}
-
 body.vp-layout-home {
+  --mix-solid: color-mix(in srgb, var(--tone-solid) 20%, transparent);
+  --mix-soft: color-mix(in srgb, var(--tone-soft) 20%, transparent);
+
   background:
     radial-gradient(circle at 12% -8%,
       color-mix(in srgb, var(--tone-soft) 66%, transparent),
@@ -24,10 +22,6 @@ body.vp-layout-home {
   background-color: transparent;
   background-color: color-mix(in srgb, var(--ui-surface-raised) 14%, transparent);
 }
-
-/* .vp-layout-home .vp-menu.j-menu .menu .menu-item.menu-item-has-children:hover .sub-menu {
-  background-color: color-mix(in srgb, var(--ui-bg) 90%, transparent) !important;
-} */
 
 .vp-home {
   width: min(1160px, calc(100% - 40px));
@@ -212,8 +206,6 @@ body.vp-layout-home {
 .vp-home-section {
   margin-top: 16px;
   padding: 24px;
-  /* background: color-mix(in srgb, var(--ui-surface) 92%, transparent); */
-  /* box-shadow: var(--shadow-md); */
 }
 
 .vp-home-section h2,
@@ -259,8 +251,8 @@ body.vp-layout-home {
 .vp-home-feature:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: color-mix(in srgb, var(--tone-solid) 28%, var(--ui-border));
-  background-color: color-mix(in srgb, var(--tone-soft) 40%, var(--ui-surface-raised));
+  border-color: var(--mix-solid);
+  background-color: var(--mix-soft);
 }
 
 .vp-home-feature-index {
@@ -296,11 +288,7 @@ body.vp-layout-home {
   gap: 16px;
   margin-top: 16px;
   padding: 28px;
-  border-color: color-mix(in srgb, var(--tone-solid) 62%, var(--ui-border-subtle));
-}
-
-.vp-home-cta:hover {
-  background-color: color-mix(in srgb, var(--tone-soft) 40%, var(--ui-surface-raised));
+  background-color: var(--mix-soft);
 }
 
 .vp-home-cta h2 {
@@ -308,7 +296,6 @@ body.vp-layout-home {
 }
 
 .vp-home-cta p {
-  /* max-width: 58ch; */
   margin: 8px 0 0;
 }
 

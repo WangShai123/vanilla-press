@@ -24,8 +24,8 @@ export default {
       locale: "zh-CN",
       fallbackLocale: "en",
       locales: [
-        { code: "zh-CN", label: "简体中文", path: "zh" },
-        { code: "en", label: "English", path: "en" }
+        { code: "zh-CN", label: "中文", path: "zh" },
+        { code: "en", label: "EN", path: "en" }
       ],
       redirectToDefault: true
     },
@@ -97,14 +97,14 @@ export const DEFAULT_LLMS_CONFIG = {
   container: {
     labels: {
       'zh-CN': {
-        link: '查看 Markdown',
+        link: 'Markdown',
         copy: '复制 Markdown 链接',
         chatgpt: '在 ChatGPT 中打开',
         claude: '在 Claude 中打开',
         options: 'LLMs',
       },
       en: {
-        link: 'View Markdown',
+        link: 'Markdown',
         copy: 'Copy Markdown link',
         chatgpt: 'Open in ChatGPT',
         claude: 'Open in Claude',
@@ -123,14 +123,14 @@ export default {
   container: {
     labels: {
       "zh-CN": {
-        link: "查看 Markdown",
+        link: "Markdown",
         copy: "复制 Markdown 链接",
         chatgpt: "在 ChatGPT 中打开",
         claude: "在 Claude 中打开",
         options: "LLMs"
       },
       en: {
-        link: "View Markdown",
+        link: "Markdown",
         copy: "Copy Markdown link",
         chatgpt: "Open in ChatGPT",
         claude: "Open in Claude",

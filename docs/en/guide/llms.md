@@ -33,14 +33,14 @@ export default {
   container: {
     labels: {
       'zh-CN': {
-        link: '查看 Markdown',
+        link: 'Markdown',
         copy: '复制 Markdown 链接',
         chatgpt: '在 ChatGPT 中打开',
         claude: '在 Claude 中打开',
         options: 'LLMs',
       },
       en: {
-        link: 'View Markdown',
+        link: 'Markdown',
         copy: 'Copy Markdown link',
         chatgpt: 'Open in ChatGPT',
         claude: 'Open in Claude',

@@ -18,6 +18,7 @@ export default [
     children: [
       { label: 'Runtime', path: 'guide/runtime' },
       { label: 'sidebar.highlight', path: 'guide/highlight' },
+      { label: 'sidebar.math', path: 'guide/math' },
       { label: 'sidebar.locale', path: 'guide/locale' },
       { label: 'sidebar.menu', path: 'guide/menu' },
       { label: 'sidebar.sidebar', path: 'guide/sidebar' },

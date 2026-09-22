@@ -142,5 +142,5 @@ export function renderFooter(config = {}): string {
     ${icpConfig ? `<div><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer noopener">${escapeHtml(icpConfig)}</a></div>` : ''}
     <div>BuiltBy <a href="https://app.jealer.com/vanilla-press/" target="_blank" title="VanillaPress">VanillaPress</a></div>
   </div>
-  <div class="footer-social">${social}</div>`
+  <div class="social-list">${social}</div>`
 }

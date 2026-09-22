@@ -197,7 +197,6 @@ layouts:
     {{{ slots.aside }}}
   </section>
 </main>
-<footer class="vp-footer" data-vp-footer></footer>
 ```
 
 如果新布局仍然是文档页，可以从这个结构复制后调整。`{{{ slots.header }}}` 和 `{{{ slots.headerDocNav }}}` 应放在 `.vp-header` 内部，`{{{ slots.mobileSidebar }}}` 应放在 header 后方，供窄屏侧边栏抽屉使用。如果新布局是首页或营销页，通常只保留 `{{{ slots.header }}}`，然后自行设计页面主体。

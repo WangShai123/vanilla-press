@@ -197,7 +197,6 @@ The built-in `default` layout reuses the common documentation structure: left si
     {{{ slots.aside }}}
   </section>
 </main>
-<footer class="vp-footer" data-vp-footer></footer>
 ```
 
 If the new layout is still a documentation page, copy and adjust this structure. Keep `{{{ slots.header }}}` and `{{{ slots.headerDocNav }}}` inside `.vp-header`, and place `{{{ slots.mobileSidebar }}}` after the header so the compact sidebar drawer has content. If the new layout is a homepage or marketing page, usually keep only `{{{ slots.header }}}` and design the page body yourself.

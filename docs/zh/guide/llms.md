@@ -10,7 +10,7 @@ LLMs 输出默认启用。`server.llms` 只用于配置页面工具栏数据。
 export default {
   server: {
     llms: {
-      link: true, // 是否启用工具栏：查看 Markdown 链接
+      link: true, // 是否启用工具栏：Markdown 链接
       copy: true, // 是否启用工具栏：复制 Markdown 链接
       chatgpt: true, // 是否启用工具栏：在 ChatGPT 中打开
       claude: true, // 是否启用工具栏：在 Claude 中打开
@@ -33,14 +33,14 @@ export default {
   container: {
     labels: {
       'zh-CN': {
-        link: '查看 Markdown',
+        link: 'Markdown',
         copy: '复制 Markdown 链接',
         chatgpt: '在 ChatGPT 中打开',
         claude: '在 Claude 中打开',
         options: 'LLMs',
       },
       en: {
-        link: 'View Markdown',
+        link: 'Markdown',
         copy: 'Copy Markdown link',
         chatgpt: 'Open in ChatGPT',
         claude: 'Open in Claude',
@@ -80,7 +80,7 @@ Markdown source routes for VanillaPress documentation.
 
 | 字段    | 说明                       |
 | ------- | -------------------------- |
-| link    | 查看 Markdown 按钮文本     |
+| link    | Markdown 按钮文本          |
 | copy    | 复制 Markdown 链接菜单文本 |
 | chatgpt | ChatGPT 打开菜单文本       |
 | claude  | Claude 打开菜单文本        |

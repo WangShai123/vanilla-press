@@ -3,6 +3,39 @@
   margin-block: 1.25rem;
 }
 
+.vp-content mjx-container[jax="SVG"] {
+  direction: ltr;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.vp-content mjx-container[jax="SVG"]>svg {
+  min-width: 1px;
+  min-height: 1px;
+  overflow: visible;
+  display: unset;
+}
+
+.vp-content mjx-container[display="true"] {
+  display: block;
+  margin-block: 1.25rem;
+  text-align: center;
+}
+
+.vp-content mjx-assistive-mml {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  display: block !important;
+  width: auto !important;
+  padding: 1px 0 0 !important;
+  overflow: hidden !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  border: 0 !important;
+  user-select: none;
+}
+
 .dark .shiki,
 .dark .shiki code span {
   background-color: var(--shiki-dark-bg) !important;

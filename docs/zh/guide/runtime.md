@@ -23,8 +23,8 @@ export default {
       locale: 'zh-CN',
       fallbackLocale: 'en',
       locales: [
-        { code: 'zh-CN', label: '简体中文', path: 'zh' },
-        { code: 'en', label: 'English', path: 'en' },
+        { code: 'zh-CN', label: '中文', path: 'zh' },
+        { code: 'en', label: 'EN', path: 'en' },
       ],
       redirectToDefault: true,
     },

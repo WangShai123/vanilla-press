@@ -3,6 +3,7 @@ import type { MarkdownIt as MarkdownItType } from 'markdown-it'
 import anchor from 'markdown-it-anchor'
 import attrs from 'markdown-it-attrs'
 import frontMatter from 'markdown-it-front-matter'
+import mathjax3 from 'markdown-it-mathjax3'
 
 import { installAccordion } from '../components/accordion.ts'
 import { installBadge } from '../components/badge.ts'
@@ -41,6 +42,7 @@ export async function createMarkdown(
 
   await installCodeHighlight(md, config)
   md.use(frontMatter, () => {})
+  md.use(mathjax3)
   md.use(attrs)
   md.use(anchor, {
     level: [2, 3],
