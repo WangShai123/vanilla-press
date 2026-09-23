@@ -1,5 +1,8 @@
-import { all, copy, createDrop, icon, q } from 'vanilla-jui'
+import { all, copy, createDrop, icon, q, Toast } from 'vanilla-jui'
 import { jsx } from 'vanilla-signal'
+
+import type { DocI18n } from '../types.ts'
+import { localize } from './i18n.ts'
 
 const PROMPT = 'I want to ask questions about it.'
 
@@ -33,6 +36,11 @@ function fillIcon(slot: HTMLElement): void {
 
 function label(container: HTMLElement, key: string, fallback: string): string {
   return container?.dataset?.[`vpLlmsLabel${key}`] || fallback
+}
+
+function translate(key: string, fallback: string, i18n: DocI18n): string {
+  const text = localize(key, i18n)
+  return text && text !== key ? text : fallback
 }
 
 function actionIcon(action: LlmsAction): SVGElement | null {
@@ -85,10 +93,12 @@ function createDropContent(container: HTMLElement): HTMLElement {
 
 async function runAction(
   action: string | undefined,
-  mdUrl: string
+  mdUrl: string,
+  i18n: DocI18n
 ): Promise<void> {
   if (action === 'copy') {
     await copy(mdUrl)
+    Toast.success(translate('copied', '已复制', i18n))
     return
   }
 
@@ -100,7 +110,8 @@ async function runAction(
 function bindDrop(
   container: HTMLElement,
   trigger: HTMLElement,
-  mdUrl: string
+  mdUrl: string,
+  i18n: DocI18n
 ): void {
   const drop = createDrop(trigger, {
     className: {
@@ -121,7 +132,7 @@ function bindDrop(
     const item = event.target.closest('[data-llms-action]')
     if (!item) return
 
-    await runAction((item as HTMLElement).dataset.llmsAction, mdUrl)
+    await runAction((item as HTMLElement).dataset.llmsAction, mdUrl, i18n)
     drop.hide(false)
   })
 
@@ -132,12 +143,12 @@ function bindDrop(
     if (!item) return
 
     event.preventDefault()
-    await runAction((item as HTMLElement).dataset.llmsAction, mdUrl)
+    await runAction((item as HTMLElement).dataset.llmsAction, mdUrl, i18n)
     drop.hide(false)
   })
 }
 
-function initContainer(container: HTMLElement): void {
+function initContainer(container: HTMLElement, i18n: DocI18n): void {
   if (container.dataset.vpLlmsReady === 'true') return
   const mdUrl = container.dataset.vpLlmsMdUrl
   if (!mdUrl) return
@@ -149,12 +160,14 @@ function initContainer(container: HTMLElement): void {
 
   const trigger = q<HTMLElement>('[data-vp-llms-options-trigger]', container)
   if (trigger) {
-    bindDrop(container, trigger, mdUrl)
+    bindDrop(container, trigger, mdUrl, i18n)
   }
 
   container.dataset.vpLlmsReady = 'true'
 }
 
-export function initLlms(): void {
-  all<HTMLElement>('[data-vp-llms]').forEach(initContainer)
+export function initLlms(i18n: DocI18n): void {
+  all<HTMLElement>('[data-vp-llms]').forEach((container) =>
+    initContainer(container, i18n)
+  )
 }

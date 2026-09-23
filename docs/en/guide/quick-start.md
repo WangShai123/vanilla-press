@@ -48,10 +48,10 @@ npm run dev
 - `dist/public/`: generated static assets, including CSS, JS, favicon, images...
 - `assets/`: static assets input directory.
 - `docs/`: input directory for Markdown pages only.
-- `vp/config/runtime.ts`: site configuration, split into `server` and `client`.
 - `vp/client/`: project-owned browser runtime code, modules, and page entries.
-- `vp/layouts/`: custom layouts.
 - `vp/components/`: custom components.
+- `vp/config/`: site configuration directory.
+- `vp/layouts/`: custom layouts.
 
 :::tree
 vanilla-press/
@@ -61,10 +61,10 @@ vanilla-press/
 │ └── favicon.ico
 ├── docs/
 ├── vp/
-│ ├── config/
 │ ├── client/
-│ ├── layouts/
-│ └── components/
+│ ├── components/
+│ ├── config/
+│ └── layouts/
 ├── package.json
 └── README.md
 :::

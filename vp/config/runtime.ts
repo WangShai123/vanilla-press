@@ -2,7 +2,7 @@ import type { RuntimeConfig } from 'vanilla-press'
 
 export default {
   siteName: 'VanillaPress',
-  siteUrl: 'https://www.jealer.com/docs/vanilla-press/',
+  siteUrl: 'http://127.0.0.1:3333/',
   server: {
     social: {
       github: 'https://github.com/WangShai123/vanilla-press',

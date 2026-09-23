@@ -198,7 +198,8 @@ export default {
     editor: {
       editLink: "在 GitHub 上编辑此页面",
       lastUpdated: "最后更新于:"
-    }
+    },
+    copied: '已复制',
   },
   en: {
     menu: {
@@ -240,7 +241,8 @@ export default {
     editor: {
       editLink: "Edit this page on GitHub",
       lastUpdated: "Last updated:"
-    }
+    },
+    copied: 'Copied',
   }
 } satisfies LanguageMessages;
 `

@@ -48,10 +48,10 @@ npm run dev
 - `dist/public/`：构建后的静态资源目录，包含 CSS、JS、favicon、图片等。
 - `assets/`：静态资源输入目录。
 - `docs/`：文档输入目录，只放 Markdown 页面。
-- `vp/config/runtime.ts`：站点配置入口，分为 `server` 和 `client`。
 - `vp/client/`：项目自定义浏览器端公共代码、模块和页面入口。
-- `vp/layouts/`：自定义布局。
 - `vp/components/`：自定义组件。
+- `vp/config/`：站点配置目录。
+- `vp/layouts/`：自定义布局。
 
 :::tree
 vanilla-press/
@@ -61,10 +61,10 @@ vanilla-press/
 │ └── favicon.ico
 ├── docs/
 ├── vp/
-│ ├── config/
 │ ├── client/
-│ ├── layouts/
-│ └── components/
+│ ├── components/
+│ ├── config/
+│ └── layouts/
 ├── package.json
 └── README.md
 :::

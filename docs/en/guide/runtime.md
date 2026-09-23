@@ -1,113 +1,312 @@
-# Runtime Config
+# Runtime
 
-`vp/config/runtime.ts` describes site data, build-stage data, and browser runtime data.
+## Highlight
 
-```ts
-import type { RuntimeConfig } from 'vanilla-press'
+Highlight is powered by `Shiki` and prerendered to static HTML during build.
 
-export default {
-  siteName: 'VanillaPress',
-  siteUrl: 'https://example.com',
-  server: {
-    social: {
-      github: 'https://github.com/WangShai123/vanilla-press',
-    },
-    footerScript: 'script',
-    highlight: {
-      light: 'github-light-default',
-      dark: 'github-dark-default',
-    },
-    externalLink: true,
-    prevNext: false,
-    i18n: {
-      locale: 'zh-CN',
-      fallbackLocale: 'en',
-      locales: [
-        { code: 'zh-CN', label: 'Simplified Chinese', path: 'zh' },
-        { code: 'en', label: 'English', path: 'en' },
-      ],
-      redirectToDefault: true,
-    },
-    client: {
-      shared: [],
-    },
-    editLink: {
-      text: 'editor.editLink',
-    },
-    lastEdit: {
-      text: 'editor.lastUpdated',
-      format: 'yyyy-MM-dd HH:mm:ss',
-      utc: true,
-    },
-  },
-  client: {
-    editorSize: 'sm',
-    search: true,
-    toc: {
-      headings: 'h2, h3',
-      offset: 80,
-    },
-    theme: {
-      default: {
-        mode: 'dark',
-        theme: 'indigo',
-        radius: 'sm',
-        shadow: 'sm',
-        font: 'sm',
-      },
-      offcanvas: {
-        direction: 'right',
-      },
-    },
-  },
-} satisfies RuntimeConfig
+:::tabs
+@tab 示例
+
+```rust
+use std::future::Future;
+
+async fn map_concurrent<T, U, F, Fut>(items: Vec<T>, f: F) -> Vec<U>
+where
+    F: Fn(T) -> Fut,
+    Fut: Future<Output = U>,
+{
+    futures::future::join_all(items.into_iter().map(f)).await
+}
 ```
 
-## Top-Level Options
+@tab 语法
 
-| Option   | Type   | Description                       |
-| -------- | ------ | --------------------------------- |
-| siteName | string | Site name                         |
-| siteUrl  | string | Absolute `http(s)` deployment URL |
-| server   | object | Server-stage build data           |
-| client   | object | Browser runtime data              |
+````markdown
+```rust
+use std::future::Future;
 
-## server
+async fn map_concurrent<T, U, F, Fut>(items: Vec<T>, f: F) -> Vec<U>
+where
+    F: Fn(T) -> Fut,
+    Fut: Future<Output = U>,
+{
+    futures::future::join_all(items.into_iter().map(f)).await
+}
+```
+````
 
-`server` stores user-defined data needed at build time. Build-time features are mostly convention-driven instead of being modeled as toggle-heavy configuration.
+:::
 
-| Option                 | Type                 | Description                                                   |
-| ---------------------- | -------------------- | ------------------------------------------------------------- |
-| server.social          | object               | Header and footer social links. Keys are icon names and values URLs. |
-| server.footerScript    | "script" \| "module" | Script type for `vp/config/footerScript.ts` output            |
-| server.highlight.light | string               | Light Shiki theme. Defaults to `github-light-default`         |
-| server.highlight.dark  | string               | Dark Shiki theme. Defaults to `github-dark-default`           |
-| server.externalLink    | boolean              | Build-time external link enhancement. Enabled by default.     |
-| server.prevNext        | boolean \| object    | Build-time previous/next page navigation                      |
-| server.i18n            | object               | Build-time internationalization metadata                      |
-| server.client.entries  | object               | Custom client entry script or stylesheet entries              |
-| server.client.shared   | array \| object      | Shared npm dependencies for layout scripts and client entries |
-| server.llms            | object               | LLMs output and page Markdown action data                     |
-| server.editLink        | object               | Edit link data                                                |
-| server.lastEdit        | object               | Last updated display data                                     |
-| icp                    | string               | ICP number. Omitted means no ICP text is rendered.            |
+### Highlight Lines
 
-## client
+Add `{lines}` after the code block language to highlight specific lines. Single lines, multiple lines, and ranges are supported.
 
-`client` describes browser runtime data.
+:::tabs
+@tab Example
 
-| Option            | Type              | Description                  |
-| ----------------- | ----------------- | ---------------------------- |
-| client.editorSize | boolean \| string | Content editor size controls |
-| client.search     | boolean           | Search                       |
-| client.toc        | boolean \| object | Page table of contents       |
-| client.theme      | object            | Theme                        |
+```ts {2,4-6}
+const name = 'VanillaPress'
+const version = '1.5'
 
-## Conventions
+export function info() {
+  return `${name}@${version}`
+}
+```
 
-- `vp/config/menu.ts` renders the menu when it exports a valid menu array.
-- `vp/config/sidebar.ts` or directory-level `sidebar.ts` renders the sidebar when it exports a valid sidebar array.
-- Non-empty `vp/config/footerScript.ts` outputs a footer script.
-- `server.highlight` customizes Shiki themes; missing values use defaults.
-- SEO and translated text are always handled during build.
-- Pages using layout scripts or client entries output only the scripts and stylesheets they need.
+@tab Syntax
+
+````markdown
+```ts {2,4-6}
+const name = 'VanillaPress'
+const version = '1.5'
+
+export function info() {
+  return `${name}@${version}`
+}
+```
+````
+
+:::
+
+You can also use `[!code highlight]`. When it is placed at the end of a code line, it targets the current line. When it is placed on its own comment line, it targets the next line. The marker is removed during build and does not appear in the final HTML.
+
+:::tabs
+@tab Example
+
+```ts
+const name = 'VanillaPress'
+const version = '1.5' // [!code highlight]
+
+export function info() {
+  // [!code highlight:3]
+  return `${name}@${version}`
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts
+const name = 'VanillaPress'
+const version = '1.5' // [!code highlight]
+
+export function info() {
+  // [!code highlight:3]
+  return `${name}@${version}`
+}
+```
+````
+
+:::
+
+`[!code highlight:3]` highlights three lines starting from the target line.
+
+### Focus Code
+
+Use `[!code focus]` to emphasize key lines and dim the rest of the same code block.
+
+:::tabs
+@tab Example
+
+```ts
+const name = 'VanillaPress'
+const version = '1.5' // [!code focus]
+
+export function info() {
+  return `${name}@${version}` // [!code focus]
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts
+const name = 'VanillaPress'
+const version = '1.5' // [!code focus]
+
+export function info() {
+  return `${name}@${version}` // [!code focus]
+}
+```
+````
+
+:::
+
+Continuous ranges are supported too:
+
+:::tabs
+@tab Example
+
+```ts
+export function createApp() {
+  // [!code focus:3]
+  const app = {}
+  return app
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts
+export function createApp() {
+  // [!code focus:3]
+  const app = {}
+  return app
+}
+```
+````
+
+:::
+
+### Color Differences
+
+Use `[!code ++]` and `[!code --]` to mark added and removed lines. This is useful for showing before/after changes inside a code block.
+
+:::tabs
+@tab Example
+
+```ts
+const theme = 'github-light-default'
+const darkTheme = 'github-dark-default' // [!code --]
+const darkTheme = 'github-dark-high-contrast' // [!code ++]
+```
+
+@tab Syntax
+
+````markdown
+```ts
+const theme = 'github-light-default'
+const darkTheme = 'github-dark-default' // [!code --]
+const darkTheme = 'github-dark-high-contrast' // [!code ++]
+```
+````
+
+:::
+
+### Errors and Warnings
+
+Use `[!code warning]` and `[!code error]` to mark warning or error lines.
+
+:::tabs
+@tab Example
+
+```ts
+function loadTheme(theme?: string) {
+  if (!theme) return 'github-light-default' // [!code warning]
+  if (theme === 'unknown') throw new Error('Invalid theme') // [!code error]
+
+  return theme
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts
+function loadTheme(theme?: string) {
+  if (!theme) return 'github-light-default' // [!code warning]
+  if (theme === 'unknown') throw new Error('Invalid theme') // [!code error]
+
+  return theme
+}
+```
+````
+
+:::
+
+### Line Numbers
+
+Add `line-numbers` after the code block language to show line numbers.
+
+:::tabs
+@tab Example
+
+```ts line-numbers
+export const siteName = 'VanillaPress'
+export const version = '1.5'
+```
+
+@tab Syntax
+
+````markdown
+```ts line-numbers
+export const siteName = 'VanillaPress'
+export const version = '1.5'
+```
+````
+
+:::
+
+You can also set the starting line number:
+
+:::tabs
+@tab Example
+
+```ts line-numbers=10
+export function mount() {
+  return true
+}
+```
+
+@tab Syntax
+
+````markdown
+```ts line-numbers=10
+export function mount() {
+  return true
+}
+```
+````
+
+:::
+
+## Math
+
+Use `mathjax3` to prerender math in Markdown to static SVG during build.
+
+### Inline Math
+
+Wrap inline math with single `$` delimiters.
+
+:::tabs
+@tab Example
+
+Euler's identity is $e^{i\pi}+1=0$.
+
+@tab Syntax
+
+```markdown
+Euler's identity is $e^{i\pi}+1=0$.
+```
+
+:::
+
+### Block Math
+
+Wrap display math with `$$` delimiters.
+
+:::tabs
+@tab Example
+
+$$
+\nabla \cdot \vec{\mathbf{E}} = 4 \pi \rho
+$$
+
+@tab Syntax
+
+```markdown
+$$
+\nabla \cdot \vec{\mathbf{E}} = 4 \pi \rho
+$$
+```
+
+:::
+
+### Escaping
+
+When content needs to show literal `$` characters, escape them with a backslash.
+
+```markdown
+\$20,000 and \$30,000
+```

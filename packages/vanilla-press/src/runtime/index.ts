@@ -276,7 +276,7 @@ export function initDocPage(options: DocPageOptions = {}): void {
   }
   initEditorSize(options.config)
   if (isLlmsEnabled(options.config)) {
-    initLlms()
+    initLlms(chrome.i18n)
   }
   initComponents(document, components, componentRegistry, options.config)
   watchDynamicComponents(components, componentRegistry, options.config)
