@@ -5,7 +5,11 @@ import os from 'os'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
-import { build as esbuildBuild, transform as esbuildTransform } from 'esbuild'
+import {
+  build as esbuildBuild,
+  transform as esbuildTransform,
+  type Plugin,
+} from 'esbuild'
 import { glob } from 'glob'
 import { randomId } from 'vanilla-jui'
 
@@ -148,9 +152,21 @@ const SHARED_CLIENT_MODULES = [
 const SHARED_CLIENT_RUNTIME_ID = 'vanilla-press/runtime'
 const CLIENT_RUNTIME_ID = 'vanilla-press/client'
 const CLIENT_MODULE_PREFIX = 'vanilla-press/client/modules/'
+const BROWSER_BUILD_TARGET = 'es2022'
 const IMPORT_STATEMENT_RE =
   /^(\s*)import\s+(?:(.*?)\s+from\s+)?(['"])([^'"]+)\3\s*;?/gms
 const CODE_FENCE_RE = /(?:^|\n)[ \t]{0,3}(`{3,}|~{3,})[ \t]*([^\n]*)/g
+const browserEsmResolvePlugin: Plugin = {
+  name: 'vanilla-press-browser-esm-resolve',
+  setup(build) {
+    build.onResolve({ filter: /^vanilla-create-storage$/ }, () => ({
+      path: path.join(
+        path.dirname(require.resolve('vanilla-create-storage/package.json')),
+        'dist/index.js'
+      ),
+    }))
+  },
+}
 
 async function pathExists(file: string): Promise<boolean> {
   try {
@@ -625,8 +641,9 @@ export async function buildRuntime(
       legalComments: 'none',
       outfile: path.join(outputDir, 'runtime.js'),
       platform: 'browser',
+      plugins: [browserEsmResolvePlugin],
       sourcemap: false,
-      target: 'es2020',
+      target: BROWSER_BUILD_TARGET,
     })
   } finally {
     await fs.rm(tempDir, { force: true, recursive: true })
@@ -772,7 +789,8 @@ async function bundleClientFile(
     legalComments: 'none',
     minify: true,
     platform: 'browser',
-    target: 'es2020',
+    plugins: [browserEsmResolvePlugin],
+    target: BROWSER_BUILD_TARGET,
     stdin: {
       contents: code ?? (await fs.readFile(file, 'utf8')),
       loader,
@@ -949,7 +967,8 @@ async function bundleClientStyle(
     minify: true,
     outfile: outputFile,
     platform: 'browser',
-    target: 'es2020',
+    plugins: [browserEsmResolvePlugin],
+    target: BROWSER_BUILD_TARGET,
     entryPoints: [file],
   })
 }
@@ -1281,7 +1300,7 @@ async function minifyJsAssets(outputDir: string): Promise<number> {
         legalComments: 'none',
         loader: 'js',
         minify: true,
-        target: 'es2020',
+        target: BROWSER_BUILD_TARGET,
       })
 
       await fs.writeFile(fullPath, result.code.trim(), 'utf8')
@@ -1309,7 +1328,8 @@ async function bundleModuleScript(
     legalComments: 'none',
     minify: true,
     platform: 'browser',
-    target: 'es2020',
+    plugins: [browserEsmResolvePlugin],
+    target: BROWSER_BUILD_TARGET,
     write: false,
     stdin: {
       contents: code,
