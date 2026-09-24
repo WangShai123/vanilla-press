@@ -32,7 +32,8 @@ function installCustomComponents(
 
 export async function createMarkdown(
   config: RuntimeConfig = {},
-  components: LoadedMarkdownComponent[] = []
+  components: LoadedMarkdownComponent[] = [],
+  languages: string[] = []
 ): Promise<MarkdownItType> {
   const md = new MarkdownIt({
     html: true,
@@ -40,7 +41,7 @@ export async function createMarkdown(
     typographer: true,
   })
 
-  await installCodeHighlight(md, config)
+  await installCodeHighlight(md, config, languages)
   md.use(frontMatter, () => {})
   md.use(mathjax3)
   md.use(attrs)

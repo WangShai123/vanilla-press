@@ -8,7 +8,6 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import { build as esbuildBuild, transform as esbuildTransform } from 'esbuild'
 import { glob } from 'glob'
 import { randomId } from 'vanilla-jui'
-import { build as viteBuild } from 'vite'
 
 import {
   DEFAULT_CONFIG_TS,
@@ -151,6 +150,7 @@ const CLIENT_RUNTIME_ID = 'vanilla-press/client'
 const CLIENT_MODULE_PREFIX = 'vanilla-press/client/modules/'
 const IMPORT_STATEMENT_RE =
   /^(\s*)import\s+(?:(.*?)\s+from\s+)?(['"])([^'"]+)\3\s*;?/gms
+const CODE_FENCE_RE = /(?:^|\n)[ \t]{0,3}(`{3,}|~{3,})[ \t]*([^\n]*)/g
 
 async function pathExists(file: string): Promise<boolean> {
   try {
@@ -583,7 +583,7 @@ function runtimeSharedClientExports(
     .sort()
     .map(
       (moduleName) =>
-        `export * as ${sharedClientExportName(moduleName)} from ${JSON.stringify(pathToFileURL(require.resolve(moduleName)).href)};`
+        `export * as ${sharedClientExportName(moduleName)} from ${JSON.stringify(require.resolve(moduleName))};`
     )
     .join('\n')
 }
@@ -592,11 +592,9 @@ async function writeRuntimeEntry(
   dir: string,
   data: RuntimeBundleData = {}
 ): Promise<string> {
-  const runtimeHref = pathToFileURL(
-    path.join(packageRoot, 'src/runtime.ts')
-  ).href
+  const runtimeFile = path.join(packageRoot, 'src/runtime.ts')
   const sharedExports = runtimeSharedClientExports(data.sharedClientModules)
-  const code = `import { initDocPage } from ${JSON.stringify(runtimeHref)};
+  const code = `import { initDocPage } from ${JSON.stringify(runtimeFile)};
 export { initDocPage };
 export const runtimeConfig = ${serializeRuntimeValue(data.config)};
 export const languages = ${serializeRuntimeValue(data.languages || {})};
@@ -620,29 +618,15 @@ export async function buildRuntime(
   try {
     const entry = await writeRuntimeEntry(tempDir, data)
 
-    await viteBuild({
-      configFile: false,
-      root: workingRoot,
-      publicDir: false,
-      logLevel: 'warn',
-      build: {
-        emptyOutDir: false,
-        minify: 'oxc',
-        outDir: outputDir,
-        sourcemap: false,
-        target: 'es2020',
-        lib: {
-          entry,
-          formats: ['es'],
-          fileName: () => 'runtime.js',
-        },
-        rollupOptions: {
-          output: {
-            assetFileNames: 'assets/[name][extname]',
-            chunkFileNames: 'assets/[name]-[hash].js',
-          },
-        },
-      },
+    await esbuildBuild({
+      bundle: true,
+      entryPoints: [entry],
+      format: 'esm',
+      legalComments: 'none',
+      outfile: path.join(outputDir, 'runtime.js'),
+      platform: 'browser',
+      sourcemap: false,
+      target: 'es2020',
     })
   } finally {
     await fs.rm(tempDir, { force: true, recursive: true })
@@ -1473,6 +1457,40 @@ export function readSource(file: string, markdown: string): SourcePage {
   }
 }
 
+function codeFenceLanguage(info: string): string {
+  const first =
+    String(info || '')
+      .trim()
+      .split(/\s+/)[0] || ''
+  if (!first || first.startsWith('{')) return ''
+
+  return first
+    .replace(/^language-/i, '')
+    .replace(/[{:].*$/g, '')
+    .trim()
+    .toLowerCase()
+}
+
+export function markdownCodeLanguages(markdown: string): string[] {
+  const languages = new Set<string>()
+
+  markdown.replace(CODE_FENCE_RE, (_match, _marker, info) => {
+    const language = codeFenceLanguage(String(info || ''))
+    if (language) languages.add(language)
+    return ''
+  })
+
+  return Array.from(languages).sort()
+}
+
+export function sourceCodeLanguages(
+  sources: Pick<SourcePage, 'markdown'>[] = []
+): string[] {
+  return Array.from(
+    new Set(sources.flatMap((source) => markdownCodeLanguages(source.markdown)))
+  ).sort()
+}
+
 function rootIndexExists(sources: SourcePage[] = []): boolean {
   return sources.some((source) => source.rel === 'index.html')
 }
@@ -1827,7 +1845,6 @@ export async function build({
   validateRuntimeConfig(config)
   const footerScript = await loadFooterScript(configDir)
   const customComponents = await loadCustomComponents(componentsDir)
-  const md = await createMarkdown(config, customComponents)
   const layouts = await loadLayouts({ packageRoot, layoutsDir })
   const lastEditCache = serverOption(config, 'lastEdit')
     ? await loadLastEditCache(resolvedCacheDir)
@@ -1872,6 +1889,11 @@ export async function build({
     )
   )
   const hasRootIndex = rootIndexExists(sources)
+  const md = await createMarkdown(
+    config,
+    customComponents,
+    sourceCodeLanguages(sources)
+  )
 
   await buildCss(publicDir, layouts)
   const componentScriptAssets = await buildComponentScripts(

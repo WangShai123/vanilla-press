@@ -1,74 +1,14 @@
+import { spawn, type ChildProcess } from 'child_process'
 import { createReadStream, watch, type FSWatcher } from 'fs'
 import fs from 'fs/promises'
 import http, { type ServerResponse } from 'http'
 import path from 'path'
-import { fileURLToPath } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 
-import { glob } from 'glob'
 import { WebSocket, WebSocketServer } from 'ws'
 
-import {
-  buildComponentScripts,
-  buildCss,
-  buildClientAssets,
-  buildRuntime,
-  buildLayoutScripts,
-  copyStaticAssets,
-  createRuntimeSidebarConfig,
-  loadDirectorySidebarItems,
-  loadFooterScript,
-  loadLastEditCache,
-  loadLanguages,
-  loadLlmsConfig,
-  loadMenuItems,
-  loadRobotsConfig,
-  loadRuntimeConfig,
-  loadSidebarItems,
-  pageSharedClientModules,
-  readSource,
-  renderSearchIndexFiles,
-  renderSource,
-  resolveI18nData,
-  scanClientEntryAssets,
-  ensureSourceConfig,
-  writeDefaultLocaleEntrypoint,
-  writeLastEditCache,
-  writeRobots,
-  writeSearchIndex,
-  writeSitemap,
-} from './build.ts'
-import { createMarkdown } from './markdown/md.ts'
-import { loadLayouts } from './render/layout.ts'
-import type {
-  BuildOptions,
-  BuildReportState,
-  ClientEntryAssets,
-  FooterScriptConfig,
-  LayoutMap,
-  LoadedMarkdownComponent,
-  ModuleScriptAsset,
-  NavItem,
-  RenderedPage,
-  RuntimeSidebarConfig,
-  RuntimeConfig,
-  SharedClientModule,
-  SourcePage,
-  StylesheetAsset,
-  UnknownRecord,
-} from './types.ts'
-import { loadCustomComponents } from './utilities/components.ts'
-import { assertEditorSizeConfig } from './utilities/editor-size.ts'
-import {
-  serverOption,
-  isI18nEnabled,
-  isLlmsEnabled,
-  isRobotsEnabled,
-  isSearchEnabled,
-  isSitemapEnabled,
-} from './utilities/features.ts'
-import { markdownRouteRel, renderLlmsTxt } from './utilities/llms.ts'
+import type { BuildOptions } from './types.ts'
 import { toPosix } from './utilities/path.ts'
-import { renderRobotsTxt } from './utilities/robots.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const packageRoot = path.resolve(__dirname, '..')
@@ -83,6 +23,7 @@ const defaultComponentsDir = path.join(defaultProjectDir, 'components')
 const DEV_PREFIX = '/__vanilla_press_dev/'
 const CLIENT_SCRIPT = `${DEV_PREFIX}client.js`
 const SOCKET_PATH = `${DEV_PREFIX}ws`
+let activeBuildChild: ChildProcess | null = null
 
 export interface DevOptions extends BuildOptions {
   host?: string
@@ -114,83 +55,6 @@ const mimeTypes: Record<string, string> = {
   '.txt': 'text/plain; charset=utf-8',
   '.webp': 'image/webp',
   '.xml': 'application/xml; charset=utf-8',
-}
-
-interface LastEditEntry {
-  hash: string
-  at: string
-}
-
-type LastEditCache = Record<string, LastEditEntry>
-
-interface DevState {
-  inputDir: string
-  outputDir: string
-  assetsDir: string
-  configDir: string
-  layoutsDir: string
-  componentsDir: string
-  clientDir: string
-  cacheDir: string
-  publicDir: string
-  config: RuntimeConfig
-  footerScript: FooterScriptConfig
-  languages: ReturnType<typeof resolveI18nData>
-  menuItems: unknown[]
-  sidebarItems: unknown[]
-  directorySidebarItems: RuntimeSidebarConfig['directories']
-  llmsConfig: UnknownRecord
-  robotsConfig: UnknownRecord
-  layouts: LayoutMap
-  customComponents: LoadedMarkdownComponent[]
-  md: Awaited<ReturnType<typeof createMarkdown>>
-  lastEditCache: LastEditCache
-  sourcesByFile: Map<string, SourcePage>
-  pagesByFile: Map<string, RenderedPage>
-  componentScriptAssets: Map<string, ModuleScriptAsset>
-  layoutScriptAssets: Map<string, ModuleScriptAsset>
-  clientEntryAssets: ClientEntryAssets
-  sharedClientModules: SharedClientModule[]
-  hasRootIndex: boolean
-  reportState: BuildReportState
-}
-
-function normalizeFileKey(file: string): string {
-  return toPosix(file).replace(/^\/+/, '')
-}
-
-function resolveMarkdownRel(inputDir: string, file: string): string {
-  return normalizeFileKey(path.relative(inputDir, file))
-}
-
-function isMarkdownFile(file: string): boolean {
-  return path.extname(file).toLowerCase() === '.md'
-}
-
-async function readTextIfExists(file: string): Promise<string | null> {
-  try {
-    return await fs.readFile(file, 'utf8')
-  } catch {
-    return null
-  }
-}
-
-async function writeTextIfChanged(
-  file: string,
-  text: string
-): Promise<boolean> {
-  const current = await readTextIfExists(file)
-  if (current === text) return false
-
-  await fs.mkdir(path.dirname(file), { recursive: true })
-  await fs.writeFile(file, text, 'utf8')
-  return true
-}
-
-async function removeFileIfExists(file: string): Promise<boolean> {
-  if (!(await pathExists(file))) return false
-  await fs.rm(file, { force: true })
-  return true
 }
 
 function resolveDir(value: string | undefined, fallback: string): string {
@@ -268,9 +132,7 @@ function green(value: string): string {
 }
 
 function clearScreen(): void {
-  if (process.stdout.isTTY) {
-    process.stdout.write('\x1Bc')
-  }
+  if (process.stdout.isTTY) process.stdout.write('\x1Bc')
 }
 
 function isAddressInUse(error: unknown): boolean {
@@ -483,553 +345,43 @@ function createDevServer(outputDir: string) {
   }
 }
 
-function validateRuntimeConfig(config: RuntimeConfig = {}): void {
-  assertEditorSizeConfig(config)
-
-  const siteUrl = String(config.siteUrl || '').trim()
-
-  if (!siteUrl) {
-    throw new Error(
-      'siteUrl is required. Add siteUrl: "https://your-domain.com" to vp/config/runtime.ts.'
-    )
-  }
-
-  let url: URL
-  try {
-    url = new URL(siteUrl)
-  } catch {
-    throw new Error(
-      'siteUrl must be an absolute URL, for example: "https://example.com".'
-    )
-  }
-
-  if (!['http:', 'https:'].includes(url.protocol)) {
-    throw new Error(
-      'siteUrl must be an http(s) URL, for example: "https://example.com".'
-    )
-  }
+function buildModuleFile(): string {
+  const current = fileURLToPath(import.meta.url)
+  const ext = path.extname(current) || '.js'
+  return path.join(__dirname, `build${ext}`)
 }
 
-function devFileMessage(label: string, file: string): string {
-  return `${label}: ${toPosix(path.relative(workingRoot, file))}`
+function buildEvalCode(options: BuildOptions): string {
+  return `const mod = await import(${JSON.stringify(pathToFileURL(buildModuleFile()).href)});
+await mod.build(${JSON.stringify(options)});`
 }
 
-function collectPages(state: DevState): RenderedPage[] {
-  return Array.from(state.pagesByFile.values()).sort((a, b) =>
-    a.rel.localeCompare(b.rel)
-  )
-}
-
-function isSearchIndexOutput(file: string): boolean {
-  return /^search(?:\.[A-Za-z0-9._-]+)?\.js$/.test(file)
-}
-
-async function removeStaleSearchIndexes(
-  publicDir: string,
-  expectedFiles: Set<string> = new Set()
-): Promise<string[]> {
-  const files = await fs.readdir(publicDir).catch(() => [])
-  const changed: string[] = []
-
-  await Promise.all(
-    files
-      .filter((file) => isSearchIndexOutput(file) && !expectedFiles.has(file))
-      .map(async (file) => {
-        const target = path.join(publicDir, file)
-        if (await removeFileIfExists(target)) changed.push(target)
-      })
-  )
-
-  return changed
-}
-
-async function syncSearchIndexes(
-  state: DevState,
-  pages: RenderedPage[]
-): Promise<string[]> {
-  const files = renderSearchIndexFiles(pages, state.config, state.languages)
-  const changed = await removeStaleSearchIndexes(
-    state.publicDir,
-    new Set(files.keys())
-  )
-
-  for (const [fileName, code] of files) {
-    const file = path.join(state.publicDir, fileName)
-    if (await writeTextIfChanged(file, code)) changed.push(file)
-  }
-
-  return changed
-}
-
-function collectSitemap(pages: RenderedPage[], config: RuntimeConfig): string {
-  const baseUrl = String(config.siteUrl || '')
-    .trim()
-    .replace(/\/+$/g, '')
-  const urls = pages
-    .map((page) => {
-      const rel = toPosix(page.rel).replace(/^\/+/, '')
-      const encodedRel = rel.split('/').map(encodeURIComponent).join('/')
-      return `  <url>\n    <loc>${baseUrl}/${encodedRel}</loc>\n  </url>`
-    })
-    .join('\n')
-
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`
-}
-
-async function loadDevState(options: BuildOptions): Promise<DevState> {
-  const inputDir = resolveDir(options.inputDir, defaultInputDir)
-  const outputDir = resolveDir(options.outputDir, defaultOutputDir)
-  const assetsDir = resolveDir(options.assetsDir, defaultAssetsDir)
-  const configDir = resolveDir(options.configDir, defaultConfigDir)
-  const layoutsDir = resolveDir(options.layoutsDir, defaultLayoutsDir)
-  const componentsDir = resolveDir(options.componentsDir, defaultComponentsDir)
-  const clientDir = path.join(path.dirname(configDir), 'client')
-  const cacheDir =
-    options.cacheDir || path.join(path.dirname(configDir), 'cache')
-  const publicDir = path.join(outputDir, 'public')
-
-  await fs.mkdir(inputDir, { recursive: true })
-  await fs.mkdir(assetsDir, { recursive: true })
-  await fs.mkdir(layoutsDir, { recursive: true })
-  await fs.mkdir(componentsDir, { recursive: true })
-  await fs.mkdir(clientDir, { recursive: true })
-  await ensureSourceConfig(configDir)
-
-  const config = await loadRuntimeConfig(configDir)
-  validateRuntimeConfig(config)
-  const footerScript = await loadFooterScript(configDir)
-  const customComponents = await loadCustomComponents(componentsDir)
-  const md = await createMarkdown(config, customComponents)
-  const layouts = await loadLayouts({ packageRoot, layoutsDir })
-  const languages = isI18nEnabled(config)
-    ? resolveI18nData(config, await loadLanguages(configDir))
-    : {}
-  const menuItems = await loadMenuItems(configDir)
-  const sidebarItems = await loadSidebarItems(configDir)
-  const directorySidebarItems = await loadDirectorySidebarItems(inputDir)
-  const llmsConfig = isLlmsEnabled(config)
-    ? await loadLlmsConfig(configDir)
-    : {}
-  const robotsConfig = isRobotsEnabled(config)
-    ? await loadRobotsConfig(configDir)
-    : {}
-  const lastEditCache = serverOption(config, 'lastEdit')
-    ? await loadLastEditCache(cacheDir)
-    : {}
-
-  return {
-    inputDir,
-    outputDir,
-    assetsDir,
-    configDir,
-    layoutsDir,
-    componentsDir,
-    clientDir,
-    cacheDir,
-    publicDir,
-    config,
-    footerScript,
-    languages,
-    menuItems,
-    sidebarItems,
-    directorySidebarItems,
-    llmsConfig,
-    robotsConfig,
-    layouts,
-    customComponents,
-    md,
-    lastEditCache,
-    sourcesByFile: new Map<string, SourcePage>(),
-    pagesByFile: new Map<string, RenderedPage>(),
-    componentScriptAssets: new Map<string, ModuleScriptAsset>(),
-    layoutScriptAssets: new Map<string, ModuleScriptAsset>(),
-    clientEntryAssets: {
-      scripts: new Map<string, ModuleScriptAsset>(),
-      styles: new Map<string, StylesheetAsset>(),
-    },
-    sharedClientModules: [],
-    hasRootIndex: false,
-    reportState: {
-      hashes: new Map<string, string>(),
-    },
-  }
-}
-
-async function writeLlmsIndex(state: DevState): Promise<string[]> {
-  const pages = collectPages(state)
-  const file = path.join(state.outputDir, 'llms.txt')
-  const text = renderLlmsTxt(state.llmsConfig, state.config, pages)
-  const changed: string[] = []
-
-  if (await writeTextIfChanged(file, text)) {
-    changed.push(file)
-  }
-
-  return changed
-}
-
-async function refreshDevState(state: DevState): Promise<void> {
-  const config = await loadRuntimeConfig(state.configDir)
-  validateRuntimeConfig(config)
-
-  state.config = config
-  state.footerScript = await loadFooterScript(state.configDir)
-  state.customComponents = await loadCustomComponents(state.componentsDir)
-  state.md = await createMarkdown(config, state.customComponents)
-  state.layouts = await loadLayouts({
-    packageRoot,
-    layoutsDir: state.layoutsDir,
-  })
-  state.languages = isI18nEnabled(config)
-    ? resolveI18nData(config, await loadLanguages(state.configDir))
-    : {}
-  state.menuItems = await loadMenuItems(state.configDir)
-  state.sidebarItems = await loadSidebarItems(state.configDir)
-  state.directorySidebarItems = await loadDirectorySidebarItems(state.inputDir)
-  state.llmsConfig = isLlmsEnabled(config)
-    ? await loadLlmsConfig(state.configDir)
-    : {}
-  state.robotsConfig = isRobotsEnabled(config)
-    ? await loadRobotsConfig(state.configDir)
-    : {}
-  state.lastEditCache = serverOption(config, 'lastEdit')
-    ? await loadLastEditCache(state.cacheDir)
-    : {}
-}
-
-async function syncPageOutputs(
-  state: DevState,
-  page: RenderedPage,
-  _previousPage: RenderedPage | null
-): Promise<string[]> {
-  const changed: string[] = []
-
-  const htmlFile = path.join(state.outputDir, page.rel)
-  if (await writeTextIfChanged(htmlFile, page.html)) {
-    changed.push(htmlFile)
-  }
-
-  const markdownFile = path.join(state.outputDir, markdownRouteRel(page))
-  if (await writeTextIfChanged(markdownFile, page.markdown)) {
-    changed.push(markdownFile)
-  }
-
-  return changed
-}
-
-async function removePageOutputs(
-  state: DevState,
-  page: RenderedPage
-): Promise<string[]> {
-  const changed: string[] = []
-  const targets = new Set<string>([
-    path.join(state.outputDir, page.rel),
-    path.join(state.outputDir, markdownRouteRel(page)),
-  ])
-
-  await Promise.all(
-    Array.from(targets).map(async (file) => {
-      if (await removeFileIfExists(file)) changed.push(file)
-    })
-  )
-
-  return changed
-}
-
-async function refreshGlobalOutputs(
-  state: DevState,
-  forceRuntime = false
-): Promise<string[]> {
-  const pages = collectPages(state)
-  const changed: string[] = []
-  const sharedModules = pageSharedClientModules(pages)
-  const runtimeChanged =
-    forceRuntime ||
-    sharedModules.length !== state.sharedClientModules.length ||
-    sharedModules.some(
-      (item, index) => item !== state.sharedClientModules[index]
-    )
-
-  if (runtimeChanged) {
-    await buildRuntime(state.publicDir, {
-      config: state.config,
-      languages: state.languages,
-      menuItems: state.menuItems,
-      sidebarItems: createRuntimeSidebarConfig(
-        state.sidebarItems,
-        state.directorySidebarItems
-      ),
-      sharedClientModules: sharedModules,
-    })
-    state.sharedClientModules = sharedModules
-    changed.push(path.join(state.publicDir, 'runtime.js'))
-  }
-
-  await buildClientAssets(state.outputDir, state.clientDir, pages, state.config)
-
-  if (isSearchEnabled(state.config)) {
-    changed.push(...(await syncSearchIndexes(state, pages)))
-  } else {
-    changed.push(...(await removeStaleSearchIndexes(state.publicDir)))
-  }
-
-  if (isSitemapEnabled(state.config)) {
-    const file = path.join(state.outputDir, 'sitemap.xml')
-    if (await writeTextIfChanged(file, collectSitemap(pages, state.config))) {
-      changed.push(file)
+function runBuild(options: BuildOptions): Promise<void> {
+  const child = spawn(
+    process.execPath,
+    ['--input-type=module', '--eval', buildEvalCode(options)],
+    {
+      cwd: workingRoot,
+      stdio: 'inherit',
     }
-  }
-
-  if (isRobotsEnabled(state.config)) {
-    const file = path.join(state.outputDir, 'robots.txt')
-    if (await writeTextIfChanged(file, renderRobotsTxt(state.robotsConfig))) {
-      changed.push(file)
-    }
-  }
-
-  if (isLlmsEnabled(state.config)) {
-    changed.push(...(await writeLlmsIndex(state)))
-  }
-
-  if (
-    await writeDefaultLocaleEntrypoint(
-      state.outputDir,
-      state.config,
-      state.languages,
-      pages,
-      state.footerScript,
-      state.reportState,
-      console.warn,
-      'Updated'
-    )
-  ) {
-    changed.push(path.join(state.outputDir, 'index.html'))
-  }
-
-  return changed
-}
-
-async function rebuildFull(state: DevState, reason: string): Promise<void> {
-  console.warn(green(`Build Started: ${reason}`))
-  await refreshDevState(state)
-
-  await fs.rm(state.outputDir, { force: true, recursive: true })
-  await fs.mkdir(state.outputDir, { recursive: true })
-  await fs.mkdir(state.publicDir, { recursive: true })
-
-  if (serverOption(state.config, 'lastEdit')) {
-    await fs.mkdir(state.cacheDir, { recursive: true })
-  }
-
-  await copyStaticAssets(state.assetsDir, state.publicDir)
-  await buildCss(state.publicDir, state.layouts)
-  state.componentScriptAssets = await buildComponentScripts(
-    state.outputDir,
-    state.customComponents
   )
-  state.layoutScriptAssets = await buildLayoutScripts(
-    state.outputDir,
-    state.layouts,
-    state.config
-  )
-  state.clientEntryAssets = await scanClientEntryAssets(
-    state.clientDir,
-    state.config
-  )
+  activeBuildChild = child
 
-  const files = (
-    await glob('**/*.md', {
-      cwd: state.inputDir,
-      nodir: true,
-      windowsPathsNoEscape: true,
-    })
-  ).sort()
-
-  state.sourcesByFile.clear()
-  state.pagesByFile.clear()
-
-  const sources = await Promise.all(
-    files.map(async (file) =>
-      readSource(
-        file,
-        await fs.readFile(path.join(state.inputDir, file), 'utf8')
-      )
-    )
-  )
-
-  state.hasRootIndex = sources.some((source) => source.rel === 'index.html')
-
-  for (const source of sources) {
-    state.sourcesByFile.set(source.file, source)
-    const page = renderSource(
-      source,
-      state.md,
-      state.config,
-      state.languages,
-      state.menuItems as NavItem[],
-      createRuntimeSidebarConfig(
-        state.sidebarItems,
-        state.directorySidebarItems
-      ),
-      state.layouts,
-      state.componentScriptAssets,
-      state.layoutScriptAssets,
-      state.clientEntryAssets,
-      state.llmsConfig,
-      state.footerScript,
-      state.lastEditCache,
-      state.hasRootIndex
-    )
-    state.pagesByFile.set(source.file, page)
-  }
-
-  const pages = collectPages(state)
-  state.sharedClientModules = pageSharedClientModules(pages)
-
-  await buildRuntime(state.publicDir, {
-    config: state.config,
-    languages: state.languages,
-    menuItems: state.menuItems,
-    sidebarItems: createRuntimeSidebarConfig(
-      state.sidebarItems,
-      state.directorySidebarItems
-    ),
-    sharedClientModules: state.sharedClientModules,
-  })
-  await buildClientAssets(state.outputDir, state.clientDir, pages, state.config)
-
-  if (isSearchEnabled(state.config)) {
-    await writeSearchIndex(
-      state.publicDir,
-      pages,
-      state.config,
-      state.languages
-    )
-  }
-
-  if (isSitemapEnabled(state.config)) {
-    await writeSitemap(state.outputDir, pages, state.config)
-  }
-
-  if (isRobotsEnabled(state.config)) {
-    await writeRobots(state.outputDir, state.robotsConfig)
-  }
-
-  if (isLlmsEnabled(state.config)) {
-    await writeTextIfChanged(
-      path.join(state.outputDir, 'llms.txt'),
-      renderLlmsTxt(state.llmsConfig, state.config, pages)
-    )
-    await Promise.all(
-      pages.map(async (page) => {
-        const file = path.join(state.outputDir, markdownRouteRel(page))
-        await writeTextIfChanged(file, page.markdown)
-      })
-    )
-  }
-
-  if (serverOption(state.config, 'lastEdit')) {
-    await writeLastEditCache(state.cacheDir, state.lastEditCache)
-  }
-
-  await Promise.all(
-    pages.map(async (page) => {
-      await syncPageOutputs(state, page, null)
-      console.warn(
-        green(devFileMessage('built', path.join(state.outputDir, page.rel)))
-      )
-    })
-  )
-
-  await writeDefaultLocaleEntrypoint(
-    state.outputDir,
-    state.config,
-    state.languages,
-    pages,
-    state.footerScript,
-    state.reportState,
-    console.warn,
-    'built'
-  )
-}
-
-async function rebuildMarkdown(state: DevState, reason: string): Promise<void> {
-  const absFile = path.resolve(workingRoot, reason)
-  if (!isSameOrInside(state.inputDir, absFile)) {
-    throw new Error(`Unsupported incremental target: ${reason}`)
-  }
-
-  const relFile = resolveMarkdownRel(state.inputDir, absFile)
-  const previousPage = state.pagesByFile.get(relFile) || null
-  const exists = await pathExists(absFile)
-
-  if (!exists) {
-    if (previousPage) {
-      if (previousPage.rel === 'index.html') {
-        state.sourcesByFile.delete(relFile)
-        state.pagesByFile.delete(relFile)
-        await rebuildFull(state, reason)
+  return new Promise((resolve, reject) => {
+    child.once('error', reject)
+    child.once('exit', (code, signal) => {
+      if (activeBuildChild === child) activeBuildChild = null
+      if (code === 0) {
+        resolve()
         return
       }
 
-      state.sourcesByFile.delete(relFile)
-      state.pagesByFile.delete(relFile)
-      await removePageOutputs(state, previousPage)
-      if (serverOption(state.config, 'lastEdit')) {
-        delete state.lastEditCache[relFile]
-        await writeLastEditCache(state.cacheDir, state.lastEditCache)
-      }
-    }
-    return
-  }
-
-  const markdown = await fs.readFile(absFile, 'utf8')
-  const source = readSource(relFile, markdown)
-
-  if (!previousPage && source.rel === 'index.html' && state.hasRootIndex) {
-    // Another root index already exists; fall back to a full rebuild to keep
-    // locale home links and the default entrypoint consistent.
-    await rebuildFull(state, reason)
-    return
-  }
-
-  if (!previousPage && source.rel === 'index.html' && !state.hasRootIndex) {
-    await rebuildFull(state, reason)
-    return
-  }
-
-  state.sourcesByFile.set(source.file, source)
-  const page = renderSource(
-    source,
-    state.md,
-    state.config,
-    state.languages,
-    state.menuItems as NavItem[],
-    createRuntimeSidebarConfig(state.sidebarItems, state.directorySidebarItems),
-    state.layouts,
-    state.componentScriptAssets,
-    state.layoutScriptAssets,
-    state.clientEntryAssets,
-    state.llmsConfig,
-    state.footerScript,
-    state.lastEditCache,
-    state.hasRootIndex
-  )
-  state.pagesByFile.set(source.file, page)
-
-  const changed = await syncPageOutputs(state, page, previousPage)
-  if (serverOption(state.config, 'lastEdit')) {
-    await writeLastEditCache(state.cacheDir, state.lastEditCache)
-  }
-
-  const globalChanges = await refreshGlobalOutputs(state)
-  const allChanges = [...changed, ...globalChanges]
-  for (const file of allChanges) {
-    console.warn(devFileMessage('Updated', file))
-  }
+      reject(new Error(`Build failed with ${signal || `exit code ${code}`}.`))
+    })
+  })
 }
 
-function createDevRunner(state: DevState, onSuccess: (reason: string) => void) {
+function createBuildRunner(buildOptions: BuildOptions, onSuccess: () => void) {
   let building = false
   let pendingReason = ''
 
@@ -1043,14 +395,12 @@ function createDevRunner(state: DevState, onSuccess: (reason: string) => void) {
     pendingReason = ''
 
     try {
-      if (reason === 'initial') {
-        await rebuildFull(state, reason)
-      } else if (isMarkdownFile(path.resolve(workingRoot, reason))) {
-        await rebuildMarkdown(state, reason)
-      } else {
-        await rebuildFull(state, reason)
-      }
-      onSuccess(reason)
+      await runBuild({
+        ...buildOptions,
+        buildReason: reason,
+        reportMode: 'dev',
+      })
+      onSuccess()
     } catch (error) {
       console.error(error)
     } finally {
@@ -1184,19 +534,23 @@ export async function dev({
   host = '127.0.0.1',
   port = 3333,
 }: DevOptions = {}): Promise<void> {
-  const state = await loadDevState({
-    inputDir,
-    outputDir,
-    assetsDir,
-    configDir,
-    layoutsDir,
-    componentsDir,
-  })
+  const buildOptions: BuildOptions = {
+    inputDir: resolveDir(inputDir, defaultInputDir),
+    outputDir: resolveDir(outputDir, defaultOutputDir),
+    assetsDir: resolveDir(assetsDir, defaultAssetsDir),
+    configDir: resolveDir(configDir, defaultConfigDir),
+    layoutsDir: resolveDir(layoutsDir, defaultLayoutsDir),
+    componentsDir: resolveDir(componentsDir, defaultComponentsDir),
+  }
+  const clientDir = path.join(
+    path.dirname(buildOptions.configDir || ''),
+    'client'
+  )
   const version = await loadPackageVersion()
   const devPort = await findAvailablePort(host, port)
-  const devServer = createDevServer(state.outputDir)
+  const devServer = createDevServer(buildOptions.outputDir || defaultOutputDir)
   const address = `http://${host}:${devPort}/`
-  const rebuild = createDevRunner(state, () => {
+  const rebuild = createBuildRunner(buildOptions, () => {
     console.warn(green(devServerMemoryMessage()))
     console.warn(green(devServerAddressMessage(version, address)))
     devServer.reload()
@@ -1215,19 +569,22 @@ export async function dev({
   await rebuild('initial')
   const closeWatchers = await watchProject(
     [
-      inputDir,
-      assetsDir,
-      configDir,
-      layoutsDir,
-      componentsDir,
-      state.clientDir,
+      buildOptions.inputDir || defaultInputDir,
+      buildOptions.assetsDir || defaultAssetsDir,
+      buildOptions.configDir || defaultConfigDir,
+      buildOptions.layoutsDir || defaultLayoutsDir,
+      buildOptions.componentsDir || defaultComponentsDir,
+      clientDir,
       path.join(packageRoot, 'src'),
     ],
-    [state.outputDir],
+    [buildOptions.outputDir || defaultOutputDir],
     debouncedRebuild
   )
 
   const close = async () => {
+    if (activeBuildChild && !activeBuildChild.killed) {
+      activeBuildChild.kill('SIGTERM')
+    }
     await closeWatchers()
     await devServer.close()
     await new Promise<void>((resolve) =>
@@ -1237,20 +594,31 @@ export async function dev({
 
   process.once('SIGINT', () => {
     close()
-      .catch((error) => console.error(error))
-      .finally(() => process.exit(0))
+      .then(() => {
+        process.exitCode = 0
+      })
+      .catch((error) => {
+        console.error(error)
+        process.exitCode = 1
+      })
   })
+
   process.once('SIGTERM', () => {
     close()
-      .catch((error) => console.error(error))
-      .finally(() => process.exit(0))
+      .then(() => {
+        process.exitCode = 0
+      })
+      .catch((error) => {
+        console.error(error)
+        process.exitCode = 1
+      })
   })
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   dev({
-    inputDir: process.argv[2],
-    outputDir: process.argv[3],
+    inputDir: resolveDir(process.argv[2], defaultInputDir),
+    outputDir: resolveDir(process.argv[3], defaultOutputDir),
   }).catch((error) => {
     console.error(error)
     process.exitCode = 1

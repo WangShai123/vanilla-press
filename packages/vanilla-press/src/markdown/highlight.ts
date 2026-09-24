@@ -24,6 +24,7 @@ const DEFAULT_SHIKI_THEMES: CodeHighlightThemes = {
   light: 'github-light-default',
   dark: 'github-dark-default',
 }
+const DEFAULT_SHIKI_LANGUAGES = ['markdown', 'md'] satisfies BundledLanguage[]
 
 const languageLabels = new Map<string, string>()
 
@@ -344,6 +345,21 @@ function highlighterCacheKey(themes: CodeHighlightThemes): string {
   return `${themes.light}\n${themes.dark}`
 }
 
+function languageExists(language: string): language is BundledLanguage {
+  return Object.hasOwn(bundledLanguages, language)
+}
+
+function highlighterLanguages(languages: string[] = []): BundledLanguage[] {
+  const result = new Set<BundledLanguage>(DEFAULT_SHIKI_LANGUAGES)
+
+  for (const value of languages) {
+    const language = normalizeLanguage(value)
+    if (language && languageExists(language)) result.add(language)
+  }
+
+  return Array.from(result).sort()
+}
+
 async function createCodeHighlighter(
   themes: CodeHighlightThemes
 ): Promise<CodeHighlighter> {
@@ -351,7 +367,7 @@ async function createCodeHighlighter(
     return {
       highlighter: await createHighlighter({
         themes: Object.values(value),
-        langs: Object.keys(bundledLanguages) as BundledLanguage[],
+        langs: DEFAULT_SHIKI_LANGUAGES,
       }),
       themes: value,
     }
@@ -388,10 +404,22 @@ async function createCodeHighlighter(
   }
 }
 
+async function loadMissingLanguages(
+  highlighter: Highlighter,
+  languages: BundledLanguage[]
+): Promise<void> {
+  const loaded = new Set(highlighter.getLoadedLanguages())
+  const missing = languages.filter((language) => !loaded.has(language))
+
+  if (missing.length) await highlighter.loadLanguage(...missing)
+}
+
 async function getHighlighter(
-  config: RuntimeConfig = {}
+  config: RuntimeConfig = {},
+  languages: string[] = []
 ): Promise<CodeHighlighter> {
   const themes = highlightThemes(config)
+  const shikiLanguages = highlighterLanguages(languages)
   const cacheKey = highlighterCacheKey(themes)
   let highlighter = highlighterCache.get(cacheKey)
 
@@ -400,14 +428,17 @@ async function getHighlighter(
     highlighterCache.set(cacheKey, highlighter)
   }
 
-  return highlighter
+  const result = await highlighter
+  await loadMissingLanguages(result.highlighter, shikiLanguages)
+  return result
 }
 
 export async function installCodeHighlight(
   md: MarkdownItType,
-  config: RuntimeConfig = {}
+  config: RuntimeConfig = {},
+  languages: string[] = []
 ): Promise<void> {
-  const { highlighter, themes } = await getHighlighter(config)
+  const { highlighter, themes } = await getHighlighter(config, languages)
 
   md.use(
     fromHighlighter(highlighter, {
