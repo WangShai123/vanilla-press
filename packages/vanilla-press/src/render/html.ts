@@ -27,6 +27,7 @@ import { renderRuntimeScript } from './template/runtime.ts'
 interface RenderHtmlOptions {
   title: string
   seo: SeoData
+  frontmatterTitle?: boolean
   body: string
   rel: string
   components: string[]
@@ -116,6 +117,7 @@ function delayScript(code: string, delay = 500): string {
 export function renderHtml({
   title,
   seo,
+  frontmatterTitle = false,
   body,
   rel,
   components,
@@ -149,7 +151,9 @@ export function renderHtml({
       ? i18nRedirectBootScript(i18n, languages)
       : ''
   const htmlLang = resolveHtmlLang(rel, config, languages)
-  const htmlTitle = documentTitle(seo?.title || title, config, rel)
+  const htmlTitle = documentTitle(seo?.title || title, config, rel, {
+    exact: frontmatterTitle,
+  })
   const importMapHtml = renderImportMap(importMap)
   const pageScripts = renderPageScripts(rel, scripts)
   const clientScriptTags = renderPageScripts(rel, clientScripts)

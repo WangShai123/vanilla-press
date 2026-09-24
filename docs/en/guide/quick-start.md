@@ -1,3 +1,8 @@
+---
+keywords: Quick Start, vanilla-press
+description: Introduce Vanilla Press features, installation, build, and project structure.
+---
+
 # Quick Start
 
 `vanilla-press` is a lightweight, flexible, and highly customizable static documentation generator.

@@ -1,6 +1,6 @@
 ---
 layout: home
-title: Home
+title: Vanilla Press
 keywords: vanilla-press, markdown-it, static documentation generator
 description: vanilla-press is a lightweight, elegant, flexible, and highly customizable static documentation generator.
 layouts:

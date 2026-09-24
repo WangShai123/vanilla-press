@@ -1,3 +1,8 @@
+---
+keywords: home layout, vanilla-press
+description: Introduce Vanilla Press homepage layout example.
+---
+
 # Home Layout
 
 `home` is the homepage layout example provided by VanillaPress. It shows how to drive a freer page structure from frontmatter. It reuses the shared responsive site header through `{{{ slots.header }}}` inside `.vp-header`. The built-in template and styles are shipped by the installed `vanilla-press` package.

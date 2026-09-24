@@ -1,3 +1,8 @@
+---
+keywords: 布局 API, vanilla-press
+description: 介绍 Vanilla Press 布局 API。
+---
+
 # 布局 API
 
 布局用于控制一个 Markdown 页面最终输出的 HTML 外壳。

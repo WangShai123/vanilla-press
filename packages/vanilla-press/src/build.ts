@@ -1708,6 +1708,7 @@ export function renderSource(
     html: renderHtml({
       title: source.title,
       seo: source.seo,
+      frontmatterTitle: Boolean(source.seo?.title),
       body,
       rel: source.rel,
       components,

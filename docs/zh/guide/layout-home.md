@@ -1,3 +1,8 @@
+---
+keywords: 首页布局, vanilla-press
+description: 介绍 Vanilla Press 首页布局示例。
+---
+
 # 首页布局
 
 `home` 是 VanillaPress 提供的首页布局示例，用于展示如何通过 frontmatter 驱动一个更自由的页面结构。它在 `.vp-header` 内通过 `{{{ slots.header }}}` 复用站点通用响应式 header。内置模板和样式由已安装的 `vanilla-press` 依赖包提供。

@@ -1,3 +1,8 @@
+---
+keywords: Layout API, vanilla-press
+description: Introduce Vanilla Press layout API.
+---
+
 # Layout API
 
 Layouts control the final HTML shell generated for a Markdown page.

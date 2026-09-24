@@ -1,3 +1,8 @@
+---
+keywords: 快速开始, vanilla-press
+description: 介绍 Vanilla Press 功能特性、安装、构建、项目架构等。
+---
+
 # 快速开始
 
 `vanilla-press` 是一款轻量、自由、高可定制的静态文档生成器。

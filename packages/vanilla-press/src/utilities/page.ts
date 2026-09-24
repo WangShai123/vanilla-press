@@ -51,10 +51,12 @@ export function isHomePageRel(
 export function documentTitle(
   title: unknown,
   config: RuntimeConfig = {},
-  rel?: unknown
+  rel?: unknown,
+  options: { exact?: boolean } = {}
 ): string {
   const pageTitleValue = toText(title).trim()
   const siteName = normalizeSiteName(config)
+  if (options.exact && pageTitleValue) return pageTitleValue
   if (rel !== undefined && isHomePageRel(rel, config)) return siteName
   return pageTitleValue ? `${pageTitleValue} - ${siteName}` : siteName
 }

@@ -22,7 +22,7 @@ function renderSeoMeta(seo: SeoData = {}): string {
     .map((name) => {
       const content = toText(seo[name]).trim()
       return content
-        ? `  <meta name="${name}" content="${escapeHtml(content)}" data-vp-seo="${name}">`
+        ? `  <meta name="${name}" content="${escapeHtml(content)}">`
         : ''
     })
     .filter(Boolean)

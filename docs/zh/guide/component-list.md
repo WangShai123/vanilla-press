@@ -1,3 +1,8 @@
+---
+keywords: 组件, vanilla-press, tabs, accordion, offcanvas, tip, tree, details, group, badge
+description: 介绍 Vanilla Press 内置组件，包含 Tabs、Accordion、Offcanvas、Tip、Tree、Details、Group、Badge 等。
+---
+
 # 组件
 
 `vanilla-press` 内置组件是基于 `vanilla-jui` 的一套 Markdown 容器组件，主要用于文档页面排版与交互增强。

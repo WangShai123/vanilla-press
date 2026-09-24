@@ -43,4 +43,4 @@ npm run dev
 
 ## 预览
 
-[在线预览](https://www.jealer.com/docs/vanilla-press/)
+[在线预览](https://app.jealer.com/zh/vanilla-press/)
