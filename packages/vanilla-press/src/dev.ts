@@ -1,14 +1,74 @@
-import { spawn, type ChildProcess } from 'child_process'
+import { createHash } from 'crypto'
 import { createReadStream, watch, type FSWatcher } from 'fs'
 import fs from 'fs/promises'
 import http, { type ServerResponse } from 'http'
 import path from 'path'
-import { fileURLToPath, pathToFileURL } from 'url'
+import { fileURLToPath } from 'url'
 
+import { glob } from 'glob'
 import { WebSocket, WebSocketServer } from 'ws'
 
-import type { BuildOptions } from './types.ts'
-import { toPosix } from './utilities/path.ts'
+import {
+  buildClientAssets,
+  buildComponentScripts,
+  buildCss,
+  buildLayoutScripts,
+  buildRuntime,
+  copyStaticAssets,
+  createRuntimeSidebarConfig,
+  ensureSourceConfig,
+  loadDirectorySidebarItems,
+  loadFooterScript,
+  loadLanguages,
+  loadLastEditCache,
+  loadLlmsConfig,
+  loadMenuItems,
+  loadRobotsConfig,
+  loadRuntimeConfig,
+  loadSidebarItems,
+  pageSharedClientModules,
+  readSource,
+  renderSource,
+  resolveI18nData,
+  scanClientEntryAssets,
+  sourceCodeLanguages,
+  validateRuntimeConfig,
+  writeDefaultLocaleEntrypoint,
+  writeLastEditCache,
+  writeLlms,
+  writeRobots,
+  writeSearchIndex,
+  writeSitemap,
+} from './build.ts'
+import { createMarkdown } from './markdown/md.ts'
+import { loadLayouts } from './render/layout.ts'
+import type {
+  BuildOptions,
+  ClientEntryAssets,
+  FooterScriptConfig,
+  LanguagesConfig,
+  LayoutMap,
+  LoadedMarkdownComponent,
+  ModuleScriptAsset,
+  NavItem,
+  RenderedPage,
+  RuntimeConfig,
+  RuntimeSidebar,
+  SharedClientModule,
+  SourcePage,
+  UnknownRecord,
+} from './types.ts'
+import { loadCustomComponents } from './utilities/components.ts'
+import {
+  isI18nEnabled,
+  isLlmsEnabled,
+  isRobotsEnabled,
+  isSearchEnabled,
+  isSitemapEnabled,
+  serverOption,
+} from './utilities/features.ts'
+import { markdownRouteRel } from './utilities/llms.ts'
+import { relativeAsset, toPosix } from './utilities/path.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const packageRoot = path.resolve(__dirname, '..')
@@ -23,7 +83,7 @@ const defaultComponentsDir = path.join(defaultProjectDir, 'components')
 const DEV_PREFIX = '/__vanilla_press_dev/'
 const CLIENT_SCRIPT = `${DEV_PREFIX}client.js`
 const SOCKET_PATH = `${DEV_PREFIX}ws`
-let activeBuildChild: ChildProcess | null = null
+const HASHED_ASSET_RE = /\.[a-f0-9]{8}\.(?:js|css)$/i
 
 export interface DevOptions extends BuildOptions {
   host?: string
@@ -37,6 +97,70 @@ interface WatchContext {
 
 interface PackageJson {
   version?: string
+}
+
+type MarkdownItInstance = Awaited<ReturnType<typeof createMarkdown>>
+type LastEditCache = Awaited<ReturnType<typeof loadLastEditCache>>
+
+interface AssetUpdate {
+  logical: string
+  previous?: string
+  current: string
+}
+
+interface DevManifest {
+  assets: Map<string, string>
+}
+
+interface DevState {
+  inputDir: string
+  outputDir: string
+  publicDir: string
+  assetsDir: string
+  configDir: string
+  layoutsDir: string
+  componentsDir: string
+  cacheDir: string
+  clientDir: string
+  config: RuntimeConfig
+  footerScript: FooterScriptConfig
+  customComponents: LoadedMarkdownComponent[]
+  layouts: LayoutMap
+  languages: LanguagesConfig
+  menuItems: unknown[]
+  sidebarItems: unknown[]
+  runtimeSidebarItems: RuntimeSidebar
+  llmsConfig: UnknownRecord
+  robotsConfig: UnknownRecord
+  md: MarkdownItInstance
+  markdownLanguages: string[]
+  lastEditCache: LastEditCache
+  sourceFiles: Map<string, SourcePage>
+  pages: Map<string, RenderedPage>
+  componentScriptAssets: Map<string, ModuleScriptAsset>
+  layoutScriptAssets: Map<string, ModuleScriptAsset>
+  clientEntryAssets: ClientEntryAssets
+  sharedClientModules: SharedClientModule[]
+  hasRootIndex: boolean
+  manifest: DevManifest
+}
+
+interface DevServer {
+  server: http.Server
+  send(message: unknown): void
+  reload(): void
+  style(updates: AssetUpdate[]): void
+  close(): Promise<void>
+}
+
+interface ResolvedBuildOptions {
+  inputDir: string
+  outputDir: string
+  assetsDir: string
+  configDir: string
+  cacheDir: string
+  layoutsDir: string
+  componentsDir: string
 }
 
 const mimeTypes: Record<string, string> = {
@@ -174,6 +298,40 @@ async function findAvailablePort(
   return nextPort
 }
 
+function rootPath(rel: string): string {
+  return `/${toPosix(rel).replace(/^\/+/, '')}`
+}
+
+function contentHash(value: Buffer | string): string {
+  return createHash('sha256').update(value).digest('hex').slice(0, 8)
+}
+
+function hashRel(logicalRel: string, hash: string): string {
+  const ext = path.posix.extname(logicalRel)
+  const base = logicalRel.slice(0, -ext.length)
+  return `${base}.${hash}${ext}`
+}
+
+function isHashableAsset(rel: string): boolean {
+  return /\.(?:js|css)$/i.test(rel) && !HASHED_ASSET_RE.test(rel)
+}
+
+function sameList(a: string[] = [], b: string[] = []): boolean {
+  return a.length === b.length && a.every((item, index) => item === b[index])
+}
+
+function pageList(state: DevState): RenderedPage[] {
+  return Array.from(state.pages.values()).sort((a, b) =>
+    a.rel.localeCompare(b.rel)
+  )
+}
+
+function sourceList(state: DevState): SourcePage[] {
+  return Array.from(state.sourceFiles.values()).sort((a, b) =>
+    a.rel.localeCompare(b.rel)
+  )
+}
+
 async function findStaticFile(
   outputDir: string,
   requestPath: string
@@ -203,7 +361,7 @@ async function findStaticFile(
   return null
 }
 
-function reloadClientScript(): string {
+function devClientScript(): string {
   return `const path = ${JSON.stringify(SOCKET_PATH)};
 const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
 const url = protocol + '//' + location.host + path;
@@ -217,6 +375,36 @@ const close = () => {
   if (socket && socket.readyState < 2) socket.close();
 };
 
+const normalizePath = (value) => {
+  try {
+    return new URL(value, location.href).pathname;
+  } catch {
+    return value;
+  }
+};
+
+const updateStyles = (updates) => {
+  let updated = false;
+  for (const item of updates || []) {
+    const previous = normalizePath(item.previous || item.logical || '');
+    const current = normalizePath(item.current || '');
+    const logical = normalizePath(item.logical || '');
+    const link = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).find((el) => {
+      const href = normalizePath(el.getAttribute('href') || el.href);
+      return href === previous || href === logical;
+    });
+
+    if (!link || !current) continue;
+    const next = link.cloneNode();
+    next.href = current + (current.includes('?') ? '&' : '?') + 't=' + Date.now();
+    next.addEventListener('load', () => link.remove(), { once: true });
+    link.after(next);
+    updated = true;
+  }
+
+  if (!updated) location.reload();
+};
+
 const connect = () => {
   if (closed) return;
   socket = new WebSocket(url);
@@ -227,7 +415,12 @@ const connect = () => {
     } catch {
       return;
     }
-    if (message && message.type === 'reload') {
+    if (!message || typeof message.type !== 'string') return;
+    if (message.type === 'style') {
+      updateStyles(message.updates);
+      return;
+    }
+    if (message.type === 'reload') {
       close();
       location.reload();
     }
@@ -244,7 +437,7 @@ connect();
 `
 }
 
-function injectReloadClient(html: string): string {
+function injectDevClient(html: string): string {
   const script = `<script type="module" src="${CLIENT_SCRIPT}"></script>`
   return /<\/body>/i.test(html)
     ? html.replace(/<\/body>/i, `${script}</body>`)
@@ -285,7 +478,7 @@ async function serveStatic(
       'Cache-Control': 'no-store',
       'Content-Type': type,
     })
-    res.end(injectReloadClient(html))
+    res.end(injectDevClient(html))
     return
   }
 
@@ -296,7 +489,7 @@ async function serveStatic(
   createReadStream(file).pipe(res)
 }
 
-function createDevServer(outputDir: string) {
+function createDevServer(outputDir: string): DevServer {
   const server = http.createServer((req, res) => {
     const url = new URL(req.url || '/', 'http://localhost')
 
@@ -305,7 +498,7 @@ function createDevServer(outputDir: string) {
         'Cache-Control': 'no-store',
         'Content-Type': 'text/javascript; charset=utf-8',
       })
-      res.end(reloadClientScript())
+      res.end(devClientScript())
       return
     }
 
@@ -316,10 +509,10 @@ function createDevServer(outputDir: string) {
   })
   const webSocketServer = new WebSocketServer({ server, path: SOCKET_PATH })
 
-  return {
+  const api: DevServer = {
     server,
-    reload() {
-      const message = JSON.stringify({ type: 'reload' })
+    send(message: unknown) {
+      const payload = JSON.stringify(message)
 
       for (const client of webSocketServer.clients) {
         if (client.readyState !== WebSocket.OPEN) {
@@ -327,8 +520,21 @@ function createDevServer(outputDir: string) {
           continue
         }
 
-        client.send(message)
+        client.send(payload)
       }
+    },
+    reload() {
+      api.send({ type: 'reload' })
+    },
+    style(updates: AssetUpdate[]) {
+      api.send({
+        type: 'style',
+        updates: updates.map((item) => ({
+          logical: rootPath(item.logical),
+          previous: rootPath(item.previous || item.logical),
+          current: rootPath(item.current),
+        })),
+      })
     },
     close(): Promise<void> {
       for (const client of webSocketServer.clients) {
@@ -343,92 +549,755 @@ function createDevServer(outputDir: string) {
       })
     },
   }
+
+  return api
 }
 
-function buildModuleFile(): string {
-  const current = fileURLToPath(import.meta.url)
-  const ext = path.extname(current) || '.js'
-  return path.join(__dirname, `build${ext}`)
+async function writeTextIfChanged(
+  file: string,
+  text: string
+): Promise<boolean> {
+  try {
+    if ((await fs.readFile(file, 'utf8')) === text) return false
+  } catch {
+    // New file.
+  }
+
+  await fs.mkdir(path.dirname(file), { recursive: true })
+  await fs.writeFile(file, text, 'utf8')
+  return true
 }
 
-function buildEvalCode(options: BuildOptions): string {
-  return `const mod = await import(${JSON.stringify(pathToFileURL(buildModuleFile()).href)});
-await mod.build(${JSON.stringify(options)});`
+async function removeFileIfExists(file: string): Promise<void> {
+  await fs.rm(file, { force: true }).catch(() => {})
 }
 
-function runBuild(options: BuildOptions): Promise<void> {
-  const child = spawn(
-    process.execPath,
-    ['--input-type=module', '--eval', buildEvalCode(options)],
-    {
-      cwd: workingRoot,
-      stdio: 'inherit',
-    }
+async function hashAsset(
+  state: DevState,
+  logicalRel: string
+): Promise<AssetUpdate | null> {
+  if (!isHashableAsset(logicalRel)) return null
+
+  const sourceFile = path.join(state.outputDir, logicalRel)
+  if (!(await pathExists(sourceFile))) return null
+
+  const bytes = await fs.readFile(sourceFile)
+  const current = hashRel(logicalRel, contentHash(bytes))
+  const previous = state.manifest.assets.get(logicalRel)
+  const targetFile = path.join(state.outputDir, current)
+
+  await fs.mkdir(path.dirname(targetFile), { recursive: true })
+  await fs.writeFile(targetFile, bytes)
+  state.manifest.assets.set(logicalRel, current)
+
+  if (previous && previous !== current) {
+    await removeFileIfExists(path.join(state.outputDir, previous))
+  }
+
+  return previous === current
+    ? null
+    : { logical: logicalRel, previous, current }
+}
+
+async function hashAssets(
+  state: DevState,
+  logicalRels: Iterable<string>
+): Promise<AssetUpdate[]> {
+  const updates: AssetUpdate[] = []
+
+  for (const rel of Array.from(new Set(logicalRels)).sort()) {
+    const update = await hashAsset(state, rel)
+    if (update) updates.push(update)
+  }
+
+  return updates
+}
+
+async function stableClientAssetRels(state: DevState): Promise<string[]> {
+  const files = await glob('public/client/**/*.{js,css}', {
+    cwd: state.outputDir,
+    nodir: true,
+    windowsPathsNoEscape: true,
+  }).catch(() => [])
+
+  return files
+    .map(toPosix)
+    .filter((file) => !HASHED_ASSET_RE.test(file))
+    .sort((a, b) => a.localeCompare(b))
+}
+
+async function stableSearchAssetRels(state: DevState): Promise<string[]> {
+  const files = await glob('search*.js', {
+    cwd: state.publicDir,
+    nodir: true,
+    windowsPathsNoEscape: true,
+  }).catch(() => [])
+
+  return files
+    .map((file) => `public/${toPosix(file)}`)
+    .filter((file) => !HASHED_ASSET_RE.test(file))
+    .sort((a, b) => a.localeCompare(b))
+}
+
+function applyManifestToHtml(
+  state: DevState,
+  pageRel: string,
+  html: string
+): string {
+  let next = html
+
+  for (const [logical, hashed] of state.manifest.assets) {
+    next = next
+      .split(relativeAsset(pageRel, logical))
+      .join(relativeAsset(pageRel, hashed))
+  }
+
+  return next
+}
+
+async function writePageOutput(
+  state: DevState,
+  page: RenderedPage
+): Promise<void> {
+  const outputFile = path.join(state.outputDir, page.rel)
+  await writeTextIfChanged(
+    outputFile,
+    applyManifestToHtml(state, page.rel, page.html)
   )
-  activeBuildChild = child
-
-  return new Promise((resolve, reject) => {
-    child.once('error', reject)
-    child.once('exit', (code, signal) => {
-      if (activeBuildChild === child) activeBuildChild = null
-      if (code === 0) {
-        resolve()
-        return
-      }
-
-      reject(new Error(`Build failed with ${signal || `exit code ${code}`}.`))
-    })
-  })
 }
 
-function createBuildRunner(buildOptions: BuildOptions, onSuccess: () => void) {
-  let building = false
-  let pendingReason = ''
+async function writeMarkdownRoute(
+  state: DevState,
+  page: RenderedPage
+): Promise<void> {
+  if (!isLlmsEnabled(state.config)) return
 
-  async function run(reason: string): Promise<void> {
-    if (building) {
-      pendingReason = reason
-      return
+  const outputFile = path.join(state.outputDir, markdownRouteRel(page))
+  await writeTextIfChanged(outputFile, page.markdown)
+}
+
+async function writeAllPageOutputs(state: DevState): Promise<void> {
+  await Promise.all(
+    pageList(state).map(async (page) => {
+      await writePageOutput(state, page)
+      await writeMarkdownRoute(state, page)
+    })
+  )
+}
+
+async function rewriteDefaultLocaleEntrypoint(state: DevState): Promise<void> {
+  const indexFile = path.join(state.outputDir, 'index.html')
+  if (!(await pathExists(indexFile))) return
+
+  const html = await fs.readFile(indexFile, 'utf8')
+  await writeTextIfChanged(
+    indexFile,
+    applyManifestToHtml(state, 'index.html', html)
+  )
+}
+
+function renderPage(state: DevState, source: SourcePage): RenderedPage {
+  return renderSource(
+    source,
+    state.md,
+    state.config,
+    state.languages,
+    state.menuItems as NavItem[],
+    state.runtimeSidebarItems,
+    state.layouts,
+    state.componentScriptAssets,
+    state.layoutScriptAssets,
+    state.clientEntryAssets,
+    state.llmsConfig,
+    state.footerScript,
+    state.lastEditCache,
+    state.hasRootIndex
+  )
+}
+
+function setPage(state: DevState, source: SourcePage): RenderedPage {
+  const page = renderPage(state, source)
+  state.sourceFiles.set(source.file, source)
+  state.pages.set(source.file, page)
+  return page
+}
+
+async function loadSourceFile(
+  state: Pick<DevState, 'inputDir'>,
+  file: string
+): Promise<SourcePage> {
+  const markdown = await fs.readFile(path.join(state.inputDir, file), 'utf8')
+  return readSource(file, markdown)
+}
+
+async function loadAllSources(
+  inputDir: string
+): Promise<Map<string, SourcePage>> {
+  const files = (
+    await glob('**/*.md', {
+      cwd: inputDir,
+      nodir: true,
+      windowsPathsNoEscape: true,
+    })
+  ).sort()
+  const entries = await Promise.all(
+    files.map(
+      async (file) => [file, await loadSourceFile({ inputDir }, file)] as const
+    )
+  )
+
+  return new Map(entries)
+}
+
+async function loadConfigState(state: DevState): Promise<void> {
+  await ensureSourceConfig(state.configDir)
+  state.config = await loadRuntimeConfig(state.configDir)
+  validateRuntimeConfig(state.config)
+  state.footerScript = await loadFooterScript(state.configDir)
+  state.customComponents = await loadCustomComponents(state.componentsDir)
+  state.layouts = await loadLayouts({
+    packageRoot,
+    layoutsDir: state.layoutsDir,
+  })
+  state.languages = isI18nEnabled(state.config)
+    ? resolveI18nData(state.config, await loadLanguages(state.configDir))
+    : {}
+  state.menuItems = await loadMenuItems(state.configDir)
+  state.sidebarItems = await loadSidebarItems(state.configDir)
+  const directorySidebarItems = await loadDirectorySidebarItems(state.inputDir)
+  state.runtimeSidebarItems = createRuntimeSidebarConfig(
+    state.sidebarItems,
+    directorySidebarItems
+  )
+  state.llmsConfig = isLlmsEnabled(state.config)
+    ? await loadLlmsConfig(state.configDir)
+    : {}
+  state.robotsConfig = isRobotsEnabled(state.config)
+    ? await loadRobotsConfig(state.configDir)
+    : {}
+  state.lastEditCache = serverOption(state.config, 'lastEdit')
+    ? await loadLastEditCache(state.cacheDir)
+    : {}
+}
+
+async function refreshMarkdownRenderer(state: DevState): Promise<boolean> {
+  const languages = sourceCodeLanguages(sourceList(state))
+  if (state.md && sameList(languages, state.markdownLanguages)) return false
+
+  state.markdownLanguages = languages
+  state.md = await createMarkdown(
+    state.config,
+    state.customComponents,
+    languages
+  )
+  return true
+}
+
+async function rebuildStyle(state: DevState): Promise<AssetUpdate[]> {
+  await buildCss(state.publicDir, state.layouts)
+  return hashAssets(state, ['public/styles.css'])
+}
+
+async function rebuildRuntime(
+  state: DevState,
+  force = false
+): Promise<AssetUpdate[]> {
+  const sharedClientModules = pageSharedClientModules(pageList(state))
+  if (!force && sameList(sharedClientModules, state.sharedClientModules)) {
+    return []
+  }
+
+  state.sharedClientModules = sharedClientModules
+  await buildRuntime(state.publicDir, {
+    config: state.config,
+    languages: state.languages,
+    menuItems: state.menuItems,
+    sidebarItems: state.runtimeSidebarItems,
+    sharedClientModules,
+  })
+  return hashAssets(state, ['public/runtime.js'])
+}
+
+async function rebuildClientAssets(
+  state: DevState,
+  pages: RenderedPage[]
+): Promise<AssetUpdate[]> {
+  await buildClientAssets(state.outputDir, state.clientDir, pages, state.config)
+  return hashAssets(state, await stableClientAssetRels(state))
+}
+
+async function writeGlobalOutputs(state: DevState): Promise<AssetUpdate[]> {
+  if (isSearchEnabled(state.config)) {
+    await writeSearchIndex(
+      state.publicDir,
+      pageList(state),
+      state.config,
+      state.languages
+    )
+  }
+  if (isSitemapEnabled(state.config)) {
+    await writeSitemap(state.outputDir, pageList(state), state.config)
+  }
+  if (isLlmsEnabled(state.config)) {
+    await writeLlms(
+      state.outputDir,
+      pageList(state),
+      state.config,
+      state.llmsConfig
+    )
+  }
+  if (isRobotsEnabled(state.config)) {
+    await writeRobots(state.outputDir, state.robotsConfig)
+  }
+  if (serverOption(state.config, 'lastEdit')) {
+    await fs.mkdir(state.cacheDir, { recursive: true })
+    await writeLastEditCache(state.cacheDir, state.lastEditCache)
+  }
+
+  return hashAssets(state, await stableSearchAssetRels(state))
+}
+
+async function writeDefaultEntrypoint(state: DevState): Promise<void> {
+  await writeDefaultLocaleEntrypoint(
+    state.outputDir,
+    state.config,
+    state.languages,
+    pageList(state),
+    state.footerScript
+  )
+  await rewriteDefaultLocaleEntrypoint(state)
+}
+
+async function renderAllPages(state: DevState): Promise<RenderedPage[]> {
+  state.hasRootIndex = sourceList(state).some(
+    (source) => source.rel === 'index.html'
+  )
+  const pages = sourceList(state).map((source) => {
+    const page = renderPage(state, source)
+    state.pages.set(source.file, page)
+    return page
+  })
+  return pages
+}
+
+async function createInitialState(
+  options: ResolvedBuildOptions
+): Promise<DevState> {
+  const publicDir = path.join(options.outputDir, 'public')
+  const state: DevState = {
+    inputDir: options.inputDir,
+    outputDir: options.outputDir,
+    publicDir,
+    assetsDir: options.assetsDir,
+    configDir: options.configDir,
+    layoutsDir: options.layoutsDir,
+    componentsDir: options.componentsDir,
+    cacheDir: options.cacheDir,
+    clientDir: path.join(path.dirname(options.configDir), 'client'),
+    config: {},
+    footerScript: '',
+    customComponents: [],
+    layouts: new Map(),
+    languages: {},
+    menuItems: [],
+    sidebarItems: [],
+    runtimeSidebarItems: [],
+    llmsConfig: {},
+    robotsConfig: {},
+    md: undefined as unknown as MarkdownItInstance,
+    markdownLanguages: [],
+    lastEditCache: {},
+    sourceFiles: new Map(),
+    pages: new Map(),
+    componentScriptAssets: new Map(),
+    layoutScriptAssets: new Map(),
+    clientEntryAssets: { scripts: new Map(), styles: new Map() },
+    sharedClientModules: [],
+    hasRootIndex: false,
+    manifest: { assets: new Map() },
+  }
+
+  await fs.mkdir(options.inputDir, { recursive: true })
+  await fs.mkdir(options.assetsDir, { recursive: true })
+  await fs.mkdir(options.layoutsDir, { recursive: true })
+  await fs.mkdir(options.componentsDir, { recursive: true })
+  await fs.mkdir(state.clientDir, { recursive: true })
+  await fs.rm(options.outputDir, { force: true, recursive: true })
+  await fs.mkdir(publicDir, { recursive: true })
+  await loadConfigState(state)
+  state.sourceFiles = await loadAllSources(options.inputDir)
+  await refreshMarkdownRenderer(state)
+  await copyStaticAssets(options.assetsDir, publicDir)
+  await rebuildStyle(state)
+  state.componentScriptAssets = await buildComponentScripts(
+    options.outputDir,
+    state.customComponents
+  )
+  state.layoutScriptAssets = await buildLayoutScripts(
+    options.outputDir,
+    state.layouts,
+    state.config
+  )
+  state.clientEntryAssets = await scanClientEntryAssets(
+    state.clientDir,
+    state.config
+  )
+  const pages = await renderAllPages(state)
+  await rebuildRuntime(state, true)
+  await rebuildClientAssets(state, pages)
+  await writeGlobalOutputs(state)
+  await writeAllPageOutputs(state)
+  await writeDefaultEntrypoint(state)
+
+  return state
+}
+
+function pageUsesClientImport(
+  page: RenderedPage,
+  predicate: (specifier: string) => boolean
+): boolean {
+  return [
+    ...(page.layoutScript?.clientImports || []),
+    ...page.clientEntries.flatMap((entry) => entry.clientImports || []),
+  ].some((item) => predicate(item.specifier))
+}
+
+function pagesForClientFile(state: DevState, file: string): RenderedPage[] {
+  const resolved = path.resolve(file)
+  const entryNames = new Set<string>()
+
+  for (const [name, asset] of state.clientEntryAssets.scripts) {
+    if (path.resolve(asset.file) === resolved) entryNames.add(name)
+  }
+  for (const [name, asset] of state.clientEntryAssets.styles) {
+    if (path.resolve(asset.file) === resolved) entryNames.add(name)
+  }
+
+  if (entryNames.size) {
+    return pageList(state).filter((page) =>
+      [...page.clientEntries, ...page.clientStyles].some((entry) =>
+        entryNames.has(entry.name)
+      )
+    )
+  }
+
+  if (isSameOrInside(path.join(state.clientDir, 'modules'), resolved)) {
+    const rel = toPosix(
+      path.relative(path.join(state.clientDir, 'modules'), resolved)
+    ).replace(/\.(?:ts|js)$/i, '')
+    const specifier = `vanilla-press/client/modules/${rel}`
+    return pageList(state).filter((page) =>
+      pageUsesClientImport(page, (item) => item === specifier)
+    )
+  }
+
+  if (isSameOrInside(state.clientDir, resolved)) {
+    return pageList(state).filter((page) =>
+      pageUsesClientImport(page, (item) => item === 'vanilla-press/client')
+    )
+  }
+
+  return pageList(state)
+}
+
+function clientChangeIsStyleOnly(state: DevState, file: string): boolean {
+  const resolved = path.resolve(file)
+  return Array.from(state.clientEntryAssets.styles.values()).some(
+    (asset) => path.resolve(asset.file) === resolved
+  )
+}
+
+async function updatePages(
+  state: DevState,
+  pages: RenderedPage[],
+  options: { writeAll?: boolean } = {}
+): Promise<{
+  runtimeUpdates: AssetUpdate[]
+  clientUpdates: AssetUpdate[]
+  globalUpdates: AssetUpdate[]
+}> {
+  const clientUpdates = await rebuildClientAssets(state, pages)
+  const runtimeUpdates = await rebuildRuntime(state)
+  const globalUpdates = await writeGlobalOutputs(state)
+
+  if (options.writeAll || runtimeUpdates.length || globalUpdates.length) {
+    await writeAllPageOutputs(state)
+    await writeDefaultEntrypoint(state)
+  } else {
+    await Promise.all(
+      pages.map(async (page) => {
+        await writePageOutput(state, page)
+        await writeMarkdownRoute(state, page)
+      })
+    )
+  }
+
+  return { runtimeUpdates, clientUpdates, globalUpdates }
+}
+
+async function rebuildEverything(
+  state: DevState,
+  reason: string
+): Promise<void> {
+  console.warn(`dev: rebuild shell (${reason})`)
+  await loadConfigState(state)
+  state.sourceFiles = await loadAllSources(state.inputDir)
+  await refreshMarkdownRenderer(state)
+  await copyStaticAssets(state.assetsDir, state.publicDir)
+  const styleUpdates = await rebuildStyle(state)
+  state.componentScriptAssets = await buildComponentScripts(
+    state.outputDir,
+    state.customComponents
+  )
+  state.layoutScriptAssets = await buildLayoutScripts(
+    state.outputDir,
+    state.layouts,
+    state.config
+  )
+  state.clientEntryAssets = await scanClientEntryAssets(
+    state.clientDir,
+    state.config
+  )
+  const pages = await renderAllPages(state)
+  await rebuildRuntime(state, true)
+  await rebuildClientAssets(state, pages)
+  await writeGlobalOutputs(state)
+  await writeAllPageOutputs(state)
+  await writeDefaultEntrypoint(state)
+  if (styleUpdates.length) {
+    console.warn(`dev: updated ${styleUpdates.length} style asset(s)`)
+  }
+}
+
+async function updateMarkdownFile(
+  state: DevState,
+  changedFile: string
+): Promise<'reload' | 'style'> {
+  const rel = toPosix(path.relative(state.inputDir, changedFile))
+  const exists = await pathExists(changedFile)
+  const previousRoot = state.hasRootIndex
+  const previousSource = state.sourceFiles.get(rel)
+
+  if (!exists) {
+    state.sourceFiles.delete(rel)
+    state.pages.delete(rel)
+    await removeFileIfExists(
+      path.join(
+        state.outputDir,
+        previousSource?.rel || rel.replace(/\.md$/i, '.html')
+      )
+    )
+    await removeFileIfExists(
+      path.join(
+        state.outputDir,
+        previousSource ? markdownRouteRel(previousSource) : rel
+      )
+    )
+  } else {
+    state.sourceFiles.set(rel, await loadSourceFile(state, rel))
+  }
+
+  const mdChanged = await refreshMarkdownRenderer(state)
+  const nextRoot = sourceList(state).some(
+    (source) => source.rel === 'index.html'
+  )
+  const structural = mdChanged || previousRoot !== nextRoot
+  let pages: RenderedPage[] = []
+
+  if (structural) {
+    pages = await renderAllPages(state)
+  } else if (exists) {
+    pages = [setPage(state, state.sourceFiles.get(rel) as SourcePage)]
+  }
+
+  await updatePages(state, pages, { writeAll: structural || !exists })
+  console.warn(
+    `dev: markdown ${exists ? 'updated' : 'removed'} ${rel}; rendered ${
+      structural ? state.pages.size : pages.length
+    } page(s)`
+  )
+  return 'reload'
+}
+
+async function updateClientFile(
+  state: DevState,
+  changedFile: string
+): Promise<{ notify: 'reload' | 'style'; styleUpdates: AssetUpdate[] }> {
+  const styleOnly = clientChangeIsStyleOnly(state, changedFile)
+  const pages = pagesForClientFile(state, changedFile)
+  state.clientEntryAssets = await scanClientEntryAssets(
+    state.clientDir,
+    state.config
+  )
+  const updates = await updatePages(state, pages, { writeAll: false })
+  console.warn(
+    `dev: client asset updated ${toPosix(
+      path.relative(workingRoot, changedFile)
+    )}; rebuilt ${pages.length} page client graph(s)`
+  )
+  return {
+    notify: styleOnly ? 'style' : 'reload',
+    styleUpdates: updates.clientUpdates.filter((item) =>
+      item.logical.endsWith('.css')
+    ),
+  }
+}
+
+async function updateStyleInputs(state: DevState): Promise<AssetUpdate[]> {
+  const updates = await rebuildStyle(state)
+  if (updates.length) {
+    await writeAllPageOutputs(state)
+    await writeDefaultEntrypoint(state)
+  }
+  console.warn(`dev: global style rebuilt (${updates.length} changed asset(s))`)
+  return updates
+}
+
+async function updateRuntimeOnly(state: DevState): Promise<void> {
+  const updates = await rebuildRuntime(state, true)
+  if (updates.length) {
+    await writeAllPageOutputs(state)
+    await writeDefaultEntrypoint(state)
+  }
+  console.warn(`dev: runtime rebuilt (${updates.length} changed asset(s))`)
+}
+
+function isMarkdownChange(state: DevState, file: string): boolean {
+  return isSameOrInside(state.inputDir, file) && /\.md$/i.test(file)
+}
+
+function isDirectorySidebarChange(state: DevState, file: string): boolean {
+  return (
+    isSameOrInside(state.inputDir, file) &&
+    /(?:^|\/)sidebar\.(?:ts|js)$/i.test(toPosix(file))
+  )
+}
+
+function isClientChange(state: DevState, file: string): boolean {
+  return isSameOrInside(state.clientDir, file)
+}
+
+function isAssetChange(state: DevState, file: string): boolean {
+  return isSameOrInside(state.assetsDir, file)
+}
+
+function isStyleSourceChange(file: string): boolean {
+  const rel = toPosix(path.relative(packageRoot, file))
+  return (
+    rel === 'src/style.ts' ||
+    rel === 'src/config/externalStyle.ts' ||
+    rel.startsWith('src/theme-default/styles/')
+  )
+}
+
+function isRuntimeSourceChange(file: string): boolean {
+  const rel = toPosix(path.relative(packageRoot, file))
+  return (
+    rel === 'src/runtime.ts' ||
+    rel.startsWith('src/runtime/') ||
+    rel.startsWith('src/client') ||
+    rel.startsWith('src/utilities/') ||
+    rel.startsWith('src/config/icons')
+  )
+}
+
+async function handleChange(
+  state: DevState,
+  server: DevServer,
+  reason: string
+): Promise<void> {
+  const changedFile = path.resolve(workingRoot, reason)
+  const start = performance.now()
+  let notify: 'reload' | 'style' = 'reload'
+  let styleUpdates: AssetUpdate[] = []
+
+  try {
+    if (isMarkdownChange(state, changedFile)) {
+      notify = await updateMarkdownFile(state, changedFile)
+    } else if (isClientChange(state, changedFile)) {
+      const result = await updateClientFile(state, changedFile)
+      notify = result.notify
+      styleUpdates = result.styleUpdates
+    } else if (isAssetChange(state, changedFile)) {
+      await copyStaticAssets(state.assetsDir, state.publicDir)
+      console.warn(`dev: static assets copied (${reason})`)
+    } else if (isStyleSourceChange(changedFile)) {
+      notify = 'style'
+      styleUpdates = await updateStyleInputs(state)
+    } else if (isRuntimeSourceChange(changedFile)) {
+      await updateRuntimeOnly(state)
+    } else if (
+      isDirectorySidebarChange(state, changedFile) ||
+      isSameOrInside(state.configDir, changedFile) ||
+      isSameOrInside(state.layoutsDir, changedFile) ||
+      isSameOrInside(state.componentsDir, changedFile)
+    ) {
+      await rebuildEverything(state, reason)
+    } else if (isSameOrInside(packageRoot, changedFile)) {
+      await rebuildEverything(state, reason)
+    } else {
+      await rebuildEverything(state, reason)
     }
 
+    if (notify === 'style' && styleUpdates.length) server.style(styleUpdates)
+    else server.reload()
+  } catch (error) {
+    console.error(error)
+  } finally {
+    console.warn(
+      green(
+        `dev: ${reason} complete in ${Math.round(performance.now() - start)}ms`
+      )
+    )
+    console.warn(green(devServerMemoryMessage()))
+  }
+}
+
+function createBuildRunner(
+  state: DevState,
+  server: DevServer
+): (reason: string) => void {
+  let building = false
+  const queue = new Set<string>()
+
+  async function drain(): Promise<void> {
+    if (building) return
     building = true
-    pendingReason = ''
 
     try {
-      await runBuild({
-        ...buildOptions,
-        buildReason: reason,
-        reportMode: 'dev',
-      })
-      onSuccess()
-    } catch (error) {
-      console.error(error)
+      while (queue.size) {
+        const reasons = Array.from(queue)
+        queue.clear()
+
+        for (const reason of reasons) {
+          await handleChange(state, server, reason)
+        }
+      }
     } finally {
       building = false
-
-      if (pendingReason) {
-        const nextReason = pendingReason
-        pendingReason = ''
-        void run(nextReason)
-      }
     }
   }
 
-  return run
+  return (reason) => {
+    queue.add(reason)
+    void drain()
+  }
 }
 
 function createDebouncedRebuild(rebuild: (reason: string) => void) {
   let timer: NodeJS.Timeout | null = null
-  let latestReason = ''
+  const reasons = new Set<string>()
 
   return (reason: string): void => {
-    latestReason = reason
+    reasons.add(reason)
     if (timer) clearTimeout(timer)
 
     timer = setTimeout(() => {
       timer = null
-      rebuild(latestReason)
-    }, 120)
+      const batch = Array.from(reasons)
+      reasons.clear()
+      for (const item of batch) rebuild(item)
+    }, 80)
   }
 }
 
@@ -524,40 +1393,43 @@ async function watchProject(
   }
 }
 
-export async function dev({
+function resolveBuildOptions({
   inputDir = defaultInputDir,
   outputDir = defaultOutputDir,
   assetsDir = defaultAssetsDir,
   configDir = defaultConfigDir,
+  cacheDir,
   layoutsDir = defaultLayoutsDir,
   componentsDir = defaultComponentsDir,
-  host = '127.0.0.1',
-  port = 3333,
-}: DevOptions = {}): Promise<void> {
-  const buildOptions: BuildOptions = {
+}: BuildOptions): ResolvedBuildOptions {
+  const resolvedConfigDir = resolveDir(configDir, defaultConfigDir)
+
+  return {
     inputDir: resolveDir(inputDir, defaultInputDir),
     outputDir: resolveDir(outputDir, defaultOutputDir),
     assetsDir: resolveDir(assetsDir, defaultAssetsDir),
-    configDir: resolveDir(configDir, defaultConfigDir),
+    configDir: resolvedConfigDir,
+    cacheDir: cacheDir
+      ? resolveDir(
+          cacheDir,
+          path.join(path.dirname(resolvedConfigDir), 'cache')
+        )
+      : path.join(path.dirname(resolvedConfigDir), 'cache'),
     layoutsDir: resolveDir(layoutsDir, defaultLayoutsDir),
     componentsDir: resolveDir(componentsDir, defaultComponentsDir),
   }
-  const clientDir = path.join(
-    path.dirname(buildOptions.configDir || ''),
-    'client'
-  )
+}
+
+export async function dev({
+  host = '127.0.0.1',
+  port = 3333,
+  ...rawOptions
+}: DevOptions = {}): Promise<void> {
+  const buildOptions = resolveBuildOptions(rawOptions)
   const version = await loadPackageVersion()
   const devPort = await findAvailablePort(host, port)
-  const devServer = createDevServer(buildOptions.outputDir || defaultOutputDir)
+  const devServer = createDevServer(buildOptions.outputDir)
   const address = `http://${host}:${devPort}/`
-  const rebuild = createBuildRunner(buildOptions, () => {
-    console.warn(green(devServerMemoryMessage()))
-    console.warn(green(devServerAddressMessage(version, address)))
-    devServer.reload()
-  })
-  const debouncedRebuild = createDebouncedRebuild((reason) => {
-    void rebuild(reason)
-  })
 
   await new Promise<void>((resolve, reject) => {
     devServer.server.once('error', reject)
@@ -566,25 +1438,33 @@ export async function dev({
 
   clearScreen()
   console.warn(green(devServerStartMessage(version)))
-  await rebuild('initial')
+  const start = performance.now()
+  const state = await createInitialState(buildOptions)
+  console.warn(
+    green(
+      `dev: initial graph ready in ${Math.round(performance.now() - start)}ms`
+    )
+  )
+  console.warn(green(devServerMemoryMessage()))
+  console.warn(green(devServerAddressMessage(version, address)))
+
+  const rebuild = createBuildRunner(state, devServer)
+  const debouncedRebuild = createDebouncedRebuild(rebuild)
   const closeWatchers = await watchProject(
     [
-      buildOptions.inputDir || defaultInputDir,
-      buildOptions.assetsDir || defaultAssetsDir,
-      buildOptions.configDir || defaultConfigDir,
-      buildOptions.layoutsDir || defaultLayoutsDir,
-      buildOptions.componentsDir || defaultComponentsDir,
-      clientDir,
+      buildOptions.inputDir,
+      buildOptions.assetsDir,
+      buildOptions.configDir,
+      buildOptions.layoutsDir,
+      buildOptions.componentsDir,
+      state.clientDir,
       path.join(packageRoot, 'src'),
     ],
-    [buildOptions.outputDir || defaultOutputDir],
+    [buildOptions.outputDir],
     debouncedRebuild
   )
 
   const close = async () => {
-    if (activeBuildChild && !activeBuildChild.killed) {
-      activeBuildChild.kill('SIGTERM')
-    }
     await closeWatchers()
     await devServer.close()
     await new Promise<void>((resolve) =>

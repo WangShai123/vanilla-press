@@ -265,7 +265,7 @@ export async function loadLlmsConfig(
   )
 }
 
-function validateRuntimeConfig(config: RuntimeConfig = {}): void {
+export function validateRuntimeConfig(config: RuntimeConfig = {}): void {
   assertEditorSizeConfig(config)
 
   const siteUrl = String(config.siteUrl || '').trim()
