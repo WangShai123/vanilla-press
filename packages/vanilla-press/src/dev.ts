@@ -392,6 +392,11 @@ async function removePageCache(state: DevState, file: string): Promise<void> {
   await removeFileIfExists(pageCacheFile(state, file))
 }
 
+async function resetDevPageCache(state: DevState): Promise<void> {
+  await fs.rm(state.pageCacheDir, { force: true, recursive: true })
+  await fs.mkdir(state.pageCacheDir, { recursive: true })
+}
+
 async function readPageCache(
   state: DevState,
   file: string
@@ -1107,8 +1112,7 @@ async function createInitialState(
   await fs.mkdir(options.componentsDir, { recursive: true })
   await fs.mkdir(state.clientDir, { recursive: true })
   await fs.rm(options.outputDir, { force: true, recursive: true })
-  await fs.rm(state.pageCacheDir, { force: true, recursive: true })
-  await fs.mkdir(state.pageCacheDir, { recursive: true })
+  await resetDevPageCache(state)
   await fs.mkdir(publicDir, { recursive: true })
   await loadConfigState(state)
   state.sourceFiles = await loadAllSources(options.inputDir)
