@@ -121,6 +121,7 @@ interface DevState {
   layoutsDir: string
   componentsDir: string
   cacheDir: string
+  pageCacheDir: string
   clientDir: string
   config: RuntimeConfig
   footerScript: FooterScriptConfig
@@ -143,6 +144,15 @@ interface DevState {
   sharedClientModules: SharedClientModule[]
   hasRootIndex: boolean
   manifest: DevManifest
+}
+
+interface DevPageCacheItem {
+  file: string
+  rel: string
+  title: string
+  seo: SourcePage['seo']
+  content: string
+  markdown: string
 }
 
 interface DevServer {
@@ -330,6 +340,78 @@ function sourceList(state: DevState): SourcePage[] {
   return Array.from(state.sourceFiles.values()).sort((a, b) =>
     a.rel.localeCompare(b.rel)
   )
+}
+
+function compactSource(source: SourcePage): SourcePage {
+  return {
+    ...source,
+    markdown: '',
+  }
+}
+
+function compactPage(page: RenderedPage): RenderedPage {
+  return {
+    ...page,
+    markdown: '',
+    body: '',
+    content: '',
+    html: '',
+  }
+}
+
+function pageCacheFile(state: DevState, file: string): string {
+  return path.join(state.pageCacheDir, `.${contentHash(file)}.json`)
+}
+
+async function writePageCache(
+  state: DevState,
+  page: RenderedPage
+): Promise<void> {
+  const item: DevPageCacheItem = {
+    file: page.file,
+    rel: page.rel,
+    title: page.title,
+    seo: page.seo,
+    content: page.content,
+    markdown: page.markdown,
+  }
+
+  await writeTextIfChanged(
+    pageCacheFile(state, page.file),
+    `${JSON.stringify(item)}\n`
+  )
+}
+
+async function removePageCache(state: DevState, file: string): Promise<void> {
+  await removeFileIfExists(pageCacheFile(state, file))
+}
+
+async function readPageCache(
+  state: DevState,
+  file: string
+): Promise<DevPageCacheItem | null> {
+  try {
+    return JSON.parse(
+      await fs.readFile(pageCacheFile(state, file), 'utf8')
+    ) as DevPageCacheItem
+  } catch {
+    return null
+  }
+}
+
+async function globalPageList(state: DevState): Promise<RenderedPage[]> {
+  const pages = await Promise.all(
+    Array.from(state.pages.entries()).map(async ([file, page]) => {
+      const cached = await readPageCache(state, file)
+      return {
+        ...page,
+        content: cached?.content || '',
+        markdown: cached?.markdown || '',
+      }
+    })
+  )
+
+  return pages.sort((a, b) => a.rel.localeCompare(b.rel))
 }
 
 async function findStaticFile(
@@ -676,11 +758,48 @@ async function writeMarkdownRoute(
   await writeTextIfChanged(outputFile, page.markdown)
 }
 
-async function writeAllPageOutputs(state: DevState): Promise<void> {
+async function writeRenderedPageOutputs(
+  state: DevState,
+  pages: RenderedPage[]
+): Promise<void> {
   await Promise.all(
-    pageList(state).map(async (page) => {
+    pages.map(async (page) => {
       await writePageOutput(state, page)
       await writeMarkdownRoute(state, page)
+    })
+  )
+}
+
+async function rewriteHtmlAssetsForUpdates(
+  state: DevState,
+  updates: AssetUpdate[]
+): Promise<void> {
+  if (!updates.length) return
+
+  const files = (
+    await glob('**/*.html', {
+      cwd: state.outputDir,
+      nodir: true,
+      windowsPathsNoEscape: true,
+    })
+  ).sort()
+
+  await Promise.all(
+    files.map(async (file) => {
+      const fullPath = path.join(state.outputDir, file)
+      let html = await fs.readFile(fullPath, 'utf8')
+      const pageRel = toPosix(file)
+
+      for (const update of updates) {
+        const next = relativeAsset(pageRel, update.current)
+        html = html.split(relativeAsset(pageRel, update.logical)).join(next)
+
+        if (update.previous) {
+          html = html.split(relativeAsset(pageRel, update.previous)).join(next)
+        }
+      }
+
+      await writeTextIfChanged(fullPath, html)
     })
   )
 }
@@ -715,10 +834,14 @@ function renderPage(state: DevState, source: SourcePage): RenderedPage {
   )
 }
 
-function setPage(state: DevState, source: SourcePage): RenderedPage {
+async function setPage(
+  state: DevState,
+  source: SourcePage
+): Promise<RenderedPage> {
   const page = renderPage(state, source)
-  state.sourceFiles.set(source.file, source)
-  state.pages.set(source.file, page)
+  await writePageCache(state, page)
+  state.sourceFiles.set(source.file, compactSource(source))
+  state.pages.set(source.file, compactPage(page))
   return page
 }
 
@@ -746,7 +869,24 @@ async function loadAllSources(
     )
   )
 
-  return new Map(entries)
+  return new Map(entries.map(([file, source]) => [file, compactSource(source)]))
+}
+
+async function loadMarkdownLanguages(inputDir: string): Promise<string[]> {
+  const files = (
+    await glob('**/*.md', {
+      cwd: inputDir,
+      nodir: true,
+      windowsPathsNoEscape: true,
+    })
+  ).sort()
+  const sources = await Promise.all(
+    files.map(async (file) =>
+      readSource(file, await fs.readFile(path.join(inputDir, file), 'utf8'))
+    )
+  )
+
+  return sourceCodeLanguages(sources)
 }
 
 async function loadConfigState(state: DevState): Promise<void> {
@@ -781,7 +921,7 @@ async function loadConfigState(state: DevState): Promise<void> {
 }
 
 async function refreshMarkdownRenderer(state: DevState): Promise<boolean> {
-  const languages = sourceCodeLanguages(sourceList(state))
+  const languages = await loadMarkdownLanguages(state.inputDir)
   if (state.md && sameList(languages, state.markdownLanguages)) return false
 
   state.markdownLanguages = languages
@@ -827,24 +967,21 @@ async function rebuildClientAssets(
 }
 
 async function writeGlobalOutputs(state: DevState): Promise<AssetUpdate[]> {
+  const pages = await globalPageList(state)
+
   if (isSearchEnabled(state.config)) {
     await writeSearchIndex(
       state.publicDir,
-      pageList(state),
+      pages,
       state.config,
       state.languages
     )
   }
   if (isSitemapEnabled(state.config)) {
-    await writeSitemap(state.outputDir, pageList(state), state.config)
+    await writeSitemap(state.outputDir, pages, state.config)
   }
   if (isLlmsEnabled(state.config)) {
-    await writeLlms(
-      state.outputDir,
-      pageList(state),
-      state.config,
-      state.llmsConfig
-    )
+    await writeLlms(state.outputDir, pages, state.config, state.llmsConfig)
   }
   if (isRobotsEnabled(state.config)) {
     await writeRobots(state.outputDir, state.robotsConfig)
@@ -872,11 +1009,17 @@ async function renderAllPages(state: DevState): Promise<RenderedPage[]> {
   state.hasRootIndex = sourceList(state).some(
     (source) => source.rel === 'index.html'
   )
-  const pages = sourceList(state).map((source) => {
+  const pages: RenderedPage[] = []
+
+  for (const item of sourceList(state)) {
+    const source = await loadSourceFile(state, item.file)
     const page = renderPage(state, source)
-    state.pages.set(source.file, page)
-    return page
-  })
+    await writePageCache(state, page)
+    state.sourceFiles.set(source.file, compactSource(source))
+    state.pages.set(source.file, compactPage(page))
+    pages.push(page)
+  }
+
   return pages
 }
 
@@ -893,6 +1036,7 @@ async function createInitialState(
     layoutsDir: options.layoutsDir,
     componentsDir: options.componentsDir,
     cacheDir: options.cacheDir,
+    pageCacheDir: path.join(options.cacheDir, '.dev-pages'),
     clientDir: path.join(path.dirname(options.configDir), 'client'),
     config: {},
     footerScript: '',
@@ -923,6 +1067,8 @@ async function createInitialState(
   await fs.mkdir(options.componentsDir, { recursive: true })
   await fs.mkdir(state.clientDir, { recursive: true })
   await fs.rm(options.outputDir, { force: true, recursive: true })
+  await fs.rm(state.pageCacheDir, { force: true, recursive: true })
+  await fs.mkdir(state.pageCacheDir, { recursive: true })
   await fs.mkdir(publicDir, { recursive: true })
   await loadConfigState(state)
   state.sourceFiles = await loadAllSources(options.inputDir)
@@ -946,7 +1092,7 @@ async function createInitialState(
   await rebuildRuntime(state, true)
   await rebuildClientAssets(state, pages)
   await writeGlobalOutputs(state)
-  await writeAllPageOutputs(state)
+  await writeRenderedPageOutputs(state, pages)
   await writeDefaultEntrypoint(state)
 
   return state
@@ -1010,7 +1156,7 @@ function clientChangeIsStyleOnly(state: DevState, file: string): boolean {
 async function updatePages(
   state: DevState,
   pages: RenderedPage[],
-  options: { writeAll?: boolean } = {}
+  options: { global?: boolean; writeAll?: boolean } = {}
 ): Promise<{
   runtimeUpdates: AssetUpdate[]
   clientUpdates: AssetUpdate[]
@@ -1018,19 +1164,18 @@ async function updatePages(
 }> {
   const clientUpdates = await rebuildClientAssets(state, pages)
   const runtimeUpdates = await rebuildRuntime(state)
-  const globalUpdates = await writeGlobalOutputs(state)
+  const globalUpdates =
+    options.global === false ? [] : await writeGlobalOutputs(state)
+  const htmlUpdates = [...runtimeUpdates, ...globalUpdates]
 
-  if (options.writeAll || runtimeUpdates.length || globalUpdates.length) {
-    await writeAllPageOutputs(state)
-    await writeDefaultEntrypoint(state)
-  } else {
-    await Promise.all(
-      pages.map(async (page) => {
-        await writePageOutput(state, page)
-        await writeMarkdownRoute(state, page)
-      })
-    )
+  await writeRenderedPageOutputs(state, pages)
+
+  if (!options.writeAll && htmlUpdates.length) {
+    await rewriteHtmlAssetsForUpdates(state, htmlUpdates)
   }
+
+  if (options.writeAll || htmlUpdates.length)
+    await writeDefaultEntrypoint(state)
 
   return { runtimeUpdates, clientUpdates, globalUpdates }
 }
@@ -1062,7 +1207,7 @@ async function rebuildEverything(
   await rebuildRuntime(state, true)
   await rebuildClientAssets(state, pages)
   await writeGlobalOutputs(state)
-  await writeAllPageOutputs(state)
+  await writeRenderedPageOutputs(state, pages)
   await writeDefaultEntrypoint(state)
   if (styleUpdates.length) {
     console.warn(`dev: updated ${styleUpdates.length} style asset(s)`)
@@ -1081,6 +1226,7 @@ async function updateMarkdownFile(
   if (!exists) {
     state.sourceFiles.delete(rel)
     state.pages.delete(rel)
+    await removePageCache(state, rel)
     await removeFileIfExists(
       path.join(
         state.outputDir,
@@ -1107,7 +1253,7 @@ async function updateMarkdownFile(
   if (structural) {
     pages = await renderAllPages(state)
   } else if (exists) {
-    pages = [setPage(state, state.sourceFiles.get(rel) as SourcePage)]
+    pages = [await setPage(state, state.sourceFiles.get(rel) as SourcePage)]
   }
 
   await updatePages(state, pages, { writeAll: structural || !exists })
@@ -1129,7 +1275,10 @@ async function updateClientFile(
     state.clientDir,
     state.config
   )
-  const updates = await updatePages(state, pages, { writeAll: false })
+  const updates = await updatePages(state, pages, {
+    global: false,
+    writeAll: false,
+  })
   console.warn(
     `dev: client asset updated ${toPosix(
       path.relative(workingRoot, changedFile)
@@ -1146,7 +1295,7 @@ async function updateClientFile(
 async function updateStyleInputs(state: DevState): Promise<AssetUpdate[]> {
   const updates = await rebuildStyle(state)
   if (updates.length) {
-    await writeAllPageOutputs(state)
+    await rewriteHtmlAssetsForUpdates(state, updates)
     await writeDefaultEntrypoint(state)
   }
   console.warn(`dev: global style rebuilt (${updates.length} changed asset(s))`)
@@ -1156,7 +1305,7 @@ async function updateStyleInputs(state: DevState): Promise<AssetUpdate[]> {
 async function updateRuntimeOnly(state: DevState): Promise<void> {
   const updates = await rebuildRuntime(state, true)
   if (updates.length) {
-    await writeAllPageOutputs(state)
+    await rewriteHtmlAssetsForUpdates(state, updates)
     await writeDefaultEntrypoint(state)
   }
   console.warn(`dev: runtime rebuilt (${updates.length} changed asset(s))`)

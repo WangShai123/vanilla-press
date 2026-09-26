@@ -413,6 +413,50 @@ function logIfChanged(
   return false
 }
 
+function outputPathRel(file: string): string {
+  return toPosix(path.relative(workingRoot, file))
+}
+
+function outputRelPath(outputDir: string, rel: string): string {
+  return outputPathRel(path.join(outputDir, rel))
+}
+
+function logBuiltFile(
+  log: (message: string) => void,
+  file: string,
+  label = 'built'
+): void {
+  log(`${label}: ${outputPathRel(file)}`)
+}
+
+function logBuiltRels(
+  log: (message: string) => void,
+  outputDir: string,
+  rels: Iterable<string>,
+  label = 'built'
+): void {
+  for (const rel of Array.from(new Set(rels)).sort((a, b) =>
+    a.localeCompare(b)
+  )) {
+    log(`${label}: ${outputRelPath(outputDir, rel)}`)
+  }
+}
+
+async function outputFiles(
+  outputDir: string,
+  pattern: string
+): Promise<string[]> {
+  return (
+    await glob(pattern, {
+      cwd: outputDir,
+      nodir: true,
+      windowsPathsNoEscape: true,
+    })
+  )
+    .map(toPosix)
+    .sort((a, b) => a.localeCompare(b))
+}
+
 export async function loadLastEditCache(
   cacheDir: string
 ): Promise<LastEditCache> {
@@ -1282,7 +1326,10 @@ async function rewriteHtmlAssets(
   )
 }
 
-async function minifyJsAssets(outputDir: string): Promise<number> {
+async function minifyJsAssets(
+  outputDir: string,
+  onFile?: (file: string) => void
+): Promise<number> {
   const files = (
     await glob('**/*.js', {
       cwd: outputDir,
@@ -1304,6 +1351,7 @@ async function minifyJsAssets(outputDir: string): Promise<number> {
       })
 
       await fs.writeFile(fullPath, result.code.trim(), 'utf8')
+      onFile?.(fullPath)
     })
   )
 
@@ -1887,6 +1935,11 @@ export async function build({
     await fs.mkdir(resolvedCacheDir, { recursive: true })
   }
   await copyStaticAssets(assetsDir, publicDir)
+  logBuiltRels(
+    logOutput,
+    outputDir,
+    await outputFiles(outputDir, 'public/**/*')
+  )
 
   const languages = isI18nEnabled(config)
     ? resolveI18nData(config, await loadLanguages(configDir))
@@ -1917,14 +1970,25 @@ export async function build({
   )
 
   await buildCss(publicDir, layouts)
+  logBuiltRels(logOutput, outputDir, ['public/styles.css'])
   const componentScriptAssets = await buildComponentScripts(
     outputDir,
     customComponents
+  )
+  logBuiltRels(
+    logOutput,
+    outputDir,
+    Array.from(componentScriptAssets.values()).map((asset) => asset.rel)
   )
   const layoutScriptAssets = await buildLayoutScripts(
     outputDir,
     layouts,
     config
+  )
+  logBuiltRels(
+    logOutput,
+    outputDir,
+    Array.from(layoutScriptAssets.values()).map((asset) => asset.rel)
   )
   const clientEntryAssets = await scanClientEntryAssets(clientDir, config)
   const runtimeSidebarItems = createRuntimeSidebarConfig(
@@ -1960,19 +2024,36 @@ export async function build({
     ),
     sharedClientModules: pageSharedClientModules(pages),
   })
+  logBuiltRels(logOutput, outputDir, ['public/runtime.js'])
   await buildClientAssets(outputDir, clientDir, pages, config)
+  logBuiltRels(
+    logOutput,
+    outputDir,
+    await outputFiles(outputDir, 'public/client/**/*.{js,css}')
+  )
   if (isSearchEnabled(config)) {
     await writeSearchIndex(publicDir, pages, config, languages)
+    logBuiltRels(
+      logOutput,
+      outputDir,
+      await outputFiles(outputDir, 'public/search*.js')
+    )
   }
-  if (isSitemapEnabled(config)) await writeSitemap(outputDir, pages, config)
+  if (isSitemapEnabled(config)) {
+    await writeSitemap(outputDir, pages, config)
+    logBuiltRels(logOutput, outputDir, ['sitemap.xml'])
+  }
   if (isLlmsEnabled(config)) {
     await writeLlms(outputDir, pages, config, llmsConfig)
+    logBuiltRels(logOutput, outputDir, ['llms.txt'])
   }
   if (isRobotsEnabled(config)) {
     await writeRobots(outputDir, await loadRobotsConfig(configDir))
+    logBuiltRels(logOutput, outputDir, ['robots.txt'])
   }
   if (serverOption(config, 'lastEdit')) {
     await writeLastEditCache(resolvedCacheDir, lastEditCache)
+    logBuiltFile(logOutput, path.join(resolvedCacheDir, LAST_EDIT_CACHE_FILE))
   }
   for (const page of pages) {
     const outputFile = path.join(outputDir, page.rel)
@@ -1996,8 +2077,15 @@ export async function build({
     reportState,
     logOutput
   )
-  const minifiedAssets = await minifyJsAssets(outputDir)
+  const minifiedAssets = await minifyJsAssets(outputDir, (file) =>
+    logBuiltFile(logOutput, file, 'minified')
+  )
   const assetMap = await hashRootAssets(outputDir)
+  logBuiltRels(
+    logOutput,
+    outputDir,
+    Array.from(assetMap.values()).map((file) => `public/${file}`)
+  )
   await rewriteHtmlAssets(outputDir, assetMap)
 
   if (showSummary) {
