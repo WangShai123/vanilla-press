@@ -454,3 +454,15 @@ export async function installCodeHighlight(
     restoreFenceLineRangeMeta
   )
 }
+
+export async function clearCodeHighlighterCache(): Promise<void> {
+  const highlighters = Array.from(highlighterCache.values())
+  highlighterCache.clear()
+
+  await Promise.all(
+    highlighters.map(async (item) => {
+      const { highlighter } = await item
+      highlighter.dispose()
+    })
+  )
+}

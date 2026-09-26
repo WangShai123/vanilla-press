@@ -1,6 +1,6 @@
 {
   "name": "vanilla-press",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "private": false,
   "description": "A static documentation generator built on markdown-it.",
   "keywords": [

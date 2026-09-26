@@ -29,9 +29,9 @@ import {
   pageSharedClientModules,
   readSource,
   renderSource,
+  markdownCodeLanguages,
   resolveI18nData,
   scanClientEntryAssets,
-  sourceCodeLanguages,
   validateRuntimeConfig,
   writeDefaultLocaleEntrypoint,
   writeLastEditCache,
@@ -40,6 +40,7 @@ import {
   writeSearchIndex,
   writeSitemap,
 } from './build.ts'
+import { clearCodeHighlighterCache } from './markdown/highlight.ts'
 import { createMarkdown } from './markdown/md.ts'
 import { loadLayouts } from './render/layout.ts'
 import type {
@@ -133,7 +134,7 @@ interface DevState {
   runtimeSidebarItems: RuntimeSidebar
   llmsConfig: UnknownRecord
   robotsConfig: UnknownRecord
-  md: MarkdownItInstance
+  md: MarkdownItInstance | null
   markdownLanguages: string[]
   lastEditCache: LastEditCache
   sourceFiles: Map<string, SourcePage>
@@ -152,6 +153,7 @@ interface DevPageCacheItem {
   title: string
   seo: SourcePage['seo']
   content: string
+  html: string
   markdown: string
 }
 
@@ -345,13 +347,16 @@ function sourceList(state: DevState): SourcePage[] {
 function compactSource(source: SourcePage): SourcePage {
   return {
     ...source,
+    frontmatter: {},
     markdown: '',
+    seo: {},
   }
 }
 
 function compactPage(page: RenderedPage): RenderedPage {
   return {
     ...page,
+    frontmatter: {},
     markdown: '',
     body: '',
     content: '',
@@ -373,6 +378,7 @@ async function writePageCache(
     title: page.title,
     seo: page.seo,
     content: page.content,
+    html: page.html,
     markdown: page.markdown,
   }
 
@@ -400,16 +406,19 @@ async function readPageCache(
 }
 
 async function globalPageList(state: DevState): Promise<RenderedPage[]> {
-  const pages = await Promise.all(
-    Array.from(state.pages.entries()).map(async ([file, page]) => {
-      const cached = await readPageCache(state, file)
-      return {
-        ...page,
-        content: cached?.content || '',
-        markdown: cached?.markdown || '',
-      }
+  const pages: RenderedPage[] = []
+
+  for (const [file, page] of state.pages) {
+    const cached = await readPageCache(state, file)
+    pages.push({
+      ...page,
+      content: cached?.content || '',
+      html: cached?.html || '',
+      markdown: cached?.markdown || '',
+      seo: cached?.seo || page.seo,
+      title: cached?.title || page.title,
     })
-  )
+  }
 
   return pages.sort((a, b) => a.rel.localeCompare(b.rel))
 }
@@ -741,10 +750,14 @@ async function writePageOutput(
   state: DevState,
   page: RenderedPage
 ): Promise<void> {
+  const cached = page.html ? null : await readPageCache(state, page.file)
+  const html = page.html || cached?.html || ''
+  if (!html) return
+
   const outputFile = path.join(state.outputDir, page.rel)
   await writeTextIfChanged(
     outputFile,
-    applyManifestToHtml(state, page.rel, page.html)
+    applyManifestToHtml(state, page.rel, html)
   )
 }
 
@@ -753,9 +766,12 @@ async function writeMarkdownRoute(
   page: RenderedPage
 ): Promise<void> {
   if (!isLlmsEnabled(state.config)) return
+  const cached = page.markdown ? null : await readPageCache(state, page.file)
+  const markdown = page.markdown || cached?.markdown || ''
+  if (!markdown) return
 
   const outputFile = path.join(state.outputDir, markdownRouteRel(page))
-  await writeTextIfChanged(outputFile, page.markdown)
+  await writeTextIfChanged(outputFile, markdown)
 }
 
 async function writeRenderedPageOutputs(
@@ -816,6 +832,10 @@ async function rewriteDefaultLocaleEntrypoint(state: DevState): Promise<void> {
 }
 
 function renderPage(state: DevState, source: SourcePage): RenderedPage {
+  if (!state.md) {
+    throw new Error('Markdown renderer is not initialized.')
+  }
+
   return renderSource(
     source,
     state.md,
@@ -863,13 +883,22 @@ async function loadAllSources(
       windowsPathsNoEscape: true,
     })
   ).sort()
-  const entries = await Promise.all(
-    files.map(
-      async (file) => [file, await loadSourceFile({ inputDir }, file)] as const
-    )
+  const entries = files.map(
+    (file) =>
+      [
+        file,
+        {
+          file,
+          markdown: '',
+          frontmatter: {},
+          seo: {},
+          rel: toPosix(file).replace(/\.md$/i, '.html'),
+          title: path.basename(file).replace(/\.md$/i, ''),
+        },
+      ] as const
   )
 
-  return new Map(entries.map(([file, source]) => [file, compactSource(source)]))
+  return new Map(entries)
 }
 
 async function loadMarkdownLanguages(inputDir: string): Promise<string[]> {
@@ -880,13 +909,16 @@ async function loadMarkdownLanguages(inputDir: string): Promise<string[]> {
       windowsPathsNoEscape: true,
     })
   ).sort()
-  const sources = await Promise.all(
-    files.map(async (file) =>
-      readSource(file, await fs.readFile(path.join(inputDir, file), 'utf8'))
-    )
-  )
+  const languages = new Set<string>()
 
-  return sourceCodeLanguages(sources)
+  for (const file of files) {
+    const markdown = await fs.readFile(path.join(inputDir, file), 'utf8')
+    for (const language of markdownCodeLanguages(markdown)) {
+      languages.add(language)
+    }
+  }
+
+  return Array.from(languages).sort()
 }
 
 async function loadConfigState(state: DevState): Promise<void> {
@@ -922,15 +954,22 @@ async function loadConfigState(state: DevState): Promise<void> {
 
 async function refreshMarkdownRenderer(state: DevState): Promise<boolean> {
   const languages = await loadMarkdownLanguages(state.inputDir)
-  if (state.md && sameList(languages, state.markdownLanguages)) return false
+  const languagesChanged = !sameList(languages, state.markdownLanguages)
+  if (state.md && !languagesChanged) return false
 
+  if (state.md) await clearCodeHighlighterCache()
   state.markdownLanguages = languages
   state.md = await createMarkdown(
     state.config,
     state.customComponents,
     languages
   )
-  return true
+  return languagesChanged
+}
+
+async function releaseMarkdownRenderer(state: DevState): Promise<void> {
+  state.md = null
+  await clearCodeHighlighterCache()
 }
 
 async function rebuildStyle(state: DevState): Promise<AssetUpdate[]> {
@@ -1016,8 +1055,9 @@ async function renderAllPages(state: DevState): Promise<RenderedPage[]> {
     const page = renderPage(state, source)
     await writePageCache(state, page)
     state.sourceFiles.set(source.file, compactSource(source))
-    state.pages.set(source.file, compactPage(page))
-    pages.push(page)
+    const compact = compactPage(page)
+    state.pages.set(source.file, compact)
+    pages.push(compact)
   }
 
   return pages
@@ -1048,7 +1088,7 @@ async function createInitialState(
     runtimeSidebarItems: [],
     llmsConfig: {},
     robotsConfig: {},
-    md: undefined as unknown as MarkdownItInstance,
+    md: null,
     markdownLanguages: [],
     lastEditCache: {},
     sourceFiles: new Map(),
@@ -1089,6 +1129,7 @@ async function createInitialState(
     state.config
   )
   const pages = await renderAllPages(state)
+  await releaseMarkdownRenderer(state)
   await rebuildRuntime(state, true)
   await rebuildClientAssets(state, pages)
   await writeGlobalOutputs(state)
@@ -1204,6 +1245,7 @@ async function rebuildEverything(
     state.config
   )
   const pages = await renderAllPages(state)
+  await releaseMarkdownRenderer(state)
   await rebuildRuntime(state, true)
   await rebuildClientAssets(state, pages)
   await writeGlobalOutputs(state)
@@ -1255,6 +1297,7 @@ async function updateMarkdownFile(
   } else if (exists) {
     pages = [await setPage(state, state.sourceFiles.get(rel) as SourcePage)]
   }
+  await releaseMarkdownRenderer(state)
 
   await updatePages(state, pages, { writeAll: structural || !exists })
   console.warn(
