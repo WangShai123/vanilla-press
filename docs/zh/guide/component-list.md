@@ -371,16 +371,12 @@ Bilibili 组件 `<Bilibili />` 支持在文档中嵌入 Bilibili 视频。
 
 :::tabs
 @tab 示例
-<Bilibili
-  url="https://www.bilibili.com/video/BV1KE411a7EY/"
-/>
+<Bilibili url="https://www.bilibili.com/video/BV1KE411a7EY/" />
 
 @tab 语法
 
 ```markdown
-<Bilibili
-  url="https://www.bilibili.com/video/BV1KE411a7EY/"
-/>
+<Bilibili url="https://www.bilibili.com/video/BV1KE411a7EY/" />
 ```
 
 :::
