@@ -81,6 +81,7 @@ import {
 import {
   cleanHtml,
   htmlText,
+  rewriteMediaAssetUrls,
   transformComponentTags,
 } from './utilities/html.ts'
 import {
@@ -1620,7 +1621,10 @@ export function renderSource(
   }
   const rendered = md.render(source.markdown, env)
   const articleBody = injectLlmsControls(
-    cleanHtml(transformComponentTags(rendered)),
+    rewriteMediaAssetUrls(
+      cleanHtml(transformComponentTags(rendered)),
+      source.rel
+    ),
     source,
     config,
     llmsConfig,

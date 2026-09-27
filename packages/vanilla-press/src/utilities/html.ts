@@ -3,6 +3,7 @@ import { JSDOM } from 'jsdom'
 
 import { transformBilibiliTag } from '../components/bilibili.ts'
 import { transformYoutubeTag } from '../components/youtube.ts'
+import { relativeAsset } from './path.ts'
 import { toText } from './string.ts'
 
 const window = new JSDOM('').window
@@ -211,6 +212,73 @@ export function htmlText(html: string): string {
   return (dom.window.document.querySelector('main')?.textContent || '')
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+function isExternalMediaSrc(value: string): boolean {
+  return (
+    !value ||
+    value.startsWith('#') ||
+    value.startsWith('/') ||
+    value.startsWith('//') ||
+    /^[a-z][a-z0-9+.-]*:/i.test(value)
+  )
+}
+
+function mediaPublicRel(value: string): string | null {
+  const src = value.trim()
+  if (isExternalMediaSrc(src)) return null
+
+  const normalized = src
+    .replace(/\\/g, '/')
+    .replace(/^(?:\.\.?\/)+/, '')
+    .replace(/^\/+/, '')
+  if (!normalized || normalized.startsWith('#')) return null
+
+  const publicMatch = normalized.match(/^(?:public\/)(.+)$/i)
+  if (publicMatch) return `public/${publicMatch[1].replace(/^\/+/, '')}`
+
+  const assetsMatch = normalized.match(/^(?:assets\/)(.+)$/i)
+  if (assetsMatch) return `public/${assetsMatch[1].replace(/^\/+/, '')}`
+
+  return `public/${normalized}`
+}
+
+function rewriteMediaAttribute(
+  node: Element,
+  attr: string,
+  pageRel: string
+): void {
+  const src = node.getAttribute(attr)
+  if (!src) return
+
+  const target = mediaPublicRel(src)
+  if (!target) return
+
+  node.setAttribute(attr, relativeAsset(pageRel, target))
+}
+
+export function rewriteMediaAssetUrls(html: string, pageRel: string): string {
+  if (!/<(?:img|video|source)\b/i.test(html)) return html
+
+  const dom = new JSDOM(`<main>${html}</main>`)
+  const main = dom.window.document.querySelector('main')
+  if (!main) return html
+
+  for (const node of Array.from(main.querySelectorAll('img[src]'))) {
+    rewriteMediaAttribute(node, 'src', pageRel)
+  }
+
+  for (const node of Array.from(main.querySelectorAll('video'))) {
+    rewriteMediaAttribute(node, 'src', pageRel)
+    rewriteMediaAttribute(node, 'poster', pageRel)
+  }
+
+  for (const node of Array.from(main.querySelectorAll('source[src]'))) {
+    const parent = node.parentElement?.tagName.toLowerCase()
+    if (parent === 'video') rewriteMediaAttribute(node, 'src', pageRel)
+  }
+
+  return main.innerHTML || html
 }
 
 function normalizeAttrValue(value: string | null): string {
