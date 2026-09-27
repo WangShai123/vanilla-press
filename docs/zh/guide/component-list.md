@@ -1,6 +1,6 @@
 ---
-keywords: 组件, vanilla-press, tabs, accordion, offcanvas, tip, tree, details, group, badge
-description: 介绍 Vanilla Press 内置组件，包含 Tabs、Accordion、Offcanvas、Tip、Tree、Details、Group、Badge 等。
+keywords: 组件, vanilla-press, tabs, accordion, offcanvas, tip, tree, details, group, badge, bilibili, youtube
+description: 介绍 Vanilla Press 内置组件，包含 Tabs、Accordion、Offcanvas、Tip、Tree、Details、Group、Badge、Bilibili、Youtube 等。
 ---
 
 # 组件
@@ -364,3 +364,66 @@ export default {
 - `text`：标签文本。若省略，则使用标签内部内容。
 - `theme`：默认值 `default`，可选值 `reverse`、`solid`、`soft`、`wash`、`primary`、`success`、`warning`、`danger`、`error`。
 - `size`：默认值 `md`，可选值 `sm`。
+
+### Bilibili
+
+Bilibili 组件 `<Bilibili />` 支持在文档中嵌入 Bilibili 视频。
+
+:::tabs
+@tab 示例
+<Bilibili
+  url="https://www.bilibili.com/video/BV1KE411a7EY/"
+/>
+
+@tab 语法
+
+```markdown
+<Bilibili
+  url="https://www.bilibili.com/video/BV1KE411a7EY/"
+/>
+```
+
+:::
+
+参数说明：
+
+- `url`：视频 URL。必需。
+- `autoplay`：是否自动播放。默认值为 `0`，可选值 `1`。
+- `ratio`：视频比例。默认值为 `16 / 9`。
+- `width`：视频宽度。默认值为 `100%`。
+- `t`：视频开始播放时间。默认值为 `0`，单位为秒。
+- `muted`：是否静音。默认值为 `0`，可选值 `1`。
+- `p`：分 P 序号。默认值为 `1`。
+- `danmaku`：是否显示弹幕。默认值为 `0`，可选值 `1`。
+- `no-related` / `norelated`：是否隐藏相关视频。默认值为 `0`，可选值 `1`。
+- `height`：视频高度。默认值为 null，不设置高度。
+
+### Youtube
+
+Youtube 组件 `<Youtube />` 支持在文档中嵌入 Youtube 视频。
+
+:::tabs
+@tab 示例
+<Youtube url="https://www.youtube.com/watch?v=0Puv0Pss33M" />
+
+@tab 语法
+
+```markdown
+<Youtube url="https://www.youtube.com/watch?v=0Puv0Pss33M" />
+```
+
+:::
+
+参数说明：
+
+- `url`：视频 URL 或视频 ID。必需。支持 `youtube.com/watch?v=`、`youtu.be`、`youtube.com/embed`、`youtube.com/shorts`、`youtube.com/live`。
+- `autoplay`：是否自动播放。默认值为 `0`，可选值 `1`。
+- `controls`：是否显示播放器控制栏。默认值为 `1`，可选值 `0`。
+- `ratio`：视频比例。默认值为 `16 / 9`。
+- `width`：视频宽度。默认值为 `100%`。
+- `start` / `t`：视频开始播放时间。默认值为 `0`，单位为秒。
+- `end`：视频结束播放时间。默认值为 `0`，单位为秒。
+- `muted`：是否静音。默认值为 `0`，可选值 `1`。
+- `loop`：是否循环播放。默认值为 `0`，可选值 `1`。
+- `no-related` / `norelated`：是否限制相关视频推荐范围。默认值为 `0`，可选值 `1`。
+- `height`：视频高度。默认值为 null，不设置高度。

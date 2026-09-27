@@ -1,6 +1,6 @@
 ---
-keywords: Components, vanilla-press, tabs, accordion, offcanvas, tip, tree, details, group, badge
-description: Introduce Vanilla Press builtin components. Includes Tabs, Accordion, Offcanvas, Tip, Tree, Details, Group, Badge, etc.
+keywords: Components, vanilla-press, tabs, accordion, offcanvas, tip, tree, details, group, badge, bilibili, youtube
+description: Introduce Vanilla Press builtin components. Includes Tabs, Accordion, Offcanvas, Tip, Tree, Details, Group, Badge, Bilibili, Youtube, etc.
 ---
 
 # Components
@@ -364,3 +364,62 @@ Inline badges <Badge text="beta" theme="primary" size="sm" /> can also be insert
 - `text`: badge text. If omitted, the content inside the tag is used.
 - `theme`: defaults to `default`, with optional values `reverse`, `solid`, `soft`, `wash`, `primary`, `success`, `warning`, `danger`, `error`.
 - `size`: defaults to `md`, with optional value `sm`.
+
+### Bilibili
+
+The Bilibili component `<Bilibili />` embeds a Bilibili video in a document.
+
+:::tabs
+@tab Demo
+<Bilibili url="https://www.bilibili.com/video/BV1KE411a7EY/" />
+
+@tab Syntax
+
+```markdown
+<Bilibili url="https://www.bilibili.com/video/BV1KE411a7EY/" />
+```
+
+:::
+
+#### Parameters
+
+- `url`: video URL. Required.
+- `autoplay`: whether to autoplay. Defaults to `0`, optional value `1`.
+- `ratio`: video aspect ratio. Defaults to `16 / 9`.
+- `width`: video width. Defaults to `100%`.
+- `t`: playback start time. Defaults to `0`, in seconds.
+- `muted`: whether to mute the video. Defaults to `0`, optional value `1`.
+- `p`: part index. Defaults to `1`.
+- `danmaku`: whether to show danmaku comments. Defaults to `0`, optional value `1`.
+- `no-related` / `norelated`: whether to hide related videos. Defaults to `0`, optional value `1`.
+- `height`: video height. Defaults to null, so no height is set.
+
+### Youtube
+
+The Youtube component `<Youtube />` embeds a Youtube video in a document.
+
+:::tabs
+@tab Demo
+<Youtube url="https://www.youtube.com/watch?v=0Puv0Pss33M" />
+
+@tab Syntax
+
+```markdown
+<Youtube url="https://www.youtube.com/watch?v=0Puv0Pss33M" />
+```
+
+:::
+
+#### Parameters
+
+- `url`: video URL or video ID. Required. Supports `youtube.com/watch?v=`, `youtu.be`, `youtube.com/embed`, `youtube.com/shorts`, and `youtube.com/live`.
+- `autoplay`: whether to autoplay. Defaults to `0`, optional value `1`.
+- `controls`: whether to show player controls. Defaults to `1`, optional value `0`.
+- `ratio`: video aspect ratio. Defaults to `16 / 9`.
+- `width`: video width. Defaults to `100%`.
+- `start` / `t`: playback start time. Defaults to `0`, in seconds.
+- `end`: playback end time. Defaults to `0`, in seconds.
+- `muted`: whether to mute the video. Defaults to `0`, optional value `1`.
+- `loop`: whether to loop playback. Defaults to `0`, optional value `1`.
+- `no-related` / `norelated`: whether to limit related video recommendations. Defaults to `0`, optional value `1`.
+- `height`: video height. Defaults to null, so no height is set.

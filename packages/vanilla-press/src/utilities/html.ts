@@ -1,6 +1,8 @@
 import createDOMPurify from 'dompurify'
 import { JSDOM } from 'jsdom'
 
+import { transformBilibiliTag } from '../components/bilibili.ts'
+import { transformYoutubeTag } from '../components/youtube.ts'
 import { toText } from './string.ts'
 
 const window = new JSDOM('').window
@@ -130,8 +132,11 @@ export function cleanHtml(html: string): string {
     ],
     ALLOWED_ATTR: [
       'alt',
+      'allow',
       'aria-expanded',
       'aria-hidden',
+      'allowfullscreen',
+      'border',
       'class',
       'columnspacing',
       'controls',
@@ -144,6 +149,7 @@ export function cleanHtml(html: string): string {
       'fill',
       'fill-opacity',
       'frameborder',
+      'framespacing',
       'height',
       'hidden',
       'href',
@@ -161,11 +167,13 @@ export function cleanHtml(html: string): string {
       'preserveAspectRatio',
       'r',
       'rel',
+      'referrerpolicy',
       'readonly',
       'role',
       'rows',
       'rowspacing',
       'scope',
+      'scrolling',
       'scriptlevel',
       'size',
       'src',
@@ -251,9 +259,18 @@ function transformGroup(node: Element): void {
 }
 
 export function transformComponentTags(html: string): string {
-  if (!/<(?:\/?)(?:Badge|badge|Group|group)\b/.test(html)) return html
+  if (
+    !/<(?:\/?)(?:Badge|badge|Group|group|Bilibili|bilibili|Youtube|youtube)\b/.test(
+      html
+    )
+  ) {
+    return html
+  }
 
-  const normalized = html.replace(/<(Badge|badge)([^>]*)\/>/g, '<$1$2></$1>')
+  const normalized = html
+    .replace(/<(Badge|badge)([^>]*)\/>/g, '<$1$2></$1>')
+    .replace(/<(Bilibili|bilibili)([^>]*)\/>/g, '<$1$2></$1>')
+    .replace(/<(Youtube|youtube)([^>]*)\/>/g, '<$1$2></$1>')
   const dom = new JSDOM(`<main>${normalized}</main>`)
   const document = dom.window.document
   const main = document.querySelector('main')
@@ -265,6 +282,14 @@ export function transformComponentTags(html: string): string {
 
   for (const node of Array.from(main.querySelectorAll('group'))) {
     transformGroup(node)
+  }
+
+  for (const node of Array.from(main.querySelectorAll('bilibili'))) {
+    transformBilibiliTag(node)
+  }
+
+  for (const node of Array.from(main.querySelectorAll('youtube'))) {
+    transformYoutubeTag(node)
   }
 
   return main.innerHTML || html
