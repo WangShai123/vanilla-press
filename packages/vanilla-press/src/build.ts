@@ -1837,6 +1837,24 @@ function sitemapLoc(page: Pick<RenderedPage, 'rel'>, baseUrl: string): string {
   return `${baseUrl}/${encodedRel}`
 }
 
+function padDatePart(value: number): string {
+  return String(value).padStart(2, '0')
+}
+
+function sitemapLastmod(date: Date = new Date()): string {
+  const offsetMinutes = -date.getTimezoneOffset()
+  const offsetSign = offsetMinutes >= 0 ? '+' : '-'
+  const offset = Math.abs(offsetMinutes)
+  const offsetHours = Math.floor(offset / 60)
+  const offsetRemainder = offset % 60
+
+  return [
+    `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())}`,
+    `T${padDatePart(date.getHours())}:${padDatePart(date.getMinutes())}:${padDatePart(date.getSeconds())}`,
+    `${offsetSign}${padDatePart(offsetHours)}:${padDatePart(offsetRemainder)}`,
+  ].join('')
+}
+
 function escapeXml(value: unknown): string {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -1851,10 +1869,11 @@ export async function writeSitemap(
   config: RuntimeConfig = {}
 ): Promise<void> {
   const baseUrl = siteUrl(config)
+  const lastmod = sitemapLastmod()
   const urls = pages
     .map(
       (page) =>
-        `  <url>\n    <loc>${escapeXml(sitemapLoc(page, baseUrl))}</loc>\n  </url>`
+        `  <url>\n    <loc>${escapeXml(sitemapLoc(page, baseUrl))}</loc>\n    <lastmod>${escapeXml(lastmod)}</lastmod>\n  </url>`
     )
     .join('\n')
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`

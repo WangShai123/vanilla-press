@@ -228,19 +228,13 @@ function mediaPublicRel(value: string): string | null {
   const src = value.trim()
   if (isExternalMediaSrc(src)) return null
 
-  const normalized = src
-    .replace(/\\/g, '/')
-    .replace(/^(?:\.\.?\/)+/, '')
-    .replace(/^\/+/, '')
-  if (!normalized || normalized.startsWith('#')) return null
+  const pathOnly = src.split(/[?#]/, 1)[0]?.replace(/\\/g, '/') || ''
+  if (!pathOnly || pathOnly.startsWith('.')) return null
 
-  const publicMatch = normalized.match(/^(?:public\/)(.+)$/i)
-  if (publicMatch) return `public/${publicMatch[1].replace(/^\/+/, '')}`
+  const [firstSegment] = pathOnly.split('/')
+  if (/^(?:public|assets)$/i.test(firstSegment)) return null
 
-  const assetsMatch = normalized.match(/^(?:assets\/)(.+)$/i)
-  if (assetsMatch) return `public/${assetsMatch[1].replace(/^\/+/, '')}`
-
-  return `public/${normalized}`
+  return `public/${src}`
 }
 
 function rewriteMediaAttribute(
