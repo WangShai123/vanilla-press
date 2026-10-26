@@ -30,7 +30,7 @@ npm run dev
 
 构建命令会读取文档目录 `docs/**/*.md`、扩展与配置目录 `vp/`、静态资源目录 `assets/`，并按目录结构输出静态 HTML 文件到 `dist/**/*.html`，并生成相关的 CSS 与 JS 运行时。站点配置现在放在 `vp/config/runtime.ts`，其中构建阶段配置放在 `server`，浏览器运行时配置放在 `client`。
 
-:::tabs
+::: tabs
 @tab 手动构建
 
 ```bash

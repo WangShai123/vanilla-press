@@ -8,7 +8,7 @@ import {
 } from '../utilities/markdown.ts'
 import { toText } from '../utilities/string.ts'
 
-type TipType = 'info' | 'primary' | 'success' | 'warning' | 'danger'
+type TipType = 'tip' | 'info' | 'success' | 'warning' | 'error'
 
 interface TipInfo {
   type: TipType
@@ -16,11 +16,11 @@ interface TipInfo {
 }
 
 const TIP_TYPES: ReadonlySet<TipType> = new Set([
+  'tip',
   'info',
-  'primary',
   'success',
   'warning',
-  'danger',
+  'error',
 ])
 
 function isTipType(value: string): value is TipType {
@@ -28,25 +28,18 @@ function isTipType(value: string): value is TipType {
 }
 
 function typeClass(type: TipType): string {
-  return type === 'info' ? 'default' : type
+  return type === 'tip' ? 'j-tip' : `j-tip is-${type}`
 }
 
 function typeIcon(type: TipType): string {
   if (type === 'success') return 'success'
   if (type === 'warning') return 'warning'
-  if (type === 'danger') return 'error'
+  if (type === 'error') return 'error'
   return 'info'
 }
 
 function parseTipInfo(name: unknown, info: unknown): TipInfo {
   const raw = toText(info).trim()
-  if (name === 'tip') {
-    return {
-      type: 'info',
-      title: raw,
-    }
-  }
-
   const normalized = toText(name).trim().toLowerCase()
   if (isTipType(normalized)) {
     return {
@@ -56,7 +49,7 @@ function parseTipInfo(name: unknown, info: unknown): TipInfo {
   }
 
   return {
-    type: 'info',
+    type: 'tip',
     title: raw,
   }
 }
@@ -75,7 +68,7 @@ export function installTip(md: MarkdownRuntime): void {
       const end = state.eMarks[startLine]
       const line = state.src.slice(start, end)
       const match = line.match(
-        /^:::\s*(tip|info|primary|success|warning|danger)\b(?:\s+(.*))?$/i
+        /^:::\s*(tip|info|success|warning|error)\b(?:\s+(.*))?$/i
       )
 
       if (!match) return false
@@ -97,7 +90,7 @@ export function installTip(md: MarkdownRuntime): void {
     const token = tokens[idx]
     const tip = parseTipInfo(token.meta?.name, token.info)
 
-    return `<div class="j-tip is-${typeClass(tip.type)}" data-vp-component="tip" data-tip-icon="${typeIcon(tip.type)}">
+    return `<div class="${typeClass(tip.type)}" data-vp-component="tip" data-tip-icon="${typeIcon(tip.type)}">
   <div class="tip-icon" data-vp-tip-icon></div>
   <div class="tip-title" data-vp-tip-title>${escapeAttr(tip.title)}</div>
   <div class="tip-content">${md.render(token.content, env)}</div>

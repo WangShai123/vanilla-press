@@ -33,7 +33,7 @@ export function installOffcanvas(md: MarkdownRuntime): void {
       const start = state.bMarks[startLine] + state.tShift[startLine]
       const end = state.eMarks[startLine]
       const line = state.src.slice(start, end)
-      const match = line.match(/^:::offcanvas(?:\s+(.*))?$/)
+      const match = line.match(/^:::\s*offcanvas(?:\s+(.*))?$/)
 
       if (!match) return false
       if (silent) return true

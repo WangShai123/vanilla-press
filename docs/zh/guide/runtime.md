@@ -9,7 +9,7 @@ description: 介绍 Vanilla Press 运行时相关功能，包含代码高亮、�
 
 基于 `Shiki` 的代码高亮，构建时预渲染为静态 HTML。
 
-:::tabs
+::: tabs
 @tab 示例
 
 ```rust
@@ -46,7 +46,7 @@ where
 
 在代码块语言后添加 `{行号}`，可以高亮指定行。支持单行、多个行号和连续范围。
 
-:::tabs
+::: tabs
 @tab 示例
 
 ```ts {2,4-6}
@@ -75,7 +75,7 @@ export function info() {
 
 也可以使用 `[!code highlight]`。写在代码行末尾时作用于当前行；独占注释行时作用于下一行。标记会在构建时移除，不会出现在最终 HTML 中。
 
-:::tabs
+::: tabs
 @tab 示例
 
 ```ts
@@ -110,7 +110,7 @@ export function info() {
 
 使用 `[!code focus]` 可以突出关键代码，并弱化同一代码块中的其他行。
 
-:::tabs
+::: tabs
 @tab 示例
 
 ```ts
@@ -139,7 +139,7 @@ export function info() {
 
 同样支持连续行写法：
 
-:::tabs
+::: tabs
 @tab 示例
 
 ```ts
@@ -168,7 +168,7 @@ export function createApp() {
 
 使用 `[!code ++]` 和 `[!code --]` 表示新增和删除行，适合展示修改前后的差异。
 
-:::tabs
+::: tabs
 @tab 示例
 
 ```ts
@@ -193,7 +193,7 @@ const darkTheme = 'github-dark-high-contrast' // [!code ++]
 
 使用 `[!code warning]` 和 `[!code error]` 标记警告或错误行。
 
-:::tabs
+::: tabs
 @tab 示例
 
 ```ts
@@ -224,7 +224,7 @@ function loadTheme(theme?: string) {
 
 在代码块语言后添加 `line-numbers` 可以显示行号。
 
-:::tabs
+::: tabs
 @tab 示例
 
 ```ts line-numbers
@@ -245,7 +245,7 @@ export const version = '1.5'
 
 也可以指定起始行号：
 
-:::tabs
+::: tabs
 @tab 示例
 
 ```ts line-numbers=10
@@ -274,7 +274,7 @@ export function mount() {
 
 使用单个 `$` 包裹行内公式。
 
-:::tabs
+::: tabs
 @tab 示例
 
 欧拉公式为 $e^{i\pi}+1=0$。
@@ -291,7 +291,7 @@ export function mount() {
 
 使用 `$$` 包裹块级公式。
 
-:::tabs
+::: tabs
 @tab 示例
 
 $$

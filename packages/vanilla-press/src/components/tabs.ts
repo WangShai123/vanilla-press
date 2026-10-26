@@ -38,7 +38,7 @@ export function installTabs(md: MarkdownRuntime): void {
       const start = state.bMarks[startLine] + state.tShift[startLine]
       const end = state.eMarks[startLine]
       const line = state.src.slice(start, end)
-      const match = line.match(/^:::tabs(?:\s+(.*))?$/)
+      const match = line.match(/^:::\s*tabs(?:\s+(.*))?$/)
 
       if (!match) return false
       if (silent) return true

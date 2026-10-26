@@ -25,7 +25,7 @@ export function installAccordion(md: MarkdownRuntime): void {
       const start = state.bMarks[startLine] + state.tShift[startLine]
       const end = state.eMarks[startLine]
       const line = state.src.slice(start, end)
-      const match = line.match(/^:::(accordion|collapse)(?:\s+(.*))?$/)
+      const match = line.match(/^:::\s*(accordion|collapse)(?:\s+(.*))?$/)
 
       if (!match) return false
       if (silent) return true

@@ -30,7 +30,7 @@ npm run dev
 
 The build command reads `docs/**/*.md`, `vp/`, and `assets/`, outputs pages to `dist/**/*.html` following the same directory structure, and emits related CSS files and JS runtime. Site configuration lives in `vp/config/runtime.ts`, with build-stage data under `server` and browser runtime data under `client`.
 
-:::tabs
+::: tabs
 @tab Manual Build
 
 ```bash

@@ -9,14 +9,14 @@ description: Introduce Vanilla Press builtin components. Includes Tabs, Accordio
 
 Components are divided into Container Components and Tag Components:
 
-- Container Components: Syntax starts with `:::`, such as `:::tabs`, `:::accordion`, etc.
+- Container Components: Syntax starts with `:::`, such as `::: tabs`, `::: accordion`, etc.
 - Tag Components: Syntax starts with `<`, and with the first letter capitalized, similar to `HTML` tags, such as `<Badge />`, etc.
 
 ## Container Components
 
 ### Tabs
 
-:::tabs
+::: tabs
 @tab JavaScript
 
 ```javascript
@@ -39,7 +39,7 @@ export function toHtml(file) {
 @tab Syntax
 
 ```markdown
-:::tabs
+::: tabs
 @tab Option A
 
 Content A
@@ -55,10 +55,10 @@ Content B
 
 ### Accordion
 
-:::tabs
+::: tabs
 @tab Demo
 
-:::accordion multiple collapsible
+::: accordion multiple collapsible
 @item Supports directory-based routing
 
 `docs/en/guide/components.md` will be generated to `dist/en/guide/components.html`, and asset links are resolved automatically.
@@ -75,7 +75,7 @@ Each page injects its own `initDocPage({ components: [...] })` script.
 @tab Syntax
 
 ```markdown
-:::accordion multiple collapsible
+::: accordion multiple collapsible
 @item Supports directory-based routing
 
 `docs/en/guide/components.md` will be generated to `dist/en/guide/components.html`, and asset links are resolved automatically.
@@ -99,10 +99,10 @@ Each page injects its own `initDocPage({ components: [...] })` script.
 
 ### Offcanvas
 
-:::tabs
+::: tabs
 @tab Demo
 
-:::offcanvas [Open Panel] left
+::: offcanvas [Open Panel] left
 
 ### Offcanvas
 
@@ -124,7 +124,7 @@ export function toHtml(file) {
 @tab Syntax
 
 ````markdown
-:::offcanvas [Open Panel] left
+::: offcanvas [Open Panel] left
 
 ### Offcanvas
 
@@ -148,38 +148,15 @@ export function toHtml(file) {
 
 #### Parameters
 
-- `title`: button text, written as `:::offcanvas [Button Text]`; default is `Open Panel`
-- `direction`: panel direction, written as `:::offcanvas [Button Text] direction`; supports `left`, `right`, `top`, and `bottom`, with `right` as the default
+- `title`: button text, written as `::: offcanvas [Button Text]`; default is `Open Panel`
+- `direction`: panel direction, written as `::: offcanvas [Button Text] direction`; supports `left`, `right`, `top`, and `bottom`, with `right` as the default
 
 ### Tip
 
-:::tabs
+::: tabs
 @tab Demo
 
-:::tip
-This is a tip message.
-:::
-
-::: primary
-This is a tip message.
-:::
-
-::: success Success
-The operation has completed.
-:::
-
-::: warning Warning
-Please confirm the configuration.
-:::
-
-::: danger Danger
-This action cannot be undone.
-:::
-
-@tab Syntax
-
-```markdown
-:::tip
+::: tip
 This is a tip message.
 :::
 
@@ -187,7 +164,26 @@ This is a tip message.
 This is a tip message.
 :::
 
-::: primary
+::: success Success
+The operation has completed.
+:::
+
+::: warning Warning
+Please confirm the configuration.
+:::
+
+::: error Error
+This action cannot be undone.
+:::
+
+@tab Syntax
+
+```markdown
+::: tip
+This is a tip message.
+:::
+
+::: info Custom title
 This is a tip message.
 :::
 
@@ -199,7 +195,7 @@ The operation has completed.
 Please confirm the configuration.
 :::
 
-::: danger Danger
+::: error Error
 This action cannot be undone.
 :::
 ```
@@ -208,15 +204,15 @@ This action cannot be undone.
 
 #### Parameters
 
-- `:::tip` is syntax sugar for `::: info`, and outputs `is-default`.
-- `info`, `primary`, `success`, `warning`, and `danger` map to `is-default`, `is-primary`, `is-success`, `is-warning`, and `is-danger`.
+- `::: tip` outputs `j-tip` without a status class.
+- `::: info`, `::: success`, `::: warning`, and `::: error` output `j-tip is-info`, `j-tip is-success`, `j-tip is-warning`, and `j-tip is-error`, respectively.
 - When no title is provided, Chinese pages show `提示` and English pages show `Tip`.
 
 ### Tree
 
 A component that helps users quickly understand the directory structure of the documentation.
 
-:::tabs
+::: tabs
 @tab Demo
 
 :::tree
@@ -278,7 +274,7 @@ export default {
 
 ### Details
 
-:::tabs
+::: tabs
 @tab Demo
 
 ::: details Title
@@ -301,12 +297,12 @@ This is a details panel.
 
 The inline container component `<Group />` is used to wrap inline HTML or components like `Badge`.
 
-:::tabs
+::: tabs
 @tab Demo
 
 <Group gap={8}>
   <Badge text="apple" />
-  <Badge text="orange" theme="primary" />
+  <Badge text="orange" theme="info" />
   <Badge text="banana" theme="warning" />
 </Group>
 
@@ -315,7 +311,7 @@ The inline container component `<Group />` is used to wrap inline HTML or compon
 ```markdown
 <Group gap={8}>
   <Badge text="apple" />
-  <Badge text="orange" theme="primary" />
+  <Badge text="orange" theme="info" />
   <Badge text="banana" theme="warning" />
 </Group>
 ```
@@ -330,12 +326,12 @@ The inline container component `<Group />` is used to wrap inline HTML or compon
 
 The badge component `<Badge />` can be used directly in headings or body text.
 
-:::tabs
+::: tabs
 @tab Demo
 
 # Title <Badge text="new" />
 
-Inline badges <Badge text="beta" theme="primary" size="sm" /> can also be inserted in text.
+Inline badges <Badge text="beta" theme="info" size="sm" /> can also be inserted in text.
 
 <Group>
 <Badge text="default" theme="default" />
@@ -343,10 +339,9 @@ Inline badges <Badge text="beta" theme="primary" size="sm" /> can also be insert
 <Badge text="solid" theme="solid" />
 <Badge text="soft" theme="soft" />
 <Badge text="wash" theme="wash" />
-<Badge text="primary" theme="primary" />
+<Badge text="info" theme="info" />
 <Badge text="success" theme="success" />
 <Badge text="warning" theme="warning" />
-<Badge text="danger" theme="danger" />
 <Badge text="error" theme="error" />
 </Group>
 
@@ -354,7 +349,7 @@ Inline badges <Badge text="beta" theme="primary" size="sm" /> can also be insert
 
 ```markdown
 <Badge text="new" />
-<Badge text="beta" theme="primary" size="sm" />
+<Badge text="beta" theme="info" size="sm" />
 ```
 
 :::
@@ -362,14 +357,14 @@ Inline badges <Badge text="beta" theme="primary" size="sm" /> can also be insert
 #### Parameters
 
 - `text`: badge text. If omitted, the content inside the tag is used.
-- `theme`: defaults to `default`, with optional values `reverse`, `solid`, `soft`, `wash`, `primary`, `success`, `warning`, `danger`, `error`.
+- `theme`: defaults to `default`, with optional values `reverse`, `solid`, `soft`, `wash`, `info`, `success`, `warning`, `error`.
 - `size`: defaults to `md`, with optional value `sm`.
 
 ### Bilibili
 
 The Bilibili component `<Bilibili />` embeds a Bilibili video in a document.
 
-:::tabs
+::: tabs
 @tab Demo
 <Bilibili url="https://www.bilibili.com/video/BV1KE411a7EY/" />
 
@@ -398,7 +393,7 @@ The Bilibili component `<Bilibili />` embeds a Bilibili video in a document.
 
 The Youtube component `<Youtube />` embeds a Youtube video in a document.
 
-:::tabs
+::: tabs
 @tab Demo
 <Youtube url="https://www.youtube.com/watch?v=0Puv0Pss33M" />
 

@@ -9,14 +9,14 @@ description: 介绍 Vanilla Press 内置组件，包含 Tabs、Accordion、Offca
 
 组件分为容器组件和标签组件：
 
-- 容器组件：语法使用 `:::` 开头，如 `:::tabs`、`:::accordion` 等。
+- 容器组件：语法使用 `:::` 开头，如 `::: tabs`、`::: accordion` 等。
 - 标签组件：语法使用 `<` 开头，首字母大写，类似于 `HTML` 标签，如 `<Badge />` 等。
 
 ## 容器组件
 
 ### Tabs
 
-:::tabs
+::: tabs
 @tab JavaScript
 
 ```javascript
@@ -39,7 +39,7 @@ export function toHtml(file) {
 @tab 语法
 
 ```markdown
-:::tabs
+::: tabs
 @tab 选项一
 
 内容一
@@ -55,10 +55,10 @@ export function toHtml(file) {
 
 ### Accordion
 
-:::tabs
+::: tabs
 @tab 示例
 
-:::accordion multiple collapsible
+::: accordion multiple collapsible
 @item 支持目录结构
 
 `docs/zh/guide/components.md` 会输出为 `dist/zh/guide/components.html`，资源链接会自动计算相对路径。
@@ -75,7 +75,7 @@ export function toHtml(file) {
 @tab 语法
 
 ```markdown
-:::accordion multiple collapsible
+::: accordion multiple collapsible
 @item 支持目录结构
 
 `docs/zh/guide/components.md` 会输出为 `dist/zh/guide/components.html`，资源链接会自动计算相对路径。
@@ -99,10 +99,10 @@ export function toHtml(file) {
 
 ### Offcanvas
 
-:::tabs
+::: tabs
 @tab 示例
 
-:::offcanvas [打开面板] left
+::: offcanvas [打开面板] left
 
 ### Offcanvas
 
@@ -124,7 +124,7 @@ export function toHtml(file) {
 @tab 语法
 
 ````markdown
-:::offcanvas [打开面板] left
+::: offcanvas [打开面板] left
 
 ### Offcanvas
 
@@ -148,38 +148,15 @@ export function toHtml(file) {
 
 #### 参数说明
 
-- `title` 按钮文本，写法 `:::offcanvas [按钮文本]`，默认值 `打开面板`
-- `direction` 面板方向，写法 `:::offcanvas [按钮文本] direction`，支持 `left`、`right`、`top`、`bottom`，默认值 `right`
+- `title` 按钮文本，写法 `::: offcanvas [按钮文本]`，默认值 `打开面板`
+- `direction` 面板方向，写法 `::: offcanvas [按钮文本] direction`，支持 `left`、`right`、`top`、`bottom`，默认值 `right`
 
 ### Tip
 
-:::tabs
+::: tabs
 @tab 示例
 
-:::tip
-这是一个提示信息。
-:::
-
-::: primary
-这是一个提示信息。
-:::
-
-::: success 成功
-操作已完成。
-:::
-
-::: warning 注意
-请确认配置内容。
-:::
-
-::: danger 危险
-删除后不可恢复。
-:::
-
-@tab 语法
-
-```markdown
-:::tip
+::: tip
 这是一个提示信息。
 :::
 
@@ -187,7 +164,26 @@ export function toHtml(file) {
 这是一个提示信息。
 :::
 
-::: primary
+::: success 成功
+操作已完成。
+:::
+
+::: warning 注意
+请确认配置内容。
+:::
+
+::: error 危险
+删除后不可恢复。
+:::
+
+@tab 语法
+
+```markdown
+::: tip
+这是一个提示信息。
+:::
+
+::: info 自定义标题
 这是一个提示信息。
 :::
 
@@ -199,7 +195,7 @@ export function toHtml(file) {
 请确认配置内容。
 :::
 
-::: danger 危险
+::: error 错误
 删除后不可恢复。
 :::
 ```
@@ -208,15 +204,15 @@ export function toHtml(file) {
 
 #### 参数说明
 
-- `:::tip` 是 `::: info` 的语法糖，输出 `is-default`。
-- `info`、`primary`、`success`、`warning`、`danger` 分别对应 `is-default`、`is-primary`、`is-success`、`is-warning`、`is-danger`。
+- `::: tip` 输出 `j-tip`，不添加状态 class。
+- `::: info`、`::: success`、`::: warning`、`::: error` 分别输出 `j-tip is-info`、`j-tip is-success`、`j-tip is-warning`、`j-tip is-error`。
 - 不传标题时，中文页面默认显示 `提示`，英文页面默认显示 `Tip`。
 
 ### Tree
 
 帮助用户快速了解文档的目录结构的组件。
 
-:::tabs
+::: tabs
 @tab 示例
 
 :::tree
@@ -278,7 +274,7 @@ export default {
 
 ### Details
 
-:::tabs
+::: tabs
 @tab 示例
 
 ::: details 标题
@@ -301,12 +297,12 @@ export default {
 
 行内容器组件 `<Group />` 用来包裹行内 HTML 或 `Badge` 等组件。
 
-:::tabs
+::: tabs
 @tab 示例
 
 <Group gap={8}>
   <Badge text="apple" />
-  <Badge text="orange" theme="primary" />
+  <Badge text="orange" theme="info" />
   <Badge text="banana" theme="warning" />
 </Group>
 
@@ -315,7 +311,7 @@ export default {
 ```markdown
 <Group gap={8}>
   <Badge text="apple" />
-  <Badge text="orange" theme="primary" />
+  <Badge text="orange" theme="info" />
   <Badge text="banana" theme="warning" />
 </Group>
 ```
@@ -330,12 +326,12 @@ export default {
 
 徽标组件 `<Badge />` 支持直接在标题或正文中使用。
 
-:::tabs
+::: tabs
 @tab 示例
 
 # 标题 <Badge text="new" />
 
-正文中也可以插入 <Badge text="beta" theme="primary" size="sm" />。
+正文中也可以插入 <Badge text="beta" theme="info" size="sm" />。
 
 <Group>
 <Badge text="default" theme="default" />
@@ -343,10 +339,9 @@ export default {
 <Badge text="solid" theme="solid" />
 <Badge text="soft" theme="soft" />
 <Badge text="wash" theme="wash" />
-<Badge text="primary" theme="primary" />
+<Badge text="info" theme="info" />
 <Badge text="success" theme="success" />
 <Badge text="warning" theme="warning" />
-<Badge text="danger" theme="danger" />
 <Badge text="error" theme="error" />
 </Group>
 
@@ -354,7 +349,7 @@ export default {
 
 ```markdown
 <Badge text="new" />
-<Badge text="beta" theme="primary" size="sm" />
+<Badge text="beta" theme="info" size="sm" />
 ```
 
 :::
@@ -362,14 +357,14 @@ export default {
 #### 参数说明
 
 - `text`：标签文本。若省略，则使用标签内部内容。
-- `theme`：默认值 `default`，可选值 `reverse`、`solid`、`soft`、`wash`、`primary`、`success`、`warning`、`danger`、`error`。
+- `theme`：默认值 `default`，可选值 `reverse`、`solid`、`soft`、`wash`、`info`、`success`、`warning`、`error`。
 - `size`：默认值 `md`，可选值 `sm`。
 
 ### Bilibili
 
 Bilibili 组件 `<Bilibili />` 支持在文档中嵌入 Bilibili 视频。
 
-:::tabs
+::: tabs
 @tab 示例
 <Bilibili url="https://www.bilibili.com/video/BV1KE411a7EY/" />
 
@@ -398,7 +393,7 @@ Bilibili 组件 `<Bilibili />` 支持在文档中嵌入 Bilibili 视频。
 
 Youtube 组件 `<Youtube />` 支持在文档中嵌入 Youtube 视频。
 
-:::tabs
+::: tabs
 @tab 示例
 <Youtube url="https://www.youtube.com/watch?v=0Puv0Pss33M" />
 
