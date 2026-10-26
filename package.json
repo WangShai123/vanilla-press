@@ -1,6 +1,6 @@
 {
   "name": "vanilla-press-repo",
-  "version": "1.7.8",
+  "version": "1.7.9",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -20,7 +20,11 @@
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "typescript": "^7.0.2",
     "vanilla-press": "workspace:*",
-    "vite-plus": "^0.3.1"
+    "vite-plus": "^1.4.0"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.4.0",
+    "vitest": "5.0.5"
   },
   "allowScripts": {
     "esbuild@0.28.2": true,

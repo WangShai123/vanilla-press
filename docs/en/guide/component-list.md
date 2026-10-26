@@ -215,7 +215,7 @@ A component that helps users quickly understand the directory structure of the d
 ::: tabs
 @tab Demo
 
-:::tree
+::: tree
 my-project/
 ├── src/
 │ ├── components/ [collapsed]
@@ -234,7 +234,7 @@ my-project/
 @tab Syntax
 
 ```markdown
-:::tree
+::: tree
 my-project/
 ├── src/
 │ ├── components/ [collapsed]

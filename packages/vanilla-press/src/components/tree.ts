@@ -161,7 +161,7 @@ export function installTree(md: MarkdownRuntime): void {
       const start = state.bMarks[startLine] + state.tShift[startLine]
       const end = state.eMarks[startLine]
       const line = state.src.slice(start, end)
-      const match = line.match(/^:::tree(?:\s+(.*))?$/)
+      const match = line.match(/^:::\s*tree(?:\s+(.*))?$/)
 
       if (!match) return false
       if (silent) return true

@@ -58,7 +58,7 @@ npm run dev
 - `vp/config/`: site configuration directory.
 - `vp/layouts/`: custom layouts.
 
-:::tree
+::: tree
 vanilla-press/
 ├── dist/
 │ └── public/

@@ -215,7 +215,7 @@ export function toHtml(file) {
 ::: tabs
 @tab 示例
 
-:::tree
+::: tree
 my-project/
 ├── src/
 │ ├── components/ [collapsed]
@@ -234,7 +234,7 @@ my-project/
 @tab 语法
 
 ```markdown
-:::tree
+::: tree
 my-project/
 ├── src/
 │ ├── components/ [collapsed]

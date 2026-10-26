@@ -166,7 +166,7 @@ If you copy `home` into a new landing-page layout and want to show previous/next
 
 The built-in `home` styles include background light effects, glass cards, button motion, code cards, feature card hover effects, and a CTA gradient. You can add `vp/layouts/home/` and customize it for your project:
 
-:::tree
+::: tree
 vp/
 ├── layouts/
 │ └── home/

@@ -15,7 +15,7 @@ Each layout has its own directory, and the directory name is the layout name.
 
 Built-in layouts are shipped by the installed `vanilla-press` package. Project documentation can add or override layouts under `vp/layouts/`:
 
-:::tree
+::: tree
 vp/
 ├── layouts/
 │ └── landing/

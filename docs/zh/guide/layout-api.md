@@ -15,7 +15,7 @@ description: 介绍 Vanilla Press 布局 API。
 
 内置布局由已安装的 `vanilla-press` 依赖包提供。项目侧可以在 `vp/layouts/` 下新增或覆盖布局：
 
-:::tree
+::: tree
 vp/
 ├── layouts/
 │ └── landing/

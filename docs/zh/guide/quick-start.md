@@ -58,7 +58,7 @@ npm run dev
 - `vp/config/`：站点配置目录。
 - `vp/layouts/`：自定义布局。
 
-:::tree
+::: tree
 vanilla-press/
 ├── dist/
 │ └── public/

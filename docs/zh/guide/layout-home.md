@@ -166,7 +166,7 @@ cta:
 
 内置 `home` 样式包含背景光效、玻璃卡片、按钮动效、代码卡片、特性卡片 hover 效果和 CTA 渐变。你可以新增 `vp/layouts/home/` 后按项目需要修改：
 
-:::tree
+::: tree
 vp/
 ├── layouts/
 │ └── home/
