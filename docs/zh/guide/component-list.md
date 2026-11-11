@@ -202,11 +202,7 @@ export function toHtml(file) {
 
 :::
 
-#### 参数说明
-
-- `::: tip` 输出 `j-tip`，不添加状态 class。
-- `::: info`、`::: success`、`::: warning`、`::: error` 分别输出 `j-tip is-info`、`j-tip is-success`、`j-tip is-warning`、`j-tip is-error`。
-- 不传标题时，中文页面默认显示 `提示`，英文页面默认显示 `Tip`。
+不传标题时，中文页面默认显示 `提示`，英文页面默认显示 `Tip`。
 
 ### Tree
 

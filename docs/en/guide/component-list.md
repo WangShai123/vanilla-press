@@ -202,11 +202,7 @@ This action cannot be undone.
 
 :::
 
-#### Parameters
-
-- `::: tip` outputs `j-tip` without a status class.
-- `::: info`, `::: success`, `::: warning`, and `::: error` output `j-tip is-info`, `j-tip is-success`, `j-tip is-warning`, and `j-tip is-error`, respectively.
-- When no title is provided, Chinese pages show `提示` and English pages show `Tip`.
+When no title is provided, Chinese pages show `提示` and English pages show `Tip`.
 
 ### Tree
 

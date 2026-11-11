@@ -1,6 +1,6 @@
 /* Component */
 .vp-component {
-  margin-block: 1.25rem;
+  margin-block: 20px;
 }
 
 .vp-content mjx-container[jax="SVG"] {
@@ -19,7 +19,7 @@
 
 .vp-content mjx-container[display="true"] {
   display: block;
-  margin-block: 1.25rem;
+  margin-block: 20px;
   text-align: center;
 }
 
@@ -34,16 +34,6 @@
   clip: rect(1px, 1px, 1px, 1px);
   border: 0 !important;
   user-select: none;
-}
-
-.shiki {
-  background-color: var(--ui-bg) !important;
-  color: var(--ui-fg) !important;
-}
-
-.dark .shiki code span {
-  background-color: var(--ui-bg) !important;
-  color: var(--shiki-dark);
 }
 
 /* title */
@@ -62,7 +52,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 1.25rem 0 1.75rem;
+  margin: 20px 0 28px;
 }
 
 .llms-options-trigger svg {
@@ -112,16 +102,15 @@ a[data-vp-external-link] span.external-link svg {
 
 /* Editor Help */
 .vp-editor-help {
-  margin-top: 4rem;
+  margin-top: 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 16px;
   font-size: var(--font-size-sm);
 }
 
 .vp-edit-link a {
-  /* color: var(--ui-fg-muted); */
   color: var(--ui-fg-soft);
   display: flex;
   gap: 4px;
@@ -163,8 +152,8 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 .vp-prev-next-link:hover {
-  border-color: var(--tone-text);
-  background: var(--tone-soft);
+  border-color: var(--tone-ring);
+  background: var(--tone-subtle)
 }
 
 .vp-prev-next-link.is-next {
@@ -222,7 +211,7 @@ a[data-vp-external-link] span.external-link svg {
   --tab-wrap-radius: 0;
   --tab-indicator-radius: var(--radius-lg);
   --tab-bg: none;
-  --tab-wrap-padding: 12px;
+  --tab-wrap-padding: 8px 12px 0;
   --tab-panel-padding: 16px;
 }
 
@@ -248,7 +237,7 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 .vp-offcanvas-body {
-  padding: 1rem;
+  padding: 16px;
 }
 
 .j-accordion .panel-body>*:first-child {
@@ -282,13 +271,20 @@ a[data-vp-external-link] span.external-link svg {
   margin: 0;
 }
 
+/* shiki */
+.dark .shiki,
+.dark .shiki code span {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+}
+
 .code-block .vp-code-copy {
   position: absolute;
-  top: 0.45rem;
-  right: 0.5rem;
+  top: 7.2px;
+  right: 8px;
   z-index: 2;
-  width: 2rem;
-  height: 2rem;
+  width: 32px;
+  height: 32px;
   padding: 0;
   opacity: 0;
   transition: opacity 0.16s ease;
@@ -307,37 +303,18 @@ a[data-vp-external-link] span.external-link svg {
   display: block;
   box-sizing: border-box;
   min-height: 1.6em;
-  padding: 0 1rem;
-  margin: 0 -1rem;
+  padding: 0 16px;
+  margin: 0 -16px;
   line-height: inherit;
-}
-
-.code-block .line.highlighted {
-  background-color: color-mix(in srgb, var(--ui-indigo) 12%, transparent);
 }
 
 .dark .code-block .line>span {
   background-color: transparent !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  html:not(.light) .code-block .line>span {
-    background-color: transparent !important;
-  }
-}
-
+.code-block .line.highlighted,
 .dark .code-block .line.highlighted {
-  background-color: color-mix(in srgb,
-      var(--ui-indigo) 22%,
-      transparent) !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not(.light) .code-block .line.highlighted {
-    background-color: color-mix(in srgb,
-        var(--ui-indigo) 22%,
-        transparent) !important;
-  }
+  background-color: color-mix(in srgb, var(--ui-blue) 12%, transparent) !important;
 }
 
 .code-block .line.diff {
@@ -346,93 +323,41 @@ a[data-vp-external-link] span.external-link svg {
 
 .code-block .line.diff::before {
   position: absolute;
-  left: 0.35rem;
+  left: 5.6px;
   color: var(--tone-caption);
 }
 
-.code-block .line.diff.add {
-  background-color: color-mix(in srgb, var(--state-success) 14%, transparent);
-}
-
+.code-block .line.diff.add,
 .dark .code-block .line.diff.add {
-  background-color: color-mix(in srgb,
-      var(--state-success) 26%,
-      transparent) !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not(.light) .code-block .line.diff.add {
-    background-color: color-mix(in srgb,
-        var(--state-success) 26%,
-        transparent) !important;
-  }
+  background-color: color-mix(in srgb, var(--state-success) 20%, transparent) !important;
 }
 
 .code-block .line.diff.add::before {
   content: '+';
 }
 
-.code-block .line.diff.remove {
-  background-color: color-mix(in srgb, var(--state-error) 14%, transparent) !important;
-}
-
+.code-block .line.diff.remove,
 .dark .code-block .line.diff.remove {
-  background-color: color-mix(in srgb,
-      var(--state-error) 26%,
-      transparent) !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not(.light) .code-block .line.diff.remove {
-    background-color: color-mix(in srgb,
-        var(--state-error) 26%,
-        transparent) !important;
-  }
+  background-color: color-mix(in srgb, var(--state-error) 20%, transparent) !important;
 }
 
 .code-block .line.diff.remove::before {
   content: '-';
 }
 
-.code-block .line.warning {
-  background-color: color-mix(in srgb, var(--state-warning) 18%, transparent);
-}
-
+.code-block .line.warning,
 .dark .code-block .line.warning {
-  background-color: color-mix(in srgb,
-      var(--state-warning) 30%,
-      transparent) !important;
+  background-color: color-mix(in srgb, var(--state-warning) 20%, transparent) !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  html:not(.light) .code-block .line.warning {
-    background-color: color-mix(in srgb,
-        var(--state-warning) 30%,
-        transparent) !important;
-  }
-}
-
-.code-block .line.error {
-  background-color: color-mix(in srgb, var(--state-error) 16%, transparent);
-}
-
+.code-block .line.error,
 .dark .code-block .line.error {
-  background-color: color-mix(in srgb,
-      var(--state-error) 28%,
-      transparent) !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not(.light) .code-block .line.error {
-    background-color: color-mix(in srgb,
-        var(--state-error) 28%,
-        transparent) !important;
-  }
+  background-color: color-mix(in srgb, var(--state-error) 35%, transparent) !important;
 }
 
 .code-block.has-focused-lines .line:not(.focused) {
-  opacity: 0.2;
-  transition: opacity 0.18s ease;
+  opacity: 0.15;
+  transition: opacity 0.2s ease;
 }
 
 .code-block.has-focused-lines:hover .line {
@@ -441,14 +366,14 @@ a[data-vp-external-link] span.external-link svg {
 
 .code-block.has-line-numbers .line {
   position: relative;
-  padding-left: 3rem;
+  padding-left: 48px;
   counter-increment: vp-code-line;
 }
 
 .code-block.has-line-numbers .line::before {
   position: absolute;
   left: 0;
-  width: 2.25rem;
+  width: 36px;
   color: var(--tone-caption);
   text-align: right;
   content: counter(vp-code-line);
@@ -461,7 +386,7 @@ a[data-vp-external-link] span.external-link svg {
 
 .code-block.has-line-numbers .line.diff::after {
   position: absolute;
-  left: 2.65rem;
+  left: 42.4px;
   color: var(--tone-caption);
 }
 

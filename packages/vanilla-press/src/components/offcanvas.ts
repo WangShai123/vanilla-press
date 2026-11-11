@@ -56,7 +56,7 @@ export function installOffcanvas(md: MarkdownRuntime): void {
 
     return `
       <div class="vp-component vp-offcanvas" data-vp-component="offcanvas" data-direction="${escapeAttr(direction)}">
-        <button type="button" class="j-btn is-outline" data-vp-offcanvas-trigger>${escapeAttr(title)}</button>
+        <button type="button" class="j-btn is-md is-outline" data-vp-offcanvas-trigger>${escapeAttr(title)}</button>
         <div hidden data-vp-offcanvas-body>
           <div class="vp-offcanvas-body j-editor is-sm">
             ${md.render(token.content, env)}

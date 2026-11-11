@@ -10,7 +10,7 @@ export default {
     footerScript: "script",
     highlight: {
       light: "github-light",
-      dark: "github-dark"
+      dark: "dark-plus"
     },
     llms: {
       link: true,

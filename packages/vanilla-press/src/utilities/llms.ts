@@ -238,7 +238,7 @@ function createOptionsButton(
 function createEditorSizeButton(
   document: Document,
   action: 'decrease' | 'increase',
-  iconName: 'subtract' | 'add'
+  iconName: 'minus' | 'add'
 ): HTMLButtonElement {
   const button = document.createElement('button')
   button.type = 'button'
@@ -294,7 +294,7 @@ function createLlmsContainer(
 
   if (editorSizeEnabled) {
     container.append(
-      createEditorSizeButton(document, 'decrease', 'subtract'),
+      createEditorSizeButton(document, 'decrease', 'minus'),
       createEditorSizeButton(document, 'increase', 'add')
     )
   }

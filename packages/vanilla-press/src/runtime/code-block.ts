@@ -20,7 +20,7 @@ function codeText(block: HTMLElement): string {
 function createCopyButton(block: HTMLElement): HTMLButtonElement {
   const button = document.createElement('button')
   button.type = 'button'
-  button.className = 'vp-code-copy j-btn is-ghost is-icon'
+  button.className = 'vp-code-copy j-btn is-ghost is-icon is-md'
   button.setAttribute('aria-label', 'Copy code')
   setIcon(button, 'copy')
 
@@ -31,7 +31,7 @@ function createCopyButton(block: HTMLElement): HTMLButtonElement {
     const timer = resetTimers.get(button)
     if (timer) window.clearTimeout(timer)
 
-    setIcon(button, 'check')
+    setIcon(button, 'success')
     resetTimers.set(
       button,
       window.setTimeout(() => {

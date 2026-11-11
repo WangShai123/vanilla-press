@@ -22,7 +22,7 @@ type CodeHighlightThemes = Record<'light' | 'dark', BundledTheme>
 
 const DEFAULT_SHIKI_THEMES: CodeHighlightThemes = {
   light: 'github-light',
-  dark: 'github-dark',
+  dark: 'dark-plus',
 }
 const DEFAULT_SHIKI_LANGUAGES = ['markdown', 'md'] satisfies BundledLanguage[]
 
