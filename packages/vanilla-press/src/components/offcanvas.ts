@@ -56,9 +56,9 @@ export function installOffcanvas(md: MarkdownRuntime): void {
 
     return `
       <div class="vp-component vp-offcanvas" data-vp-component="offcanvas" data-direction="${escapeAttr(direction)}">
-        <button type="button" class="j-button is-outline" data-vp-offcanvas-trigger>${escapeAttr(title)}</button>
-        <div hidden data-vp-offcanvas-content>
-          <div class="vp-offcanvas-content j-editor is-sm">
+        <button type="button" class="j-btn is-outline" data-vp-offcanvas-trigger>${escapeAttr(title)}</button>
+        <div hidden data-vp-offcanvas-body>
+          <div class="vp-offcanvas-body j-editor is-sm">
             ${md.render(token.content, env)}
           </div>
         </div>
@@ -72,7 +72,7 @@ export function initOffcanvas(root: Document | Element = document): void {
       if (container.dataset.vpReady === 'true') return
 
       const trigger = q<HTMLElement>('[data-vp-offcanvas-trigger]', container)
-      const content = q<HTMLElement>('[data-vp-offcanvas-content]', container)
+      const content = q<HTMLElement>('[data-vp-offcanvas-body]', container)
       if (!trigger || !content) return
 
       const contentBody = content.firstElementChild

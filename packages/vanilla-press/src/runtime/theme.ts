@@ -44,7 +44,7 @@ export function initTheme(config: RuntimeConfig = {}, i18n: DocI18n): void {
   const theme = createTheme(themeConfig.options || {})
   const drawer = createOffcanvas({
     direction: themeConfig.offcanvas?.direction || 'right',
-    content: theme.createPanel('j-theme-palette', themeConfig.panel || null),
+    content: theme.createPanel('j-themes', themeConfig.panel || null),
     cache: true,
   }).build()
 

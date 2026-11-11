@@ -27,7 +27,6 @@
 }
 
 .vp-content-wrap {
-  background: var(--vp-panel);
   border-radius: var(--radius-md);
 }
 

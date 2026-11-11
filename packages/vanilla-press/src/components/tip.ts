@@ -93,7 +93,7 @@ export function installTip(md: MarkdownRuntime): void {
     return `<div class="${typeClass(tip.type)}" data-vp-component="tip" data-tip-icon="${typeIcon(tip.type)}">
   <div class="tip-icon" data-vp-tip-icon></div>
   <div class="tip-title" data-vp-tip-title>${escapeAttr(tip.title)}</div>
-  <div class="tip-content">${md.render(token.content, env)}</div>
+  <div class="tip-body">${md.render(token.content, env)}</div>
 </div>`
   }
 }

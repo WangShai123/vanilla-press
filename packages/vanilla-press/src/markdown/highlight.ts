@@ -21,8 +21,8 @@ import { toText } from '../utilities/string.ts'
 type CodeHighlightThemes = Record<'light' | 'dark', BundledTheme>
 
 const DEFAULT_SHIKI_THEMES: CodeHighlightThemes = {
-  light: 'github-light-default',
-  dark: 'github-dark-default',
+  light: 'github-light',
+  dark: 'github-dark',
 }
 const DEFAULT_SHIKI_LANGUAGES = ['markdown', 'md'] satisfies BundledLanguage[]
 

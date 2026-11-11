@@ -213,7 +213,7 @@ function createLinkButton(
 ): HTMLButtonElement {
   const button = document.createElement('button')
   button.type = 'button'
-  button.className = 'j-button is-default'
+  button.className = 'j-btn is-default'
   button.setAttribute('data-vp-llms-link', '')
   button.append(
     createIconSlot(document, 'file'),
@@ -228,7 +228,7 @@ function createOptionsButton(
 ): HTMLButtonElement {
   const button = document.createElement('button')
   button.type = 'button'
-  button.className = 'j-button is-default is-icon llms-options-trigger'
+  button.className = 'j-btn is-default is-icon llms-options-trigger'
   button.setAttribute('data-vp-llms-options-trigger', '')
   button.setAttribute('aria-label', String(labels.options || ''))
   button.append(createIconSlot(document, 'arrow-down'))
@@ -242,7 +242,7 @@ function createEditorSizeButton(
 ): HTMLButtonElement {
   const button = document.createElement('button')
   button.type = 'button'
-  button.className = 'j-button is-default is-icon'
+  button.className = 'j-btn is-default is-icon'
   button.setAttribute('data-vp-editor-size-action', action)
   button.setAttribute(
     'aria-label',

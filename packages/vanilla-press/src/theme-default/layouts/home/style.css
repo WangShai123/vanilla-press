@@ -172,7 +172,7 @@ body.vp-layout-home {
   background: var(--state-success);
   box-shadow:
     14px 0 0 var(--state-warning),
-    28px 0 0 var(--state-danger);
+    28px 0 0 var(--state-error);
 }
 
 .vp-home-command-group+.vp-home-command-group {

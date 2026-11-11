@@ -9,8 +9,8 @@ export default {
     },
     footerScript: 'script',
     highlight: {
-      light: 'github-light-default',
-      dark: 'github-dark-default',
+      light: 'github-light',
+      dark: 'github-dark',
     },
     llms: {
       link: true,

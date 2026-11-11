@@ -36,19 +36,14 @@
   user-select: none;
 }
 
-.dark .shiki,
-.dark .shiki code span {
-  background-color: var(--shiki-dark-bg) !important;
-  color: var(--shiki-dark) !important;
+.shiki {
+  background-color: var(--ui-bg) !important;
+  color: var(--ui-fg) !important;
 }
 
-@media (prefers-color-scheme: dark) {
-
-  html:not(.light) .shiki,
-  html:not(.light) .shiki span {
-    color: var(--shiki-dark) !important;
-    background-color: var(--shiki-dark-bg) !important;
-  }
+.dark .shiki code span {
+  background-color: var(--ui-bg) !important;
+  color: var(--shiki-dark);
 }
 
 /* title */
@@ -165,12 +160,11 @@ a[data-vp-external-link] span.external-link svg {
   border-radius: var(--radius-md);
   color: inherit;
   text-decoration: none;
-  background: var(--vp-panel);
 }
 
 .vp-prev-next-link:hover {
-  border-color: var(--vp-accent);
-  background: var(--vp-accent-bg);
+  border-color: var(--tone-text);
+  background: var(--tone-soft);
 }
 
 .vp-prev-next-link.is-next {
@@ -222,22 +216,25 @@ a[data-vp-external-link] span.external-link svg {
   white-space: nowrap;
 }
 
-/* Tree */
-
 /* tabs */
-.dark .j-tabs .tab-list .tab-item[aria-selected='false'] {
-  --tab-fg: var(--ui-fg-muted);
+.j-tabs {
+  --tab-wrap-width: 100%;
+  --tab-wrap-radius: 0;
+  --tab-indicator-radius: var(--radius-lg);
+  --tab-bg: none;
+  --tab-wrap-padding: 12px;
+  --tab-panel-padding: 16px;
 }
 
-.j-tabs .panel-list .panel-item>*+* {
-  margin-top: 12px;
-}
-
-.j-tabs .panel-list .panel-item>*:first-child {
+.j-tabs .panel-item> :first-child {
   margin-top: 0;
 }
 
-.j-tabs .panel-list .panel-item>*:last-child,
+.j-tabs .tab-panel .panel-item>*+* {
+  margin-top: 12px;
+}
+
+.j-tabs .panel-item> :last-child,
 .j-tabs .panel-item details[open]>*:last-child {
   margin-bottom: 0;
 }
@@ -250,20 +247,20 @@ a[data-vp-external-link] span.external-link svg {
   overflow: hidden;
 }
 
-.vp-offcanvas-content {
+.vp-offcanvas-body {
   padding: 1rem;
 }
 
-.j-accordion .panel-content>*:first-child {
+.j-accordion .panel-body>*:first-child {
   margin-top: 0;
 }
 
-.j-accordion .panel-content>*:last-child {
+.j-accordion .panel-body>*:last-child {
   margin-bottom: 0;
 }
 
 /* tip */
-.j-tip .tip-content {
+.j-tip .tip-body {
   display: block;
   justify-items: unset;
 }
@@ -283,14 +280,6 @@ a[data-vp-external-link] span.external-link svg {
 .j-editor .j-tree>.j-tree-list:first-child {
   padding: 0;
   margin: 0;
-}
-
-.code-block .code-header .code-dots {
-  background-color: var(--state-success) !important;
-}
-
-.code-block {
-  position: relative;
 }
 
 .code-block .vp-code-copy {
@@ -384,19 +373,19 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 .code-block .line.diff.remove {
-  background-color: color-mix(in srgb, var(--state-danger) 14%, transparent);
+  background-color: color-mix(in srgb, var(--state-error) 14%, transparent) !important;
 }
 
 .dark .code-block .line.diff.remove {
   background-color: color-mix(in srgb,
-      var(--state-danger) 26%,
+      var(--state-error) 26%,
       transparent) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .code-block .line.diff.remove {
     background-color: color-mix(in srgb,
-        var(--state-danger) 26%,
+        var(--state-error) 26%,
         transparent) !important;
   }
 }
@@ -424,19 +413,19 @@ a[data-vp-external-link] span.external-link svg {
 }
 
 .code-block .line.error {
-  background-color: color-mix(in srgb, var(--state-danger) 16%, transparent);
+  background-color: color-mix(in srgb, var(--state-error) 16%, transparent);
 }
 
 .dark .code-block .line.error {
   background-color: color-mix(in srgb,
-      var(--state-danger) 28%,
+      var(--state-error) 28%,
       transparent) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .code-block .line.error {
     background-color: color-mix(in srgb,
-        var(--state-danger) 28%,
+        var(--state-error) 28%,
         transparent) !important;
   }
 }

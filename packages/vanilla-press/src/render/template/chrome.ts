@@ -21,7 +21,7 @@ function renderHeaderMenu(options: ChromeOptions): string {
 
 function renderSearch(searchEnabled: boolean): string {
   return searchEnabled
-    ? '<button class="j-button is-ghost is-icon" type="button" data-vp-search hidden aria-label="搜索"></button>'
+    ? '<button class="j-btn is-ghost is-icon" type="button" data-vp-search hidden aria-label="搜索"></button>'
     : ''
 }
 
@@ -33,31 +33,31 @@ function renderLocale(i18nEnabled: boolean): string {
 
 function renderTheme(themeEnabled: boolean): string {
   return themeEnabled
-    ? '<button class="j-button is-ghost is-icon" type="button" data-vp-theme hidden aria-label="主题"></button>'
+    ? '<button class="j-btn is-ghost is-icon" type="button" data-vp-theme hidden aria-label="主题"></button>'
     : ''
 }
 
 function renderAuth(authEnabled: boolean): string {
   return authEnabled
-    ? '<button class="vp-auth-button j-button is-default" type="button" data-vp-auth hidden aria-label="登录"></button>'
+    ? '<button class="vp-auth-button j-btn is-default" type="button" data-vp-auth hidden aria-label="登录"></button>'
     : ''
 }
 
 function renderMenuButton(menuEnabled: boolean): string {
   return menuEnabled
-    ? '<button class="vp-header-icon-button vp-header-menu-toggle j-button is-ghost is-icon" type="button" data-vp-mobile-menu aria-label="打开主菜单"></button>'
+    ? '<button class="vp-header-icon-button vp-header-menu-toggle j-btn is-ghost is-icon" type="button" data-vp-mobile-menu aria-label="打开主菜单"></button>'
     : ''
 }
 
 function renderSidebarButton(sidebarEnabled: boolean): string {
   return sidebarEnabled
-    ? '<button class="vp-header-nav-button j-button is-ghost is-sm" type="button" data-vp-mobile-sidebar aria-label="打开文档导航"></button>'
+    ? '<button class="vp-header-nav-button j-btn is-ghost is-sm" type="button" data-vp-mobile-sidebar aria-label="打开文档导航"></button>'
     : ''
 }
 
 function renderTocButton(tocEnabled: boolean): string {
   return tocEnabled
-    ? '<button class="vp-header-nav-button j-button is-ghost is-sm" type="button" data-vp-mobile-toc aria-label="打开页面目录"></button>'
+    ? '<button class="vp-header-nav-button j-btn is-ghost is-sm" type="button" data-vp-mobile-toc aria-label="打开页面目录"></button>'
     : ''
 }
 
@@ -143,7 +143,7 @@ export function renderSocialList(config = {}): string {
     .map(([name, href]) => {
       const url = toText(href).trim()
       if (!url) return ''
-      return `<a href="${attr(url)}" class="j-button is-icon is-sm is-ghost" target="_blank" rel="noreferrer noopener" aria-label="${attr(name)}" title="${attr(name)}">${renderIcon(name)}</a>`
+      return `<a href="${attr(url)}" class="j-btn is-icon is-sm is-ghost" target="_blank" rel="noreferrer noopener" aria-label="${attr(name)}" title="${attr(name)}">${renderIcon(name)}</a>`
     })
     .filter(Boolean)
     .join('')

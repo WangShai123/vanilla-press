@@ -3,7 +3,6 @@
   bottom: 0;
   box-sizing: border-box;
   padding: 2px 16px;
-  background: var(--vp-panel);
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: thin;

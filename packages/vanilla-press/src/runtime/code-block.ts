@@ -20,7 +20,7 @@ function codeText(block: HTMLElement): string {
 function createCopyButton(block: HTMLElement): HTMLButtonElement {
   const button = document.createElement('button')
   button.type = 'button'
-  button.className = 'vp-code-copy j-button is-ghost is-icon'
+  button.className = 'vp-code-copy j-btn is-ghost is-icon'
   button.setAttribute('aria-label', 'Copy code')
   setIcon(button, 'copy')
 
