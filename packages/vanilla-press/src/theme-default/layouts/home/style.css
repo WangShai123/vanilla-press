@@ -19,7 +19,7 @@ body.vp-layout-home {
 .vp-layout-home .vp-header,
 .vp-layout-home .vp-footer {
   background-color: transparent;
-  background-color: color-mix(in srgb, var(--ui-surface-raised) 14%, transparent);
+  background-color: color-mix(in srgb, var(--ui-raised) 14%, transparent);
 }
 
 .vp-home {
@@ -40,7 +40,7 @@ body.vp-layout-home {
 .vp-home-visual,
 .vp-home-section,
 .vp-home-cta {
-  border: 1px solid var(--ui-border-subtle);
+  border: var(--border-subtle);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(16px);
@@ -67,7 +67,7 @@ body.vp-layout-home {
   align-items: center;
   gap: 6px;
   padding: 0.36rem 0.76rem;
-  border: 1px solid var(--ui-border-subtle);
+  border: var(--border-subtle);
   border-radius: 999px;
   color: var(--ui-fg-muted);
   font-size: 0.77rem;
@@ -139,7 +139,7 @@ body.vp-layout-home {
   border-color: color-mix(in srgb, var(--tone-solid) 36%, var(--ui-border-subtle));
   background: color-mix(in srgb,
       var(--tone-soft) 40%,
-      var(--ui-surface-raised));
+      var(--ui-raised));
 }
 
 .vp-home-hint {
@@ -188,7 +188,7 @@ body.vp-layout-home {
   margin: 0;
   padding: 12px;
   overflow: auto;
-  border: 1px solid var(--ui-border-subtle);
+  border: var(--border-subtle);
   border-radius: var(--radius-lg);
   color: var(--ui-fg);
   font-size: 0.86rem;
@@ -234,7 +234,7 @@ body.vp-layout-home {
 .vp-home-feature {
   min-height: 176px;
   padding: 16px;
-  border: 1px solid var(--ui-border-subtle);
+  border: var(--border-subtle);
   border-radius: var(--radius-lg);
   transition:
     transform 0.2s ease,

@@ -1,8 +1,7 @@
 .vp-footer {
   padding: 12px 20px;
-  border-top: 1px solid var(--vp-line);
-  color: var(--vp-muted);
-  background: var(--vp-panel-overlay);
+  border-top: var(--border-subtle);
+  color: var(--tone-caption);
   font-size: var(--font-size-sm);
   display: flex;
   flex-direction: column;

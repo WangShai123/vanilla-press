@@ -1,5 +1,5 @@
 .vp-sidebar {
-  top: calc(var(--vp-header-height) + 24px);
+  top: 72px;
   bottom: 0;
   box-sizing: border-box;
   padding: 2px 16px;
@@ -44,8 +44,8 @@
 .vp-nav-title:hover,
 .vp-nav-title.is-active,
 .vp-nav-item.is-active>.vp-nav-title {
-  color: var(--vp-accent);
-  background: var(--vp-accent-bg);
+  color: var(--tone-text);
+  background: var(--tone-soft);
 }
 
 .vp-nav-title:not([href]) {
@@ -100,7 +100,7 @@
   gap: 2px;
   margin-left: 10px;
   padding-left: 10px;
-  border-left: 1px solid var(--vp-line);
+  border-left: var(--border-subtle);
 }
 
 .vp-nav-children[hidden] {

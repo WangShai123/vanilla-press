@@ -20,7 +20,7 @@
 .vp-search-hint,
 .vp-search-empty {
   margin: 0;
-  color: var(--vp-muted);
+  color: var(--tone-caption);
   font-size: 0.9rem;
 }
 
@@ -38,16 +38,15 @@
   flex-direction: column;
   gap: 4px;
   padding: 10px 12px;
-  border: 1px solid var(--vp-line);
+  border: var(--border-subtle);
   border-radius: 6px;
   color: inherit;
   text-decoration: none;
-  background: var(--vp-panel);
 }
 
 .vp-search-result:hover {
-  border-color: var(--vp-accent);
-  background: var(--vp-accent-bg);
+  border-color: var(--tone-text);
+  background: var(--tone-soft);
 }
 
 .vp-search-result-title {
@@ -57,7 +56,7 @@
 }
 
 .vp-search-result-excerpt {
-  color: var(--vp-muted);
+  color: var(--tone-caption);
   font-size: 0.85rem;
   line-height: 1.45;
 }

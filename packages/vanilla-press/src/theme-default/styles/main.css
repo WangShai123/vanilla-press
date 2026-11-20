@@ -1,7 +1,7 @@
 .vp-shell {
-  min-height: calc(100vh - var(--vp-header-height));
+  min-height: calc(100vh - 48px);
   display: flex;
-  margin-top: var(--vp-header-height);
+  margin-top: 48px;
 }
 
 .vp-main {

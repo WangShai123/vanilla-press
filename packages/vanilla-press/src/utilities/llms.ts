@@ -195,7 +195,7 @@ function setBooleanData(element: Element, name: string, value: boolean): void {
 
 function createIconSlot(document: Document, name: string): HTMLSpanElement {
   const slot = document.createElement('span')
-  slot.className = 'el-prefix'
+  slot.className = 'el-icon'
   slot.setAttribute('data-vp-llms-icon', name)
   return slot
 }

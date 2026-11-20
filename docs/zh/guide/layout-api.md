@@ -48,20 +48,13 @@ vp/
 </main>
 ```
 
-创建 `vp/layouts/landing/style.css`：
+创建 `vp/layouts/landing/style.css`，如：
 
 ```css
 .landing-layout {
   width: min(1080px, calc(100% - 32px));
   margin: 0 auto;
   padding: 48px 0;
-}
-
-.landing-hero {
-  padding: 32px;
-  border: 1px solid var(--ui-border);
-  border-radius: 8px;
-  background: var(--ui-surface-raised);
 }
 ```
 

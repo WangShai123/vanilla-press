@@ -88,10 +88,10 @@ function renderLink(
       : translate('prevNext.next', 'Next', i18n)
   const icon = iconHtml(
     direction === 'prev' ? 'arrow-left' : 'arrow-right'
-  ).replace('<svg ', '<svg class="el-icon" ')
+  ).replace('<svg ', '<svg ')
 
   return `<a class="vp-prev-next-link is-${direction}" href="${escapeHtml(href)}">
-    <span class="vp-prev-next-label"><span>${escapeHtml(label)}</span>${icon}</span>
+    <span class="vp-prev-next-label"><span>${escapeHtml(label)}</span><span class="el-icon">${icon}</span></span>
     <strong class="vp-prev-next-title">${escapeHtml(item.title)}</strong>
   </a>`
 }

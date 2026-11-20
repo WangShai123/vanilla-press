@@ -1,14 +1,3 @@
-:root {
-  --vp-header-height: 48px;
-  --vp-panel: var(--ui-surface);
-  --vp-panel-overlay: var(--ui-surface-overlay);
-  --vp-ink: var(--tone-heading);
-  --vp-muted: var(--tone-caption);
-  --vp-line: var(--ui-border-subtle);
-  --vp-accent: var(--tone-text);
-  --vp-accent-bg: var(--tone-soft);
-}
-
 .aurora {
   position: fixed;
   inset: 0;

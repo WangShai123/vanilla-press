@@ -1,22 +1,22 @@
-.vp-main.has-aside > .vp-aside {
+.vp-main.has-aside>.vp-aside {
   width: 160px;
 }
 
 .vp-aside {
   position: sticky;
-  top: calc(var(--vp-header-height) + 28px);
+  top: 76px;
   align-self: flex-start;
   flex: 1 1 0;
   min-width: 0;
-  height: calc(100vh - var(--vp-header-height) - 28px);
-  height: calc(100dvh - var(--vp-header-height) - 28px);
+  height: calc(100vh - 76px);
+  height: calc(100dvh - 76px);
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
 }
 
 .vp-toc {
-  border-left: 1px solid var(--vp-line);
+  border-left: var(--border-subtle);
 }
 
 .vp-toc .j-toc .toc-link {

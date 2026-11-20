@@ -1,10 +1,9 @@
 .vp-header {
-  /* position: sticky; */
   position: fixed;
   top: 0;
   z-index: 20;
   width: 100%;
-  min-height: var(--vp-header-height);
+  min-height: 48px;
   background: var(--ui-bg);
   backdrop-filter: blur(4px);
 }
@@ -13,7 +12,7 @@
   display: flex;
   align-items: center;
   gap: 24px;
-  min-height: var(--vp-header-height);
+  min-height: 48px;
   padding-block: 0;
   padding-inline: clamp(18px, 4vw, 48px);
 }
@@ -58,8 +57,8 @@
 .vp-menu.j-menu .menu .menu-item.current-menu-item>a,
 .vp-menu.j-menu .menu .menu-item a:hover,
 .vp-menu.j-menu .menu .menu-item.menu-item-has-children:hover>a {
-  color: var(--vp-accent);
-  background: var(--vp-accent-bg);
+  color: var(--tone-text);
+  background: var(--tone-soft);
 }
 
 .j-menu .menu .menu-item .sub-menu .menu-item.current-menu-item a,
@@ -127,7 +126,6 @@
   .vp-header-inner {
     justify-content: space-between;
     gap: 8px;
-    min-height: var(--vp-header-height);
     padding-inline: 8px;
   }
 
@@ -160,7 +158,7 @@
     gap: 8px;
     min-height: 36px;
     padding: 0 8px;
-    border-top: 1px solid var(--vp-line);
+    border-top: var(--border-subtle);
   }
 
   .vp-header-doc-nav-start,
@@ -184,7 +182,7 @@
     flex: 0 1 auto;
     gap: 6px;
     min-height: 32px;
-    color: var(--vp-muted);
+    color: var(--tone-caption);
   }
 }
 

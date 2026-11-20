@@ -67,7 +67,7 @@
   display: flex;
   flex-direction: column;
   background: var(--ui-bg);
-  border: 1px solid var(--ui-border);
+  border: var(--border);
   border-radius: var(--radius-md);
 }
 
@@ -145,7 +145,7 @@ a[data-vp-external-link] span.external-link svg {
   gap: 6px;
   justify-content: center;
   padding: 12px 14px;
-  border: 1px solid var(--vp-line);
+  border: var(--border-subtle);
   border-radius: var(--radius-md);
   color: inherit;
   text-decoration: none;
@@ -170,15 +170,14 @@ a[data-vp-external-link] span.external-link svg {
 
 .vp-prev-next-link .el-icon {
   flex: 0 0 auto;
-  width: 18px;
-  height: 18px;
-  color: var(--vp-muted);
+  width: 16px;
+  height: 16px;
+  color: var(--tone-caption);
 }
 
 .vp-prev-next-label {
   width: max-content;
   max-width: 100%;
-  /* color: var(--vp-muted); */
   color: var(--ui-fg-soft);
   font-size: var(--font-size-sm);
   line-height: 1.2;
@@ -198,7 +197,7 @@ a[data-vp-external-link] span.external-link svg {
 
 .vp-prev-next-title {
   overflow: hidden;
-  color: var(--vp-ink);
+  color: var(--tone-heading);
   font-size: var(--font-size-md);
   line-height: 1.35;
   text-overflow: ellipsis;
@@ -231,7 +230,7 @@ a[data-vp-external-link] span.external-link svg {
 /* tabs / accordion / offcanvas */
 .vp-main .j-tabs,
 .vp-main .j-accordion {
-  border: 1px solid var(--vp-line);
+  border: var(--border-subtle);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
@@ -286,13 +285,7 @@ a[data-vp-external-link] span.external-link svg {
   width: 32px;
   height: 32px;
   padding: 0;
-  opacity: 0;
-  transition: opacity 0.16s ease;
-}
-
-.code-block:hover .vp-code-copy,
-.code-block .vp-code-copy:focus-visible {
-  opacity: 1;
+  opacity: 0.62;
 }
 
 .code-block code {
