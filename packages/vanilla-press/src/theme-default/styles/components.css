@@ -94,10 +94,12 @@
 a[data-vp-external-link] {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
 }
 
 a[data-vp-external-link] span.external-link svg {
   width: var(--font-size-md);
+  height: var(--font-size-md);
 }
 
 /* Editor Help */

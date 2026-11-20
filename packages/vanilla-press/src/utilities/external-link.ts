@@ -17,7 +17,7 @@ function appendExternalIcon(document: Document, link: HTMLAnchorElement): void {
   if (link.querySelector(`[${EXTERNAL_LINK_ICON_ATTR}]`)) return
 
   const span = document.createElement('span')
-  span.className = 'external-link'
+  span.className = 'external-link el-icon'
   span.innerHTML = iconHtml('arrow-right-up-line').replace(
     '<svg ',
     `<svg ${EXTERNAL_LINK_ICON_ATTR}="true" `
